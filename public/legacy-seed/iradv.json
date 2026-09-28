@@ -1,0 +1,2338 @@
+{
+ "name": "iRADV",
+ "tc": 5980,
+ "factor": 1.8,
+ "models": [
+  {
+   "name": "IRADV 400/ 500",
+   "note": "",
+   "items": [
+    {
+     "code": "2773B004AA",
+     "disc": null,
+     "stock": 4,
+     "desc": "Unidad de cilindro",
+     "costo": 128.6688,
+     "ventaGs": 1385000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de cilindro"
+    },
+    {
+     "code": "FM4-8035-010",
+     "disc": null,
+     "stock": 26,
+     "desc": "Recipiente de toner de desperdicio",
+     "costo": 13.7663,
+     "ventaGs": 148200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de recipiente de toner de desperdicio"
+    },
+    {
+     "code": "FM4-6522-000",
+     "disc": null,
+     "stock": 15,
+     "desc": "Rodillo de transferencia",
+     "costo": 11.9515,
+     "ventaGs": 128600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de transferencia"
+    },
+    {
+     "code": "FM1-B702-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Unidad de fusor",
+     "costo": 214.6186,
+     "ventaGs": 2310200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de fusor"
+    },
+    {
+     "code": "FC0-5080-000",
+     "disc": null,
+     "stock": 53,
+     "desc": "Rodillo de alimentacion del cassette",
+     "costo": 3.8533,
+     "ventaGs": 41500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de alimentacion de cassette"
+    },
+    {
+     "code": "FC6-6661-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de separación del cassette",
+     "costo": 3.4357,
+     "ventaGs": 37000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de separacion de cassette"
+    },
+    {
+     "code": "FL2-3897-000",
+     "disc": null,
+     "stock": 47,
+     "desc": "Rodillo de recolección del bypass",
+     "costo": 3.6305,
+     "ventaGs": 39100,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de recoleccion de bypass"
+    },
+    {
+     "code": "FL3-4890-000",
+     "disc": null,
+     "stock": 9,
+     "desc": "Almohadilla de separación del bypass",
+     "costo": 5.27,
+     "ventaGs": 56700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de almohadilla de separacion de byoass"
+    },
+    {
+     "code": "FM4-7732-000",
+     "disc": null,
+     "stock": 30,
+     "desc": "Unidad de rodillo de recolección del ADF",
+     "costo": 31.7336,
+     "ventaGs": 341600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de rodillo de recoleccion del ADF"
+    },
+    {
+     "code": "FL3-7878-000",
+     "disc": null,
+     "stock": 26,
+     "desc": "Almohadilla de separacion del ADF",
+     "costo": 6.6924,
+     "ventaGs": 72000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de almohadilla de separacion del ADF"
+    },
+    {
+     "code": "FM4-6494-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad reveladora",
+     "costo": 78.5757,
+     "ventaGs": 845800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad reveladora"
+    },
+    {
+     "code": "FM4-6571-010",
+     "disc": null,
+     "stock": 1,
+     "desc": "Size detect",
+     "costo": 11.802,
+     "ventaGs": 127000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Size detect"
+    },
+    {
+     "code": "FM1-B727-010",
+     "disc": null,
+     "stock": 3,
+     "desc": "Sistema de Alimentacion",
+     "costo": 83.3461,
+     "ventaGs": 897100,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Sistema de Alimentacion"
+    },
+    {
+     "code": "FC0-1131-000",
+     "disc": null,
+     "stock": 4,
+     "desc": "Stopper",
+     "costo": 0.3903,
+     "ventaGs": 4200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Stopper"
+    },
+    {
+     "code": "FU8-2648-000",
+     "disc": null,
+     "stock": 14,
+     "desc": "Spring",
+     "costo": 0.2372,
+     "ventaGs": 2600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Spring"
+    },
+    {
+     "code": "4G8-0008-000",
+     "disc": null,
+     "stock": 8,
+     "desc": "Tapa de ADF",
+     "costo": 34.5743,
+     "ventaGs": 372200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Tapa de ADF"
+    },
+    {
+     "code": "2788B003AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "Toner",
+     "costo": 49.31,
+     "ventaGs": 530800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de toner"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "iRADV 529i",
+   "note": "",
+   "items": [
+    {
+     "code": "CRG-T03",
+     "disc": null,
+     "stock": 271,
+     "desc": "Cartucho de toner",
+     "costo": 45.84,
+     "ventaGs": 493400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cartucho de toner"
+    },
+    {
+     "code": "FM1-U027-020",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 402.19444444444446,
+     "ventaGs": 4329200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de fusor"
+    },
+    {
+     "code": "FM1-U032-010",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillos de transferencia",
+     "costo": 115.26666666666665,
+     "ventaGs": 1240700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Mano de oba por cambio de rodillos de transferencia",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Estante 200x115x40cm Ch N° 20 (33cm c/ bandeja)",
+     "disc": null,
+     "stock": 17,
+     "desc": "Kit de rodillos",
+     "costo": 39.4835,
+     "ventaGs": 425000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de rodillos"
+    },
+    {
+     "code": "RL2-1566-000",
+     "disc": null,
+     "stock": 14,
+     "desc": "Rodillo de recolección  de bypass",
+     "costo": 3.242,
+     "ventaGs": 34900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra pór cambio de rodillo de recoleccion de bypass"
+    },
+    {
+     "code": "RL2-0079-000",
+     "disc": null,
+     "stock": 7,
+     "desc": "Rodillo de separacion del bypass",
+     "costo": 3.8931,
+     "ventaGs": 41900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de separacion de bypass"
+    },
+    {
+     "code": "FM2-B058-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Kit de mantenimiento del ADF",
+     "costo": 24.373,
+     "ventaGs": 262400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de mantenimiento del ADF"
+    },
+    {
+     "code": "FM1-R121-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de fuente de Atla tensión",
+     "costo": 263.1222222222222,
+     "ventaGs": 2832200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por placa de fuente de alta tensión"
+    },
+    {
+     "code": "FM1-R118-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Placa controladora DC",
+     "costo": 119.62,
+     "ventaGs": 1287600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora DC"
+    },
+    {
+     "code": "FM1-X148-030",
+     "disc": null,
+     "stock": 2,
+     "desc": "Panel de control",
+     "costo": 523.84,
+     "ventaGs": 5638600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de panel de control"
+    },
+    {
+     "code": "FM2-M478-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 1713.3,
+     "ventaGs": 18442000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora principal"
+    },
+    {
+     "code": "FM2-H294-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de disco duro",
+     "costo": 581.6777777777778,
+     "ventaGs": 6261200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de disco duro"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "iRADV DX 527",
+   "note": "",
+   "items": [
+    {
+     "code": "Impresora LBP-5460",
+     "disc": null,
+     "stock": 560,
+     "desc": "Cartucho de toner",
+     "costo": 178.8659,
+     "ventaGs": 1925300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cartucho de toner"
+    },
+    {
+     "code": "FM1-T629-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad de fusor",
+     "costo": 372.2063,
+     "ventaGs": 4006400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de fusor"
+    },
+    {
+     "code": "RM2-6776-010",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillos de transferencia",
+     "costo": 46.22222222222222,
+     "ventaGs": 497500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Mano de oba por cambio de rodillos de transferencia",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Estante 200x115x40cm Ch N° 20 (33cm c/ bandeja)",
+     "disc": null,
+     "stock": 17,
+     "desc": "Kit de rodillos",
+     "costo": 39.4835,
+     "ventaGs": 425000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de rodillos"
+    },
+    {
+     "code": "RL2-1566-000",
+     "disc": null,
+     "stock": 14,
+     "desc": "Rodillo de recolección  de bypass",
+     "costo": 3.242,
+     "ventaGs": 34900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra pór cambio de rodillo de recoleccion de bypass"
+    },
+    {
+     "code": "RL2-1566-000",
+     "disc": null,
+     "stock": 14,
+     "desc": "Rodillo de separacion del bypass",
+     "costo": 3.242,
+     "ventaGs": 34900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de separacion de bypass"
+    },
+    {
+     "code": "FM2-B058-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Kit de mantenimiento del ADF",
+     "costo": 24.373,
+     "ventaGs": 262400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de mantenimiento del ADF"
+    },
+    {
+     "code": "FM1-R121-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de fuente de Atla tensión",
+     "costo": 263.1222222222222,
+     "ventaGs": 2832200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por placa de fuente de alta tensión"
+    },
+    {
+     "code": "FM1-R118-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Placa controladora DC",
+     "costo": 119.62,
+     "ventaGs": 1287600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora DC"
+    },
+    {
+     "code": "FM1-X148-030",
+     "disc": null,
+     "stock": 2,
+     "desc": "Panel de control",
+     "costo": 523.84,
+     "ventaGs": 5638600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de panel de control"
+    },
+    {
+     "code": "FM2-B596-010",
+     "disc": null,
+     "stock": 1,
+     "desc": "Placa controladora principal",
+     "costo": 1109.8,
+     "ventaGs": 11945900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora principal"
+    },
+    {
+     "code": "FK4-1550-010",
+     "disc": null,
+     "stock": 4,
+     "desc": "Unidad de disco duro",
+     "costo": 300.886,
+     "ventaGs": 3238700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de disco duro"
+    },
+    {
+     "code": "Sensor De Cuadro (Color)",
+     "disc": null,
+     "stock": 25,
+     "desc": "Bisagra Izquierda",
+     "costo": 27.5672,
+     "ventaGs": 296700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "P51175-B21",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM2-M762-000",
+     "disc": null,
+     "stock": 25,
+     "desc": "Bisagra Derecha",
+     "costo": 15.1116,
+     "ventaGs": 162700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "P51175-B21",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "iRADV 525",
+   "note": "",
+   "items": [
+    {
+     "code": "CRG-T03",
+     "disc": null,
+     "stock": 271,
+     "desc": "Cartucho de toner",
+     "costo": 45.84,
+     "ventaGs": 493400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cartucho de toner"
+    },
+    {
+     "code": "FM1-U028-010",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 354.36,
+     "ventaGs": 3814300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de fusor"
+    },
+    {
+     "code": "FUSER MFP631",
+     "disc": null,
+     "stock": 1,
+     "desc": "Pelicula de Fusor",
+     "costo": 27.1499,
+     "ventaGs": 292200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de pelicula de Fusor"
+    },
+    {
+     "code": "ROD-PRES MFP631",
+     "disc": null,
+     "stock": 25,
+     "desc": "Rodillo de Presion",
+     "costo": 11.3765,
+     "ventaGs": 122500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Rodillo de Presion"
+    },
+    {
+     "code": "FM1-U032-010",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillos de transferencia",
+     "costo": 115.26666666666665,
+     "ventaGs": 1240700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillos de transferencia"
+    },
+    {
+     "code": "FM1-U030-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Kit de rodillos",
+     "costo": 121.3875,
+     "ventaGs": 1306600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de rodillos"
+    },
+    {
+     "code": "RL2-1566-000",
+     "disc": null,
+     "stock": 14,
+     "desc": "Rodillo de separacion/bandeja del bypass",
+     "costo": 3.242,
+     "ventaGs": 34900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de separacion de bypass"
+    },
+    {
+     "code": "XIA-14D",
+     "disc": null,
+     "stock": 0,
+     "desc": "XIAOMI 14 DUAL 512GB/12GB RAM 5G C/CAMARA LEICA BK",
+     "costo": 2.272222222222222,
+     "ventaGs": 24500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de recoleccion de bypass"
+    },
+    {
+     "code": "FM1-P720-020",
+     "disc": null,
+     "stock": 0,
+     "desc": "Kit de mantenimiento del ADF",
+     "costo": 19.1317,
+     "ventaGs": 205900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de mantenimiento del ADF"
+    },
+    {
+     "code": "FM1-R121-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de fuente de Alta tensión",
+     "costo": 263.1222222222222,
+     "ventaGs": 2832200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa de fuente de alta tensión"
+    },
+    {
+     "code": "FM1-R118-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Placa controladora DC",
+     "costo": 119.62,
+     "ventaGs": 1287600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora DC"
+    },
+    {
+     "code": "FM1-N429-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Panel de control",
+     "costo": 920.4271999999999,
+     "ventaGs": 9907500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de panel de control"
+    },
+    {
+     "code": "FM1-U718-010",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 1096.0166666666667,
+     "ventaGs": 11797500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora principal"
+    },
+    {
+     "code": "FK4-1550-010",
+     "disc": null,
+     "stock": 4,
+     "desc": "Unidad de disco duro",
+     "costo": 300.886,
+     "ventaGs": 3238700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Unidad de disco duro"
+    },
+    {
+     "code": "RM2-6787-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Sistema de Alimentación",
+     "costo": 85.32222222222222,
+     "ventaGs": 918400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Unidad de Alimentacion"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "iRADV 4035",
+   "note": "",
+   "items": [
+    {
+     "code": "4793B004BA",
+     "disc": null,
+     "stock": 21,
+     "desc": "Unidad de cilindro",
+     "costo": 162.6148,
+     "ventaGs": 1750400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de cilindro"
+    },
+    {
+     "code": "FL3-3469-000",
+     "disc": null,
+     "stock": 18,
+     "desc": "Almohadilla de separacion de alimentacion manual",
+     "costo": 2.4071,
+     "ventaGs": 25900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio  de almohadilla de separacion de alimentacion manual"
+    },
+    {
+     "code": "FB6-3405-000",
+     "disc": null,
+     "stock": 13,
+     "desc": "Rodillo de recolección",
+     "costo": 3.981,
+     "ventaGs": 42900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de recoleccion"
+    },
+    {
+     "code": "FM4-9730-010",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad reveladora",
+     "costo": 111.81,
+     "ventaGs": 1203500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad reveladora"
+    },
+    {
+     "code": "FC9-0693-000",
+     "disc": null,
+     "stock": 10,
+     "desc": "Rodillo de transferencia",
+     "costo": 13.9667,
+     "ventaGs": 150300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de transferencia"
+    },
+    {
+     "code": "FM4-9736-010",
+     "disc": null,
+     "stock": 1,
+     "desc": "Rodillo de limpieza",
+     "costo": 320.4867,
+     "ventaGs": 3449700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de limpieza"
+    },
+    {
+     "code": "FK2-9316-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de disco duro",
+     "costo": 211.7654,
+     "ventaGs": 2279400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cambiode unidad de disco duro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM4-9736-010",
+     "disc": null,
+     "stock": 1,
+     "desc": "Unidad de fusor",
+     "costo": 320.4867,
+     "ventaGs": 3449700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": "FC6-6661-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de separacion",
+     "costo": 3.4357,
+     "ventaGs": 37000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de separación"
+    },
+    {
+     "code": "FM4-9170-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo magnetico",
+     "costo": 26.04,
+     "ventaGs": 280300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo magnético"
+    },
+    {
+     "code": "FC9-8974-000",
+     "disc": null,
+     "stock": 4,
+     "desc": "Rodillo de presión",
+     "costo": 47.416,
+     "ventaGs": 510400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de presion"
+    },
+    {
+     "code": "FM3-9265-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Cuchilla",
+     "costo": 18.73,
+     "ventaGs": 201600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de cuchilla"
+    },
+    {
+     "code": "4792B003AA",
+     "disc": null,
+     "stock": 20,
+     "desc": "Toner",
+     "costo": 57.8752,
+     "ventaGs": 623000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de Toner"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo y cambio de partes",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "Ciclo Máximo Mensual de Impresiones",
+   "note": "LBP 7680 - Dic 2024",
+   "items": [
+    {
+     "code": "4793B004BA",
+     "disc": null,
+     "stock": 21,
+     "desc": "Unidad de cilindro",
+     "costo": 162.6148,
+     "ventaGs": 1779700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de cilindro"
+    },
+    {
+     "code": "FL3-3469-000",
+     "disc": null,
+     "stock": 18,
+     "desc": "Almohadilla de separación de alimentación manual",
+     "costo": 2.4071,
+     "ventaGs": 26300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de almohadilla de separación de alimentación manual"
+    },
+    {
+     "code": "FB6-3405-000",
+     "disc": null,
+     "stock": 13,
+     "desc": "Rodillo de recolección",
+     "costo": 3.981,
+     "ventaGs": 43600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodilla de recolección"
+    },
+    {
+     "code": "FM4-9730-010",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad reveladora",
+     "costo": 111.81,
+     "ventaGs": 1223600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad reveladora"
+    },
+    {
+     "code": "FE8-2935-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de transferencia",
+     "costo": 30.4,
+     "ventaGs": 332700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de transferencia"
+    },
+    {
+     "code": "FM3-9373-000",
+     "disc": null,
+     "stock": 19,
+     "desc": "Rodillo de limpieza",
+     "costo": 18.7162,
+     "ventaGs": 204800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de limpieza"
+    },
+    {
+     "code": "FM4-7900-010",
+     "disc": null,
+     "stock": 12,
+     "desc": "Unidad de fusor",
+     "costo": 203.7775,
+     "ventaGs": 2230100,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de fusor"
+    },
+    {
+     "code": "FC6-6661-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de separación",
+     "costo": 3.4357,
+     "ventaGs": 37600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de separación"
+    },
+    {
+     "code": "FM4-9170-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo magnétic",
+     "costo": 26.04,
+     "ventaGs": 285000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo magnétic"
+    },
+    {
+     "code": "FC9-8974-000",
+     "disc": null,
+     "stock": 4,
+     "desc": "Rodillo de presión",
+     "costo": 47.416,
+     "ventaGs": 518900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de presión"
+    },
+    {
+     "code": "FM3-9265-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Cuchilla",
+     "costo": 18.73,
+     "ventaGs": 205000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cuchilla"
+    },
+    {
+     "code": "4792B003AA",
+     "disc": null,
+     "stock": 20,
+     "desc": "Tóner",
+     "costo": 57.8752,
+     "ventaGs": 633400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de tóner"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento Preventivo: lubricación, ajustes, limpiezas, configuraciones del equipo.",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "iR ADV 8595",
+   "note": "",
+   "items": [
+    {
+     "code": "3765B003AA",
+     "disc": null,
+     "stock": 5,
+     "desc": "Unidad de cilindro",
+     "costo": 1247.814,
+     "ventaGs": 13431500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de cilindro"
+    },
+    {
+     "code": "3764B003AA",
+     "disc": null,
+     "stock": 32,
+     "desc": "Toner",
+     "costo": 62.1178,
+     "ventaGs": 668600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de toner"
+    },
+    {
+     "code": "FM3-7288-030",
+     "disc": null,
+     "stock": 4,
+     "desc": "Juego de Carga Primaria",
+     "costo": 41.6486,
+     "ventaGs": 448300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de juego de carga primaria"
+    },
+    {
+     "code": "FM4-3149-020",
+     "disc": null,
+     "stock": 3,
+     "desc": "Juego de Carga de Pre-Transferencia",
+     "costo": 41.1957,
+     "ventaGs": 443400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de juego de carga de pre-transferencia"
+    },
+    {
+     "code": "FM2-A776-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad Reveladora",
+     "costo": 278.365,
+     "ventaGs": 2996300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad reveladora"
+    },
+    {
+     "code": "FL3-6291-000",
+     "disc": null,
+     "stock": 10,
+     "desc": "Cuchilla de limpieza de cilindro",
+     "costo": 6.9825,
+     "ventaGs": 75200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de cuchilla de limpieza de cilindro"
+    },
+    {
+     "code": "FB4-8018-010",
+     "disc": null,
+     "stock": 6,
+     "desc": "Uña de separación de cilindro",
+     "costo": 3.2333,
+     "ventaGs": 34800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de uña de separacion de cilindro"
+    },
+    {
+     "code": "FC9-9024-000",
+     "disc": null,
+     "stock": 11,
+     "desc": "Sello de cilindro de lado frontal",
+     "costo": 2.4885,
+     "ventaGs": 26800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de sello de cilindro de lado frontal"
+    },
+    {
+     "code": "FC8-7160-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Banda de transferencia intermedia",
+     "costo": 36.1425,
+     "ventaGs": 389000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de banda de transferencia intermedia"
+    },
+    {
+     "code": "FE2-R768-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Rodillo de transferencia",
+     "costo": 8.75,
+     "ventaGs": 94200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de transferencia"
+    },
+    {
+     "code": "FC9-9022-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Rodillo de brocha",
+     "costo": 13.15,
+     "ventaGs": 141500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de brocha"
+    },
+    {
+     "code": "FC6-1647-000",
+     "disc": null,
+     "stock": 47,
+     "desc": "Cuchilla de limpieza de Banda de Transferencia Intermedia",
+     "costo": 35.6431,
+     "ventaGs": 383700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de cuchilla de limpieza de banda de transferencia intermedia"
+    },
+    {
+     "code": "FC5-2286-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Banda de limpieza de fusor",
+     "costo": 19.4925,
+     "ventaGs": 209800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de banda de limpieza de fusor"
+    },
+    {
+     "code": "FL3-3602-000",
+     "disc": null,
+     "stock": 8,
+     "desc": "Rodillo de fusor",
+     "costo": 241.8889,
+     "ventaGs": 2603700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de fusor"
+    },
+    {
+     "code": "FM1-Z223-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Rodillo de presion",
+     "costo": 88.28,
+     "ventaGs": 950200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de presion"
+    },
+    {
+     "code": "FC5-2524-000",
+     "disc": null,
+     "stock": 37,
+     "desc": "Rodillo de recolección",
+     "costo": 2.1715,
+     "ventaGs": 23400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de recoleccion"
+    },
+    {
+     "code": "FC5-2526-000",
+     "disc": null,
+     "stock": 44,
+     "desc": "Rodillo de alimentación",
+     "costo": 3.3615,
+     "ventaGs": 36200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de alimentacion"
+    },
+    {
+     "code": "FC5-2528-000",
+     "disc": null,
+     "stock": 3,
+     "desc": "Rodillo de separación",
+     "costo": 8.1546,
+     "ventaGs": 87800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de separacion"
+    },
+    {
+     "code": "FE2-3453-000",
+     "disc": null,
+     "stock": 3,
+     "desc": "Eliminador de estatica posterior",
+     "costo": 3.3533,
+     "ventaGs": 36100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FE2-3452-000",
+     "disc": null,
+     "stock": 3,
+     "desc": "Eliminador de estatica frontal",
+     "costo": 3.3233,
+     "ventaGs": 35800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FK2-7693-000",
+     "disc": null,
+     "stock": 3,
+     "desc": "Termistor secundario",
+     "costo": 4.91,
+     "ventaGs": 52900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FK2-7692-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Termistor principal",
+     "costo": 9.44,
+     "ventaGs": 101600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FC6-3501-020",
+     "disc": null,
+     "stock": 7,
+     "desc": "Reten Rodillo de fijacion",
+     "costo": 1.5633,
+     "ventaGs": 16800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-C081-010",
+     "disc": null,
+     "stock": 31,
+     "desc": "Buje rodillo de fijacion",
+     "costo": 3.2424,
+     "ventaGs": 34900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "XG9-0563-000",
+     "disc": null,
+     "stock": 4,
+     "desc": "Ruleman Rodillo de fijacion",
+     "costo": 7,
+     "ventaGs": 75300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FB5-3625-000",
+     "disc": null,
+     "stock": 12,
+     "desc": "Uñas separacion de fijacion",
+     "costo": 1.575,
+     "ventaGs": 17000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 450000
+    }
+   ]
+  },
+  {
+   "name": "iRADV 4745",
+   "note": "",
+   "items": [
+    {
+     "code": "0475C003AA",
+     "disc": null,
+     "stock": 13,
+     "desc": "Unidad de cilindro",
+     "costo": 333.2964,
+     "ventaGs": 3587600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de cilindro"
+    },
+    {
+     "code": "FL3-3469-000",
+     "disc": null,
+     "stock": 18,
+     "desc": "Almohadilla de separacion de alimentacion manual",
+     "costo": 2.4071,
+     "ventaGs": 25900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio  de almohadilla de separacion de alimentacion manual"
+    },
+    {
+     "code": "FB6-3405-000",
+     "disc": null,
+     "stock": 13,
+     "desc": "Rodillo de recolección",
+     "costo": 3.981,
+     "ventaGs": 42900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de recoleccion"
+    },
+    {
+     "code": "FM1-J148-000",
+     "disc": null,
+     "stock": 3,
+     "desc": "Unidad reveladora",
+     "costo": 278.9,
+     "ventaGs": 3002100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad reveladora"
+    },
+    {
+     "code": "FE8-2935-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de transferencia",
+     "costo": 30.4,
+     "ventaGs": 327200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de transferencia"
+    },
+    {
+     "code": "FM4-9736-010",
+     "disc": null,
+     "stock": 1,
+     "desc": "Rodillo de limpieza",
+     "costo": 320.4867,
+     "ventaGs": 3449700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de limpieza"
+    },
+    {
+     "code": "FK4-1550-010",
+     "disc": null,
+     "stock": 4,
+     "desc": "Unidad de disco duro",
+     "costo": 300.886,
+     "ventaGs": 3238700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cambiode unidad de disco duro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-J024-030",
+     "disc": null,
+     "stock": 3,
+     "desc": "Unidad de fusor",
+     "costo": 579.8067,
+     "ventaGs": 6241000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": "FL4-3743-000",
+     "disc": null,
+     "stock": 70,
+     "desc": "Rodillo de separacion",
+     "costo": 5.4766,
+     "ventaGs": 59000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de separación"
+    },
+    {
+     "code": "FM4-9170-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo magnetico",
+     "costo": 26.04,
+     "ventaGs": 280300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo magnético"
+    },
+    {
+     "code": "FC9-8974-000",
+     "disc": null,
+     "stock": 4,
+     "desc": "Rodillo de presión",
+     "costo": 47.416,
+     "ventaGs": 510400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de presion"
+    },
+    {
+     "code": "FM3-9265-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Cuchilla",
+     "costo": 18.73,
+     "ventaGs": 201600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de cuchilla"
+    },
+    {
+     "code": "0473C003AA",
+     "disc": null,
+     "stock": 27,
+     "desc": "Toner",
+     "costo": 69.215,
+     "ventaGs": 745000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de Toner"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo y cambio de partes",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "iRADV C4545 I y II - Jun 2026 - c4545 III y c 4551 aún Vigente",
+   "note": "LBP 7780cx - Dic 2023",
+   "items": [
+    {
+     "code": "0475C003AA",
+     "disc": null,
+     "stock": 13,
+     "desc": "Unidad de cilindro",
+     "costo": 333.2964,
+     "ventaGs": 3587600,
+     "vida": null,
+     "grupo": "GPR-57"
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de cilindro"
+    },
+    {
+     "code": "0473C003AA",
+     "disc": null,
+     "stock": 27,
+     "desc": "Toner",
+     "costo": 69.215,
+     "ventaGs": 745000,
+     "vida": null,
+     "grupo": "GPR-57"
+    },
+    {
+     "labor": "Mano de obra por cambio de toner"
+    },
+    {
+     "code": "FE8-9296-010",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de transferencia",
+     "costo": 12,
+     "ventaGs": 129200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de transferencia"
+    },
+    {
+     "code": "FL3-1352-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo de recolección del baypass",
+     "costo": 3.0447,
+     "ventaGs": 32800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de recoleccion del bypass"
+    },
+    {
+     "code": "FL3-3469-000",
+     "disc": null,
+     "stock": 18,
+     "desc": "Almohadilla de separación del baypass",
+     "costo": 2.4071,
+     "ventaGs": 25900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de almohadilla de separacion del bypass"
+    },
+    {
+     "code": "FM1-J024-030",
+     "disc": null,
+     "stock": 3,
+     "desc": "Unidad de fijación",
+     "costo": 579.8067,
+     "ventaGs": 6241000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de la unidad de fijacion"
+    },
+    {
+     "code": "FC0-5080-000",
+     "disc": null,
+     "stock": 53,
+     "desc": "Rodillo de alimentación del cassette",
+     "costo": 3.8533,
+     "ventaGs": 41500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de alimentacion del cassette"
+    },
+    {
+     "code": "FC0-9450-000",
+     "disc": null,
+     "stock": 40,
+     "desc": "Rodillo de alimentación del ADF",
+     "costo": 14.8644,
+     "ventaGs": 160000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de alimentacion del ADF"
+    },
+    {
+     "code": "FK4-1550-010",
+     "disc": null,
+     "stock": 4,
+     "desc": "Disco duro",
+     "costo": 300.886,
+     "ventaGs": 3238700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio del disco duro"
+    },
+    {
+     "code": "FM1-V549-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa principal",
+     "costo": 979.1722222222222,
+     "ventaGs": 10539800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa principal"
+    },
+    {
+     "code": "FB6-3405-000",
+     "disc": null,
+     "stock": 13,
+     "desc": "Rodillo de recolección del cassette",
+     "costo": 3.981,
+     "ventaGs": 42900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de recoleccion del cassette"
+    },
+    {
+     "code": "FC6-6661-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de separación del cassette",
+     "costo": 3.4357,
+     "ventaGs": 37000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de separacion del cassette"
+    },
+    {
+     "code": "FM3-9276-040",
+     "disc": null,
+     "stock": 0,
+     "desc": "Botella de toner residual",
+     "costo": 13.455555555555554,
+     "ventaGs": 144800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de borella de toner residual"
+    },
+    {
+     "code": "FC0-3078-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Filtro de ozono",
+     "costo": 18.372222222222224,
+     "ventaGs": 197800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de filtro de ozono"
+    },
+    {
+     "code": "VSP E1090 Maintenance Support",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad Reveladora",
+     "costo": 369.95,
+     "ventaGs": 3982100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "U80M4E",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento Preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "DR-M160 - Jun 2019 - M160II aún Vigente",
+   "note": "EQUIPO y PARTES DISCONTINUADO - Dic 2022",
+   "items": [
+    {
+     "code": "3765B003AA",
+     "disc": null,
+     "stock": 5,
+     "desc": "FK2-7698-000",
+     "costo": 1247.814,
+     "ventaGs": 13431500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de cepillo",
+     "fixedGs": 80000
+    },
+    {
+     "code": "HP 146GB 3,5 single-port SAS 15,000 rpm 375872-B21",
+     "disc": null,
+     "stock": 22,
+     "desc": "Toner",
+     "costo": 81.1196,
+     "ventaGs": 873200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Toner"
+    },
+    {
+     "code": "XIA-RED-15",
+     "disc": null,
+     "stock": null,
+     "desc": "Telilla de limpieza del fusor",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Retenedor del rodillo de fijacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": "XIAOMI REDMI NOTE 15 DUAL 256GB/8GB",
+     "disc": null,
+     "stock": null,
+     "desc": "Eliminador de estatica del rodillo de presion",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de alimentacion de bypass",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FUSOR COMPLETO MF8350/8380/729",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo de separacion de bypass",
+     "costo": 50,
+     "ventaGs": 538200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de corona",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RODILLO PRESION NP1010",
+     "disc": null,
+     "stock": 0,
+     "desc": "Termointerruptor",
+     "costo": 14,
+     "ventaGs": 150700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Filtro de polvo",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FL3-6291-000",
+     "disc": null,
+     "stock": 10,
+     "desc": "Unidada de cilindro",
+     "costo": 6.9825,
+     "ventaGs": 75200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Unidad de Cilindro"
+    },
+    {
+     "code": "FB4-8018-010",
+     "disc": null,
+     "stock": 6,
+     "desc": "Unidad de Carga Primaria",
+     "costo": 3.2333,
+     "ventaGs": 34800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Unidad de Carga Primaria"
+    },
+    {
+     "code": "FC8-6346-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad de Pretransferencia",
+     "costo": 1,
+     "ventaGs": 10800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Unidad de Pretransferencia"
+    },
+    {
+     "code": "PLATE, HINGE, LEFT IR-2520/2525/2530",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo Magnetico",
+     "costo": 0.02,
+     "ventaGs": 200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Rodillo Magnetico"
+    },
+    {
+     "code": "FC8-7160-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "HP 5y Priority Managemt PC 5K + seats SVC",
+     "costo": 36.1425,
+     "ventaGs": 389000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Buje de Rodillo Magnetico",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FC8-6348-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de transferencia",
+     "costo": 7.8667,
+     "ventaGs": 84700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Buje de Rodillo Magnetico"
+    },
+    {
+     "code": "FC9-9022-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Cambio Pelicula de Fusor + resistencia",
+     "costo": 13.15,
+     "ventaGs": 141500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Chuchilla del cilindro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FC6-1647-000",
+     "disc": null,
+     "stock": 47,
+     "desc": "Mano de obra por cambio de Chuchilla del cilindro",
+     "costo": 35.6431,
+     "ventaGs": 383700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Uña de separacion del tambor",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FUTP-6A-FURU",
+     "disc": null,
+     "stock": 1,
+     "desc": "FM3-9299-000",
+     "costo": 16.395,
+     "ventaGs": 176500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Uña de separacion del tambor"
+    },
+    {
+     "code": "FC6-3501-020",
+     "disc": null,
+     "stock": 7,
+     "desc": "Rodillo de Registro",
+     "costo": 1.5633,
+     "ventaGs": 16800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Sello lateral del tambor delantero y trasero",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM4-2466-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Rodillo de presion",
+     "costo": 91,
+     "ventaGs": 979500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Sello lateral del tambor delantero y trasero"
+    },
+    {
+     "code": "FC7-3548-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de Rodillo de Registro",
+     "costo": 17,
+     "ventaGs": 183000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Raspador",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FB5-3625-000",
+     "disc": null,
+     "stock": 12,
+     "desc": "Mano de obra por cambio de Raspador",
+     "costo": 1.575,
+     "ventaGs": 17000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de ITB"
+    },
+    {
+     "code": "FC5-2524-000",
+     "disc": null,
+     "stock": 37,
+     "desc": "Rodillo de recoleccion",
+     "costo": 2.1715,
+     "ventaGs": 23400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Rodillo de transferencia"
+    },
+    {
+     "code": "FC5-2526-000",
+     "disc": null,
+     "stock": 44,
+     "desc": "Rodillo de alimentacion",
+     "costo": 3.3615,
+     "ventaGs": 36200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-R885-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FC5-2528-000",
+     "disc": null,
+     "stock": 3,
+     "desc": "Rodillo de separacion",
+     "costo": 8.1546,
+     "ventaGs": 87800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Rodillo de cepillo"
+    },
+    {
+     "code": "FA65547000",
+     "disc": null,
+     "stock": 43,
+     "desc": "IR2525/2535",
+     "costo": 5.6311,
+     "ventaGs": 60600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cuchilla de ITB",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FC6-6661-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM3-7288-000",
+     "costo": 3.4357,
+     "ventaGs": 37000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Cuchilla de ITB"
+    },
+    {
+     "code": "XIA-RED-N14PRO",
+     "disc": null,
+     "stock": null,
+     "desc": "FM4-7297",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Telilla de limpieza del fusor"
+    },
+    {
+     "code": "CEL XIAOMI REDMI NOTE 14 PRO 512GB",
+     "disc": null,
+     "stock": null,
+     "desc": "Termistor principal",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Retenedor del rodillo de fijacion"
+    },
+    {
+     "code": "FK2-7693-000",
+     "disc": null,
+     "stock": 3,
+     "desc": "Termistor secundario",
+     "costo": 4.91,
+     "ventaGs": 52900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Rodillo de presion"
+    },
+    {
+     "code": "Pelicula de Fusor + resistencia",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM3-7288-020",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Eliminador de estatica del rodillo de presion"
+    },
+    {
+     "code": "HOLDER, SEPARATION PAD UNIT/IR-3245",
+     "disc": null,
+     "stock": 3,
+     "desc": "Filtro de ozono",
+     "costo": 22.7,
+     "ventaGs": 244300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Uña de separacion del fusor",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FC8-7161-000",
+     "disc": null,
+     "stock": 4,
+     "desc": "FK2-7683-000",
+     "costo": 12.355,
+     "ventaGs": 133000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Uña de separacion del fusor"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento Preventivo",
+     "fixedGs": 320000
+    },
+    {
+     "code": null,
+     "desc": "iR C3225",
+     "fixedGs": 95000
+    },
+    {
+     "code": null,
+     "desc": "iR C1325/35",
+     "fixedGs": 135000
+    },
+    {
+     "code": null,
+     "desc": "Precios de partes e insumos iR C3226",
+     "fixedGs": 170000
+    },
+    {
+     "code": null,
+     "desc": "Vida estimada",
+     "fixedGs": 215000
+    }
+   ]
+  },
+  {
+   "name": "Vida estimada",
+   "note": "DR-C6030 - DICIEMBRE 2017",
+   "items": [
+    {
+     "code": "Rango de Rendimiento Optimo",
+     "disc": null,
+     "stock": null,
+     "desc": "Unidad de cilindro",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de cilindro"
+    },
+    {
+     "code": "FL3-3469-000",
+     "disc": null,
+     "stock": 18,
+     "desc": "5.000 y 45.000",
+     "costo": 2.4071,
+     "ventaGs": 25900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio  de almohadilla de separacion de alimentacion manual"
+    },
+    {
+     "code": "FL3-1352-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "5.000 y 65.000",
+     "costo": 3.0447,
+     "ventaGs": 32800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de recoleccion"
+    },
+    {
+     "code": "FM1-J148-000",
+     "disc": null,
+     "stock": 3,
+     "desc": "Unidad reveladora",
+     "costo": 278.9,
+     "ventaGs": 3002100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad reveladora"
+    },
+    {
+     "code": "FE8-2935-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de transferencia",
+     "costo": 30.4,
+     "ventaGs": 327200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de transferencia"
+    },
+    {
+     "code": "FK4-1550-010",
+     "disc": null,
+     "stock": 4,
+     "desc": "Unidad de disco duro",
+     "costo": 300.886,
+     "ventaGs": 3238700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cambiode unidad de disco duro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Volumen Maximo Mensual de Copias/Impresiones",
+     "disc": null,
+     "stock": null,
+     "desc": "Unidad de fusor",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": "FC6-6661-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de separacion",
+     "costo": 3.4357,
+     "ventaGs": 37000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de separación"
+    },
+    {
+     "code": "FM4-9170-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo magnetico",
+     "costo": 26.04,
+     "ventaGs": 280300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo magnético"
+    },
+    {
+     "code": "FC9-8974-000",
+     "disc": null,
+     "stock": 4,
+     "desc": "Rodillo de presión",
+     "costo": 47.416,
+     "ventaGs": 510400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de presion"
+    },
+    {
+     "code": "FM3-9265-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "iRADV DX 4725i",
+     "costo": 18.73,
+     "ventaGs": 201600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de cuchilla"
+    },
+    {
+     "code": "3.000 y 40.000",
+     "disc": null,
+     "stock": null,
+     "desc": "Toner",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de Toner"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo y cambio de partes",
+     "fixedGs": 320000
+    }
+   ]
+  }
+ ],
+ "id": "iradv"
+}

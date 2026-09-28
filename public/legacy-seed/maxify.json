@@ -1,0 +1,308 @@
+{
+ "name": "MAXIFY",
+ "tc": 5980,
+ "factor": 1.8,
+ "models": [
+  {
+   "name": "Sucursal 3",
+   "note": "",
+   "items": [
+    {
+     "code": "FE2-E037-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "FE2-E038-000",
+     "costo": 115.64,
+     "ventaGs": 1244700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM2-B173-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Lector Cis",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM2-E453-000",
+     "costo": 58.25,
+     "ventaGs": 627000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Lector Cis (Dependiendo De La Serie)",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FK4-6675-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Clable Flat",
+     "costo": 3.04,
+     "ventaGs": 32700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM3-C862-010",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Power Supply Ass´Y",
+     "disc": null,
+     "stock": 0,
+     "desc": "QY6-0087-000",
+     "costo": 3.04,
+     "ventaGs": 32700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cabezal de impresión",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de cabezal de impresión",
+     "disc": null,
+     "stock": 0,
+     "desc": "QK2-0205-000",
+     "costo": 47.2,
+     "ventaGs": 508100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de fuente de alimentacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de unidad de fuente de alimentacion",
+     "disc": null,
+     "stock": 0,
+     "desc": "QC5-0123-000",
+     "costo": 58.02,
+     "ventaGs": 624500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Bisagra lado izquierdo",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de bisagra lado izquierdo",
+     "disc": null,
+     "stock": 17,
+     "desc": "Rodillo de recolección del cassette",
+     "costo": 36.2662,
+     "ventaGs": 390400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de recolección del cassette"
+    },
+    {
+     "code": "QM4-3554-000",
+     "disc": null,
+     "stock": 9,
+     "desc": "FM1-Y860-000",
+     "costo": 20.993,
+     "ventaGs": 226000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Rodillo de arrastre de papel"
+    },
+    {
+     "code": "bisagra lado  derecho",
+     "disc": null,
+     "stock": 20,
+     "desc": "Mano de obra por cambio de bisagra lado derecho",
+     "costo": 19.7339,
+     "ventaGs": 212400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "QM4-2940-010",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Unidad de rodillo",
+     "disc": null,
+     "stock": 21,
+     "desc": "Mante nimiento Preventivo",
+     "costo": 20.0632,
+     "ventaGs": 216000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM2-G956-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "BS054/25-R1",
+   "note": "",
+   "items": [
+    {
+     "code": "Mano de obra por cambio de unidad de rodillo",
+     "disc": null,
+     "stock": 1,
+     "desc": "QY5-0484-000",
+     "costo": 143.05,
+     "ventaGs": 1539800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Kit de absorción",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de kit de absorcion",
+     "disc": null,
+     "stock": 17,
+     "desc": "9187B001AA",
+     "costo": 12.6735,
+     "ventaGs": 136400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "9208B001AA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "9209B001AA",
+     "disc": null,
+     "stock": 33,
+     "desc": "Cartucho magenta",
+     "costo": 21.1221,
+     "ventaGs": 227400,
+     "vida": null
+    },
+    {
+     "labor": "mano de obra por cambio de cartucho magenta"
+    },
+    {
+     "code": "9210B001AA",
+     "disc": null,
+     "stock": 1,
+     "desc": "QY6-0091-020",
+     "costo": 17.9948,
+     "ventaGs": 193700,
+     "vida": null
+    },
+    {
+     "labor": "mano de obra por cambio de cartucho magenta"
+    },
+    {
+     "code": "Cabezal de impresio",
+     "disc": null,
+     "stock": 13,
+     "desc": "Mano de obra por cambio de Cabezal de impresion",
+     "costo": 16.9592,
+     "ventaGs": 182500,
+     "vida": null
+    },
+    {
+     "labor": "mano de obra por cambio de cartucho magenta"
+    },
+    {
+     "code": "4628C001AA",
+     "disc": null,
+     "stock": 2,
+     "desc": "Cartucho de mantenimiento para impresora Canon Maxify Gx 6010",
+     "costo": 17.96,
+     "ventaGs": 193300,
+     "vida": null
+    },
+    {
+     "labor": "mano de obra por cambio de cartucho magenta"
+    },
+    {
+     "code": "Mano de obra de cartucho de mantemineto para impresoras Canon Maxify Gx 6010",
+     "disc": null,
+     "stock": 0,
+     "desc": "4408C001AA",
+     "costo": 78.11,
+     "ventaGs": 840800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de rodillos"
+    },
+    {
+     "code": "Botella de Tinta Negro",
+     "disc": null,
+     "stock": 0,
+     "desc": "Almohadilla de separacion del ADF",
+     "costo": 39.85,
+     "ventaGs": 428900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de almohadilla de separacion del ADF"
+    },
+    {
+     "code": "Mano de obra por cambio de botella de tinta",
+     "disc": null,
+     "stock": 0,
+     "desc": "Clable Flat",
+     "costo": 16.4,
+     "ventaGs": 176500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM3-C862-010",
+     "fixedGs": 80000
+    },
+    {
+     "code": "4418C001AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "Botella de Tinta Cyan",
+     "costo": 16.89,
+     "ventaGs": 181800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cabezal de impresión",
+     "fixedGs": 80000
+    },
+    {
+     "code": "4419C001AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "QK2-0205-000",
+     "costo": 12.66,
+     "ventaGs": 136300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de fuente de alimentacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  }
+ ],
+ "id": "maxify"
+}

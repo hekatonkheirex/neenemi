@@ -1,0 +1,1457 @@
+{
+ "name": "Pantum",
+ "tc": 5980,
+ "factor": 1.8,
+ "models": [
+  {
+   "name": "Mano de obra por cambio de Placa de Fuente de Alimentación",
+   "note": "",
+   "items": [
+    {
+     "code": "QM4-3246-000",
+     "disc": null,
+     "stock": 119,
+     "desc": "Unidad de cilindro",
+     "costo": 36.1663,
+     "ventaGs": 389300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cilindro"
+    },
+    {
+     "code": "Multiseñsor del cabeza",
+     "disc": null,
+     "stock": 0,
+     "desc": "Toner",
+     "costo": 42.0828,
+     "ventaGs": 453000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de toner"
+    },
+    {
+     "code": "302111018801",
+     "disc": null,
+     "stock": null,
+     "desc": "Unidad de fusor",
+     "costo": 29.411764705882355,
+     "ventaGs": 316600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Multiseñsor del cabeza"
+    },
+    {
+     "code": "302110107601",
+     "disc": null,
+     "stock": 0,
+     "desc": "QM4-4717-000",
+     "costo": 34.12,
+     "ventaGs": 367300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de Carro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "302110092201",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Unidad de Carro",
+     "costo": 25.88,
+     "ventaGs": 278600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de Carro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "302111016101",
+     "disc": null,
+     "stock": null,
+     "desc": "QM7-3984-000",
+     "costo": 15.294117647058824,
+     "ventaGs": 164600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa Princ¡pal",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022812001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Placa Princ¡pal",
+     "costo": 11.76,
+     "ventaGs": 126600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pantum  BP 5100DW/FDW - IMPRESORA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "302111016201",
+     "disc": null,
+     "stock": 0,
+     "desc": "RM1-4445-000",
+     "costo": 10.59,
+     "ventaGs": 114000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "DL-5120",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022233001",
+     "disc": null,
+     "stock": null,
+     "desc": "TL-5120x",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cunidad de fusor"
+    },
+    {
+     "code": "301022163001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de datos DW",
+     "costo": 11.76,
+     "ventaGs": 126600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa de datos"
+    },
+    {
+     "code": "302111016901",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de datos FDW",
+     "costo": 17.65,
+     "ventaGs": 190000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de alimentacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    },
+    {
+     "labor": "Mano de obra por cambio de placa de alimentacion"
+    }
+   ]
+  },
+  {
+   "name": "Mano de obra por cambio de placa de alimentacion",
+   "note": "",
+   "items": [
+    {
+     "code": "QM4-3246-000",
+     "disc": null,
+     "stock": 119,
+     "desc": "Unidad de cilindro",
+     "costo": 36.1663,
+     "ventaGs": 389300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cilindro"
+    },
+    {
+     "code": "Multiseñsor del cabeza",
+     "disc": null,
+     "stock": 0,
+     "desc": "Toner",
+     "costo": 42.0828,
+     "ventaGs": 453000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de toner"
+    },
+    {
+     "code": "302111018801",
+     "disc": null,
+     "stock": null,
+     "desc": "Unidad de fusor",
+     "costo": 29.411764705882355,
+     "ventaGs": 316600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Multiseñsor del cabeza"
+    },
+    {
+     "code": "302110107601",
+     "disc": null,
+     "stock": 0,
+     "desc": "QM4-4717-000",
+     "costo": 34.12,
+     "ventaGs": 367300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de Carro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "302110092201",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Unidad de Carro",
+     "costo": 25.88,
+     "ventaGs": 278600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de Carro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "302111016101",
+     "disc": null,
+     "stock": null,
+     "desc": "QM7-3984-000",
+     "costo": 15.294117647058824,
+     "ventaGs": 164600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa Princ¡pal",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022812001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Placa Princ¡pal",
+     "costo": 11.76,
+     "ventaGs": 126600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pantum  BP 5100DW/FDW - IMPRESORA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "302111016201",
+     "disc": null,
+     "stock": 0,
+     "desc": "RM1-4445-000",
+     "costo": 10.59,
+     "ventaGs": 114000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "DL-5120",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022233001",
+     "disc": null,
+     "stock": null,
+     "desc": "TL-5120x",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cunidad de fusor"
+    },
+    {
+     "code": "301022163001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de datos DW",
+     "costo": 11.76,
+     "ventaGs": 126600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa de datos"
+    },
+    {
+     "code": "302111016901",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de datos FDW",
+     "costo": 17.65,
+     "ventaGs": 190000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de alimentacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": "302111016601",
+     "disc": null,
+     "stock": null,
+     "desc": "Celular XIAOMI X6 PRO DUAL 512GB/12GB RAM 5G",
+     "costo": 7.06,
+     "ventaGs": 76000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de alimentacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022318001",
+     "disc": null,
+     "stock": null,
+     "desc": "Lampara CIS",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de lampara cis"
+    },
+    {
+     "code": "302111011601",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de placa de mecanismos",
+     "costo": 8,
+     "ventaGs": 86100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de duplex",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022176001",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de unidad de duplex",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Motor",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022230001",
+     "disc": null,
+     "stock": null,
+     "desc": "Cambio de correa de transferencia de imagen",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de motor"
+    },
+    {
+     "code": "301022320001",
+     "disc": null,
+     "stock": null,
+     "desc": "FM1-G964-000",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Bandejas",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022812001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de bandejas",
+     "costo": 11.76,
+     "ventaGs": 126600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pantum  BM 5100DW/FDW - IMPRESORA MULTIFUNCION",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022302001",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de rodillo de recolección del baypas",
+     "costo": 4.705882352941177,
+     "ventaGs": 50700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pantalla LCD",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022681001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Pantalla LCD",
+     "costo": 46.300000000000004,
+     "ventaGs": 498400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Conjunto de controlador de bandeja de papel múltiple",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022149001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Conjunto de Controlador",
+     "costo": 2.3529411764705883,
+     "ventaGs": 25300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Alimentación de papel",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022324001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Alimentacion de papel",
+     "costo": 8,
+     "ventaGs": 86100,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Rodillo de Recoleccion"
+    },
+    {
+     "code": "301022296001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Rodillo de Separacion",
+     "costo": 1.2999999999999998,
+     "ventaGs": 14000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "CIS",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022323001",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de Cis",
+     "costo": 3.5294117647058822,
+     "ventaGs": 38000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    },
+    {
+     "labor": "Mano de obra por cambio de Rodillo del ADF"
+    }
+   ]
+  },
+  {
+   "name": "Mano de obra por cambio de Rodillo del ADF",
+   "note": "",
+   "items": [
+    {
+     "code": "Cis del ADF",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Cis del ADF",
+     "costo": 39.79,
+     "ventaGs": 428300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pad Almohadilla de Separacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de Pad de Separacion",
+     "disc": null,
+     "stock": 93,
+     "desc": "Toner",
+     "costo": 37.0521,
+     "ventaGs": 398800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de toner"
+    },
+    {
+     "code": "301022234001",
+     "disc": null,
+     "stock": null,
+     "desc": "Varilla de soporte de escaneo (gris)",
+     "costo": 28.235294117647058,
+     "ventaGs": 303900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de cartucho color"
+    },
+    {
+     "code": "301022224001",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de Varilla de Soporte",
+     "costo": 12.941176470588236,
+     "ventaGs": 139300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Bandeja del sensor de transferencia",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022223001",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de Bandeja del Sensor",
+     "costo": 12.941176470588236,
+     "ventaGs": 139300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Bisagras",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022227001",
+     "disc": null,
+     "stock": null,
+     "desc": "Pantum P3300",
+     "costo": 22.35294117647059,
+     "ventaGs": 240600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": "301022229001",
+     "disc": null,
+     "stock": 0,
+     "desc": "DL-410",
+     "costo": 36.15,
+     "ventaGs": 389100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cilindro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022230001",
+     "disc": null,
+     "stock": null,
+     "desc": "Cambio de cilindro",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "TL-410X",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022320001",
+     "disc": null,
+     "stock": null,
+     "desc": "Rodillo de separación",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de separacion"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "Placa Principal",
+   "note": "",
+   "items": [
+    {
+     "code": "Placa de Fuente",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de placa de fuente",
+     "costo": 29.1707,
+     "ventaGs": 314000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RC2-3367-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022060001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa DC",
+     "costo": 3.5294117647058822,
+     "ventaGs": 38000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de placa DC"
+    },
+    {
+     "code": "301022062001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de módulo wlan",
+     "costo": 2.3529411764705883,
+     "ventaGs": 25300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "rl1-2593-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022370001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de Fusor 220V",
+     "costo": 10.588235294117647,
+     "ventaGs": 114000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de Laser",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022782001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de unidad laser",
+     "costo": 24.705882352941178,
+     "ventaGs": 265900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillos de recolección",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022084001",
+     "disc": null,
+     "stock": null,
+     "desc": "Cambio de rodillos de recoleccion",
+     "costo": 18.823529411764707,
+     "ventaGs": 202600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pantum P2509",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022090001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 18.823529411764707,
+     "ventaGs": 202600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "PD-219",
+   "note": "",
+   "items": [
+    {
+     "code": "Cartucho",
+     "disc": null,
+     "stock": 149,
+     "desc": "Unidad de recoleccion",
+     "costo": 70.0805,
+     "ventaGs": 754300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de recoleccion"
+    },
+    {
+     "code": "Placa de control",
+     "disc": null,
+     "stock": 165,
+     "desc": "Cambio de la placa de control",
+     "costo": 70.3519,
+     "ventaGs": 757300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de datos",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de la placa de datos",
+     "disc": null,
+     "stock": 167,
+     "desc": "Fuente de alimentacion de alto voltaje",
+     "costo": 70.3533,
+     "ventaGs": 757300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de fuente de alimentacion de alto voltaje"
+    },
+    {
+     "code": "Pantum CM2200FDW",
+     "disc": null,
+     "stock": 164,
+     "desc": "CTL-2000HK",
+     "costo": 70.3221,
+     "ventaGs": 756900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Toner Cartridge Black - 3.500 Pages",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022090001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 18.823529411764707,
+     "ventaGs": 202600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Multiseñsor del cabeza"
+    },
+    {
+     "code": "303020133401",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de toner Black",
+     "costo": 227.05882352941177,
+     "ventaGs": 2444100,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa principal"
+    },
+    {
+     "code": "301022224001",
+     "disc": null,
+     "stock": null,
+     "desc": "CTL-2000HC",
+     "costo": 12.941176470588236,
+     "ventaGs": 139300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa Princ¡pal",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022321001",
+     "disc": null,
+     "stock": null,
+     "desc": "Toner Cartridge Cyan -3.500 Pages",
+     "costo": 3.5294117647058822,
+     "ventaGs": 38000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de toner Cyan"
+    },
+    {
+     "code": "303020133701",
+     "disc": null,
+     "stock": null,
+     "desc": "CTL-2000HM",
+     "costo": 189.41176470588235,
+     "ventaGs": 2038800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Toner Cartridge Magenta - 3.500 Pages",
+     "fixedGs": 80000
+    },
+    {
+     "code": "303020133901",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de toner Magenta",
+     "costo": 12.941176470588236,
+     "ventaGs": 139300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "CTL-2000HY",
+     "fixedGs": 80000
+    },
+    {
+     "code": "303020132701",
+     "disc": null,
+     "stock": null,
+     "desc": "FE2-E038-000",
+     "costo": 140,
+     "ventaGs": 1507000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Toner Cartridge Yellow - 3.500 Pages",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    },
+    {
+     "labor": "Mano de obra por cambio de toner Yellow"
+    }
+   ]
+  },
+  {
+   "name": "Mano de obra por cambio de toner Yellow",
+   "note": "",
+   "items": [
+    {
+     "code": "QM4-3246-000",
+     "disc": null,
+     "stock": 119,
+     "desc": "Unidad de cilindro",
+     "costo": 36.1663,
+     "ventaGs": 389300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cilindro"
+    },
+    {
+     "code": "Multiseñsor del cabeza",
+     "disc": null,
+     "stock": 0,
+     "desc": "Toner",
+     "costo": 42.0828,
+     "ventaGs": 453000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de toner"
+    },
+    {
+     "code": "301022090001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 18.823529411764707,
+     "ventaGs": 202600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Multiseñsor del cabeza"
+    },
+    {
+     "code": "302110029301",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de unidad laser",
+     "costo": 24.705882352941178,
+     "ventaGs": 265900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de Carro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "302110098301",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Unidad de Carro",
+     "costo": 28.235294117647058,
+     "ventaGs": 303900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de Carro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022372001",
+     "disc": null,
+     "stock": 0,
+     "desc": "QM7-3984-000",
+     "costo": 18.823529411764707,
+     "ventaGs": 202600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa Princ¡pal",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022285001",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de Placa Princ¡pal",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pantum  BP 5100DW/FDW - IMPRESORA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022425001",
+     "disc": null,
+     "stock": 0,
+     "desc": "RM1-4445-000",
+     "costo": 41.1764705882353,
+     "ventaGs": 443200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "DL-5120",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022233001",
+     "disc": null,
+     "stock": null,
+     "desc": "TL-5120x",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cunidad de fusor"
+    },
+    {
+     "code": "301022057001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de datos DW",
+     "costo": 7.0588235294117645,
+     "ventaGs": 76000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa de datos"
+    },
+    {
+     "code": "302111010701",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de datos FDW",
+     "costo": 5.882352941176471,
+     "ventaGs": 63300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de alimentacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022318001",
+     "disc": null,
+     "stock": null,
+     "desc": "Lampara CIS",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de lampara cis"
+    },
+    {
+     "code": "302111011601",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de placa de mecanismos",
+     "costo": 8,
+     "ventaGs": 86100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de duplex",
+     "fixedGs": 80000
+    },
+    {
+     "code": "302111000201",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de unidad de duplex",
+     "costo": 3.5294117647058822,
+     "ventaGs": 38000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Motor",
+     "fixedGs": 80000
+    },
+    {
+     "code": "302110031901",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de correa de transferencia de imagen",
+     "costo": 2.3529411764705883,
+     "ventaGs": 25300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de motor"
+    },
+    {
+     "code": "301022302001",
+     "disc": null,
+     "stock": null,
+     "desc": "FM1-G964-000",
+     "costo": 4.705882352941177,
+     "ventaGs": 50700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Bandejas",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022684001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de bandejas",
+     "costo": 12.941176470588236,
+     "ventaGs": 139300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pantum  BM 5100DW/FDW - IMPRESORA MULTIFUNCION",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022151001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de rodillo de recolección del baypas",
+     "costo": 2.3529411764705883,
+     "ventaGs": 25300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pantalla LCD",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022681001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Pantalla LCD",
+     "costo": 46.300000000000004,
+     "ventaGs": 498400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Conjunto de controlador de bandeja de papel múltiple",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022062001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Conjunto de Controlador",
+     "costo": 2.3529411764705883,
+     "ventaGs": 25300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Alimentación de papel",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022324001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Alimentacion de papel",
+     "costo": 8,
+     "ventaGs": 86100,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Rodillo de Recoleccion"
+    },
+    {
+     "code": "301022066001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Rodillo de Separacion",
+     "costo": 3.5294117647058822,
+     "ventaGs": 38000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "CIS",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022669001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Cis",
+     "costo": 3.5294117647058822,
+     "ventaGs": 38000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "SWITCH TP-LINK 24P 10/100/1000",
+   "note": "",
+   "items": [
+    {
+     "code": "6936358006958",
+     "disc": null,
+     "stock": null,
+     "desc": "Unidad de cilindro",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cilindro"
+    },
+    {
+     "code": "TL-WR840N",
+     "disc": null,
+     "stock": 93,
+     "desc": "Toner",
+     "costo": 37.0521,
+     "ventaGs": 398800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de toner"
+    },
+    {
+     "code": "301022227001",
+     "disc": null,
+     "stock": null,
+     "desc": "Unidad de fusor",
+     "costo": 22.35294117647059,
+     "ventaGs": 240600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Multiseñsor del cabeza"
+    },
+    {
+     "code": "301022308001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de unidad laser",
+     "costo": 32.94117647058824,
+     "ventaGs": 354600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de Carro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022223001",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de Unidad de Carro",
+     "costo": 12.941176470588236,
+     "ventaGs": 139300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de Carro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022494001",
+     "disc": null,
+     "stock": null,
+     "desc": "QM7-3984-000",
+     "costo": 11.764705882352942,
+     "ventaGs": 126600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa Princ¡pal",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301020086001",
+     "disc": null,
+     "stock": 0,
+     "desc": "TRANSPORTE",
+     "costo": 11.78,
+     "ventaGs": 126800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pantum  BP 5100DW/FDW - IMPRESORA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "31022233001",
+     "disc": null,
+     "stock": null,
+     "desc": "TL-5120x",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cunidad de fusor"
+    },
+    {
+     "code": "301022163001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de datos DW",
+     "costo": 11.76,
+     "ventaGs": 126600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa de datos"
+    },
+    {
+     "code": "302111010701",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de datos FDW",
+     "costo": 5.882352941176471,
+     "ventaGs": 63300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de alimentacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301020086001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Lampara CIS",
+     "costo": 11.78,
+     "ventaGs": 126800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de lampara cis"
+    },
+    {
+     "code": "301022230001",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de unidad de duplex",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Motor",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022230001",
+     "disc": null,
+     "stock": null,
+     "desc": "Cambio de correa de transferencia de imagen",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de motor"
+    },
+    {
+     "code": "301022320001",
+     "disc": null,
+     "stock": null,
+     "desc": "FM1-G964-000",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Bandejas",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022302001",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de rodillo de recolección del baypas",
+     "costo": 4.705882352941177,
+     "ventaGs": 50700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pantalla LCD",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022681001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Pantalla LCD",
+     "costo": 46.300000000000004,
+     "ventaGs": 498400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Conjunto de controlador de bandeja de papel múltiple",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022239001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Conjunto de Controlador",
+     "costo": 2.35,
+     "ventaGs": 25300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Alimentación de papel",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301020128001",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Rodillo de Separacion",
+     "costo": 3.35,
+     "ventaGs": 36100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "CIS",
+     "fixedGs": 80000
+    },
+    {
+     "code": "301022323001",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de Cis",
+     "costo": 3.5294117647058822,
+     "ventaGs": 38000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  }
+ ],
+ "id": "pantum"
+}

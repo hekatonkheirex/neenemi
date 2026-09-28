@@ -1,0 +1,2398 @@
+{
+ "name": "iRADV C",
+ "tc": 5980,
+ "factor": 1.8,
+ "models": [
+  {
+   "name": "iR 2018/2020/2022",
+   "note": "EQUIPO y PARTES DISCONTINUADO - JUN 2017",
+   "items": [
+    {
+     "code": "2186C003AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cilindro negro",
+     "costo": 129.82,
+     "ventaGs": 1397400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cilindro negro"
+    },
+    {
+     "code": "2187C003AA",
+     "disc": null,
+     "stock": 3,
+     "desc": "Cilindro color -",
+     "costo": 208.4025,
+     "ventaGs": 2243200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "cyan",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de cilindro color",
+     "disc": null,
+     "stock": 5,
+     "desc": "2188C003AA",
+     "costo": 210.9433,
+     "ventaGs": 2270600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "cyan",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cilindro color -",
+     "disc": null,
+     "stock": 10,
+     "desc": "magenta",
+     "costo": 185.6387,
+     "ventaGs": 1998200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "cyan",
+     "fixedGs": 80000
+    },
+    {
+     "code": "2189C003AA",
+     "disc": null,
+     "stock": 38,
+     "desc": "Cilindro color -",
+     "costo": 53.9305,
+     "ventaGs": 580500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "yellow",
+     "fixedGs": 80000
+    },
+    {
+     "code": "2182C003BA",
+     "disc": null,
+     "stock": 58,
+     "desc": "Toner negro",
+     "costo": 111.4334,
+     "ventaGs": 1199500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de toner negro"
+    },
+    {
+     "code": "2183C003AB",
+     "disc": null,
+     "stock": 61,
+     "desc": "Toner color  -",
+     "costo": 111.7921,
+     "ventaGs": 1203300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de toner negro"
+    },
+    {
+     "code": "cyan",
+     "disc": null,
+     "stock": 58,
+     "desc": "Mano de obra por cambio de toner color",
+     "costo": 111.801,
+     "ventaGs": 1203400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de toner negro"
+    },
+    {
+     "code": "DJI MINI 4 PRO FLY MORE COMBO PLUS RC2 GL",
+     "disc": null,
+     "stock": 4,
+     "desc": "Botella de toner residual",
+     "costo": 19.1225,
+     "ventaGs": 205800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Toner color  -",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Rodillo de transferencia secundaria",
+     "disc": null,
+     "stock": 21,
+     "desc": "magenta",
+     "costo": 36.9395,
+     "ventaGs": 397600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "2185C003AB",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Toner color  -",
+     "disc": null,
+     "stock": 11,
+     "desc": "yellow",
+     "costo": 5.6829,
+     "ventaGs": 61200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM0-0015-020",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de botella de toner residual",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de recoleccion del ADF",
+     "costo": 30.638888888888886,
+     "ventaGs": 329800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de recoleccion del ADF"
+    },
+    {
+     "code": "FL0-2885-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "FM1-L782-010",
+     "costo": 24.4319,
+     "ventaGs": 263000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de recoleccion"
+    },
+    {
+     "code": "FL0-4002-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de rodillo de separacion del ADF",
+     "costo": 22.3535,
+     "ventaGs": 240600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de recoleccion"
+    },
+    {
+     "code": "FL0-1674-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de unidad de rodillo de separacion del ADF",
+     "costo": 23.3503,
+     "ventaGs": 251300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de recoleccion"
+    },
+    {
+     "code": "FM1-Z352-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de ITB",
+     "costo": 296.39,
+     "ventaGs": 3190300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FE2-A308-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Rodillo de transferencia secundaria",
+     "disc": null,
+     "stock": 21,
+     "desc": "Kit de mantenimiento del ADF",
+     "costo": 36.9395,
+     "ventaGs": 397600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de mantenimiento del ADF"
+    },
+    {
+     "code": "Mano de obra por cambio de rodillo de transferencia secundaria",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora DC",
+     "costo": 235.3274,
+     "ventaGs": 2533100,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora DC"
+    },
+    {
+     "code": "Rodillo de Alimentacion del Cassette",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de recolección del Cassette",
+     "costo": 392.1888888888889,
+     "ventaGs": 4221500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de recolección de papel",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de u nidad de ITB",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 1157.4055555555556,
+     "ventaGs": 12458300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora principal"
+    },
+    {
+     "code": "FM1-P720-030",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM2-A889-000",
+     "costo": 381.1722222222222,
+     "ventaGs": 4102900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa de fuente de alimentacion"
+    },
+    {
+     "code": "FK4-1550-010",
+     "disc": null,
+     "stock": 4,
+     "desc": "Unidad de disco duro",
+     "costo": 300.886,
+     "ventaGs": 3238700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de disco duro"
+    },
+    {
+     "code": "FM1-R726-020",
+     "disc": null,
+     "stock": 1,
+     "desc": "Placa de Alta Tension",
+     "costo": 215.73,
+     "ventaGs": 2322100,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de fusor"
+    },
+    {
+     "code": "Mano de obra por cambio de placa de alta tensión",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-R757-000",
+     "costo": 169.70555555555558,
+     "ventaGs": 1826700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de fusor"
+    },
+    {
+     "code": "FM1-P022-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de fuente de alimentación",
+     "costo": 130.31,
+     "ventaGs": 1402700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de pelicula de fusor"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "EQUIPO y PARTES DISCONTINUADO - JUNIO 2018",
+   "note": "MF 746Cx",
+   "items": [
+    {
+     "code": "8528B004AA",
+     "disc": null,
+     "stock": 40,
+     "desc": "Cilindro negro",
+     "costo": 128.8763,
+     "ventaGs": 1387200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FK4-1550-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "8528B004AA",
+     "disc": null,
+     "stock": 40,
+     "desc": "Unidad de fusor 220volts",
+     "costo": 128.8763,
+     "ventaGs": 1387200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-R726-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-A605-020",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor 110volts",
+     "costo": 400.2814,
+     "ventaGs": 4308600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-C340-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FB1-8776-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Unidad de fusor",
+     "costo": 261.7629,
+     "ventaGs": 2817600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": "EX248K",
+     "disc": null,
+     "stock": 4,
+     "desc": "Cambio de cilindro negro",
+     "costo": 396.715,
+     "ventaGs": 4270200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cilindro Color",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-B264-030",
+     "disc": null,
+     "stock": 2,
+     "desc": "Cambio de cilindro color",
+     "costo": 376.9557,
+     "ventaGs": 4057600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cilindro Color",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-B266-030",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de transporte de imagen",
+     "costo": 379.9729,
+     "ventaGs": 4090000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cilindro Color",
+     "fixedGs": 80000
+    },
+    {
+     "code": "EPDU2016M",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de unidad de transporte de imagen",
+     "costo": 402.38,
+     "ventaGs": 4331200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cilindro Color",
+     "fixedGs": 80000
+    },
+    {
+     "code": "DISCO DURO IR-ADV 400i/500i",
+     "disc": null,
+     "stock": 0,
+     "desc": "Botella de toner residual",
+     "costo": 28.5386,
+     "ventaGs": 307200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-D277-040",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FL0-2885-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo de alimentacion",
+     "costo": 24.4319,
+     "ventaGs": 263000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de alimentacion"
+    },
+    {
+     "code": "FL0-1674-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de separacion",
+     "costo": 23.3503,
+     "ventaGs": 251300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de separacion"
+    },
+    {
+     "code": "FL0-4002-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de recoleccion",
+     "costo": 22.3535,
+     "ventaGs": 240600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de recoleccion"
+    },
+    {
+     "code": "Unidad de revelado - Black",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de Presion",
+     "costo": 42.3775,
+     "ventaGs": 456200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de presion"
+    },
+    {
+     "code": "Cambio de unidad de revelado",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de revelado - yellow",
+     "costo": 33.96,
+     "ventaGs": 365500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de revelado - cyan",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Unidad de revelado - magenta",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de fuente de alimentación",
+     "costo": 474.01666666666665,
+     "ventaGs": 5102300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de placa de fuente de alimentacion"
+    },
+    {
+     "code": "Cambio de botella de toner residual",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 1172.9444444444446,
+     "ventaGs": 12625600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-K441-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-J766-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora DC",
+     "costo": 306.12777777777774,
+     "ventaGs": 3295200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pad de ADF / Almohadilla de Separacion",
+     "fixedGs": 80000
+    },
+    {
+     "labor": "Cambio de Pad de ADF"
+    }
+   ]
+  },
+  {
+   "name": "EQUIPO y PARTES DISCONTINUADO - DICIEMBRE 2024",
+   "note": "LBP 7780cx - Dic 2023",
+   "items": [
+    {
+     "code": "FM1-P668-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Unidad de cilindro negro",
+     "costo": 704.9629,
+     "ventaGs": 7588200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-P668-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Unidad de cilindro cyan",
+     "costo": 704.9629,
+     "ventaGs": 7588200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-P535-000",
+     "disc": null,
+     "stock": 34,
+     "desc": "Unidad de cilindro magenta",
+     "costo": 198.6136,
+     "ventaGs": 2137900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Cambio de placa controladora principal",
+     "disc": null,
+     "stock": 27,
+     "desc": "FM1-X932-000",
+     "costo": 197.9289,
+     "ventaGs": 2130500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Cambio de placa controladora DC",
+     "disc": null,
+     "stock": 21,
+     "desc": "Toner negro",
+     "costo": 107.4786,
+     "ventaGs": 1156900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Mantenimiento correctivo",
+     "disc": null,
+     "stock": 52,
+     "desc": "Toner Cyan",
+     "costo": 178.5823,
+     "ventaGs": 1922300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "0488c003ba",
+     "disc": null,
+     "stock": 34,
+     "desc": "Toner magenta",
+     "costo": 198.6136,
+     "ventaGs": 2137900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "0483C003AA",
+     "disc": null,
+     "stock": 14,
+     "desc": "Toner amarillo",
+     "costo": 107.5072,
+     "ventaGs": 1157200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "0484C003AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de revelado negro",
+     "costo": 442.82,
+     "ventaGs": 4766500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Unidad de cilindro yellow",
+     "disc": null,
+     "stock": 0,
+     "desc": "0481c003aa",
+     "costo": 442.82,
+     "ventaGs": 4766500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "0482c003aa",
+     "disc": null,
+     "stock": 0,
+     "desc": "0483c003aa",
+     "costo": 597.52,
+     "ventaGs": 6431700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "0487c003aa",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-N373-000",
+     "costo": 597.52,
+     "ventaGs": 6431700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-N370-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 1500.4222222222222,
+     "ventaGs": 16150500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Unidad de revelado color -",
+     "disc": null,
+     "stock": 2,
+     "desc": "YELLOW",
+     "costo": 346.635,
+     "ventaGs": 3731200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-N371-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de revelado color -",
+     "costo": 1092.08,
+     "ventaGs": 11755100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "MAGENTA",
+     "disc": null,
+     "stock": 1,
+     "desc": "FM1-N372-000",
+     "costo": 234.885,
+     "ventaGs": 2528300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Unidad de revelado color -",
+     "disc": null,
+     "stock": 1,
+     "desc": "CYAN",
+     "costo": 16.4417,
+     "ventaGs": 177000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-W952-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 920.9200000000001,
+     "ventaGs": 9912800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-G637-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Placa de fuente de alimenacion",
+     "costo": 177.9014,
+     "ventaGs": 1914900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FL0-1674-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-V522-000",
+     "costo": 23.3503,
+     "ventaGs": 251300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FL0-4002-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de alto voltaje",
+     "costo": 22.3535,
+     "ventaGs": 240600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "DISCO DURO IR-ADV 400i/500i",
+     "disc": null,
+     "stock": 0,
+     "desc": "Recipiente de toner residual",
+     "costo": 28.5386,
+     "ventaGs": 307200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo y cambio de partes",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "Correa de transporte de imagen",
+   "note": "",
+   "items": [
+    {
+     "code": "8528B004AA",
+     "disc": null,
+     "stock": 40,
+     "desc": "Unidad de cilindro negro",
+     "costo": 128.8763,
+     "ventaGs": 1387200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "8528B004AA",
+     "disc": null,
+     "stock": 40,
+     "desc": "Unidad de cilindro cyan",
+     "costo": 128.8763,
+     "ventaGs": 1387200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "8528B004AA",
+     "disc": null,
+     "stock": 40,
+     "desc": "Unidad de cilindro magenta",
+     "costo": 128.8763,
+     "ventaGs": 1387200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "8528B004AA",
+     "disc": null,
+     "stock": 40,
+     "desc": "FM1-X932-000",
+     "costo": 128.8763,
+     "ventaGs": 1387200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "5753C003AA",
+     "disc": null,
+     "stock": 21,
+     "desc": "Toner negro",
+     "costo": 61.5111,
+     "ventaGs": 662100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "5754C003AA",
+     "disc": null,
+     "stock": 16,
+     "desc": "Toner Cyan",
+     "costo": 123.0618,
+     "ventaGs": 1324600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "5755C003AA",
+     "disc": null,
+     "stock": 16,
+     "desc": "Toner magenta",
+     "costo": 123.0618,
+     "ventaGs": 1324600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "5756C003AA",
+     "disc": null,
+     "stock": 16,
+     "desc": "Toner amarillo",
+     "costo": 123.0618,
+     "ventaGs": 1324600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM2-G092-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de revelado negro",
+     "costo": 381.05,
+     "ventaGs": 4101600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM2-G089-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "0481c003aa",
+     "costo": 347.47,
+     "ventaGs": 3740200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM2-G090-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "0483c003aa",
+     "costo": 381.05,
+     "ventaGs": 4101600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM2-G091-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-N373-000",
+     "costo": 381.05,
+     "ventaGs": 4101600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "HP 5y Onsite TRV NB Supp",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 2379.17,
+     "ventaGs": 25609400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "U87CGE",
+     "disc": null,
+     "stock": 0,
+     "desc": "YELLOW",
+     "costo": 1055.02,
+     "ventaGs": 11356200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM2-A008-010",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de revelado color -",
+     "costo": 338.2111111111111,
+     "ventaGs": 3640500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM2-H258-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-N372-000",
+     "costo": 601.8833333333333,
+     "ventaGs": 6478700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "U. REVELADORA MAG IR ADV C3025/C3125/C3325/C3525",
+     "disc": null,
+     "stock": 2,
+     "desc": "CYAN",
+     "costo": 38.2536,
+     "ventaGs": 411800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "HP 5y One Battery ONSITE Replacement",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 735.97,
+     "ventaGs": 7922000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "RODILLO DE RECOLECCION C3025/C250/350 C5535/40/50",
+     "disc": null,
+     "stock": 37,
+     "desc": "Placa de fuente de alimenacion",
+     "costo": 20.54,
+     "ventaGs": 221100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "RODILLO DE RECOLECCION C3025/C250/350 C5535/40/50",
+     "disc": null,
+     "stock": 37,
+     "desc": "FM1-V522-000",
+     "costo": 20.54,
+     "ventaGs": 221100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "ROLLER, FIXING IMAGE PRESS C1",
+     "disc": null,
+     "stock": 27,
+     "desc": "Placa de alto voltaje",
+     "costo": 21.0712,
+     "ventaGs": 226800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-A606-050",
+     "disc": null,
+     "stock": 0,
+     "desc": "Recipiente de toner residual",
+     "costo": 24.47,
+     "ventaGs": 263400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "COVER, BASE, LOWER / IR ADVANCE C2030",
+     "disc": null,
+     "stock": 30,
+     "desc": "Rodillo de alimentacion",
+     "costo": 21.075,
+     "ventaGs": 226900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo y cambio de partes",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "EQUIPO y PARTES DISCONTINUADO - DIC 2021",
+   "note": "EQUIPO y PARTES DISCONTINUADO - Dic 2022",
+   "items": [
+    {
+     "code": "8520B003AA",
+     "disc": null,
+     "stock": 16,
+     "desc": "Unidad de cilindro negro",
+     "costo": 116.261,
+     "ventaGs": 1251400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de cilindro negro"
+    },
+    {
+     "code": "8521B003AA",
+     "disc": null,
+     "stock": 7,
+     "desc": "FM4-7246-010",
+     "costo": 171.2844,
+     "ventaGs": 1843700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de cilindro cyan"
+    },
+    {
+     "code": "8522B003AA",
+     "disc": null,
+     "stock": 10,
+     "desc": "Unidad de cilindro magenta",
+     "costo": 158.4426,
+     "ventaGs": 1705500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de cilindro magenta"
+    },
+    {
+     "code": "8523B003AA",
+     "disc": null,
+     "stock": 10,
+     "desc": "Cuchilla de limpieza del itb",
+     "costo": 160.9645,
+     "ventaGs": 1732600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de cilindro amarillo"
+    },
+    {
+     "code": "FM1-R726-020",
+     "disc": null,
+     "stock": 1,
+     "desc": "Unidad de fusor",
+     "costo": 215.73,
+     "ventaGs": 2322100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": "FM1-Z352-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de rodillo de presion",
+     "costo": 296.39,
+     "ventaGs": 3190300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillos de separacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FK4-1550-010",
+     "disc": null,
+     "stock": 4,
+     "desc": "Unidad de disco duro",
+     "costo": 300.886,
+     "ventaGs": 3238700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillos de recoleccion",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Placa controladora principal",
+     "fixedGs": 0
+    },
+    {
+     "code": null,
+     "desc": "FM1-K441-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-A606",
+     "disc": null,
+     "stock": 1,
+     "desc": "iRADV C3935i",
+     "costo": 320.01,
+     "ventaGs": 3444600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de placa de fuente de alimentacion"
+    },
+    {
+     "code": "FL0-1011-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de cilindro Cyan",
+     "costo": 19.94,
+     "ventaGs": 214600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de separacion"
+    },
+    {
+     "code": "FL0-1011-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de cilindro Amarillo",
+     "costo": 19.94,
+     "ventaGs": 214600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de separacion"
+    },
+    {
+     "code": "FM1-Z352",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-A153-030",
+     "costo": 1.5246,
+     "ventaGs": 16400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de separacion"
+    },
+    {
+     "code": "FL0-2885-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo de Alimentacion",
+     "costo": 24.4319,
+     "ventaGs": 263000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Correa de transferencia de imagen",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FL0-4002-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de correa de transferencia de imagen",
+     "costo": 22.3535,
+     "ventaGs": 240600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de disco duro"
+    },
+    {
+     "code": "FL0-1674-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-G964-000",
+     "costo": 23.3503,
+     "ventaGs": 251300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM0-0053-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Placa de fuente de alimentacion",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de separacion 1",
+     "costo": 24.3827,
+     "ventaGs": 262500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de separacion 2",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-R730-020",
+     "disc": null,
+     "stock": 10,
+     "desc": "FU2-0578-000",
+     "costo": 119.2543,
+     "ventaGs": 1283700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de separacion 3",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-K198-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Cambio de rodillo de Rodillo de Alimentacion",
+     "costo": 63.1644,
+     "ventaGs": 679900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de Recoleccion",
+     "fixedGs": 80000
+    },
+    {
+     "code": "8516B003AA",
+     "disc": null,
+     "stock": 25,
+     "desc": "Toner negro",
+     "costo": 41.9191,
+     "ventaGs": 451200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de toner negro"
+    },
+    {
+     "code": "8517B003AA",
+     "disc": null,
+     "stock": 56,
+     "desc": "Toner Cyan",
+     "costo": 124.4882,
+     "ventaGs": 1340000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de toner cyan"
+    },
+    {
+     "code": "8518B003AA",
+     "disc": null,
+     "stock": 63,
+     "desc": "Toner magenta",
+     "costo": 123.6309,
+     "ventaGs": 1330800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de toner magenta"
+    },
+    {
+     "code": "8519B003AA",
+     "disc": null,
+     "stock": 66,
+     "desc": "Toner amarillo",
+     "costo": 123.9541,
+     "ventaGs": 1334200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de toner amarillo"
+    },
+    {
+     "code": "FM1-Z352-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "HP 5y Priority Managemt PC 5K + seats SVC",
+     "costo": 296.39,
+     "ventaGs": 3190300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "U85C5E",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo y cambio de partes",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "EQUIPO y PARTES DISCONTINUADO - JUNIO 2026",
+   "note": "iRADV 4545 - JUNIO 2026",
+   "items": [
+    {
+     "code": "8528B004AA",
+     "disc": null,
+     "stock": 40,
+     "desc": "Unidad de cilindro",
+     "costo": 128.8763,
+     "ventaGs": 1387200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Cambio de rodillo de Rodillo de Recoleccion",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 255.95555555555558,
+     "ventaGs": 2755100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-B267-030",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de Separacion",
+     "costo": 368.435,
+     "ventaGs": 3965800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-B264-030",
+     "disc": null,
+     "stock": 2,
+     "desc": "Cambio de rodillo de Rodillo de Separacion",
+     "costo": 376.9557,
+     "ventaGs": 4057600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-B265-030",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de revelado magenta",
+     "costo": 386.522,
+     "ventaGs": 4160500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-B266-030",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de revelado cyan",
+     "costo": 379.9729,
+     "ventaGs": 4090000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-N265-010",
+     "disc": null,
+     "stock": 0,
+     "desc": "Recipiente de toner residual",
+     "costo": 26.505555555555556,
+     "ventaGs": 285300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FL0-1674-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "xxx - xxx -xxx",
+     "costo": 23.3503,
+     "ventaGs": 251300,
+     "vida": null
+    },
+    {
+     "code": "FM1-A606-040",
+     "disc": null,
+     "stock": null,
+     "desc": "Mano de obra por cambio de",
+     "costo": 24.35,
+     "ventaGs": 262100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FE3-4783-000",
+     "disc": null,
+     "stock": null,
+     "desc": "Rodillo externo de transferencia secundaria",
+     "costo": 73.25,
+     "ventaGs": 788500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FL0-2885-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo de alimentacion",
+     "costo": 24.4319,
+     "ventaGs": 263000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FL0-4002-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de correa de transferencia de imagen",
+     "costo": 22.3535,
+     "ventaGs": 240600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FL0-1674-000",
+     "disc": null,
+     "stock": null,
+     "desc": "Rodillo de separacion",
+     "costo": 23.3503,
+     "ventaGs": 251300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM4-9866-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Kit de Rolillo ADF",
+     "costo": 7.49,
+     "ventaGs": 80600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-A605-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de rodillo de Kit de Rodillo ADF",
+     "costo": 358.17,
+     "ventaGs": 3855300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Pelicula con Resistencia 220V",
+     "disc": null,
+     "stock": 0,
+     "desc": "Almohadilla de Bandeja Lateral",
+     "costo": 1420.8944444444444,
+     "ventaGs": 15294500,
+     "vida": null
+    },
+    {
+     "code": "FM1-P545-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de Separacion del Cassette",
+     "costo": 534.1722222222222,
+     "ventaGs": 5749800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Cambio de rodillo de Pelicila Con Resistencia",
+     "disc": null,
+     "stock": 1,
+     "desc": "LBP215x",
+     "costo": 424.71,
+     "ventaGs": 4571600,
+     "vida": null
+    },
+    {
+     "code": "FM1-P544-000",
+     "disc": null,
+     "stock": null,
+     "desc": "Bandeja de Entrada",
+     "costo": 373.82,
+     "ventaGs": 4023800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FE3-4783-000",
+     "disc": null,
+     "stock": null,
+     "desc": "Rodillo externo de transferencia secundaria",
+     "costo": 73.25,
+     "ventaGs": 788500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "4Y8-3044-030",
+     "disc": null,
+     "stock": null,
+     "desc": "Rodillo de Bandeja Lateral",
+     "costo": 79.5858,
+     "ventaGs": 856700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "labor": "Cambio de Pad de ADF"
+    }
+   ]
+  },
+  {
+   "name": "Kit de Rodillo de Presion Org.",
+   "note": "iR ADV 6555 / 65 / 75 - JUNIO 2027",
+   "items": [
+    {
+     "code": "2186C003AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de cilindro negro",
+     "costo": 129.82,
+     "ventaGs": 1397400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "2187C003AA",
+     "disc": null,
+     "stock": 3,
+     "desc": "Unidad de cilindro cyan",
+     "costo": 208.4025,
+     "ventaGs": 2243200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Cilindro color -",
+     "disc": null,
+     "stock": 10,
+     "desc": "Cambio de rodillo de Kit de Rodillo de Presion Org",
+     "costo": 185.6387,
+     "ventaGs": 1998200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Mano de obra por cambio de cilindro color",
+     "disc": null,
+     "stock": 5,
+     "desc": "Unidad de cilindro magenta",
+     "costo": 210.9433,
+     "ventaGs": 2270600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-R727-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 224.03333333333333,
+     "ventaGs": 2411500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-N252-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-D277",
+     "costo": 288.82,
+     "ventaGs": 3108900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Toner color  -",
+     "disc": null,
+     "stock": 11,
+     "desc": "yellow",
+     "costo": 5.6829,
+     "ventaGs": 61200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Rodillo de transferencia secundaria",
+     "disc": null,
+     "stock": 21,
+     "desc": "Unidad de revelado BK",
+     "costo": 36.9395,
+     "ventaGs": 397600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FL0-2885-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo de alimentacion",
+     "costo": 24.4319,
+     "ventaGs": 263000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FL0-4002-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de recoleccion",
+     "costo": 22.3535,
+     "ventaGs": 240600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FL0-1674-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de separacion",
+     "costo": 23.3503,
+     "ventaGs": 251300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FK4-1550-010",
+     "disc": null,
+     "stock": 4,
+     "desc": "Unidad de disco duro",
+     "costo": 300.886,
+     "ventaGs": 3238700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "2184C003AB",
+     "disc": null,
+     "stock": 0,
+     "desc": "Recipiente de toner residual",
+     "costo": 17.49,
+     "ventaGs": 188300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Mano de obra por cambio de u nidad de ITB",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 1157.4055555555556,
+     "ventaGs": 12458300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM1-P720-030",
+     "disc": null,
+     "stock": 0,
+     "desc": "iRADV C3935i",
+     "costo": 381.1722222222222,
+     "ventaGs": 4102900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 350000
+    },
+    {
+     "labor": "Cambio de Pad de ADF"
+    }
+   ]
+  },
+  {
+   "name": "TINTA PFI-107 (BK) /IPF-680/IPF-780",
+   "note": "EQUIPO y PARTES DISCONTINUADO",
+   "items": [
+    {
+     "code": "0475C003AA",
+     "disc": null,
+     "stock": 13,
+     "desc": "Unidad de revelado yellow",
+     "costo": 333.2964,
+     "ventaGs": 3587600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FL3-6313-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "0473C003AA",
+     "disc": null,
+     "stock": 27,
+     "desc": "Unidad de bisagras",
+     "costo": 69.215,
+     "ventaGs": 745000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Banda de trasferencia de imagen",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FE8-2935-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-G728-000",
+     "costo": 30.4,
+     "ventaGs": 327200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-C281-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "iRADV C355iF",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad e cilindro amarillo",
+     "costo": 3.8808,
+     "ventaGs": 41800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Banda de transferencia de imagen",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM3-9287-010",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de rodillo de entrega del -ADF",
+     "costo": 7.81,
+     "ventaGs": 84100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de cilindro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de unidad de cilindro",
+     "disc": null,
+     "stock": 0,
+     "desc": "Tóner",
+     "costo": 464.38,
+     "ventaGs": 4998600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de tóner"
+    },
+    {
+     "code": "FB6-3405-000",
+     "disc": null,
+     "stock": 13,
+     "desc": "Rodillo de transferencia",
+     "costo": 3.981,
+     "ventaGs": 42900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de transferencia"
+    },
+    {
+     "code": "FC0-9450-000",
+     "disc": null,
+     "stock": 40,
+     "desc": "Rodillo de alimentación del ADF",
+     "costo": 14.8644,
+     "ventaGs": 160000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FL3-1352",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Rodillo de recolección del baypas",
+     "disc": null,
+     "stock": 42,
+     "desc": "Mano de obra por cambio de rodillo de recolección del baypas",
+     "costo": 24.2059,
+     "ventaGs": 260600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Almohadilla de separación del baypas",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FK4-1550-010",
+     "disc": null,
+     "stock": 4,
+     "desc": "Mano de obra por cambio de almohadilla de separación del baypas",
+     "costo": 300.886,
+     "ventaGs": 3238700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-J023-020",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Unidad de fijación",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de unidad de fijación",
+     "costo": 1170.6555555555553,
+     "ventaGs": 12600900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de alimentación del cassette",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de rodillo de alimentación del cassette",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de rodillo de alimentación del Adf",
+     "costo": 5.8982,
+     "ventaGs": 63500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FL1-3120-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FC0-5080-000",
+     "disc": null,
+     "stock": 53,
+     "desc": "Rodillo del ADF",
+     "costo": 3.8533,
+     "ventaGs": 41500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo del ADF"
+    },
+    {
+     "code": "FM3-9276-040",
+     "disc": null,
+     "stock": 0,
+     "desc": "Disco Duro",
+     "costo": 13.455555555555554,
+     "ventaGs": 144800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de disco duro"
+    },
+    {
+     "code": "FC0-3078-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "4Y8-3113-000",
+     "costo": 18.372222222222224,
+     "ventaGs": 197800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa principal",
+     "fixedGs": 80000
+    },
+    {
+     "labor": "Mano de obra por cambio de placa principal"
+    }
+   ]
+  },
+  {
+   "name": "iRADV C356 - JUNIO 2026",
+   "note": "EQUIPO y PARTES DISCONTINUADO - JUNIO 2024",
+   "items": [
+    {
+     "code": "FM0-0862-010",
+     "disc": null,
+     "stock": 2,
+     "desc": "FM1-N372-000",
+     "costo": 418.235,
+     "ventaGs": 4501900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM4-6583-000",
+     "disc": null,
+     "stock": 4,
+     "desc": "CYAN",
+     "costo": 55.465,
+     "ventaGs": 597000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Cambio  de",
+     "disc": null,
+     "stock": 0,
+     "desc": "iR c3025/ c3125 / c3225",
+     "costo": 586.86,
+     "ventaGs": 6317000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM0-0353-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "DISCONTINUADO",
+     "costo": 392.7,
+     "ventaGs": 4227000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "CR-L1",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de revelado color -",
+     "costo": 31.349999999999998,
+     "ventaGs": 337500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "1500000 escaneos aprox.",
+     "disc": null,
+     "stock": 0,
+     "desc": "YELLOW",
+     "costo": 226.80555555555554,
+     "ventaGs": 2441300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM2-M625-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Recipiente de toner residual",
+     "costo": 18.6,
+     "ventaGs": 200200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FB6-3405-000",
+     "disc": null,
+     "stock": 13,
+     "desc": "Placa de alto voltaje",
+     "costo": 3.981,
+     "ventaGs": 42900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FL4-3743-000",
+     "disc": null,
+     "stock": 70,
+     "desc": "FM1-V522-000",
+     "costo": 5.4766,
+     "ventaGs": 59000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FC0-5080-000",
+     "disc": null,
+     "stock": 53,
+     "desc": "MF 226",
+     "costo": 3.8533,
+     "ventaGs": 41500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "3000000 escaneos aprox.",
+     "disc": null,
+     "stock": 0,
+     "desc": "Toner amarillo",
+     "costo": 190,
+     "ventaGs": 2045200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "500000 escaneos aprox.",
+     "disc": null,
+     "stock": 0,
+     "desc": "Toner Cyan",
+     "costo": 175,
+     "ventaGs": 1883700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "Reemplazar de acuerdo a necesidad",
+     "disc": null,
+     "stock": 0,
+     "desc": "Toner magenta",
+     "costo": 175,
+     "ventaGs": 1883700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "LLEVA 4 UNID",
+     "disc": null,
+     "stock": 0,
+     "desc": "Toner negro",
+     "costo": 160,
+     "ventaGs": 1722200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "CILINDRO GPR-39  (2773B004AA)",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad de cilindro cyan",
+     "costo": 143.2629,
+     "ventaGs": 1542100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "CILINDRO GPR-39  (2773B004AA)",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad de cilindro magenta",
+     "costo": 143.2629,
+     "ventaGs": 1542100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "PWR",
+     "disc": null,
+     "stock": 4,
+     "desc": "Unidad de cilindro negro",
+     "costo": 265.2014,
+     "ventaGs": 2854600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "CILINDRO GPR-39  (2773B004AA)",
+     "disc": null,
+     "stock": 2,
+     "desc": "FM1-X932-000",
+     "costo": 143.2629,
+     "ventaGs": 1542100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM0-0185-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 1007.3777777777777,
+     "ventaGs": 10843400,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "HINGE, READER MF229/MF244/MF249/MF4570",
+     "disc": null,
+     "stock": 5,
+     "desc": "discontinuado",
+     "costo": 426.93,
+     "ventaGs": 4595500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM2-A692-020",
+     "disc": null,
+     "stock": 1,
+     "desc": "FM1-N373-000",
+     "costo": 227.55,
+     "ventaGs": 2449300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "PELICULA DE FUSOR IR-1024IF",
+     "disc": null,
+     "stock": 0,
+     "desc": "0483c003aa",
+     "costo": 247.01,
+     "ventaGs": 2658800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM2-9044-010",
+     "disc": null,
+     "stock": 0,
+     "desc": "0481c003aa",
+     "costo": 239.01,
+     "ventaGs": 2572700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FM2-8916-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Unidad de revelado negro",
+     "costo": 268.36,
+     "ventaGs": 2888600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    },
+    {
+     "code": "FC0-2394-000",
+     "disc": null,
+     "stock": 12,
+     "desc": "Placa de fuente de alimenacion",
+     "costo": 39.7938,
+     "ventaGs": 428300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de"
+    }
+   ]
+  }
+ ],
+ "id": "iradv-c"
+}

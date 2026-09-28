@@ -1,0 +1,119 @@
+[
+ {
+  "id": "imagepressc750850",
+  "name": "ImagePressC750_850",
+  "file": "imagepressc750850.json",
+  "tc": 5980,
+  "factor": 1.8,
+  "models": 1,
+  "items": 19
+ },
+ {
+  "id": "imageforce-series",
+  "name": "imageFORCE series",
+  "file": "imageforce-series.json",
+  "tc": 5980,
+  "factor": 1.8,
+  "models": 4,
+  "items": 123
+ },
+ {
+  "id": "ir",
+  "name": "iR",
+  "file": "ir.json",
+  "tc": 6080,
+  "factor": 1.8,
+  "models": 11,
+  "items": 384
+ },
+ {
+  "id": "ir-c",
+  "name": "iR C",
+  "file": "ir-c.json",
+  "tc": 5980,
+  "factor": 1.8,
+  "models": 4,
+  "items": 207
+ },
+ {
+  "id": "iradv",
+  "name": "iRADV",
+  "file": "iradv.json",
+  "tc": 5980,
+  "factor": 1.8,
+  "models": 11,
+  "items": 372
+ },
+ {
+  "id": "iradv-c",
+  "name": "iRADV C",
+  "file": "iradv-c.json",
+  "tc": 5980,
+  "factor": 1.8,
+  "models": 9,
+  "items": 378
+ },
+ {
+  "id": "lbp",
+  "name": "LBP",
+  "file": "lbp.json",
+  "tc": 5980,
+  "factor": 1.8,
+  "models": 11,
+  "items": 234
+ },
+ {
+  "id": "mfimageclasssensys",
+  "name": "MF_ImageClass_SENSYS",
+  "file": "mfimageclasssensys.json",
+  "tc": 5980,
+  "factor": 1.8,
+  "models": 19,
+  "items": 467
+ },
+ {
+  "id": "maxify",
+  "name": "MAXIFY",
+  "file": "maxify.json",
+  "tc": 5980,
+  "factor": 1.8,
+  "models": 2,
+  "items": 44
+ },
+ {
+  "id": "ipf",
+  "name": "IPF",
+  "file": "ipf.json",
+  "tc": 5980,
+  "factor": 1.8,
+  "models": 4,
+  "items": 83
+ },
+ {
+  "id": "pantum",
+  "name": "Pantum",
+  "file": "pantum.json",
+  "tc": 5980,
+  "factor": 1.8,
+  "models": 7,
+  "items": 215
+ },
+ {
+  "id": "scanner",
+  "name": "Scanner",
+  "file": "scanner.json",
+  "tc": 5980,
+  "factor": 1.8,
+  "models": 10,
+  "items": 197
+ },
+ {
+  "id": "listado-pantum",
+  "name": "Listado Pantum",
+  "file": "listado-pantum.json",
+  "tc": 6350,
+  "factor": 1.8,
+  "models": 1,
+  "items": 4234
+ }
+]

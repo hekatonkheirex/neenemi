@@ -1,0 +1,1362 @@
+{
+ "name": "Scanner",
+ "tc": 5980,
+ "factor": 1.8,
+ "models": [
+  {
+   "name": "Placa de Principal",
+   "note": "",
+   "items": [
+    {
+     "code": "Placa de Alimentacion",
+     "disc": null,
+     "stock": 17,
+     "desc": "Kit de rodillos de recolección",
+     "costo": 70.9102,
+     "ventaGs": 763300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de rodillos de recoleccion"
+    },
+    {
+     "code": "Unidad de ADF",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de ADF",
+     "costo": 37.41111111111111,
+     "ventaGs": 402700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pad de separación del ADF",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de Pad de separación del ADF",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Cabezal de Impresión",
+     "costo": 47.370400000000004,
+     "ventaGs": 509900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Pantum  M 6550NW - IMPRESORA MULTIFUNCION",
+     "fixedGs": 80000
+    },
+    {
+     "code": "DR-S150",
+     "disc": null,
+     "stock": 0,
+     "desc": "5595C001AA",
+     "costo": 17.98888888888889,
+     "ventaGs": 193600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Kit de rodillos de intercambio",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de kit de rodillos de intercambio",
+     "disc": null,
+     "stock": 2,
+     "desc": "MG1-8328-020",
+     "costo": 48.4867,
+     "ventaGs": 521900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de lectura superior",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de unidad de lectura superior",
+     "disc": null,
+     "stock": 0,
+     "desc": "MG1-8329-000",
+     "costo": 123.5388,
+     "ventaGs": 1329800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de lectura inferior",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de unidad de lectura inferior",
+     "disc": null,
+     "stock": 0,
+     "desc": "MG1-5065-000",
+     "costo": 18.6032,
+     "ventaGs": 200200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Motor principal",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de motor principal",
+     "disc": null,
+     "stock": 3,
+     "desc": "Unidad de Fusor 220V",
+     "costo": 281.2733,
+     "ventaGs": 3027600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MG1-5039-040",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Adaptador AC",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de adaptador AC",
+     "costo": 46.477199999999996,
+     "ventaGs": 500300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "6F3-0079-020",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "MF 1127C - DICIEMBRE 2025",
+   "note": "MF735 CX - DICIEMBRE 2026",
+   "items": [
+    {
+     "code": "Unidad LCD",
+     "disc": null,
+     "stock": 31,
+     "desc": "Kit de rodillos de recolección",
+     "costo": 105.3082,
+     "ventaGs": 1133500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad LCD"
+    },
+    {
+     "code": "6G3-0180-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad Wi-Fi",
+     "costo": 717.0666666666667,
+     "ventaGs": 7718500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de Wi-Fi"
+    },
+    {
+     "code": "6G3-0179-030",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de placa de contro",
+     "costo": 794.96,
+     "ventaGs": 8556900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "6G3-0167-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Placa de control LCD",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de placa de control LCD",
+     "costo": 164.26666666666668,
+     "ventaGs": 1768200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "2418B001AB",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de kit de rodillos de intercambio",
+     "disc": null,
+     "stock": 0,
+     "desc": "RL1-2593-000",
+     "costo": 12.7,
+     "ventaGs": 136700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillos de arrastre de papel",
+     "fixedGs": 80000
+    },
+    {
+     "code": "MG1-8292-030",
+     "disc": null,
+     "stock": 1,
+     "desc": "Unidad de lectura, superior",
+     "costo": 29.685,
+     "ventaGs": 319500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de Unidad de lectura, superior"
+    },
+    {
+     "code": "Unidad de lectura, inferior",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de unidad de lectura",
+     "costo": 10.316666666666666,
+     "ventaGs": 111000,
+     "vida": null,
+     "grupo": "MG1-8293-020"
+    },
+    {
+     "code": null,
+     "desc": "MH3-2070-040",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Fuente de alimentacion",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de fuente de alimentacion",
+     "costo": 13.433333333333334,
+     "ventaGs": 144600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MA2-8105-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "MF1-4527-020",
+     "disc": null,
+     "stock": 0,
+     "desc": "Bandeja de salida",
+     "costo": 14.177777777777777,
+     "ventaGs": 152600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de bandeja de salida"
+    },
+    {
+     "code": "PARTES SEPARADAS PARA FORMARUNA SOLA PIEZA",
+     "disc": null,
+     "stock": 0,
+     "desc": "5595C001AA",
+     "costo": 26.3,
+     "ventaGs": 283100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MA2-8283-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "TINTA PFI-107 (C) /IPF-680/IPF-780",
+   "note": "MF 746 CX - DICIEMBRE 2024",
+   "items": [
+    {
+     "code": "Placa de Alimentacion",
+     "disc": null,
+     "stock": 17,
+     "desc": "Kit de rodillos de recolección",
+     "costo": 70.9102,
+     "ventaGs": 763300,
+     "vida": "200000"
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de rodillos de recoleccion"
+    },
+    {
+     "code": "Bandeja de entrada1",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 123.4464,
+     "ventaGs": 1328800,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora principal"
+    },
+    {
+     "code": "Cambio de bandeja de entrada1",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de alta tensión",
+     "costo": 6.7333333333333325,
+     "ventaGs": 72500,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "MA2-8257-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Bandeja de entrada2",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de bandeja de entrada2",
+     "costo": 123.9084,
+     "ventaGs": 1333800,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "MF1-4539-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Bandeja de entrada3",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de bandeja de entrada3",
+     "costo": 98.33888888888887,
+     "ventaGs": 1058500,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "MF1-4539-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "MF1-4492-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de motor principal",
+     "costo": 11.405555555555557,
+     "ventaGs": 122800,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "MG1-4600-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "MG1-4598-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "5595C001AA",
+     "costo": 11.588888888888889,
+     "ventaGs": 124700,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "Kit de rodillos de intercambio",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de placa controladora secundaria",
+     "disc": null,
+     "stock": 0,
+     "desc": "MG1-8328-020",
+     "costo": 48.29,
+     "ventaGs": 519800,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "Unidad de lectura superior",
+     "fixedGs": 80000
+    },
+    {
+     "code": "MG1-8308-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de lectura Superior",
+     "costo": 18.834200000000003,
+     "ventaGs": 202700,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de lectura"
+    },
+    {
+     "code": "MG1-8309-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de lectura Inferior",
+     "costo": 23.053800000000003,
+     "ventaGs": 248200,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "MH7-1173-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Bujes de Fusor",
+     "disc": null,
+     "stock": null,
+     "desc": "Cambio de Bujes de Fusor",
+     "costo": 23.66,
+     "ventaGs": 254700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MH7-1173-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "EQUIPO DISCONTINUADO - DICIEMBRE 2024",
+   "note": "MF 249x - JUNIO 2026",
+   "items": [
+    {
+     "code": "Motor de alimentacion",
+     "disc": null,
+     "stock": 22,
+     "desc": "Mano de obra por cambio de motor de alimentacion",
+     "costo": 76.5454,
+     "ventaGs": 823900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de rodillos"
+    },
+    {
+     "code": "MH7-1174-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de lectura Superior",
+     "costo": 6.960799999999999,
+     "ventaGs": 74900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MG1-4558-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "MG1-4614-000",
+     "disc": null,
+     "stock": 3,
+     "desc": "Bandeja de recoleccion",
+     "costo": 3.69,
+     "ventaGs": 39700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de bandeja de recoleccion"
+    },
+    {
+     "code": "MG1-4618-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Placa de fuente de alimentación",
+     "costo": 45.53,
+     "ventaGs": 490100,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa de fuente de alimentacion"
+    },
+    {
+     "code": "Bandeja de entrega",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de bandeja de entrega",
+     "costo": 494.725,
+     "ventaGs": 5325200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa principal"
+    },
+    {
+     "code": "4082B004BA",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de bandeja de entrada2",
+     "costo": 549.6876,
+     "ventaGs": 5916800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MF1-4539-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Kit de rodillo de intercambio",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de bandeja de entrada3",
+     "costo": 542.4188,
+     "ventaGs": 5838600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MF1-4539-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "MA2-7789-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Mano de obra por cambio de abndeja de recoleccion",
+     "costo": 35.45,
+     "ventaGs": 381600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MA2-7782-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "Guia de expulsion",
+   "note": "",
+   "items": [
+    {
+     "code": "Placa de Alimentacion",
+     "disc": null,
+     "stock": 17,
+     "desc": "Kit de rodillos de recolección",
+     "costo": 70.9102,
+     "ventaGs": 763300,
+     "vida": "200000"
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de rodillos"
+    },
+    {
+     "code": "Unidad de ADF",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de guía de expulsion",
+     "costo": 37.41111111111111,
+     "ventaGs": 402700,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "MH3-2068-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de placa controladora secundaria",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de placa de control LCD",
+     "costo": 48.29,
+     "ventaGs": 519800,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "MG1-4320-020",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Placa de control principal",
+     "disc": null,
+     "stock": 0,
+     "desc": "RL1-2593-000",
+     "costo": 77.60000000000001,
+     "ventaGs": 835300,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "MG1-8290-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "MG1-8291-020",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de lectura, superior",
+     "costo": 10.950000000000001,
+     "ventaGs": 117900,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "MF1-4432-020",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Unidad de vidrio de lectura",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de unidad de vidrio de lectura",
+     "costo": 16.12222222222222,
+     "ventaGs": 173500,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "DR-C230 / C240",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Tapa Frontal del Bypass",
+     "disc": null,
+     "stock": null,
+     "desc": "475C003AA",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "FM1-J024-020",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Vidro de Lectura Superior",
+     "disc": null,
+     "stock": null,
+     "desc": "473C003AA",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "Almohadilla de separacion Bypass de alimentacion manual",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FE8-3475-000",
+     "disc": null,
+     "stock": null,
+     "desc": "Base de ADF completo",
+     "costo": 35,
+     "ventaGs": 376700,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "Tapa del ADF (las dos tapas)",
+     "fixedGs": 80000
+    },
+    {
+     "code": "DR-S150",
+     "disc": null,
+     "stock": 0,
+     "desc": "5595C001AA",
+     "costo": 17.98888888888889,
+     "ventaGs": 193600,
+     "vida": "SEGÚN USO"
+    },
+    {
+     "code": null,
+     "desc": "Kit de rodillos de intercambio",
+     "fixedGs": 80000
+    },
+    {
+     "labor": "Cambio de Placa de control de mecanismos"
+    }
+   ]
+  },
+  {
+   "name": "Unidad de lectura",
+   "note": "",
+   "items": [
+    {
+     "code": "Placa de Alimentacion",
+     "disc": null,
+     "stock": 17,
+     "desc": "Kit de rodillos de recolección",
+     "costo": 70.9102,
+     "ventaGs": 763300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad LCD"
+    },
+    {
+     "code": "Mano de obra por cambio de unidad de lecta",
+     "disc": null,
+     "stock": 3,
+     "desc": "Placa controladora principal",
+     "costo": 145.2333,
+     "ventaGs": 1563300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-K441-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de fuente de alimentacion",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de alta tensión",
+     "costo": 45.016666666666666,
+     "ventaGs": 484600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MG1-5045-030",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de placa controladora",
+     "disc": null,
+     "stock": 3,
+     "desc": "Cambio de bandeja de entrada2",
+     "costo": 79.63,
+     "ventaGs": 857100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MG1-5059-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de bandeja de salida",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Cabezal de Impresión",
+     "costo": 86.42479999999999,
+     "ventaGs": 930300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MG1-5060-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Bandeja de entrada",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de motor principal",
+     "costo": 15.338888888888889,
+     "ventaGs": 165100,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de bandeja de entrada"
+    },
+    {
+     "code": "MG1-4598-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "5595C001AA",
+     "costo": 11.588888888888889,
+     "ventaGs": 124700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MA2-8283-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de kit de rodillos de intercambio",
+     "disc": null,
+     "stock": 2,
+     "desc": "MG1-8328-020",
+     "costo": 48.4867,
+     "ventaGs": 521900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "DR-M260",
+     "fixedGs": 80000
+    },
+    {
+     "code": "MG1-5077-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de lectura Superior",
+     "costo": 16.633333333333333,
+     "ventaGs": 179000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MG1-5078-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de placa controladora secundaria",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de lectura Inferior",
+     "costo": 18.08888888888889,
+     "ventaGs": 194700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MG1-8342-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    },
+    {
+     "labor": "Cambio de placa de unidad de lectura superior"
+    }
+   ]
+  },
+  {
+   "name": "Cambio de placa de unidad de lectura superior",
+   "note": "",
+   "items": [
+    {
+     "code": "MG1-8331-000",
+     "disc": null,
+     "stock": 33,
+     "desc": "Kit de rodillos de recolección",
+     "costo": 165.4482,
+     "ventaGs": 1780900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad LCD"
+    },
+    {
+     "code": "Cambio de placa de unidad de lectura inferior",
+     "disc": null,
+     "stock": 1,
+     "desc": "MH7-1199-000",
+     "costo": 351.06,
+     "ventaGs": 3778800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de motor de alimentacion"
+    },
+    {
+     "code": "Cambio de adaptador de AC",
+     "disc": null,
+     "stock": 8,
+     "desc": "MG1-5098-020",
+     "costo": 360.265,
+     "ventaGs": 3877900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de bandeja de recoleccion"
+    },
+    {
+     "code": "MG1-5156-020",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de bandeja de entrega",
+     "costo": 367.80555555555554,
+     "ventaGs": 3959100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "DR-G2140",
+     "fixedGs": 80000
+    },
+    {
+     "code": "3601C002AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "6R3-0003-040",
+     "costo": 331.02777777777777,
+     "ventaGs": 3563200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "DR-G2140",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Unidad de lectura anterior",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de unidad de lectura anterior",
+     "costo": 101.14999999999999,
+     "ventaGs": 1088800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "6R3-0002-050",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Unida de lectura posterior",
+     "disc": null,
+     "stock": 6,
+     "desc": "Cambio de unidad de lectura posterior",
+     "costo": 7.16,
+     "ventaGs": 77100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "6G3-0127-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Placa principal de mecanismos LAN",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de placa principal de mecanismos",
+     "costo": 7.383333333333333,
+     "ventaGs": 79500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "6G3-0129-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Placa principal de mecanismos USB",
+     "disc": null,
+     "stock": 8,
+     "desc": "6H3-2000-000",
+     "costo": 13.4038,
+     "ventaGs": 144300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa secundaria de mecanismos",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de placa secundaria de mecanismos",
+     "disc": null,
+     "stock": 7,
+     "desc": "6A3-0101-000",
+     "costo": 13.67,
+     "ventaGs": 147100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de lectura inferior",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de rodillo de lectura inferior",
+     "disc": null,
+     "stock": 8,
+     "desc": "6A3-0102-000",
+     "costo": 26.91,
+     "ventaGs": 289700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de arrastre",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de rodillo de arrastre",
+     "disc": null,
+     "stock": 7,
+     "desc": "6F3-0136-000",
+     "costo": 11.6,
+     "ventaGs": 124900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de registro inferior",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de rodillo de registro  inferior",
+     "disc": null,
+     "stock": 3,
+     "desc": "MA3-0002-030",
+     "costo": 36.655,
+     "ventaGs": 394600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de recoleccion inferior",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de rodillo de recoleccion inferior",
+     "disc": null,
+     "stock": 2,
+     "desc": "6G3-0097-000",
+     "costo": 37.5683,
+     "ventaGs": 404400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de retardo",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "MF 244 - JUNIO 2026",
+   "note": "LBP 7110CW - JUNIO 2024",
+   "items": [
+    {
+     "code": "MG1-4806-020",
+     "disc": null,
+     "stock": 29,
+     "desc": "Kit de rodillos de recolección",
+     "costo": 40.2424,
+     "ventaGs": 433200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillo de expulsión",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de rodillo de expulsion",
+     "disc": null,
+     "stock": 1,
+     "desc": "CTL-2000HM",
+     "costo": 206.26,
+     "ventaGs": 2220200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "6F3-0012-020",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Vidrio de lectura superior",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de guía de expulsion",
+     "costo": 47.861111111111114,
+     "ventaGs": 515200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio  de vidrio de lectura superior"
+    },
+    {
+     "code": "6F3-0016-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Vidrio de lectura inferior",
+     "costo": 25.055555555555557,
+     "ventaGs": 269700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de vidrio de lectura inferior"
+    },
+    {
+     "code": "DR-F120",
+     "disc": null,
+     "stock": 0,
+     "desc": "RL1-2593-000",
+     "costo": 120.02222222222221,
+     "ventaGs": 1291900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM2-D811-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "9934B001AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de datos DW",
+     "costo": 27.111111111111107,
+     "ventaGs": 291800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de Kit de rodillos de intercambio"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "MF C1538 - DICEMBRE 2026",
+   "note": "EQUIPO DISCONTINUADO - DICIEMBRE 2026",
+   "items": [
+    {
+     "code": "MD1-0928-000",
+     "disc": null,
+     "stock": 30,
+     "desc": "Kit de rodillos de recolección",
+     "costo": 59.2291,
+     "ventaGs": 637500,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de Unidad de ADF"
+    },
+    {
+     "code": "MD8-0136-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de Unidad de lectura",
+     "costo": 68.2066,
+     "ventaGs": 734200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MD1-0938-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Unidad de alimentacion",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de Unidad de alimentacion",
+     "costo": 68.2066,
+     "ventaGs": 734200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MD1-0938-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "MD1-0944-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "MD1-0942-000",
+     "costo": 49.63419999999999,
+     "ventaGs": 534300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de Motor"
+    },
+    {
+     "code": "5484B001AA",
+     "disc": null,
+     "stock": 2,
+     "desc": "RL1-2593-000",
+     "costo": 106.81,
+     "ventaGs": 1149700,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Kit de rodillos de intercambio"
+    },
+    {
+     "code": "MG1-8310-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de lectura INFERIOR",
+     "costo": 13.272222222222222,
+     "ventaGs": 142900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Unidad de lectura"
+    },
+    {
+     "code": "MG1-8311-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "5595C001AA",
+     "costo": 13.272222222222222,
+     "ventaGs": 142900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de lectura SUPERIOR",
+     "fixedGs": 80000
+    },
+    {
+     "code": "MG1-4578-060",
+     "disc": null,
+     "stock": 0,
+     "desc": "Fuente de alimentación",
+     "costo": 1.2474,
+     "ventaGs": 13400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Fuente de alimentación"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "MG1-4582-020",
+   "note": "",
+   "items": [
+    {
+     "code": "Placa de Alimentacion",
+     "disc": null,
+     "stock": 17,
+     "desc": "Mano de obra por cambio de Placa controladora",
+     "costo": 70.9102,
+     "ventaGs": 763300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MG1-4639-020",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Motor de alimentación",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-J949-000",
+     "costo": 19.616666666666667,
+     "ventaGs": 211200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Motor de alimentación"
+    },
+    {
+     "code": "MG1-4586-020",
+     "disc": null,
+     "stock": 2,
+     "desc": "Mano de obra por cambio de Motor principal",
+     "costo": 2.465,
+     "ventaGs": 26500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "MA2-8391-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Vidrio",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de ADF",
+     "costo": 55.97777777777778,
+     "ventaGs": 602500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Vidrio"
+    },
+    {
+     "code": "DR-S250N",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de Cabezal de Impresión",
+     "costo": 55.97777777777778,
+     "ventaGs": 602500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Kit de Rodillos",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio Kit de Rodillos",
+     "disc": null,
+     "stock": 0,
+     "desc": "6G3-0196-000",
+     "costo": 322.84999999999997,
+     "ventaGs": 3475200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio Bandeja de documentos"
+    },
+    {
+     "code": "MG1-5051-020",
+     "disc": null,
+     "stock": 0,
+     "desc": "Brazo de alimentacion",
+     "costo": 81.88888888888889,
+     "ventaGs": 881500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio Brazo de alimentacion"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  }
+ ],
+ "id": "scanner"
+}

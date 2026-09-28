@@ -1,0 +1,189 @@
+{
+ "name": "ImagePressC750_850",
+ "tc": 5980,
+ "factor": 1.8,
+ "models": [
+  {
+   "name": "Image Press C750/850/710/810",
+   "note": "FS148FFPOE · M6509NW Laser Printer Mul -USADO",
+   "items": [
+    {
+     "code": "FM2-G221-020",
+     "disc": null,
+     "stock": 1,
+     "desc": "Cuchilla ITB",
+     "costo": 167,
+     "ventaGs": 1797600,
+     "vida": null,
+     "grupo": "CONTACT IMAGE SENSOR UNIT IR-2520/2530"
+    },
+    {
+     "code": "FM1-D410-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Unidad reveladora amarillo",
+     "costo": 580.2,
+     "ventaGs": 6245300,
+     "vida": null,
+     "grupo": "*"
+    },
+    {
+     "code": "S250N",
+     "disc": null,
+     "stock": null,
+     "desc": "5 años o 450.000 lecturas",
+     "costo": 100,
+     "ventaGs": 1076400,
+     "vida": null
+    },
+    {
+     "code": "FM2-P120-020",
+     "disc": null,
+     "stock": null,
+     "desc": "FM2-P121-020",
+     "costo": 318,
+     "ventaGs": 3423000,
+     "vida": null
+    },
+    {
+     "code": "Kit de rodillos (5595C001AA)",
+     "disc": null,
+     "stock": null,
+     "desc": "FM2-P119-020",
+     "costo": 165,
+     "ventaGs": 1776100,
+     "vida": null
+    },
+    {
+     "code": "FM2-P117-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Unidad reveladora BK",
+     "costo": 191.92,
+     "ventaGs": 2065800,
+     "vida": null
+    },
+    {
+     "code": "DR-1100",
+     "disc": null,
+     "stock": null,
+     "desc": "5 años o 16 millones de lecturas (tamaño A4)",
+     "costo": 415,
+     "ventaGs": 4467100,
+     "vida": null
+    },
+    {
+     "code": "5 años o 14,4 millones de lecturas (tamaño A4)",
+     "disc": null,
+     "stock": null,
+     "desc": "Unidad reveladora magenta",
+     "costo": 415,
+     "ventaGs": 4467100,
+     "vida": null
+    },
+    {
+     "code": "Kit de rodillos (3601C002AA)",
+     "disc": null,
+     "stock": null,
+     "desc": "BOOKEYE 4 Y 5",
+     "costo": 415,
+     "ventaGs": 4467100,
+     "vida": null
+    },
+    {
+     "code": "FM1-L409-010",
+     "disc": null,
+     "stock": 3,
+     "desc": "Hopper Assembly",
+     "costo": 147.03,
+     "ventaGs": 1582600,
+     "vida": null
+    },
+    {
+     "code": "FM1-Z225-010",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad Superior Fijación",
+     "costo": 747.305,
+     "ventaGs": 8044000,
+     "vida": null,
+     "grupo": "FM1-C721-000"
+    },
+    {
+     "code": "FM1-Z226-010",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad Inferior Fijación",
+     "costo": 425.07,
+     "ventaGs": 4575500,
+     "vida": null,
+     "grupo": "FM1-C722-000"
+    },
+    {
+     "code": "FK2-7870-010",
+     "disc": null,
+     "stock": 2,
+     "desc": "Thermistor Frontal",
+     "costo": 3.21,
+     "ventaGs": 34600,
+     "vida": null
+    },
+    {
+     "code": "FK2-7871-010",
+     "disc": null,
+     "stock": 2,
+     "desc": "Thermistor Posterior",
+     "costo": 3.28,
+     "ventaGs": 35300,
+     "vida": null
+    },
+    {
+     "code": "8064B001AA",
+     "disc": null,
+     "stock": 5,
+     "desc": "Tambor Negro 750/7570",
+     "costo": 575.98,
+     "ventaGs": 6199800,
+     "vida": null
+    },
+    {
+     "code": "8065B001BA",
+     "disc": null,
+     "stock": 2,
+     "desc": "Tambor Color 750/7570 - GPR 56",
+     "costo": 414.73,
+     "ventaGs": 4464200,
+     "vida": null
+    },
+    {
+     "code": "FC8-2281-000",
+     "disc": null,
+     "stock": 3,
+     "desc": "Cuchilla limpieza de tambor Color Negro",
+     "costo": 29.5933,
+     "ventaGs": 318500,
+     "vida": null
+    },
+    {
+     "code": "50.000 horas de funcionamiento",
+     "disc": null,
+     "stock": null,
+     "desc": "Lámparas de iluminación",
+     "costo": 147,
+     "ventaGs": 1582300,
+     "vida": null
+    },
+    {
+     "code": "FC0-9857-010",
+     "disc": null,
+     "stock": 2,
+     "desc": "Faja ITB",
+     "costo": 18.31,
+     "ventaGs": 197100,
+     "vida": null
+    }
+   ]
+  }
+ ],
+ "id": "imagepressc750850"
+}

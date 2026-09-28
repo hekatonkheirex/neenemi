@@ -1,0 +1,11 @@
+node_modules/
+dist/
+release/
+data/
+coverage/
+*.log
+.DS_Store
+
+.env.local
+
+.impeccable/

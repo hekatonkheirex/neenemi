@@ -1,0 +1,1614 @@
+{
+ "name": "LBP",
+ "tc": 5980,
+ "factor": 1.8,
+ "models": [
+  {
+   "name": "EQUIPO Y PARTES DISCONTINUADO - JUNIO 2026",
+   "note": "EQUIPO DISCONTINUADO - JUNIO 2026",
+   "items": [
+    {
+     "code": "FC6-6661",
+     "disc": null,
+     "stock": 6,
+     "desc": "Rodillo de recolección del cassette",
+     "costo": 78.43,
+     "ventaGs": 844200,
+     "vida": "917000"
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de recolección del cassette"
+    },
+    {
+     "code": "Rodillo de separación del cassette",
+     "disc": null,
+     "stock": 26,
+     "desc": "Mano de obra por cambio de rodillo de separación del cassette",
+     "costo": 83.8909,
+     "ventaGs": 903000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Botella de tóner residual",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de botella de tóner residual",
+     "disc": null,
+     "stock": 30,
+     "desc": "Filtro de ozono",
+     "costo": 85.8958,
+     "ventaGs": 924600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Botella de tóner residual",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de filtro de ozono",
+     "disc": null,
+     "stock": 23,
+     "desc": "Mantenimiento Preventivo: lubricación, ajustes, limpiezas, configuraciones del equipo",
+     "costo": 87.0183,
+     "ventaGs": 936700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Botella de tóner residual",
+     "fixedGs": 80000
+    },
+    {
+     "code": "6273B001AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 92.32777777777777,
+     "ventaGs": 993800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de fusor"
+    },
+    {
+     "code": "Cartucho negro",
+     "disc": null,
+     "stock": 0,
+     "desc": "iRADV C3935i",
+     "costo": 102.61019999999999,
+     "ventaGs": 1104500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa de fuente de alimentacion"
+    },
+    {
+     "code": "Mano de obra por cambio de cartucho negro",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 190.9292,
+     "ventaGs": 2055200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora principal"
+    },
+    {
+     "code": "6269B001AA",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad de ITB",
+     "costo": 117.016,
+     "ventaGs": 1259600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho color AMARILLO",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de cartucho color",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de transferencia",
+     "costo": 5.794444444444444,
+     "ventaGs": 62400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de transferencia"
+    },
+    {
+     "code": "6270B001AA",
+     "disc": null,
+     "stock": 17,
+     "desc": "Rodillo de separacion",
+     "costo": 2.9197,
+     "ventaGs": 31400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de separacion"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "Cartucho color MAGENTA",
+   "note": "",
+   "items": [
+    {
+     "code": "6271B001AA",
+     "disc": null,
+     "stock": 49,
+     "desc": "Cartucho de toner",
+     "costo": 77.9185,
+     "ventaGs": 838700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho color CYAN",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RM1-8781-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "RM1-8705-010",
+     "costo": 111.38,
+     "ventaGs": 1198900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-B951-010",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RM1-8777-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de fuente de alimentación",
+     "costo": 138.99,
+     "ventaGs": 1496100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de placa de fuente de alimentacion"
+    },
+    {
+     "code": "Mano de obra por cambio de unidad de ITB",
+     "disc": null,
+     "stock": 0,
+     "desc": "RM1-4445-000",
+     "costo": 131.66666666666666,
+     "ventaGs": 1417300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RM1-8765-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "LBP 162 dW",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 204.75,
+     "ventaGs": 2203900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-K441-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "2168C001AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de cartucho de toner",
+     "costo": 49,
+     "ventaGs": 527400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "2169C001AA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cilindro",
+     "disc": null,
+     "stock": 7,
+     "desc": "Cambio de Cilindro",
+     "costo": 2.03,
+     "ventaGs": 21900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RM2-0839-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM2-D855-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 92.45,
+     "ventaGs": 995100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 350000
+    }
+   ]
+  },
+  {
+   "name": "iRADV c3525  I y III  / c3530 I y III  - JUNIO 2026",
+   "note": "iRADV C250 / C350 - JUNIO 2024",
+   "items": [
+    {
+     "code": "Placa de mecanismos",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad de fusor",
+     "costo": 172.41,
+     "ventaGs": 1855800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": "Cambio de placa de mecanismos",
+     "disc": null,
+     "stock": 48,
+     "desc": "Cartucho de toner",
+     "costo": 80.4338,
+     "ventaGs": 865800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho color CYAN",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM2-B929-000",
+     "disc": null,
+     "stock": 22,
+     "desc": "Rodillo de recoleccion",
+     "costo": 0.9,
+     "ventaGs": 9700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de recoleccion"
+    },
+    {
+     "code": "FK4-4651-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de transferencia",
+     "costo": 6.6836,
+     "ventaGs": 71900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de transferencia"
+    },
+    {
+     "code": "Modulo Wlan",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de módulo wlan",
+     "costo": 4.3582,
+     "ventaGs": 46900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "rl1-2593-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Rodillo de entrega",
+     "disc": null,
+     "stock": 3,
+     "desc": "Placa controladora principal",
+     "costo": 155.32,
+     "ventaGs": 1671900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de entrega"
+    },
+    {
+     "code": "RM2-0836-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "RM1-4445-000",
+     "costo": 157.94,
+     "ventaGs": 1700100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RM1-8765-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-F342-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "9435B001AA",
+     "costo": 111.32660000000001,
+     "ventaGs": 1198300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RL1-1497-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "TINTA PFI-107 (M) /IPF-680/IPF-780",
+   "note": "iRADV C5535/40 I y II- Jun 2026 - c5535 III DIC-2027 aún Vigente",
+   "items": [
+    {
+     "code": "RC2-1182-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Unidad de fusor",
+     "costo": 64.37,
+     "ventaGs": 692900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": "TONER GPR-44 Amarillo/LBP-7200/MF8350C (2659B005AA",
+     "disc": null,
+     "stock": 26,
+     "desc": "8521b003aa",
+     "costo": 60.1079,
+     "ventaGs": 647000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "8520b003aa",
+     "fixedGs": 80000
+    },
+    {
+     "code": "GPR-29 CYAN TONER P/ LBP 7750",
+     "disc": null,
+     "stock": 23,
+     "desc": "Toner Amarillo",
+     "costo": 100.2873,
+     "ventaGs": 1079500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "8520b003aa",
+     "fixedGs": 80000
+    },
+    {
+     "code": "2646C003AA",
+     "disc": null,
+     "stock": 12,
+     "desc": "Toner Magenta",
+     "costo": 100.1359,
+     "ventaGs": 1077900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "8520b003aa",
+     "fixedGs": 80000
+    },
+    {
+     "code": "SCANNER DR-C230 USADA",
+     "disc": null,
+     "stock": 14,
+     "desc": "Toner Cyan",
+     "costo": 100.7239,
+     "ventaGs": 1084200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "8520b003aa",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM4-6893-000",
+     "disc": null,
+     "stock": 20,
+     "desc": "Rodillo de recolección del cassette",
+     "costo": 113.2932,
+     "ventaGs": 1219500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Almohadilla de separacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de almohadilla de separacion",
+     "disc": null,
+     "stock": 46,
+     "desc": "FM1-Y860-000",
+     "costo": 99.995,
+     "ventaGs": 1076300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de placa cpntroladora principal"
+    },
+    {
+     "code": "FM1-U986-000",
+     "disc": null,
+     "stock": 44,
+     "desc": "FM1-L517-000",
+     "costo": 100.4159,
+     "ventaGs": 1080900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Bandejas varias",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de bandejas varias",
+     "disc": null,
+     "stock": 49,
+     "desc": "FM4-3063-000",
+     "costo": 102.1688,
+     "ventaGs": 1099700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "2662B001AA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de cartucho negro",
+     "disc": null,
+     "stock": 3,
+     "desc": "Rodillo de presion",
+     "costo": 18.5633,
+     "ventaGs": 199800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de presion"
+    },
+    {
+     "code": "2661B001AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-N372-000",
+     "costo": 71.06,
+     "ventaGs": 764900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho cyan",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de cartucho cyan",
+     "disc": null,
+     "stock": 5,
+     "desc": "Rodillo de arrastre de papel",
+     "costo": 2.8125,
+     "ventaGs": 30300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "2660B001AA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cartucho magenta",
+     "disc": null,
+     "stock": 4,
+     "desc": "Rodillo de alimentacion",
+     "costo": 1.5536,
+     "ventaGs": 16700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de alimentacion"
+    },
+    {
+     "code": "Cambio de cartucho magenta",
+     "disc": null,
+     "stock": 0,
+     "desc": "iRADV C3935i",
+     "costo": 88.9888888888889,
+     "ventaGs": 957900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de placa de fuente de alimentacion"
+    },
+    {
+     "code": "2659B001AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 79.6488,
+     "ventaGs": 857300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-K441-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "iRADV C3325i /3330i - JUNIO 2024 / 3125i - DICIEMBRE 2026 / 3035i - AUN VIGENTE",
+   "note": "EQUIPOS y PARTES DISCONTINUADOS",
+   "items": [
+    {
+     "code": "Cartucho amarillo",
+     "disc": null,
+     "stock": 50,
+     "desc": "Cambio de cartucho amarillo",
+     "costo": 69.6998,
+     "ventaGs": 750200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RC2-3367-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RM1-4852-000",
+     "disc": null,
+     "stock": 7,
+     "desc": "Cambio de correa de transporte de imagen",
+     "costo": 2.03,
+     "ventaGs": 21900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RM1-4840-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de rodillo de arrastre de papel",
+     "disc": null,
+     "stock": 2,
+     "desc": "Pelicula de fusor",
+     "costo": 31.485,
+     "ventaGs": 338900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RM1-8047-030",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RM1-5294-050",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo de presion",
+     "costo": 14.66,
+     "ventaGs": 157800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de presion"
+    },
+    {
+     "code": "FM0-3418-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "3484B001AA",
+     "costo": 209.67,
+     "ventaGs": 2256900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de cartucho",
+     "disc": null,
+     "stock": 0,
+     "desc": "RL1-2593-000",
+     "costo": 77.05,
+     "ventaGs": 829400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Rodillos de arrastre de papel",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de rodillos de arrastre de papel",
+     "disc": null,
+     "stock": 0,
+     "desc": "9435B001AA",
+     "costo": 47.1,
+     "ventaGs": 507000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RL1-1497-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "EQUIPO y PARTES DISCONTINUADO - DICIEMBRE 2023",
+   "note": "EQUIPO y PARTES DISCONTINUADO - JUNIO 2025",
+   "items": [
+    {
+     "code": "RM1-6873-000",
+     "disc": null,
+     "stock": 6,
+     "desc": "Cambio de película de fusor",
+     "costo": 149.4989,
+     "ventaGs": 1609200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RC2-9208-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM2-L905-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Placa de Engine",
+     "costo": 149.3863,
+     "ventaGs": 1608000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de placa de engine"
+    },
+    {
+     "code": "FM1-G845-020",
+     "disc": null,
+     "stock": 8,
+     "desc": "Placa controladora",
+     "costo": 150.5933,
+     "ventaGs": 1621000,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de placa controladora"
+    },
+    {
+     "code": "FM4-5101-000",
+     "disc": null,
+     "stock": 7,
+     "desc": "1657B001AA",
+     "costo": 108.2211,
+     "ventaGs": 1164900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho de Toner Amarillo",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio decartucho de toner amarillo",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 143.56,
+     "ventaGs": 1545300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": "1658B001AA",
+     "disc": null,
+     "stock": 2,
+     "desc": "Rodillo de presion",
+     "costo": 15.43,
+     "ventaGs": 166100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de presion"
+    },
+    {
+     "code": "Cartucho de Toner Magenta",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-N372-000",
+     "costo": 239,
+     "ventaGs": 2572600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho cyan",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de cartucho de toner magenta",
+     "disc": null,
+     "stock": 6,
+     "desc": "Rodillo de arrastre de papel",
+     "costo": 1,
+     "ventaGs": 10800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "2660B001AA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de cartucho de toner magenta",
+     "disc": null,
+     "stock": 6,
+     "desc": "Rodillo de alimentacion",
+     "costo": 1,
+     "ventaGs": 10800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de alimentacion"
+    },
+    {
+     "code": "1659B001AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "iRADV C3935i",
+     "costo": 93.79444444444445,
+     "ventaGs": 1009600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de placa de fuente de alimentacion"
+    }
+   ]
+  },
+  {
+   "name": "EQUIPO y PARTES DISCONTINUADO JUNIO 2024",
+   "note": "iRADV C5235/40 - DICIEMBRE 2023",
+   "items": [
+    {
+     "code": "Cartucho de Toner Cian",
+     "disc": null,
+     "stock": 11,
+     "desc": "Cambio de cartucho de toner cyan",
+     "costo": 115.4088,
+     "ventaGs": 1242300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "1660B001AA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cartucho de Toner negro",
+     "disc": null,
+     "stock": 5,
+     "desc": "Unidad de fusor",
+     "costo": 109.9157,
+     "ventaGs": 1183100,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": "Cambio de cartucho de toner negro",
+     "disc": null,
+     "stock": 1,
+     "desc": "RM1-4349-040",
+     "costo": 53.59,
+     "ventaGs": 576800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RC1-6229-030",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RM1-2752-060",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 383.41380000000004,
+     "ventaGs": 4127100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-K441-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RM1-2702-000",
+     "disc": null,
+     "stock": 28,
+     "desc": "RK2-1564-060",
+     "costo": 4.8189,
+     "ventaGs": 51900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de recoleccion del bypass"
+    },
+    {
+     "code": "3480B005AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de transferencia",
+     "costo": 10.644444444444444,
+     "ventaGs": 114600,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de transferencia"
+    },
+    {
+     "code": "Unidad de cartucho",
+     "disc": null,
+     "stock": 7,
+     "desc": "Cambio de unidad de cartucho",
+     "costo": 1.68,
+     "ventaGs": 18100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "rl1-2593-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RM1-6319-030",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de recoleccion",
+     "costo": 2.3111111111111113,
+     "ventaGs": 24900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de recoleccion del bypass"
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "LBP 151 - JUNIO 2025",
+   "note": "LBP 7110CW - JUNIO 2024",
+   "items": [
+    {
+     "code": "RM1-6280-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "iRADV C3935i",
+     "costo": 81.70555555555555,
+     "ventaGs": 879500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de placa de fuente de H.V.",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora DC",
+     "costo": 42.6888,
+     "ventaGs": 459500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-R881-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "RL1-2412-000",
+     "costo": 51.36,
+     "ventaGs": 552800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RL2-0656-000",
+     "disc": null,
+     "stock": 29,
+     "desc": "Rodillo de bypass",
+     "costo": 2.4513,
+     "ventaGs": 26400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RL2-0657-000",
+     "disc": null,
+     "stock": 55,
+     "desc": "Cambio de módulo wlan",
+     "costo": 3.72,
+     "ventaGs": 40000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-V152-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Unidad de fusor",
+     "costo": 136.598,
+     "ventaGs": 1470300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RM1-6321-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "RC2-8575-000",
+     "costo": 72.73419999999999,
+     "ventaGs": 782900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "EQUIPO y PARTES DISCONTINUADO - 12/2022",
+     "disc": null,
+     "stock": null,
+     "desc": "MB GX6010",
+     "costo": 42,
+     "ventaGs": 452100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "KNDK10009",
+     "disc": null,
+     "stock": 0,
+     "desc": "203244",
+     "costo": 0.53,
+     "ventaGs": 5700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "JS114/25-R1",
+     "disc": null,
+     "stock": 0,
+     "desc": "35E32102",
+     "costo": 0.6006,
+     "ventaGs": 6500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RL2-0656-000",
+     "disc": null,
+     "stock": 29,
+     "desc": "FG079/25-R0",
+     "costo": 2.4513,
+     "ventaGs": 26400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RL2-0657-000",
+     "disc": null,
+     "stock": 55,
+     "desc": "203235",
+     "costo": 3.72,
+     "ventaGs": 40000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Low voltage power supply assembly (110V - 127V)",
+     "disc": null,
+     "stock": 17,
+     "desc": "Cambio de correa de transferencia de imagen",
+     "costo": 5.8233,
+     "ventaGs": 62700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": "INTERMEDIATE TRANS MF8210/8230/8250/8280/MF 628",
+     "disc": null,
+     "stock": 8,
+     "desc": "4NC00602",
+     "costo": 8.04,
+     "ventaGs": 86500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de fuente de H.V.",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "500.000 a 1.000.0000",
+   "note": "Mano de obra por cambio de Bisagras",
+   "items": [
+    {
+     "code": "Almohadilla de separación",
+     "disc": null,
+     "stock": 104,
+     "desc": "RM1-6313-000",
+     "costo": 99.7115,
+     "ventaGs": 1073300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-Z938-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de unidad de",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 47.55,
+     "ventaGs": 511800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM2-D811-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RM2-7510-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de conexión",
+     "costo": 199.96,
+     "ventaGs": 2152400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-V141-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-R683-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de módulo wlan",
+     "costo": 1.6632000000000002,
+     "ventaGs": 17900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de casette",
+     "fixedGs": 80000
+    },
+    {
+     "code": "3479B001AA",
+     "disc": null,
+     "stock": 6,
+     "desc": "Rodillo de recoleccion",
+     "costo": 3.3757,
+     "ventaGs": 36300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Unidad de Tambor",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-R683-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de separacion",
+     "costo": 1.6632000000000002,
+     "ventaGs": 17900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de Unidada de Tambor"
+    },
+    {
+     "code": "FM0-1296-010",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad de fusor",
+     "costo": 79.88,
+     "ventaGs": 859800,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de unidad de fusor"
+    },
+    {
+     "code": "Cambio de Placa controladora",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM4-8677-000",
+     "costo": 12.15,
+     "ventaGs": 130800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa Panel de control",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de placa de control",
+     "disc": null,
+     "stock": 0,
+     "desc": "RL1-2115-000",
+     "costo": 6.377777777777778,
+     "ventaGs": 68700,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de transferencia"
+    },
+    {
+     "code": "Cambio de almohadilla de separación",
+     "disc": null,
+     "stock": 15,
+     "desc": "RM1-6414-000",
+     "costo": 0.92,
+     "ventaGs": 9900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de rodillo de recolección"
+    },
+    {
+     "code": "Cambio de Rodillo de separacion",
+     "disc": null,
+     "stock": 0,
+     "desc": "RM1-6406-000",
+     "costo": 8.89,
+     "ventaGs": 95700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RM1-8047-030",
+     "fixedGs": 80000
+    },
+    {
+     "code": "CRG-119-IIBK",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cartucho de cilindro",
+     "costo": 28.644000000000002,
+     "ventaGs": 308300,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de cartucho de cilindro"
+    },
+    {
+     "code": "RM1-6450-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de transferencia",
+     "costo": 141.47222222222223,
+     "ventaGs": 1522800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RL1-2120-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Rodillo de Alimentacion - Ruedas del Bypass",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de rodillo de alimentación",
+     "costo": 6.183333333333334,
+     "ventaGs": 66600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RM1-6405-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Pelicula de fusor",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM4-8674-000",
+     "costo": 27.0886,
+     "ventaGs": 291600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Bandeja de documentos",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo y cambio de partes",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "TINTA PFI-107 (Y) IPF-680/IPF-780",
+   "note": "Mano de obra por cambio de Bisagras",
+   "items": [
+    {
+     "code": "Cambio de bandeja de documentos",
+     "disc": null,
+     "stock": 2,
+     "desc": "FM0-1137-000",
+     "costo": 162.0413,
+     "ventaGs": 1744200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de Fuente de alimentacion",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de placa de fuente de alimentación",
+     "disc": null,
+     "stock": 0,
+     "desc": "RK2-2728-000",
+     "costo": 161.7,
+     "ventaGs": 1740500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Ventilador de Enfriamiento",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de Ventilador de Enfriamiento",
+     "disc": null,
+     "stock": 0,
+     "desc": "RM1-6419-000",
+     "costo": 160.4714,
+     "ventaGs": 1727300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Engranaje de Registro",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de Engranaje de Registro",
+     "disc": null,
+     "stock": 0,
+     "desc": "6260B001AA",
+     "costo": 160.3537,
+     "ventaGs": 1726000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho de tóner amarillo",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de cartucho de tóner amarillo",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 372.22,
+     "ventaGs": 4006600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de fusor"
+    },
+    {
+     "code": "6261B001AA",
+     "disc": null,
+     "stock": 3,
+     "desc": "FM1-N372-000",
+     "costo": 207.3475,
+     "ventaGs": 2231900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho de tóner magenta",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de cartucho de tóner magenta",
+     "disc": null,
+     "stock": 0,
+     "desc": "Rodillo de arrastre de papel",
+     "costo": 2.361111111111111,
+     "ventaGs": 25400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de arrastre de papel"
+    },
+    {
+     "code": "6262B001AA",
+     "disc": null,
+     "stock": 16,
+     "desc": "Rodillo de alimentación",
+     "costo": 6.286,
+     "ventaGs": 67700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho de tóner cyan",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de cartucho de tóner cyan",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de fuente de alimentación",
+     "costo": 58.85,
+     "ventaGs": 633500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "6264B001AA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cartucho de tóner negro",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 413.5777777777778,
+     "ventaGs": 4451800,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora principal"
+    },
+    {
+     "labor": "Mano de obra por cambio de cartucho de tóner negro"
+    }
+   ]
+  },
+  {
+   "name": "FM3-8824-000",
+   "note": "",
+   "items": [
+    {
+     "code": "FM3-9078-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Unidad de fusor",
+     "costo": 168.72777777777776,
+     "ventaGs": 1816200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de correa de transporte de imagen"
+    },
+    {
+     "code": "RL1-2184-000",
+     "disc": null,
+     "stock": 4,
+     "desc": "Rodillo de Transferencia - Izquierda",
+     "costo": 108.515,
+     "ventaGs": 1168100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RM1-8131-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de rodillo de alimentación",
+     "disc": null,
+     "stock": 18,
+     "desc": "RC4-3134-000",
+     "costo": 0.99,
+     "ventaGs": 10700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RM1-8088-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de placa de fuente de alimentación",
+     "disc": null,
+     "stock": 18,
+     "desc": "Rodillo de Transferencia - Derecha",
+     "costo": 0.986,
+     "ventaGs": 10600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-R885-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mantenimiento Preventivo: lubricación, ajustes, limpiezas, configuraciones del equipo",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa de fuente de alimentación",
+     "costo": 88.75555555555555,
+     "ventaGs": 955400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "LBP 623Cdw",
+     "fixedGs": 80000
+    },
+    {
+     "code": "FM1-W286-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 53.19,
+     "ventaGs": 572500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de  Unidad de fusor"
+    },
+    {
+     "code": "Rodillo de entrega",
+     "disc": null,
+     "stock": null,
+     "desc": "FM1-N685-000",
+     "costo": 163.37,
+     "ventaGs": 1758500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "RC4-3133-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo y cambio de partes",
+     "fixedGs": 320000
+    }
+   ]
+  }
+ ],
+ "id": "lbp"
+}

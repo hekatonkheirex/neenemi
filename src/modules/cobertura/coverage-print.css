@@ -1,0 +1,306 @@
+@page {
+  size: A4 portrait;
+  margin: 13mm 12mm;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  color: #18243a;
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9pt;
+  line-height: 1.45;
+}
+
+.coverage-print-report {
+  width: 100%;
+  color: #18243a;
+  font-size: 9pt;
+}
+
+.coverage-print-accent {
+  height: 2mm;
+  margin-bottom: 5mm;
+  background: #ff6b00;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.coverage-print-eyebrow {
+  color: #0078a8;
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.coverage-print-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 5mm;
+  margin-top: 2mm;
+}
+
+.coverage-print-header h1 {
+  margin: 0;
+  color: #1a2c4c;
+  font-size: 22pt;
+  line-height: 1.08;
+}
+
+.coverage-print-header p {
+  margin: 2mm 0 0;
+  color: #64748b;
+  font-size: 9pt;
+}
+
+.coverage-print-brand {
+  flex: 0 0 auto;
+  color: #1a2c4c;
+  font-size: 15pt;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.coverage-print-meta {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr 0.8fr;
+  gap: 4mm;
+  margin: 6mm 0;
+  padding: 4mm;
+  border: 1px solid #dce3ec;
+  background: #f5f7fa;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.coverage-print-meta > div {
+  min-width: 0;
+}
+
+.coverage-print-meta dt {
+  margin: 0 0 1mm;
+  color: #64748b;
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.coverage-print-meta dd {
+  margin: 0;
+  color: #18243a;
+  font-size: 8.5pt;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.coverage-print-section {
+  margin-top: 6mm;
+}
+
+.coverage-print-section h2 {
+  margin: 0 0 3mm;
+  color: #1a2c4c;
+  font-size: 12pt;
+}
+
+.coverage-print-section h3 {
+  margin: 4mm 0 2mm;
+  color: #1a2c4c;
+  font-size: 9pt;
+}
+
+.coverage-print-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3mm;
+}
+
+.coverage-print-kpis > div {
+  display: grid;
+  gap: 1mm;
+  padding: 3mm;
+  border: 1px solid #dce3ec;
+  border-top: 2px solid #0078a8;
+  break-inside: avoid;
+}
+
+.coverage-print-kpis span {
+  color: #64748b;
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.coverage-print-kpis strong {
+  color: #1a2c4c;
+  font-size: 17pt;
+  line-height: 1.1;
+}
+
+.coverage-print-kpis small {
+  color: #64748b;
+  font-size: 7pt;
+}
+
+.coverage-print-channel-table,
+.coverage-print-yield-table,
+.coverage-print-page-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #18243a;
+  font-size: 8pt;
+  table-layout: fixed;
+}
+
+.coverage-print-channel-table th,
+.coverage-print-channel-table td,
+.coverage-print-yield-table th,
+.coverage-print-yield-table td,
+.coverage-print-page-table th,
+.coverage-print-page-table td {
+  padding: 2mm 2.2mm;
+  border-bottom: 1px solid #dce3ec;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.coverage-print-channel-table thead,
+.coverage-print-yield-table thead,
+.coverage-print-page-table thead {
+  display: table-header-group;
+}
+
+.coverage-print-channel-table thead th,
+.coverage-print-yield-table thead th,
+.coverage-print-page-table thead th {
+  color: #ffffff;
+  background: #1a2c4c;
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.coverage-print-channel-table td,
+.coverage-print-channel-table tfoot td,
+.coverage-print-yield-table td:not(:first-child),
+.coverage-print-page-table td,
+.coverage-print-page-table tfoot td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.coverage-print-channel-table tfoot,
+.coverage-print-page-table tfoot {
+  background: #edf2f8;
+  font-weight: 700;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.coverage-print-channel-table tr,
+.coverage-print-yield-table tr,
+.coverage-print-page-table tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.coverage-print-channel-table tbody th,
+.coverage-print-yield-table tbody th,
+.coverage-print-page-table tbody th {
+  font-weight: 600;
+}
+
+.coverage-print-swatch {
+  display: inline-block;
+  width: 2.5mm;
+  height: 2.5mm;
+  margin-right: 2mm;
+  border: 0.3mm solid #8c98a8;
+  border-radius: 50%;
+  vertical-align: -0.4mm;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.coverage-print-swatch.black { background: #283548; }
+.coverage-print-swatch.cyan { background: #0098bd; }
+.coverage-print-swatch.magenta { background: #bb4f88; }
+.coverage-print-swatch.yellow { background: #d5a500; }
+
+.coverage-print-caption,
+.coverage-print-exclusions {
+  margin: 2mm 0 0;
+  color: #64748b;
+  font-size: 7pt;
+  line-height: 1.4;
+}
+
+.coverage-print-yield-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3mm;
+  margin-bottom: 3mm;
+}
+
+.coverage-print-yield-summary > div {
+  display: grid;
+  gap: 1mm;
+  padding: 3mm;
+  border: 1px solid #dce3ec;
+  background: #f5f7fa;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.coverage-print-yield-summary span {
+  color: #64748b;
+  font-size: 7pt;
+}
+
+.coverage-print-yield-summary strong {
+  color: #18243a;
+  font-size: 8pt;
+}
+
+.coverage-print-page-details {
+  break-before: page;
+  page-break-before: always;
+}
+
+.coverage-print-page-table th:first-child {
+  width: 18mm;
+}
+
+.coverage-print-page-table tbody th {
+  color: #42526a;
+}
+
+.coverage-print-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 5mm;
+  margin-top: 6mm;
+  padding-top: 2mm;
+  border-top: 1px solid #d6deea;
+  color: #64748b;
+  font-size: 6.5pt;
+}
+
+.coverage-print-footer span {
+  flex: 0 0 auto;
+  color: #1a2c4c;
+  font-weight: 700;
+}

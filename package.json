@@ -1,0 +1,50 @@
+{
+  "name": "datasystems-suite",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Suite local unificada de Data Systems para Electron",
+  "author": "Data Systems S.A.E.C.A.",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "node scripts/desktop-dev.mjs",
+    "dev:renderer": "vite --host 127.0.0.1 --port 5173",
+    "dev:server": "node scripts/ensure-native.mjs --node && tsx server.ts",
+    "build": "tsc --noEmit && vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "lint": "tsc --noEmit",
+    "test": "node scripts/ensure-native.mjs --node && node --import tsx scripts/node-runtime-smoke.mjs && vitest run",
+    "desktop:dev": "npm run dev",
+    "desktop": "node scripts/ensure-native.mjs --electron && electron .",
+    "desktop:check": "npm run build && node scripts/ensure-native.mjs --electron && node scripts/release-check.mjs",
+    "desktop:package": "node scripts/desktop-package.mjs --dir",
+    "desktop:package:win": "node scripts/desktop-package.mjs --win"
+  },
+  "dependencies": {
+    "@google/genai": "^2.24.0",
+    "better-sqlite3": "^12.10.0",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.2",
+    "pdfjs-dist": "^5.7.284",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.2.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^5.0.4",
+    "electron": "44.3.0",
+    "electron-builder": "26.15.3",
+    "esbuild": "0.28.2",
+    "tsx": "^4.21.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.3",
+    "vitest": "^4.1.10"
+  },
+  "allowScripts": {
+    "better-sqlite3@12.11.1": true
+  }
+}

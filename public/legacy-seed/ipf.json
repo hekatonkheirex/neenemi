@@ -1,0 +1,591 @@
+{
+ "name": "IPF",
+ "tc": 5980,
+ "factor": 1.8,
+ "models": [
+  {
+   "name": "MF 1538C - DICIEMBRE 2025",
+   "note": "LBP 5360c - DICIEMBRE 2013",
+   "items": [
+    {
+     "code": "4420C001AA",
+     "disc": null,
+     "stock": 4,
+     "desc": "FE2-E038-000",
+     "costo": 467.1775,
+     "ventaGs": 5028700,
+     "vida": null,
+     "grupo": "Botella de Tinta Magenta"
+    },
+    {
+     "code": null,
+     "desc": "Botella de Tinta Yelow",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Kit de rodillos de intercambios",
+     "disc": null,
+     "stock": 2,
+     "desc": "QM4-5270-010",
+     "costo": 79.1,
+     "ventaGs": 851400,
+     "vida": null,
+     "grupo": "QM5-0208-000"
+    },
+    {
+     "code": null,
+     "desc": "QC3-5921-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "QC7-2243-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "bisagra lado  derecho",
+     "costo": 353.5686,
+     "ventaGs": 3805800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "QM4-5271-010",
+     "fixedGs": 80000
+    },
+    {
+     "code": "PF-03",
+     "disc": null,
+     "stock": 0,
+     "desc": "2251B003AB",
+     "costo": 183.1,
+     "ventaGs": 1970900,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de cabezal de impresión"
+    },
+    {
+     "code": "MC-09",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cuchilla",
+     "costo": 128.47777777777776,
+     "ventaGs": 1382900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "1320B012AA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cartucho de mantenimiento",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de cartucho de mantenimiento",
+     "costo": 684.4222,
+     "ventaGs": 7367100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "QM3-4835-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Unidad de carro",
+     "disc": null,
+     "stock": 1,
+     "desc": "Cambio de unidad de carro",
+     "costo": 131.9,
+     "ventaGs": 1419800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "QM3-4847-020",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Unidad de purga",
+     "disc": null,
+     "stock": 0,
+     "desc": "iRADV C3935i",
+     "costo": 126.64,
+     "ventaGs": 1363200,
+     "vida": null
+    },
+    {
+     "labor": "Cambio de placa de fuente de alimentacion"
+    },
+    {
+     "code": "Cambio de unidad de purga",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa controladora principal",
+     "costo": 632.54,
+     "ventaGs": 6808700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM1-K441-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 320000
+    }
+   ]
+  },
+  {
+   "name": "QM3-4919-010",
+   "note": "",
+   "items": [
+    {
+     "code": "Cambio de cuhilla",
+     "disc": null,
+     "stock": 12,
+     "desc": "QM4-5270-010",
+     "costo": 59.4994,
+     "ventaGs": 640500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "QM3-4898-010",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Unidad de tanque de tinta",
+     "disc": null,
+     "stock": 4,
+     "desc": "FE2-E038-000",
+     "costo": 473.756,
+     "ventaGs": 5099500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "FM2-B173-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de unidad de tanque de tinta",
+     "disc": null,
+     "stock": 7,
+     "desc": "QM3-4879-000",
+     "costo": 49.6258,
+     "ventaGs": 534200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Panel de operación",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cambio de panel de operación",
+     "disc": null,
+     "stock": 31,
+     "desc": "QK1-2912-000",
+     "costo": 46.4029,
+     "ventaGs": 499500,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "QM3-4927-010",
+     "fixedGs": 80000
+    },
+    {
+     "code": "TA-30",
+     "disc": null,
+     "stock": 27,
+     "desc": "1156C005AB",
+     "costo": 46.1902,
+     "ventaGs": 497200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cartucho de mantenimiento"
+    },
+    {
+     "code": "2352C003AB",
+     "disc": null,
+     "stock": 31,
+     "desc": "3488C001AA",
+     "costo": 46.2777,
+     "ventaGs": 498100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho de tinta MBK",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de cartucho de tinta MBK",
+     "disc": null,
+     "stock": 16,
+     "desc": "3489C001AA",
+     "costo": 48.4324,
+     "ventaGs": 521300,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Carticho de tina BK",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de cartucho de tinta BK",
+     "disc": null,
+     "stock": 2,
+     "desc": "3490C001AA",
+     "costo": 251.41,
+     "ventaGs": 2706200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho de tinta cyan",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de cartucho de tinta cyan",
+     "disc": null,
+     "stock": 0,
+     "desc": "3491C001AA",
+     "costo": 27.95,
+     "ventaGs": 300900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho de tinta magenta",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de cartucho de tinta magenta",
+     "disc": null,
+     "stock": 0,
+     "desc": "2251B003AB",
+     "costo": 113.8,
+     "ventaGs": 1224900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "3492C001AA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Cartucho de tinta amarillo",
+     "disc": null,
+     "stock": 0,
+     "desc": "Mano de obra por cambio de tinta amarillo",
+     "costo": 73.24,
+     "ventaGs": 788400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "QM4-7027-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Unidad de suministro de tinta",
+     "disc": null,
+     "stock": 2,
+     "desc": "bisagra lado  derecho",
+     "costo": 299.92,
+     "ventaGs": 3228300,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de suministro de tinta"
+    },
+    {
+     "code": "QM4-5977-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Placa principal",
+     "costo": 398.3611111111111,
+     "ventaGs": 4288000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa principal"
+    },
+    {
+     "code": "Unidad de multisensor",
+     "disc": null,
+     "stock": 0,
+     "desc": "Cambio de unidad de carro",
+     "costo": 97.97222222222221,
+     "ventaGs": 1054600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de multisensor"
+    },
+    {
+     "code": "QM4-6171-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Mano de obra por cambio de unidad de purga",
+     "costo": 86.185,
+     "ventaGs": 927700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "QK1-5068-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Motor DC",
+     "disc": null,
+     "stock": 30,
+     "desc": "Mano de obra por cambio de motor DC",
+     "costo": 1.41,
+     "ventaGs": 15200,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "QM4-7588-000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 325000
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de carro"
+    }
+   ]
+  },
+  {
+   "name": "Mano de obra por cambio de unidad de carro",
+   "note": "",
+   "items": [
+    {
+     "code": "Cambio de cuhilla",
+     "disc": null,
+     "stock": 12,
+     "desc": "QM4-5270-010",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "QM3-4898-010",
+     "fixedGs": 2
+    },
+    {
+     "code": "Motor DC",
+     "disc": null,
+     "stock": 30,
+     "desc": "Mano de obra por cambio de motor DC",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "QM4-7588-000",
+     "fixedGs": 2
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 2
+    }
+   ]
+  },
+  {
+   "name": "EQUIPO DISCONTINUADO - DICIEMBRE 2025",
+   "note": "LBP 7110CW - JUNIO 2024",
+   "items": [
+    {
+     "code": "1155C002AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "FE2-E038-000",
+     "costo": 446.67,
+     "ventaGs": 4808000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cuchilla de corte CT-08",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de Cuchilla de Corte",
+     "disc": null,
+     "stock": 8,
+     "desc": "QC5-6203-000",
+     "costo": 2.225,
+     "ventaGs": 23900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Almohadilla de absorsión",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de almohadilla de absorsión",
+     "disc": null,
+     "stock": 15,
+     "desc": "TA-30 - MANTENIMIENTO PREVENTIVO",
+     "costo": 53.6638,
+     "ventaGs": 577600,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Evento",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Precio",
+     "disc": null,
+     "stock": 0,
+     "desc": "Total",
+     "costo": 97.31,
+     "ventaGs": 1047400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "3630B003AA",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de Cabezal de impresión",
+     "disc": null,
+     "stock": 0,
+     "desc": "QC2-0819-000",
+     "costo": 10.83888888888889,
+     "ventaGs": 116700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Almohadilla del cabezal",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de Almohadilla del cabezal",
+     "disc": null,
+     "stock": 0,
+     "desc": "1320B014CD",
+     "costo": 224.3,
+     "ventaGs": 2414400,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Cartucho de Manten¡m¡ento",
+     "fixedGs": 80000
+    },
+    {
+     "code": "Mano de obra por cambio de Cartucho de Manten¡m¡ento",
+     "disc": null,
+     "stock": 0,
+     "desc": "QK1-5141-000",
+     "costo": 503.87,
+     "ventaGs": 5423700,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Placa de Fuente de Alimentación",
+     "fixedGs": 80000
+    },
+    {
+     "code": "6704B001AA",
+     "disc": null,
+     "stock": 10,
+     "desc": "HPE Synergy 12000 HC Fan",
+     "costo": 72.1941,
+     "ventaGs": 777100,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "15.000 a 120.000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "6705B001AA",
+     "disc": null,
+     "stock": 11,
+     "desc": "TB330XUP",
+     "costo": 72.4414,
+     "ventaGs": 779800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "15.000 a 120.000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "669324-B21",
+     "disc": null,
+     "stock": 2,
+     "desc": "TABLET LENOVO K11 LTE 11\" 8GB/128GB TECL ESP+PEN",
+     "costo": 69.4,
+     "ventaGs": 747000,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "15.000 a 120.000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "66J-01039",
+     "disc": null,
+     "stock": 16,
+     "desc": "WL-NET-USB",
+     "costo": 72.4506,
+     "ventaGs": 779900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "15.000 a 120.000",
+     "fixedGs": 80000
+    },
+    {
+     "code": "669280-001",
+     "disc": null,
+     "stock": 21,
+     "desc": "Rendimiento Mensual Optimo",
+     "costo": 72.3551,
+     "ventaGs": 778800,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "15.000 a 120.000",
+     "fixedGs": 80000
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 330000
+    }
+   ]
+  }
+ ],
+ "id": "ipf"
+}

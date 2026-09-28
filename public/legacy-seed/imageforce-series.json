@@ -1,0 +1,1041 @@
+{
+ "name": "imageFORCE series",
+ "tc": 5980,
+ "factor": 1.8,
+ "models": [
+  {
+   "name": "Mano de obra por cambio de Rodillo de recoleccion",
+   "note": "",
+   "items": [
+    {
+     "code": "Mano de obra por cambio de Rodillo de separacion",
+     "disc": null,
+     "stock": 0,
+     "desc": "900000 páginas",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FC0-9450"
+    },
+    {
+     "code": "Mano de obra por cambio de Rodillo de alimentacion de bypass",
+     "disc": null,
+     "stock": 0,
+     "desc": "1200000 páginas",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FC0-9631"
+    },
+    {
+     "code": "Mano de obra por cambio de Rodillo de separacion de bypass",
+     "disc": null,
+     "stock": 0,
+     "desc": "3600000 páginas",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM0-1611"
+    },
+    {
+     "code": "Mano de obra por cambio de Unidad de corona",
+     "disc": null,
+     "stock": 0,
+     "desc": "2400000 páginas",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FC0-9450"
+    },
+    {
+     "code": "Mano de obra por cambio de Termistor principal",
+     "disc": null,
+     "stock": 0,
+     "desc": "600000 hojas",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FC0-9450"
+    },
+    {
+     "code": "Mano de obra por cambio de Termistor secundario",
+     "disc": null,
+     "stock": 0,
+     "desc": "1000000 hojas",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FC0-9450"
+    },
+    {
+     "code": "Mano de obra por cambio de Termointerruptor",
+     "disc": null,
+     "stock": 0,
+     "desc": "5000000 páginas",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FC0-9450"
+    },
+    {
+     "code": "Mano de obra por cambio de Filtro de ozono",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM1-B264-020",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM1-C646"
+    },
+    {
+     "code": "Mano de obra por cambio de Filtro de polvo",
+     "disc": null,
+     "stock": 0,
+     "desc": "8000000 páginas",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM1-Z708"
+    },
+    {
+     "code": "imageFORCE 8100",
+     "disc": null,
+     "stock": 0,
+     "desc": "1200000 imágenes",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM1-Z708"
+    },
+    {
+     "code": "6741C003AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "HP 5y Priority Managemt PC 5K + seats SVC",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM0-4910"
+    },
+    {
+     "code": "6726C003AA",
+     "disc": null,
+     "stock": 0,
+     "desc": "200000 hojas",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM0-4910"
+    },
+    {
+     "code": "FM1-Z581",
+     "disc": null,
+     "stock": 0,
+     "desc": "GPR-1005 BLACK DRUM UNIT",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM0-4910"
+    },
+    {
+     "code": "FC8-2281",
+     "disc": null,
+     "stock": 0,
+     "desc": "GPR-1005 BLACK TONER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM0-4910"
+    },
+    {
+     "code": "FL2-8652",
+     "disc": null,
+     "stock": 0,
+     "desc": "DRUM PATH SENSOR",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM0-4910"
+    },
+    {
+     "code": "FL2-8653",
+     "disc": null,
+     "stock": 0,
+     "desc": "DRUM CLEANING BLADE",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM0-1611"
+    },
+    {
+     "code": "FL2-8654",
+     "disc": null,
+     "stock": 0,
+     "desc": "DRUM CLEANING SCOOP-UP SHEETS",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM0-1611"
+    },
+    {
+     "code": "FM2-X107",
+     "disc": null,
+     "stock": 0,
+     "desc": "EDGE SCRAPPER (FRONT)",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM1-T417"
+    },
+    {
+     "code": "FM1-Z613",
+     "disc": null,
+     "stock": 0,
+     "desc": "EDGE SCRAPPER (REAR)",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM0-4910"
+    },
+    {
+     "code": "FM1-T681",
+     "disc": null,
+     "stock": 0,
+     "desc": "DEVELOPING STIRRING MOTOR",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM2-L727"
+    },
+    {
+     "code": "FM2-T351",
+     "disc": null,
+     "stock": 0,
+     "desc": "ITB UNIT",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM0-1611"
+    },
+    {
+     "code": "FM2-R552",
+     "disc": null,
+     "stock": 0,
+     "desc": "TRANSFER CLEANING UNIT",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FL1-1302"
+    },
+    {
+     "code": "FL0-1877",
+     "disc": null,
+     "stock": 0,
+     "desc": "ITB INNER SCRAPPER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FL1-1302"
+    },
+    {
+     "code": "FE2-R759",
+     "disc": null,
+     "stock": 0,
+     "desc": "PRIMARY TRANSFER ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FL1-1302"
+    },
+    {
+     "code": "FC7-9325",
+     "disc": null,
+     "stock": 0,
+     "desc": "SECONDARY TRANSFER INNER ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FL1-1303"
+    },
+    {
+     "code": "FC0-2332",
+     "disc": null,
+     "stock": 0,
+     "desc": "PRIMARY TRANSFER ROLLER BUSH (FRONT)",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM2-L727"
+    },
+    {
+     "code": "FC0-2333",
+     "disc": null,
+     "stock": 0,
+     "desc": "PRIMARY TRANSFER ROLLER BUSH (REAR)",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM2-L727"
+    },
+    {
+     "code": "FL1-J026",
+     "disc": null,
+     "stock": 0,
+     "desc": "SECONDARY TRANSFER OUTER ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FL1-1302"
+    },
+    {
+     "code": "FM2-R413",
+     "disc": null,
+     "stock": 0,
+     "desc": "SECONDARY TRANSFER STATIC ELIMINATOR ASSEMBLY",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM2-L727"
+    },
+    {
+     "code": "FE3-K902",
+     "disc": null,
+     "stock": 0,
+     "desc": "FIXING BELT",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FL1-1302"
+    },
+    {
+     "code": "FE3-K906",
+     "disc": null,
+     "stock": 0,
+     "desc": "HEATING ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FL1-1302"
+    },
+    {
+     "code": "FE3-K907",
+     "disc": null,
+     "stock": 0,
+     "desc": "HEATING ROLLER INSULATING BUSH",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FL1-1302"
+    },
+    {
+     "code": "FU2-5100",
+     "disc": null,
+     "stock": 0,
+     "desc": "HEATING ROLLER BEARING",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FL1-1302"
+    },
+    {
+     "code": "FE2-J733",
+     "disc": null,
+     "stock": 0,
+     "desc": "STEERING ROLLER UNIT",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM1-Z708"
+    },
+    {
+     "code": "FM2-T125",
+     "disc": null,
+     "stock": 0,
+     "desc": "FM27256000",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FL1-1302"
+    },
+    {
+     "code": "FL1-J427",
+     "disc": null,
+     "stock": 0,
+     "desc": "FIXING BELT THERMISTOR UNIT",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FL1-1302"
+    },
+    {
+     "code": "FL1-H362",
+     "disc": null,
+     "stock": 0,
+     "desc": "OIL COATING ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "1100000 páginas"
+    },
+    {
+     "code": "FM5-E927",
+     "disc": null,
+     "stock": 0,
+     "desc": "FIXING PAD",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "90500 imágenes"
+    },
+    {
+     "code": "FE3-K890",
+     "disc": null,
+     "stock": 0,
+     "desc": "HEATING ROLLER UNIT 220V",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "90500 imágenes"
+    },
+    {
+     "code": "FL1-H362",
+     "disc": null,
+     "stock": 0,
+     "desc": "PRESSURE ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "1100000 páginas"
+    },
+    {
+     "code": "FM5-E927",
+     "disc": null,
+     "stock": 0,
+     "desc": "PRESSURE ROLLER INSULATING BUSH",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "90500 imágenes"
+    },
+    {
+     "code": "FE3-K890",
+     "disc": null,
+     "stock": 0,
+     "desc": "PRESSURE ROLLER GEAR",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "90500 imágenes"
+    },
+    {
+     "code": "FL1-H362",
+     "disc": null,
+     "stock": 0,
+     "desc": "PRESSURE ROLLER BEARING",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "1100000 páginas"
+    },
+    {
+     "code": "FM5-E927",
+     "disc": null,
+     "stock": 0,
+     "desc": "PRESSURE ROLLER THERMISTOR",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "90500 imágenes"
+    },
+    {
+     "code": "FE3-K890",
+     "disc": null,
+     "stock": 0,
+     "desc": "REGISTRATION UNIT",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "90500 imágenes"
+    },
+    {
+     "code": "FE3-K891",
+     "disc": null,
+     "stock": 0,
+     "desc": "SEPARATION CLAW",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "6000000 páginas"
+    },
+    {
+     "code": "FU2-5091",
+     "disc": null,
+     "stock": 0,
+     "desc": "RIGHT DECK PICKUP ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "FM1-Z708"
+    },
+    {
+     "code": "FU2-5074",
+     "disc": null,
+     "stock": 0,
+     "desc": "RIGHT DECK FEED ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "2000000 páginas"
+    },
+    {
+     "code": "FK4-7196",
+     "disc": null,
+     "stock": 0,
+     "desc": "Jelly Vacuum Tire 70/60-7.5; Max G3",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "9000000 páginas"
+    },
+    {
+     "code": "FM2-T053",
+     "disc": null,
+     "stock": 0,
+     "desc": "RIGHT DECK SEPARATION ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "1400000 páginas"
+    },
+    {
+     "code": "FL1-H377",
+     "disc": null,
+     "stock": 0,
+     "desc": "LEFT DECK PICKUP ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "1400000 páginas"
+    },
+    {
+     "code": "FM2-T474",
+     "disc": null,
+     "stock": 0,
+     "desc": "LEFT DECK FEED ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "1100000 páginas"
+    },
+    {
+     "code": "FL0-4500",
+     "disc": null,
+     "stock": 0,
+     "desc": "LEFT DECK SEPARATION ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "1100000 páginas"
+    },
+    {
+     "code": "FE3-K890",
+     "disc": null,
+     "stock": 0,
+     "desc": "CASSETTE PICKUP ROLLER",
+     "costo": 0,
+     "ventaGs": 0,
+     "vida": "1100000 páginas"
+    }
+   ]
+  },
+  {
+   "name": "CASSETTE FEED ROLLER",
+   "note": "",
+   "items": [
+    {
+     "code": "CASSETTE SEPARATION ROLLER",
+     "disc": null,
+     "stock": null,
+     "desc": "FL1-C372-000",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "FM2-L327-000"
+    },
+    {
+     "code": "DELIVERY UPPER COOLING SWITCH FLAPPER SOLENOID UNIT",
+     "disc": null,
+     "stock": null,
+     "desc": "FM1-X500-000",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "GPR-1002 Drum Unit"
+    },
+    {
+     "code": "REVERSE FLAPPER UNIT",
+     "disc": null,
+     "stock": null,
+     "desc": "1200000 imágenes",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "GPR-1002 Toner Black"
+    },
+    {
+     "code": "HOPPER UNIT",
+     "disc": null,
+     "stock": null,
+     "desc": "EDGE SCRAPPER (FRONT)",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "CASSETTE 1/2 PICKUP ROLLER"
+    },
+    {
+     "code": "PICKUP ROLLER UNIT",
+     "disc": null,
+     "stock": null,
+     "desc": "FM1-B264-020",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "CASSETTE 1/2 SEPARATION ROLLER"
+    },
+    {
+     "code": "ROLLER, FIXING IMAGE PRESS C1",
+     "disc": null,
+     "stock": 27,
+     "desc": "FL1-3762-000",
+     "costo": 21.0712,
+     "ventaGs": 226800,
+     "vida": "CASSETTE 1/2 FEED ROLLER"
+    },
+    {
+     "code": "HINGE ADF",
+     "disc": null,
+     "stock": 8,
+     "desc": "FM2-L036-000",
+     "costo": 20.77,
+     "ventaGs": 223600,
+     "vida": "CASSETTE 1/2 FEED ROLLER"
+    },
+    {
+     "code": "COVER, BASE, LOWER / IR ADVANCE C2030",
+     "disc": null,
+     "stock": 30,
+     "desc": "FM1-A606-000",
+     "costo": 21.075,
+     "ventaGs": 226900,
+     "vida": "CASSETTE 1/2 FEED ROLLER"
+    },
+    {
+     "code": "ROLLER, FIXING IMAGE PRESS C1",
+     "disc": null,
+     "stock": 27,
+     "desc": "LEFT DECK FEED ROLLER",
+     "costo": 21.0712,
+     "ventaGs": 226800,
+     "vida": "CASSETTE 1/2 FEED ROLLER"
+    },
+    {
+     "code": "SEPARATION ROLLER UNIT",
+     "disc": null,
+     "stock": null,
+     "desc": "CASSETTE PICKUP ROLLER",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "CASSETTE 1/2 FEED ROLLER"
+    },
+    {
+     "code": "ROLLER, FIXING IMAGE PRESS C1",
+     "disc": null,
+     "stock": 27,
+     "desc": "LEFT DECK SEPARATION ROLLER",
+     "costo": 21.0712,
+     "ventaGs": 226800,
+     "vida": "CASSETTE 1/2 FEED ROLLER"
+    },
+    {
+     "code": "MULTIPURPOSE TRAY PICKUP ROLLER",
+     "disc": null,
+     "stock": null,
+     "desc": "FM3-8614-000",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "CASSETTE 1/2 FEED ROLLER"
+    },
+    {
+     "code": "MULTIPURPOSE TRAY FEED ROLLER",
+     "disc": null,
+     "stock": null,
+     "desc": "Jelly Vacuum Tire 70/60-7.5; Max G3",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "TONER FILTER"
+    },
+    {
+     "code": "MULTIPURPOSE TRAY SEPARATION ROLLER",
+     "disc": null,
+     "stock": null,
+     "desc": "FM1-W736-000",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "CASSETTE 1/2 SEPARATION ROLLER"
+    },
+    {
+     "code": "imageFORCE 6100",
+     "disc": null,
+     "stock": null,
+     "desc": "FM2-L524-000",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "FM1-C646"
+    },
+    {
+     "code": "5347C003AA",
+     "disc": null,
+     "stock": null,
+     "desc": "STEERING ROLLER UNIT",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "FM1-C646"
+    },
+    {
+     "code": "6136C003AA",
+     "disc": null,
+     "stock": null,
+     "desc": "FM2-L497-000",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "FM1-C646"
+    },
+    {
+     "code": "FM2-L306-000",
+     "disc": null,
+     "stock": null,
+     "desc": "FM1-R504-000",
+     "costo": null,
+     "ventaGs": null,
+     "vida": "FM1-C646"
+    },
+    {
+     "code": "PELICULA DE FUSOR IR ADV 250/350 1335/25 220V",
+     "disc": null,
+     "stock": 14,
+     "desc": "RIGHT DECK SEPARATION ROLLER",
+     "costo": 63.3988,
+     "ventaGs": 682400,
+     "vida": "1400000 páginas"
+    },
+    {
+     "code": "MAIN CONTROLLER PCB LBP7780",
+     "disc": null,
+     "stock": 13,
+     "desc": "LEFT DECK PICKUP ROLLER",
+     "costo": 19.57,
+     "ventaGs": 210700,
+     "vida": "1400000 páginas"
+    }
+   ]
+  },
+  {
+   "name": "TOSHIBA ESTUDIO 2809A USADA",
+   "note": "",
+   "items": [
+    {
+     "code": "CRG-T03",
+     "disc": null,
+     "stock": 271,
+     "desc": "Cartucho de toner",
+     "costo": 45.84,
+     "ventaGs": 493400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de cartucho de toner"
+    },
+    {
+     "code": "FM1-T629-000",
+     "disc": null,
+     "stock": 2,
+     "desc": "Unidad de fusor",
+     "costo": 372.2063,
+     "ventaGs": 4006400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de unidad de fusor"
+    },
+    {
+     "code": "FUSER MFP631",
+     "disc": null,
+     "stock": 1,
+     "desc": "Pelicula de Fusor",
+     "costo": 27.1499,
+     "ventaGs": 292200,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de pelicula de Fusor"
+    },
+    {
+     "code": "ROD-PRES MFP631",
+     "disc": null,
+     "stock": 25,
+     "desc": "Rodillo de Presion",
+     "costo": 11.3765,
+     "ventaGs": 122500,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Rodillo de Presion"
+    },
+    {
+     "code": "FIXING ASSEMBLY DRIVE UNIT",
+     "disc": null,
+     "stock": null,
+     "desc": "Rodillos de transferencia",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillos de transferencia"
+    },
+    {
+     "code": "Estante 200x115x40cm Ch N° 20 (33cm c/ bandeja)",
+     "disc": null,
+     "stock": 17,
+     "desc": "Kit de rodillos",
+     "costo": 39.4835,
+     "ventaGs": 425000,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de rodillos"
+    },
+    {
+     "code": "RL2-1566-000",
+     "disc": null,
+     "stock": 14,
+     "desc": "PAPER DELIVERY UNIT",
+     "costo": 3.242,
+     "ventaGs": 34900,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "61000 páginas",
+     "fixedGs": 80000
+    },
+    {
+     "code": "RL2-0079-000",
+     "disc": null,
+     "stock": 7,
+     "desc": "65500 páginas",
+     "costo": 3.8931,
+     "ventaGs": 41900,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de rodillo de recoleccion de bypass"
+    },
+    {
+     "code": "DEVELOPING ASSEMBLY IRE-ADV C9270",
+     "disc": null,
+     "stock": 3,
+     "desc": "Kit de mantenimiento del ADF",
+     "costo": 26.6038,
+     "ventaGs": 286400,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de kit de mantenimiento del ADF"
+    },
+    {
+     "code": "600000 páginas",
+     "disc": null,
+     "stock": null,
+     "desc": "Placa de fuente de Alta tensión",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa de fuente de alta tensión"
+    },
+    {
+     "code": "FM1-R118-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Placa controladora DC",
+     "costo": 119.62,
+     "ventaGs": 1287600,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora DC"
+    },
+    {
+     "code": "720000 páginas",
+     "disc": null,
+     "stock": null,
+     "desc": "Panel de control",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de panel de control"
+    },
+    {
+     "code": "1500000 páginas",
+     "disc": null,
+     "stock": null,
+     "desc": "Placa controladora principal",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de placa controladora principal"
+    },
+    {
+     "code": "500000 hojas",
+     "disc": null,
+     "stock": null,
+     "desc": "Unidad de disco duro",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Unidad de disco duro"
+    },
+    {
+     "code": "900000 imágenes",
+     "disc": null,
+     "stock": null,
+     "desc": "Sistema de Alimentación",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "labor": "Mano de obra por cambio de Unidad de Alimentacion"
+    },
+    {
+     "labor": "Mano de obra por cambio de partes y mantenimiento preventivo"
+    }
+   ]
+  },
+  {
+   "name": "Mano de obra por cambio de partes y mantenimiento preventivo",
+   "note": "",
+   "items": [
+    {
+     "code": "3526C001AA",
+     "disc": null,
+     "stock": 980,
+     "desc": "Cartucho de Toner",
+     "costo": 117.7426,
+     "ventaGs": 1267400,
+     "vida": null
+    },
+    {
+     "code": "FM1-X510-000",
+     "disc": null,
+     "stock": 20,
+     "desc": "Kit de rodillo de recolección",
+     "costo": 20.397,
+     "ventaGs": 219600,
+     "vida": null
+    },
+    {
+     "code": "RM2-5741-000",
+     "disc": null,
+     "stock": 23,
+     "desc": "Rodillo de recolección",
+     "costo": 7.4305,
+     "ventaGs": 80000,
+     "vida": null
+    },
+    {
+     "code": "RM2-5745-000",
+     "disc": null,
+     "stock": 38,
+     "desc": "Rodillo de separación",
+     "costo": 5.9446,
+     "ventaGs": 80000,
+     "vida": null
+    },
+    {
+     "code": "FM1-W155-000",
+     "disc": null,
+     "stock": 15,
+     "desc": "Unidad de fusor",
+     "costo": 146.657,
+     "ventaGs": 1578600,
+     "vida": null
+    },
+    {
+     "code": "RL2-0656-000",
+     "disc": null,
+     "stock": 29,
+     "desc": "Rodillo de bypass",
+     "costo": 2.4513,
+     "ventaGs": 26400,
+     "vida": null
+    },
+    {
+     "code": "RL2-0657-000",
+     "disc": null,
+     "stock": 55,
+     "desc": "Pad de separacion de bypass",
+     "costo": 3.72,
+     "ventaGs": 40000,
+     "vida": null
+    },
+    {
+     "code": "FM1-N703-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Rodillo ADF",
+     "costo": 39.6191,
+     "ventaGs": 426500,
+     "vida": null
+    },
+    {
+     "code": "FM1-P580-000",
+     "disc": null,
+     "stock": 15,
+     "desc": "Almohadilla de separación del bypass",
+     "costo": 23.7732,
+     "ventaGs": 80000,
+     "vida": null
+    },
+    {
+     "code": "U. REVELADORA C IR-ADV C5030/35/45/51 C5235/40/50",
+     "disc": null,
+     "stock": 1,
+     "desc": "Placa de alimentacion de fijación 220Volts",
+     "costo": 14.1475,
+     "ventaGs": 152300,
+     "vida": null
+    },
+    {
+     "code": "FM2-A826-000",
+     "disc": null,
+     "stock": 5,
+     "desc": "Placa de Fuente de alimentacion de fijación 220Volts",
+     "costo": 37.9757,
+     "ventaGs": 408800,
+     "vida": null
+    },
+    {
+     "code": "FM2-A780-000",
+     "disc": null,
+     "stock": 1,
+     "desc": "Placa de fuente de alimentacion 110Volts",
+     "costo": 40.4,
+     "ventaGs": 434900,
+     "vida": null
+    },
+    {
+     "code": "FM1-T197-000",
+     "disc": null,
+     "stock": 0,
+     "desc": "Bisagra Derecha/Izquierda",
+     "costo": 39.488,
+     "ventaGs": 425000,
+     "vida": null
+    },
+    {
+     "code": "ADF PAPER PICK-UP ASSEMBLY IR-ADV 717",
+     "disc": null,
+     "stock": 2,
+     "desc": "Placa controladora principal",
+     "costo": 392.58,
+     "ventaGs": 80000,
+     "vida": null
+    },
+    {
+     "code": "EOP-SOPORTE",
+     "disc": null,
+     "stock": 0,
+     "desc": "iRADV DX 4745i",
+     "costo": 104.7367,
+     "ventaGs": 1127400,
+     "vida": null
+    },
+    {
+     "code": "ROLLER, FEED  IR-1435",
+     "disc": null,
+     "stock": 7,
+     "desc": "iRADV DX 4751i",
+     "costo": 14.84,
+     "ventaGs": 159700,
+     "vida": null
+    },
+    {
+     "code": "iRADV DX 4735i",
+     "disc": null,
+     "stock": null,
+     "desc": "imageFORCE 1643",
+     "costo": null,
+     "ventaGs": null,
+     "vida": null
+    },
+    {
+     "code": null,
+     "desc": "Mantenimiento preventivo",
+     "fixedGs": 330000
+    }
+   ]
+  }
+ ],
+ "id": "imageforce-series"
+}
