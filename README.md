@@ -19,7 +19,8 @@ v0.1.6 mantiene el subtítulo del encabezado en dos líneas sin reducir el icono
 v0.1.7 reemplaza el símbolo del encabezado por dos documentos superpuestos;
 v0.1.8 introduce un monograma DC diseñado para la cabecera de la suite;
 v0.1.9 protege la API local, permite elegir entre perfiles antiguos, recupera caídas
-del servicio, muestra los errores del Resumen y lleva el monograma al icono instalado.
+del servicio, muestra los errores del Resumen y lleva el monograma al icono instalado;
+v0.1.10 mejora el contraste y unifica los botones de cierre de los diálogos de Proformas.
 
 ## Alcance
 

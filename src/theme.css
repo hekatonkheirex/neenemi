@@ -1178,7 +1178,6 @@ html[data-theme='light'] .service-report-match small {
 }
 
 html[data-theme='light'] .service-report-dropzone span,
-html[data-theme='light'] .service-report-dialog-header p,
 html[data-theme='light'] .service-report-dialog-footer > span,
 html[data-theme='light'] .service-report-explanation,
 html[data-theme='light'] .service-report-footnote {
@@ -1248,7 +1247,6 @@ html[data-theme='light'] .open-contract-dialog-header h2 {
   color: #ffffff;
 }
 
-html[data-theme='light'] .open-contract-dialog-header p,
 html[data-theme='light'] .open-contract-dialog-footer > span,
 html[data-theme='light'] .open-contract-help,
 html[data-theme='light'] .open-contract-footnote,
@@ -1375,16 +1373,25 @@ html[data-theme='light'] .sales-catalog-dialog-header {
   border-color: rgba(255, 255, 255, 0.12);
 }
 
+html[data-theme='light'] .sales-catalog-dialog-header h2 {
+  color: #ffffff;
+}
+
 html[data-theme='light'] .sales-catalog-dialog-body {
   background: var(--ds-surface);
 }
 
-html[data-theme='light'] .sales-catalog-dialog-header p,
 html[data-theme='light'] .sales-catalog-dialog-footer > span,
 html[data-theme='light'] .sales-catalog-file-heading small,
 html[data-theme='light'] .sales-catalog-dropzone span,
 html[data-theme='light'] .sales-catalog-file-meta.muted {
   color: var(--ds-muted);
+}
+
+html[data-theme='light'] .service-report-dialog-header p,
+html[data-theme='light'] .open-contract-dialog-header p,
+html[data-theme='light'] .sales-catalog-dialog-header p {
+  color: #dce8fc;
 }
 
 html[data-theme='light'] .sales-catalog-file-card {

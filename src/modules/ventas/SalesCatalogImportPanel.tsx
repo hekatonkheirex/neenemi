@@ -150,7 +150,7 @@ export default function SalesCatalogImportPanel({ isOpen, catalogs, onClose, onI
             <h2 id="sales-catalog-title">Actualizar catálogos</h2>
             <p>Selecciona una o ambas planillas antiguas. Cada catálogo queda guardado en la SQLite compartida y conserva su archivo original.</p>
           </div>
-          <button ref={closeButtonRef} className="icon-button sales-catalog-close" type="button" onClick={closePanel} disabled={busy} aria-label="Cerrar ventana de actualización">×</button>
+          <button ref={closeButtonRef} className="mps-editor-close sales-catalog-close" type="button" onClick={closePanel} disabled={busy} aria-label="Cerrar ventana de actualización">×</button>
         </header>
 
         <div className="sales-catalog-dialog-body">
