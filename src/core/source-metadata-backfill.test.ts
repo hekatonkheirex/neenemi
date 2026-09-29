@@ -112,7 +112,7 @@ describe('stored source metadata backfill', () => {
   it('hydrates raw rows and restores metadata for old Consumibles and Services batches', async () => {
     const dataDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'datasystems-suite-backfill-'));
     temporaryDirectories.push(dataDirectory);
-    const database = openDatabase(path.join(dataDirectory, 'datasystems.sqlite'));
+    const database = openDatabase(path.join(dataDirectory, 'dcss.sqlite'));
     databases.push(database);
     const imports = new ImportRepository(database);
     const operations = new OperationsRepository(database);
@@ -210,7 +210,7 @@ describe('stored source metadata backfill', () => {
   it('restores calculated Viáticos columns for old imported trips', async () => {
     const dataDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'datasystems-suite-travel-backfill-'));
     temporaryDirectories.push(dataDirectory);
-    const database = openDatabase(path.join(dataDirectory, 'datasystems.sqlite'));
+    const database = openDatabase(path.join(dataDirectory, 'dcss.sqlite'));
     databases.push(database);
     const imports = new ImportRepository(database);
     const contents = await makeTravelWorkbook();
@@ -254,7 +254,7 @@ describe('stored source metadata backfill', () => {
   it('repairs an outdated Viáticos cost catalog from its archived source', async () => {
     const dataDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'datasystems-suite-travel-catalog-backfill-'));
     temporaryDirectories.push(dataDirectory);
-    const database = openDatabase(path.join(dataDirectory, 'datasystems.sqlite'));
+    const database = openDatabase(path.join(dataDirectory, 'dcss.sqlite'));
     databases.push(database);
     const imports = new ImportRepository(database);
     const contents = await makeTravelWorkbookWithCostCatalog();

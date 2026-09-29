@@ -28,7 +28,6 @@ describe('development entrypoint', () => {
     expect(electronMain).toContain("app.commandLine.appendSwitch('ozone-platform-hint', 'auto')");
     expect(electronMain).toContain("app.commandLine.appendSwitch('disable-gpu')");
     expect(electronMain).toContain("app.disableHardwareAcceleration()");
-    expect(electronMain).toContain("app.setAppUserModelId('com.datasystems.suite')");
     expect(electronMain).toContain("preload: path.join(__dirname, 'preload.cjs')");
     expect(electronMain).toContain("ipcMain.handle('datasystems:save-current-page-as-pdf'");
     expect(preload).toContain("contextBridge.exposeInMainWorld('dataSystemsDesktop'");

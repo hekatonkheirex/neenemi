@@ -63,7 +63,7 @@ describe('MpsRepository', () => {
     expect(parsed.models[0].consumables[0]).toMatchObject({ name: 'Tóner Negro T06', sku: '' });
 
     const suiteDirectory = makeTemporaryDirectory('datasystems-suite-mps-suite-');
-    const suite = openDatabase(path.join(suiteDirectory, 'datasystems.sqlite'));
+    const suite = openDatabase(path.join(suiteDirectory, 'dcss.sqlite'));
     databases.push(suite);
     const imports = new ImportRepository(suite);
     const batchId = imports.createBatch({ domain: 'mps', sourceName: 'canon_mps.db' });
@@ -111,7 +111,7 @@ describe('MpsRepository', () => {
 
   it('keeps imported profiles immutable while supporting manual CRUD and cloning', () => {
     const suiteDirectory = makeTemporaryDirectory('datasystems-suite-mps-manual-');
-    const suite = openDatabase(path.join(suiteDirectory, 'datasystems.sqlite'));
+    const suite = openDatabase(path.join(suiteDirectory, 'dcss.sqlite'));
     databases.push(suite);
     const imports = new ImportRepository(suite);
     const repository = new MpsRepository(suite);

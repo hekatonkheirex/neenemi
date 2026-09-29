@@ -24,7 +24,7 @@ describe('backfillImportFileBlobs', () => {
   it('verifies and resumes legacy file backfill without removing external copies', async () => {
     const dataDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'datasystems-suite-originals-'));
     temporaryDirectories.push(dataDirectory);
-    const database = openDatabase(path.join(dataDirectory, 'datasystems.sqlite'));
+    const database = openDatabase(path.join(dataDirectory, 'dcss.sqlite'));
     openDatabases.push(database);
     const imports = new ImportRepository(database);
     const batchId = imports.createBatch({ domain: 'catalog', sourceName: 'legacy.xlsx' });
@@ -67,7 +67,7 @@ describe('backfillImportFileBlobs', () => {
   it('backfills a retained original after its import batch was removed', async () => {
     const dataDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'datasystems-suite-archived-original-'));
     temporaryDirectories.push(dataDirectory);
-    const database = openDatabase(path.join(dataDirectory, 'datasystems.sqlite'));
+    const database = openDatabase(path.join(dataDirectory, 'dcss.sqlite'));
     openDatabases.push(database);
     const imports = new ImportRepository(database);
     const batchId = imports.createBatch({ domain: 'catalog', sourceName: 'legacy.xlsx' });
@@ -94,7 +94,7 @@ describe('backfillImportFileBlobs', () => {
   it('discovers and adopts old removed-folder files idempotently', async () => {
     const dataDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'datasystems-suite-old-archive-'));
     temporaryDirectories.push(dataDirectory);
-    const database = openDatabase(path.join(dataDirectory, 'datasystems.sqlite'));
+    const database = openDatabase(path.join(dataDirectory, 'dcss.sqlite'));
     openDatabases.push(database);
     const imports = new ImportRepository(database);
     const sourceBatchId = 'batch-from-previous-version';

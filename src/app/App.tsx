@@ -1,4 +1,19 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  AiBrain01Icon,
+  Airplane01Icon,
+  Alert02Icon,
+  Analytics01Icon,
+  Calculator01Icon,
+  CloudIcon,
+  GridViewIcon,
+  Invoice01Icon,
+  PrinterIcon,
+  ShieldEnergyIcon,
+  Tag01Icon,
+  Wrench01Icon,
+} from '@hugeicons/core-free-icons';
 import type { SuiteOverview } from '../db/overview';
 import { suiteModules, type SuiteModule } from './modules';
 import { persistTheme, readTheme, type Theme } from './theme';
@@ -51,6 +66,21 @@ const sectionLabels: Record<SuiteModule['section'], string> = {
   análisis: 'Análisis',
   soporte: 'Soporte',
 };
+
+const moduleIcons = {
+  catalogo: PrinterIcon,
+  mantenimiento: Wrench01Icon,
+  descontinuador: Alert02Icon,
+  consumibles: Analytics01Icon,
+  mps: Calculator01Icon,
+  cobertura: PrinterIcon,
+  viaticos: Airplane01Icon,
+  uniflow: CloudIcon,
+  'listado-precios': Tag01Icon,
+  proformas: Invoice01Icon,
+  sla: ShieldEnergyIcon,
+  'software-selector': AiBrain01Icon,
+} satisfies Record<(typeof suiteModules)[number]['id'], typeof PrinterIcon>;
 
 const numberFormat = new Intl.NumberFormat('es-PY');
 
@@ -182,7 +212,12 @@ export default function App() {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand-block">
-          <div className="brand-mark">DCSS</div>
+          <div className="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9.5 8h9.8C27.1 8 31 12.5 31 20s-3.9 12-11.7 12H9.5V8Z" stroke="currentColor" strokeWidth="2.6" strokeLinejoin="round" />
+              <path d="M25.3 14.5c-1.3-1.5-3.1-2.3-5.2-2.3-4.5 0-7.1 3.2-7.1 7.8s2.6 7.8 7.1 7.8c2.1 0 3.9-.8 5.2-2.3" stroke="var(--ds-orange)" strokeWidth="2.8" strokeLinecap="square" />
+            </svg>
+          </div>
           <div>
             <strong>DCSS Suite</strong>
             <span>Document &amp; Collaborative Solutions Support</span>
@@ -195,7 +230,7 @@ export default function App() {
             type="button"
             onClick={() => setActiveModuleId(null)}
           >
-            <span className="nav-icon">⌂</span>
+            <span className="nav-icon" aria-hidden="true"><HugeiconsIcon icon={GridViewIcon} size={16} /></span>
             <span>Resumen</span>
           </button>
 
@@ -211,7 +246,7 @@ export default function App() {
                     type="button"
                     onClick={() => setActiveModuleId(module.id)}
                   >
-                    <span className="nav-icon">{module.label.slice(0, 1)}</span>
+                    <span className="nav-icon" aria-hidden="true"><HugeiconsIcon icon={moduleIcons[module.id]} size={16} /></span>
                     <span>{module.label}</span>
                   </button>
                 ))}

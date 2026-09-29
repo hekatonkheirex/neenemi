@@ -14,7 +14,6 @@ describe('production packaging contract', () => {
 
   it('keeps the Windows target and native SQLite rule in the builder config', () => {
     const builderConfig = fs.readFileSync(path.join(root, 'electron-builder.yml'), 'utf8');
-    expect(builderConfig).toContain('appId: com.datasystems.suite');
     expect(builderConfig).toContain('target: nsis');
     expect(builderConfig).toContain('node_modules/better-sqlite3/**');
     expect(builderConfig).toContain('npmRebuild: false');

@@ -10,7 +10,14 @@ no deben modificarse para implementar esta suite.
 
 Cada cambio entregado actualiza la versión visible en la barra lateral, el manifiesto y el
 instalador. Se incrementa el parche por defecto; cambios funcionales o incompatibles
-pueden requerir un incremento menor o mayor. La versión v0.1.1 incluye el nombre DCSS Suite.
+pueden requerir un incremento menor o mayor. v0.1.1 incorporó el nombre DCSS Suite;
+v0.1.2 mantiene fijos el selector de módulos y el número de versión al desplazar el contenido;
+v0.1.3 renombra el instalador y la base SQLite a DCSS Suite;
+v0.1.4 devuelve los iconos del lanzador legado al selector de módulos;
+v0.1.5 sustituye las iniciales del encabezado por un símbolo de documento y colaboración;
+v0.1.6 mantiene el subtítulo del encabezado en dos líneas sin reducir el icono;
+v0.1.7 reemplaza el símbolo del encabezado por dos documentos superpuestos;
+v0.1.8 introduce un monograma DC diseñado para la cabecera de la suite.
 
 ## Alcance
 
@@ -24,11 +31,16 @@ con una única interfaz, una única API local y una base SQLite por instalación
 La base final se ubicará en el directorio de datos de usuario de Electron:
 
 ```text
-%APPDATA%/Data Systems Suite/data/datasystems.sqlite
+%APPDATA%/dcss-suite/data/dcss.sqlite
 ```
 
-El nombre `Data Systems Suite` se conserva en la ruta de datos y en la identidad del
-instalador para que las instalaciones existentes sigan encontrando su base SQLite.
+Al abrir la aplicación instalada por primera vez, la suite copia los datos de prueba de
+`%APPDATA%/datasystems-suite/data/` (o de `%APPDATA%/Data Systems Suite/data/`
+si se creó con ese nombre) a la carpeta nueva y comprueba la integridad de
+la base antes de usarla. La carpeta anterior se conserva como respaldo; cierre la
+versión antigua antes de instalar DCSS Suite y compruebe los datos antes de desinstalarla.
+En desarrollo, si existe `data/datasystems.sqlite` y aún no existe `data/dcss.sqlite`,
+la API crea una copia SQLite consistente con el nombre nuevo sin borrar la base anterior.
 
 Los originales importados se guardan como BLOB en `import_files`, junto con sus metadatos
 y los resultados normalizados, para que un respaldo SQLite pueda ser autocontenido. Durante

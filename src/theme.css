@@ -159,11 +159,6 @@ html[data-theme='light'] .brand-block span {
   color: var(--ds-muted);
 }
 
-html[data-theme='light'] .brand-mark {
-  border-color: var(--ds-orange);
-  color: #ffffff;
-  background: var(--ds-navy);
-}
 
 html[data-theme='light'] .nav-label {
   color: var(--ds-subtle);

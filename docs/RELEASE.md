@@ -1,4 +1,4 @@
-# Release de Data Systems Suite
+# Release de DCSS Suite
 
 La suite se distribuye como una sola aplicación Electron. El instalador no debe
 arrancar Node, Vite ni una API externa: `electron/main.cjs` inicia `electron/api-child.cjs`
@@ -8,7 +8,7 @@ la ventana.
 
 ## Comprobación local
 
-Desde `datasystems-suite/`:
+Desde `dcss-suite/`:
 
 ```bash
 npm run desktop:check
@@ -57,6 +57,14 @@ el release check y la inspección del contenido siguen siendo la validación apl
 El script rechaza explícitamente intentar generar Windows desde Linux o macOS, porque
 `better-sqlite3` es nativo y no debe mezclarse el binding del sistema anfitrión con el
 artefacto Windows.
+
+Si hubo una instalación de prueba de Data Systems Suite en Windows, cerrarla antes de abrir
+DCSS Suite. En el primer arranque empaquetado se copian los datos de
+`%APPDATA%/datasystems-suite/data/` (también se reconoce
+`%APPDATA%/Data Systems Suite/data/`) a `%APPDATA%/dcss-suite/data/` y la base pasa
+de `datasystems.sqlite` a `dcss.sqlite`; la carpeta original no se elimina. El nuevo
+`appId` puede dejar ambas aplicaciones instaladas: verificar los datos en DCSS Suite
+antes de desinstalar la anterior. Si ya hay datos en la carpeta nueva, no se sobrescriben.
 
 ## Auditoría de dependencias
 

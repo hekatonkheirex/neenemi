@@ -18,7 +18,7 @@ describe('UniflowRepository', () => {
   it('returns defaults and persists all four editable price lists in SQLite', () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'datasystems-suite-uniflow-'));
     temporaryDirectories.push(directory);
-    const database = openDatabase(path.join(directory, 'datasystems.sqlite'));
+    const database = openDatabase(path.join(directory, 'dcss.sqlite'));
     databases.push(database);
     const repository = new UniflowRepository(database);
 

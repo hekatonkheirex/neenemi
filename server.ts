@@ -276,8 +276,8 @@ export function createServer(options: ServerOptions): { app: express.Express; da
         return;
       }
 
-      temporaryDirectory = fs.mkdtempSync(path.join(dataDirectory, '.datasystems-backup-'));
-      const snapshotPath = path.join(temporaryDirectory, 'datasystems.sqlite');
+      temporaryDirectory = fs.mkdtempSync(path.join(dataDirectory, '.dcss-backup-'));
+      const snapshotPath = path.join(temporaryDirectory, 'dcss.sqlite');
       await database.backup(snapshotPath);
 
       response.setHeader('Cache-Control', 'no-store');
@@ -2972,7 +2972,7 @@ function bundleReplacementBatches(
 
 function makeBackupFileName(): string {
   const timestamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-');
-  return `datasystems-suite-backup-${timestamp}.sqlite`;
+  return `dcss-suite-backup-${timestamp}.sqlite`;
 }
 
 function removeTemporaryDirectory(directory: string | null): void {

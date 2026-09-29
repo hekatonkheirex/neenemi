@@ -39,7 +39,7 @@ if (/redact-ds/i.test(moduleManifest)) {
   failures.push('redact-ds no puede aparecer en el manifiesto de módulos de la suite.');
 }
 
-if (!/appId:\s*com\.datasystems\.suite/.test(builderConfig)
+if (!/appId:\s*com\.datasystems\.dcss/.test(builderConfig)
   || !/target:\s*nsis/.test(builderConfig)
   || !/node_modules\/better-sqlite3\/\*\*/.test(builderConfig)
   || !/npmRebuild:\s*false/.test(builderConfig)) {
@@ -50,7 +50,7 @@ const electronPackagePath = path.join(root, 'node_modules', 'electron', 'package
 const nativeModulePath = path.join(root, 'node_modules', 'better-sqlite3', 'build', 'Release', 'better_sqlite3.node');
 
 if (!fs.existsSync(electronPackagePath)) {
-  failures.push('No está instalado Electron. Ejecuta npm install en datasystems-suite.');
+  failures.push('No está instalado Electron. Ejecuta npm install en dcss-suite.');
 }
 
 if (!fs.existsSync(nativeModulePath)) {

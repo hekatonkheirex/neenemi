@@ -207,7 +207,7 @@ describe('SQLite restore', () => {
       .rejects.toThrow('vacío o incompleto');
 
     expect(new SettingsRepository(active).get('restore-test', 'state', '')).toBe('keep');
-    expect(fs.readdirSync(dataDirectory).filter((name) => name.startsWith('.datasystems-restore-'))).toEqual([]);
+    expect(fs.readdirSync(dataDirectory).filter((name) => name.startsWith('.dcss-restore-'))).toEqual([]);
   });
 
   it('rejects an older schema-only database that cannot contain the originals', async () => {

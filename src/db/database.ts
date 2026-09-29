@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
 import fs from 'node:fs';
 import path from 'node:path';
+import { randomUUID } from 'node:crypto';
 
 export type SuiteDatabase = Database.Database;
 
@@ -1037,12 +1038,29 @@ function applyMigrations(
   applyPending();
 }
 
+function migrateLegacyDatabaseFile(databasePath: string): void {
+  if (path.basename(databasePath) !== 'dcss.sqlite' || fs.existsSync(databasePath)) return;
+  const oldPath = path.join(path.dirname(databasePath), 'datasystems.sqlite');
+  if (!fs.existsSync(oldPath)) return;
+
+  const candidate = path.join(path.dirname(databasePath), `.dcss-migration-${randomUUID()}.sqlite`);
+  const legacy = new Database(oldPath, { readonly: true, fileMustExist: true });
+  try {
+    legacy.prepare('VACUUM INTO ?').run(candidate);
+    fs.renameSync(candidate, databasePath);
+  } finally {
+    legacy.close();
+    fs.rmSync(candidate, { force: true });
+  }
+}
+
 export function openDatabase(
   databasePath: string,
   migrations: readonly Migration[] = CORE_MIGRATIONS,
 ): SuiteDatabase {
   const absolutePath = path.resolve(databasePath);
   fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
+  migrateLegacyDatabaseFile(absolutePath);
   const databaseExistedBeforeOpen = fs.existsSync(absolutePath) && fs.statSync(absolutePath).size > 0;
 
   const database = new Database(absolutePath);
@@ -1060,5 +1078,5 @@ export function openDatabase(
 }
 
 export function resolveDatabasePath(dataDirectory: string): string {
-  return path.join(path.resolve(dataDirectory), 'datasystems.sqlite');
+  return path.join(path.resolve(dataDirectory), 'dcss.sqlite');
 }

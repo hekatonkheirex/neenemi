@@ -1,6 +1,6 @@
-appId: com.datasystems.suite
-productName: Data Systems Suite
-artifactName: Data-Systems-Suite-${version}-${arch}.${ext}
+appId: com.datasystems.dcss
+productName: DCSS Suite
+artifactName: DCSS-Suite-${version}-${arch}.${ext}
 asar: true
 # ensure-native.mjs prepara y valida el binding para el runtime de Electron.
 # Builder no debe descargarlo ni recompilarlo durante el empaquetado.
@@ -25,7 +25,7 @@ nsis:
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
-  shortcutName: Data Systems Suite
+  shortcutName: DCSS Suite
 linux:
   target:
     - target: dir

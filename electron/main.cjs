@@ -2,6 +2,7 @@ const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const { fork } = require('node:child_process');
 const fs = require('node:fs/promises');
 const path = require('node:path');
+const { migrateLegacyDataDirectory } = require('./migrate-data.cjs');
 
 const WINDOW_BACKGROUND_COLOR = '#0b1220';
 let localApiProcess;
@@ -23,7 +24,7 @@ if (process.platform === 'linux' && process.env.DS_ENABLE_GPU !== 'true') {
 }
 
 if (process.platform === 'win32') {
-  app.setAppUserModelId('com.datasystems.suite');
+  app.setAppUserModelId('com.datasystems.dcss');
 }
 
 const isLocalUrl = (value) => {
@@ -248,6 +249,7 @@ if (!hasSingleInstanceLock) {
   });
 
   app.whenReady().then(async () => {
+    if (app.isPackaged) await migrateLegacyDataDirectory(app.getPath('appData'), app.getPath('userData'));
     activeRendererUrl = process.env.DS_RENDERER_URL || await startLocalApi();
     createWindow(activeRendererUrl);
     app.on('activate', () => {

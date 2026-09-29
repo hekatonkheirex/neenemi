@@ -763,7 +763,7 @@ describe('suite local API', () => {
 
       expect(response.status).toBe(200);
       expect(response.headers.get('content-type')).toContain('application/vnd.sqlite3');
-      expect(response.headers.get('content-disposition')).toMatch(/datasystems-suite-backup-.*\.sqlite/);
+      expect(response.headers.get('content-disposition')).toMatch(/dcss-suite-backup-.*\.sqlite/);
       expect(backup.subarray(0, 16).toString()).toBe('SQLite format 3\u0000');
 
       const downloadedPath = path.join(dataDirectory, 'downloaded-backup-test.sqlite');

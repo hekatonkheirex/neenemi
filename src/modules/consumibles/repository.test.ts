@@ -14,7 +14,7 @@ const databases: Array<ReturnType<typeof openDatabase>> = [];
 function makeTemporaryDatabase() {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'datasystems-suite-consumables-'));
   temporaryDirectories.push(directory);
-  const database = openDatabase(path.join(directory, 'datasystems.sqlite'));
+  const database = openDatabase(path.join(directory, 'dcss.sqlite'));
   databases.push(database);
   return database;
 }

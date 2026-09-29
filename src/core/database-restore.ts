@@ -15,7 +15,7 @@ export async function stageDatabaseRestore(
 ): Promise<string> {
   const dataRoot = path.resolve(dataDirectory);
   fs.mkdirSync(dataRoot, { recursive: true });
-  const candidatePath = path.join(dataRoot, `.datasystems-restore-${randomUUID()}.sqlite`);
+  const candidatePath = path.join(dataRoot, `.dcss-restore-${randomUUID()}.sqlite`);
   let receivedBytes = 0;
 
   const sizeLimit = new Transform({
@@ -58,7 +58,7 @@ export async function activateStagedDatabaseRestore(
   const dataRoot = path.resolve(dataDirectory);
   const normalizedCandidate = path.resolve(candidatePath);
   if (path.dirname(normalizedCandidate) !== dataRoot
-    || !/^\.datasystems-restore-[a-f\d-]+\.sqlite$/i.test(path.basename(normalizedCandidate))) {
+    || !/^\.dcss-restore-[a-f\d-]+\.sqlite$/i.test(path.basename(normalizedCandidate))) {
     throw new Error('La ruta del respaldo preparado no es válida.');
   }
   if (!fs.existsSync(normalizedCandidate)) throw new Error('El respaldo preparado ya no está disponible.');
@@ -67,7 +67,7 @@ export async function activateStagedDatabaseRestore(
   const backupsDirectory = path.join(dataRoot, 'backups');
   fs.mkdirSync(backupsDirectory, { recursive: true });
   const token = randomUUID();
-  const safetyPath = path.join(backupsDirectory, `datasystems-suite-before-restore-${new Date().toISOString().replaceAll(':', '-')}-${token.slice(0, 8)}.sqlite`);
+  const safetyPath = path.join(backupsDirectory, `dcss-suite-before-restore-${new Date().toISOString().replaceAll(':', '-')}-${token.slice(0, 8)}.sqlite`);
 
   await database.backup(safetyPath);
   database.pragma('wal_checkpoint(TRUNCATE)');

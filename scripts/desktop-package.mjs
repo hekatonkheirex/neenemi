@@ -19,9 +19,9 @@ if (isWindowsTarget && !isWindows) {
 }
 
 if (!fs.existsSync(builderPackagePath) || !fs.existsSync(builderCliPath)) {
-  console.error('No se puede empaquetar todavía: falta electron-builder en datasystems-suite.');
+  console.error('No se puede empaquetar todavía: falta electron-builder en dcss-suite.');
   console.error('La configuración de Windows está preparada en electron-builder.yml.');
-  console.error('Instálalo en datasystems-suite y ejecuta npm run desktop:package:win desde Windows o CI Windows.');
+  console.error('Instálalo en dcss-suite y ejecuta npm run desktop:package:win desde Windows o CI Windows.');
   process.exit(2);
 }
 

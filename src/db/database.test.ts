@@ -10,7 +10,7 @@ const temporaryDirectories: string[] = [];
 function makeTemporaryDatabasePath() {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'datasystems-suite-db-'));
   temporaryDirectories.push(directory);
-  return path.join(directory, 'datasystems.sqlite');
+  return path.join(directory, 'dcss.sqlite');
 }
 
 afterEach(() => {
@@ -131,6 +131,27 @@ describe('openDatabase', () => {
     second.close();
   });
 
+  it('preserves records from a legacy database in the same data directory when adopting the new filename', () => {
+    const newPath = makeTemporaryDatabasePath();
+    const oldPath = path.join(path.dirname(newPath), 'datasystems.sqlite');
+    const legacy = openDatabase(oldPath);
+    legacy.exec("CREATE TABLE migration_probe (value TEXT); INSERT INTO migration_probe VALUES ('saved in WAL')");
+
+    try {
+      const migrated = openDatabase(newPath);
+      expect(migrated.prepare('SELECT value FROM migration_probe').get()).toEqual({ value: 'saved in WAL' });
+      migrated.close();
+      expect(fs.existsSync(oldPath)).toBe(true);
+
+      legacy.exec("INSERT INTO migration_probe VALUES ('later change')");
+      const reopened = openDatabase(newPath);
+      expect(reopened.prepare('SELECT value FROM migration_probe').all()).toEqual([{ value: 'saved in WAL' }]);
+      reopened.close();
+    } finally {
+      legacy.close();
+    }
+  });
+
   it('upgrades an existing v6 database with the dispatch table', () => {
     const databasePath = makeTemporaryDatabasePath();
     const legacy = openDatabase(databasePath, CORE_MIGRATIONS.slice(0, 6));
@@ -138,7 +159,7 @@ describe('openDatabase', () => {
 
     const upgraded = openDatabase(databasePath);
     const directory = path.dirname(databasePath);
-    const backups = fs.readdirSync(directory).filter((name) => name.startsWith('datasystems.sqlite.backup-'));
+    const backups = fs.readdirSync(directory).filter((name) => name.startsWith('dcss.sqlite.backup-'));
 
     expect(upgraded.prepare('SELECT COUNT(*) AS count FROM schema_migrations').get()).toEqual({ count: CORE_MIGRATIONS.length });
     expect(upgraded.prepare('PRAGMA table_info(proforma_lines)').all()).toEqual(expect.arrayContaining([
@@ -215,7 +236,7 @@ describe('openDatabase', () => {
     };
     const second = openDatabase(databasePath, [...CORE_MIGRATIONS, secondMigration]);
     const directory = path.dirname(databasePath);
-    const backups = fs.readdirSync(directory).filter((name) => name.startsWith('datasystems.sqlite.backup-'));
+    const backups = fs.readdirSync(directory).filter((name) => name.startsWith('dcss.sqlite.backup-'));
 
     expect(backups).toHaveLength(1);
     expect(second.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'migration_probe'").get()).toBeTruthy();

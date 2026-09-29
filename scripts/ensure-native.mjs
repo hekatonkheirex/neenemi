@@ -20,12 +20,12 @@ const cachedModulePath = path.join(cacheDirectory, cacheKey, 'better_sqlite3.nod
 
 if (target === 'electron' && isWindows && root.includes(' ')) {
   console.error('La ruta del proyecto contiene espacios y puede impedir la compilación nativa de better-sqlite3.');
-  console.error('Mueve datasystems-suite a una ruta simple, por ejemplo C:\\dev\\datasystems-suite, y vuelve a empaquetar.');
+  console.error('Mueve dcss-suite a una ruta simple, por ejemplo C:\\dev\\dcss-suite, y vuelve a empaquetar.');
   process.exit(1);
 }
 
 if (target === 'electron' && !fs.existsSync(electronRebuildCliPath)) {
-  console.error('Falta @electron/rebuild. Ejecuta npm ci en datasystems-suite y vuelve a empaquetar.');
+  console.error('Falta @electron/rebuild. Ejecuta npm ci en dcss-suite y vuelve a empaquetar.');
   process.exit(1);
 }
 

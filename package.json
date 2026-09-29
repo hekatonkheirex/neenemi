@@ -1,7 +1,7 @@
 {
-  "name": "datasystems-suite",
+  "name": "dcss-suite",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.1.8",
   "description": "Suite local unificada de Data Systems para Electron",
   "author": "Data Systems S.A.E.C.A.",
   "type": "module",
@@ -21,6 +21,8 @@
   },
   "dependencies": {
     "@google/genai": "^2.24.0",
+    "@hugeicons/core-free-icons": "^1.2.1",
+    "@hugeicons/react": "^1.1.10",
     "better-sqlite3": "^12.10.0",
     "exceljs": "^4.4.0",
     "express": "^4.21.2",
