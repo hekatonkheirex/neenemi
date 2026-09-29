@@ -66,13 +66,26 @@ de `datasystems.sqlite` a `dcss.sqlite`; la carpeta original no se elimina. El n
 `appId` puede dejar ambas aplicaciones instaladas: verificar los datos en DCSS Suite
 antes de desinstalar la anterior. Si ya hay datos en la carpeta nueva, no se sobrescriben.
 
+Si existen ambos perfiles anteriores, el primer arranque ofrece elegir explícitamente
+cuál copiar y muestra las dos rutas completas. Cancelar no copia ninguno. Si la base
+de destino ya existe, no vuelve a solicitar la elección. Los perfiles originales permanecen
+intactos y las copias dañadas se rechazan antes de activarse.
+La ventana comprueba periódicamente la API: si se cierra inesperadamente, Electron
+intenta reiniciarla y recarga la ventana en su nuevo puerto. Tras tres fallos, presenta
+una opción visible para reintentar o cerrar. El icono DCSS se incluye en el instalador
+y en la ventana Linux; `appId` y carpeta de datos se mantienen.
+
 ## Auditoría de dependencias
 
-La auditoría actual informa cuatro vulnerabilidades moderadas en dependencias transitivas
-de `express`/`qs` y `exceljs`/`uuid`, sin hallazgos altos o críticos. No se ejecuta
-`npm audit fix --force`, porque npm propone bajar `exceljs` a una versión con cambio
-incompatible; la actualización debe tratarse como una tarea separada con pruebas de
-regresión.
+La auditoría de 2026-09-29 informa cuatro vulnerabilidades moderadas en
+`express`/`qs` y `exceljs`/`uuid`, y una alta en `pdfjs-dist` 5.x
+([GHSA-hq66-cqwq-w95j](https://github.com/advisories/GHSA-hq66-cqwq-w95j)).
+La alerta alta requiere abrir un PDF malicioso con scripting activado en el
+visor PDF.js; la suite usa `getDocument` para extraer y rasterizar páginas, no
+el visor con scripting. No se ejecuta `npm audit fix --force`: actualizar
+`pdfjs-dist` a 6.x y sustituir ExcelJS por una versión anterior son cambios
+incompatibles que requieren una migración y pruebas específicas. Revisar antes
+de distribuir con PDFs no confiables; próxima revisión: 2026-10-15.
 
 ## Validación en una máquina limpia
 

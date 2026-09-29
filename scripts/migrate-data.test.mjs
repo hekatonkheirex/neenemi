@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 const require = createRequire(import.meta.url);
 const Database = require('better-sqlite3');
 const { migrateLegacyDataDirectory } = require('../electron/migrate-data.cjs');
+const { listLegacyDataSources } = require('../electron/migrate-data.cjs');
 const directories = [];
 
 afterEach(() => {
@@ -93,6 +94,26 @@ describe('migration of an existing Windows installation', () => {
 
     await expect(migrateLegacyDataDirectory(appData, newUserData)).rejects.toThrow();
     expect(fs.existsSync(path.join(newUserData, 'data'))).toBe(false);
+  });
+
+  it('migrates only the source explicitly selected when both legacy profiles exist', async () => {
+    const { appData, oldData, newUserData } = makePaths();
+    const displayNameData = path.join(appData, 'Data Systems Suite', 'data');
+    for (const [directory, name] of [[oldData, 'technical'], [displayNameData, 'display']]) {
+      fs.mkdirSync(directory, { recursive: true });
+      const db = new Database(path.join(directory, 'datasystems.sqlite'));
+      db.exec(`CREATE TABLE saved_records (name TEXT); INSERT INTO saved_records VALUES ('${name}')`);
+      db.close();
+    }
+    const sources = await listLegacyDataSources(appData, newUserData);
+    expect(sources).toEqual([oldData, displayNameData]);
+    await expect(migrateLegacyDataDirectory(appData, newUserData, path.join(appData, 'unknown'))).rejects.toThrow();
+    await migrateLegacyDataDirectory(appData, newUserData, displayNameData);
+    const migrated = new Database(path.join(newUserData, 'data', 'dcss.sqlite'), { readonly: true, fileMustExist: true });
+    expect(migrated.prepare('SELECT name FROM saved_records').get()).toEqual({ name: 'display' });
+    migrated.close();
+    expect(fs.existsSync(path.join(oldData, 'datasystems.sqlite'))).toBe(true);
+    expect(fs.existsSync(path.join(displayNameData, 'datasystems.sqlite'))).toBe(true);
   });
 
   it('refuses a damaged old database instead of starting with partial migrated data', async () => {

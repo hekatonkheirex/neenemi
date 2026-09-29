@@ -2,13 +2,46 @@ const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const { fork } = require('node:child_process');
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const { migrateLegacyDataDirectory } = require('./migrate-data.cjs');
+const { migrateLegacyDataDirectory, listLegacyDataSources } = require('./migrate-data.cjs');
 
 const WINDOW_BACKGROUND_COLOR = '#0b1220';
 let localApiProcess;
 let activeRendererUrl;
 let shuttingDown = false;
 let restoreRestartRequested = false;
+let apiRestartTimer;
+let apiRestartAttempts = 0;
+let apiReadyAt = 0;
+
+function recoverLocalApi() {
+  if (shuttingDown || apiRestartTimer) return;
+  if (apiRestartAttempts >= 3) {
+    void dialog.showMessageBox({
+      type: 'error',
+      title: 'API local desconectada',
+      message: 'No se pudo recuperar la API local.',
+      detail: 'Comprueba el espacio disponible y los permisos del directorio de datos. Puedes volver a intentar iniciar el servicio.',
+      buttons: ['Reintentar', 'Cerrar DCSS Suite'],
+      defaultId: 0,
+      cancelId: 1,
+    }).then(({ response }) => {
+      if (response === 1) app.quit();
+      else {
+        apiRestartAttempts = 0;
+        recoverLocalApi();
+      }
+    });
+    return;
+  }
+  apiRestartAttempts += 1;
+  apiRestartTimer = setTimeout(() => {
+    apiRestartTimer = undefined;
+    if (!shuttingDown) void startLocalApi(true).catch((error) => {
+      console.error('No se pudo recuperar la API local:', error);
+      recoverLocalApi();
+    });
+  }, 1000 * apiRestartAttempts);
+}
 
 if (process.platform === 'linux' && process.env.XDG_SESSION_TYPE === 'wayland' && process.env.WAYLAND_DISPLAY) {
   app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
@@ -44,6 +77,7 @@ function createWindow(rendererUrl) {
     minHeight: 680,
     title: 'DCSS Suite',
     backgroundColor: WINDOW_BACKGROUND_COLOR,
+    icon: app.isPackaged ? path.join(process.resourcesPath, 'icon.png') : path.join(__dirname, '..', 'build', 'icon.png'),
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -180,14 +214,6 @@ function startLocalApi(reloadWindowsAfterReady = false) {
   localApiProcess = child;
   child.stdout?.on('data', (chunk) => process.stdout.write(`[api] ${chunk}`));
   child.stderr?.on('data', (chunk) => process.stderr.write(`[api] ${chunk}`));
-  child.once('exit', () => {
-    if (!restoreRestartRequested || shuttingDown || localApiProcess !== child) return;
-    restoreRestartRequested = false;
-    localApiProcess = undefined;
-    void startLocalApi(true).catch((error) => {
-      console.error('No se pudo reiniciar la API después de restaurar la base:', error);
-    });
-  });
 
   return new Promise((resolve, reject) => {
     let settled = false;
@@ -199,6 +225,7 @@ function startLocalApi(reloadWindowsAfterReady = false) {
       }
       if (message.type === 'ready' && Number.isInteger(message.port) && message.port > 0) {
         settled = true;
+        apiReadyAt = Date.now();
         const rendererUrl = `http://127.0.0.1:${message.port}/`;
         activeRendererUrl = rendererUrl;
         if (reloadWindowsAfterReady) {
@@ -218,10 +245,23 @@ function startLocalApi(reloadWindowsAfterReady = false) {
       else console.error('API local:', error);
     });
     child.on('exit', (code, signal) => {
+      if (localApiProcess !== child) return;
+      localApiProcess = undefined;
       if (!settled) {
         reject(new Error(`La API local terminó antes de iniciar${signal ? ` (${signal})` : ` con código ${code ?? 'desconocido'}`}.`));
-      } else if (code !== 0 && !child.killed) {
-        console.error(`La API local terminó con código ${code ?? 'desconocido'}.`);
+        return;
+      }
+      if (shuttingDown) return;
+      if (Date.now() - apiReadyAt > 60000) apiRestartAttempts = 0;
+      if (restoreRestartRequested) {
+        restoreRestartRequested = false;
+        void startLocalApi(true).catch((error) => {
+          console.error('No se pudo reiniciar la API después de restaurar la base:', error);
+          recoverLocalApi();
+        });
+      } else {
+        console.error(`La API local terminó${signal ? ` (${signal})` : ` con código ${code ?? 'desconocido'}`}.`);
+        recoverLocalApi();
       }
     });
   });
@@ -229,6 +269,8 @@ function startLocalApi(reloadWindowsAfterReady = false) {
 
 function stopLocalApi() {
   shuttingDown = true;
+  clearTimeout(apiRestartTimer);
+  apiRestartTimer = undefined;
   const child = localApiProcess;
   localApiProcess = undefined;
   if (child && !child.killed) {
@@ -249,7 +291,37 @@ if (!hasSingleInstanceLock) {
   });
 
   app.whenReady().then(async () => {
-    if (app.isPackaged) await migrateLegacyDataDirectory(app.getPath('appData'), app.getPath('userData'));
+    if (app.isPackaged) {
+      const appData = app.getPath('appData');
+      const userData = app.getPath('userData');
+      const existingDatabase = await fs.access(path.join(userData, 'data', 'dcss.sqlite')).then(
+        () => true,
+        (error) => {
+          if (error.code === 'ENOENT') return false;
+          throw error;
+        },
+      );
+      const sources = existingDatabase ? [] : await listLegacyDataSources(appData, userData);
+      let selectedSource;
+      if (sources.length > 1) {
+        const { response } = await dialog.showMessageBox({
+          type: 'warning',
+          title: 'Seleccionar datos anteriores',
+          message: 'Se encontraron dos perfiles anteriores de DCSS Suite.',
+          detail: `Elige qué base copiar a la nueva instalación. Ningún perfil anterior se eliminará.\n\n${sources.map((source, index) => `${index + 1}. ${path.join(source, 'datasystems.sqlite')}`).join('\n')}`,
+          buttons: ['Usar perfil 1', 'Usar perfil 2', 'Cancelar'],
+          defaultId: 2,
+          cancelId: 2,
+          noLink: true,
+        });
+        if (response === 2) {
+          app.quit();
+          return;
+        }
+        selectedSource = sources[response];
+      }
+      await migrateLegacyDataDirectory(appData, userData, selectedSource);
+    }
     activeRendererUrl = process.env.DS_RENDERER_URL || await startLocalApi();
     createWindow(activeRendererUrl);
     app.on('activate', () => {
@@ -257,6 +329,7 @@ if (!hasSingleInstanceLock) {
     });
   }).catch((error) => {
     console.error('No se pudo iniciar DCSS Suite:', error);
+    dialog.showErrorBox('No se pudo iniciar DCSS Suite', `${error instanceof Error ? error.message : String(error)}\n\nRevisa el directorio de datos antes de reintentar. No se modificaron los perfiles anteriores.`);
     app.quit();
   });
 }

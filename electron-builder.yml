@@ -12,9 +12,13 @@ files:
   - dist/**
   - electron/**
   - package.json
+extraResources:
+  - from: build/icon.png
+    to: icon.png
 asarUnpack:
   - node_modules/better-sqlite3/**
 win:
+  icon: build/icon.ico
   target:
     - target: nsis
       arch:
@@ -27,6 +31,7 @@ nsis:
   createStartMenuShortcut: true
   shortcutName: DCSS Suite
 linux:
+  icon: build/icon.png
   target:
     - target: dir
       arch:

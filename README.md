@@ -17,7 +17,9 @@ v0.1.4 devuelve los iconos del lanzador legado al selector de módulos;
 v0.1.5 sustituye las iniciales del encabezado por un símbolo de documento y colaboración;
 v0.1.6 mantiene el subtítulo del encabezado en dos líneas sin reducir el icono;
 v0.1.7 reemplaza el símbolo del encabezado por dos documentos superpuestos;
-v0.1.8 introduce un monograma DC diseñado para la cabecera de la suite.
+v0.1.8 introduce un monograma DC diseñado para la cabecera de la suite;
+v0.1.9 protege la API local, permite elegir entre perfiles antiguos, recupera caídas
+del servicio, muestra los errores del Resumen y lleva el monograma al icono instalado.
 
 ## Alcance
 

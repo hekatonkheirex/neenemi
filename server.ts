@@ -213,6 +213,17 @@ export function createServer(options: ServerOptions): { app: express.Express; da
   const sla = new SlaRepository(database);
   const coverage = new CoverageRepository(database);
 
+  // Reject DNS-rebinding hosts on reads as well as writes: backups and settings are readable.
+  app.use((request, response, next) => {
+    const host = request.get('host');
+    if (host && /^(?:127\.0\.0\.1|localhost):(?:[1-9]\d{0,4})$/.test(host)
+      && Number(host.slice(host.lastIndexOf(':') + 1)) <= 65535) {
+      next();
+      return;
+    }
+    response.status(403).json({ error: 'La API local solo acepta conexiones con destino local.' });
+  });
+
   app.use((request, response, next) => {
     const method = request.method.toUpperCase();
     if (method === 'GET' || method === 'HEAD' || method === 'OPTIONS') return next();

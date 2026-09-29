@@ -12,20 +12,28 @@ async function exists(filePath) {
   }
 }
 
-async function migrateLegacyDataDirectory(appDataRoot, userDataDirectory) {
+async function listLegacyDataSources(appDataRoot, userDataDirectory) {
   const newData = path.join(userDataDirectory, 'data');
-  if (await exists(path.join(newData, 'dcss.sqlite'))) return;
-  const oldProfiles = ['datasystems-suite', 'Data Systems Suite'];
   const sources = [];
-  for (const name of oldProfiles) {
+  for (const name of ['datasystems-suite', 'Data Systems Suite']) {
     const directory = path.join(appDataRoot, name, 'data');
     if (directory !== newData && await exists(path.join(directory, 'datasystems.sqlite'))) sources.push(directory);
   }
+  return sources;
+}
+
+async function migrateLegacyDataDirectory(appDataRoot, userDataDirectory, selectedSource) {
+  const newData = path.join(userDataDirectory, 'data');
+  if (await exists(path.join(newData, 'dcss.sqlite'))) return;
+  const sources = await listLegacyDataSources(appDataRoot, userDataDirectory);
   if (sources.length === 0) return;
-  if (sources.length > 1) {
-    throw new Error('Hay dos instalaciones anteriores con bases distintas. Selecciona un respaldo antes de migrar a DCSS Suite.');
+  if (sources.length > 1 && !selectedSource) {
+    throw new Error('Hay dos instalaciones anteriores con bases distintas. Selecciona cuál migrar a DCSS Suite.');
   }
-  const oldData = sources[0];
+  if (selectedSource && !sources.includes(selectedSource)) {
+    throw new Error('El perfil anterior seleccionado ya no está disponible.');
+  }
+  const oldData = selectedSource || sources[0];
   if (await exists(newData)) {
     throw new Error('DCSS Suite ya tiene un directorio de datos sin base. Revisa su contenido antes de migrar la instalación anterior.');
   }
@@ -61,4 +69,4 @@ async function migrateLegacyDataDirectory(appDataRoot, userDataDirectory) {
   }
 }
 
-module.exports = { migrateLegacyDataDirectory };
+module.exports = { migrateLegacyDataDirectory, listLegacyDataSources };

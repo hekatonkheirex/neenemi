@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import { request as httpRequest } from 'node:http';
 import Database from 'better-sqlite3';
 import ExcelJS from 'exceljs';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -360,6 +361,26 @@ describe('suite local API', () => {
         method: 'POST',
         headers: { origin: 'https://attacker.example', 'content-type': 'application/x-www-form-urlencoded' },
       });
+      const forgedHost = `attacker.invalid:${port}`;
+      const forgedWrite = await new Promise<number>((resolve, reject) => {
+        const req = httpRequest(`${baseUrl}/api/settings/review/probe`, {
+          method: 'PUT',
+          headers: { host: forgedHost, origin: `http://${forgedHost}`, 'sec-fetch-site': 'same-origin', 'content-type': 'application/json' },
+        }, (res) => { res.resume(); res.on('end', () => resolve(res.statusCode ?? 0)); });
+        req.on('error', reject);
+        req.end(JSON.stringify({ value: 'unexpected' }));
+      });
+      expect(forgedWrite).toBe(403);
+      const forgedRead = await new Promise<number>((resolve, reject) => {
+        const req = httpRequest(`${baseUrl}/api/settings/review/probe`, { headers: { host: forgedHost } }, (res) => {
+          res.resume();
+          res.on('end', () => resolve(res.statusCode ?? 0));
+        });
+        req.on('error', reject);
+        req.end();
+      });
+      expect(forgedRead).toBe(403);
+
       expect(crossOriginResponse.status).toBe(403);
       const rulesAfterCrossOriginRequest = await fetch(`${baseUrl}/api/maintenance/rules`);
       expect(await rulesAfterCrossOriginRequest.json()).toEqual([

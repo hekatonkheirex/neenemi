@@ -101,6 +101,8 @@ function getThemeStorage(): Storage | undefined {
 export default function App() {
   const [health, setHealth] = useState<Health | null>(null);
   const [overview, setOverview] = useState<SuiteOverview | null>(null);
+  const [overviewState, setOverviewState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [overviewRetryKey, setOverviewRetryKey] = useState(0);
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
   const [theme, setTheme] = useState<Theme>(() => readTheme(getThemeStorage()));
   const [clearingImports, setClearingImports] = useState(false);
@@ -120,42 +122,46 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/health')
-      .then(async (response) => {
+    async function checkHealth() {
+      try {
+        const response = await fetch('/api/health', { signal: AbortSignal.timeout(3000) });
         if (!response.ok) throw new Error('health check failed');
-        return (await response.json()) as Health;
-      })
-      .then((value) => {
+        const value = (await response.json()) as Health;
         if (!cancelled) setHealth(value);
-      })
-      .catch(() => {
+      } catch {
         if (!cancelled) setHealth({ ok: false, database: 'error' });
-      });
-
+      }
+    }
+    void checkHealth();
+    const interval = window.setInterval(() => void checkHealth(), 5000);
     return () => {
       cancelled = true;
+      window.clearInterval(interval);
     };
   }, []);
 
   useEffect(() => {
     if (activeModuleId !== null) return undefined;
     let cancelled = false;
-    fetch('/api/overview')
+    setOverviewState('loading');
+    setOverview(null);
+    fetch('/api/overview', { signal: AbortSignal.timeout(10000) })
       .then(async (response) => {
         if (!response.ok) throw new Error('overview request failed');
         return (await response.json()) as SuiteOverview;
       })
       .then((value) => {
-        if (!cancelled) setOverview(value);
+        if (!cancelled) {
+          setOverview(value);
+          setOverviewState('ready');
+        }
       })
       .catch(() => {
-        if (!cancelled) setOverview(null);
+        if (!cancelled) setOverviewState('error');
       });
 
-    return () => {
-      cancelled = true;
-    };
-  }, [activeModuleId, importsRefreshKey]);
+    return () => { cancelled = true; };
+  }, [activeModuleId, importsRefreshKey, overviewRetryKey]);
 
   const databaseLabel = health?.ok
     ? 'SQLite local lista'
@@ -300,6 +306,8 @@ export default function App() {
           {activeModule ? renderModule(activeModule) : <Dashboard
             onSelect={setActiveModuleId}
             overview={overview}
+            overviewState={overviewState}
+            onRetryOverview={() => setOverviewRetryKey((value) => value + 1)}
             importsRefreshKey={importsRefreshKey}
             onRemoveImport={removeImportBatch}
           />}
@@ -328,11 +336,15 @@ function renderModule(module: SuiteModule) {
 function Dashboard({
   onSelect,
   overview,
+  overviewState,
+  onRetryOverview,
   importsRefreshKey,
   onRemoveImport,
 }: {
   onSelect: (moduleId: string) => void;
   overview: SuiteOverview | null;
+  overviewState: 'loading' | 'ready' | 'error';
+  onRetryOverview: () => void;
   importsRefreshKey: number;
   onRemoveImport: (batch: ImportArchiveBatch) => Promise<void>;
 }) {
@@ -369,9 +381,17 @@ function Dashboard({
           <p>
             {overview
               ? `${numberFormat.format(overview.appliedImports)} importaciones aplicadas alimentan esta instalación local.`
-              : 'Consultando el estado de la base local…'}
+              : overviewState === 'error'
+                ? 'No se pudo consultar el estado de la base local.'
+                : 'Consultando el estado de la base local…'}
           </p>
         </div>
+        {overviewState === 'error' ? (
+          <div role="alert">
+            <p>La consulta del Resumen falló. Comprueba la conexión con la API local e inténtalo de nuevo.</p>
+            <button className="secondary-button" type="button" onClick={onRetryOverview}>Reintentar consulta</button>
+          </div>
+        ) : (
         <div className="io-columns">
           <div>
             <span className="detail-label">Inventario y soporte</span>
@@ -394,6 +414,7 @@ function Dashboard({
             </ul>
           </div>
         </div>
+        )}
       </section>
 
       <DatabaseRecoveryPanel refreshKey={importsRefreshKey} />
