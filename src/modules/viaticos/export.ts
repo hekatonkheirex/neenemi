@@ -6,7 +6,7 @@ const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.s
 export async function exportTravelTrips(trips: readonly TravelTrip[]): Promise<void> {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
-  workbook.creator = 'Data Systems Suite';
+  workbook.creator = 'DCSS Suite';
   const sheet = workbook.addWorksheet('Viajes');
   sheet.addRow(['CONTROL DE VIÁTICOS · EXPORTACIÓN LOCAL']);
   sheet.addRow(['Generado', new Date().toISOString().slice(0, 10), 'Registros', trips.length]);

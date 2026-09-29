@@ -71,7 +71,7 @@ export default function UniflowPrintReport({ results, clientName }: UniflowPrint
         <p>1) Los precios exhibidos corresponden a licencias mensuales por dispositivo según los tiers de volumen sumados.</p>
         <p>2) Esta simulación es meramente informativa de acuerdo con las directrices de licenciamiento oficial de Canon uniFLOW Online.</p>
       </div>
-      <footer>Generado localmente por Data Systems Suite · No se envía información fuera del equipo.</footer>
+      <footer>Generado localmente por DCSS Suite · No se envía información fuera del equipo.</footer>
     </section>
   );
 }

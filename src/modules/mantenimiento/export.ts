@@ -12,7 +12,7 @@ export async function buildMaintenanceWorkbook(
 ): Promise<ExcelBuffer> {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
-  workbook.creator = 'Data Systems Suite';
+  workbook.creator = 'DCSS Suite';
 
   const overview = workbook.addWorksheet('Resumen');
   overview.addRow(['REPORTE DE MANTENIMIENTO DATA SYSTEMS']);

@@ -10,7 +10,7 @@ export async function exportMpsWorkbook(
 ): Promise<void> {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
-  workbook.creator = 'Data Systems Suite';
+  workbook.creator = 'DCSS Suite';
 
   const summary = workbook.addWorksheet('Resumen ejecutivo');
   summary.addRow(['REPORTE DE ESTIMACIÓN MPS CANON']);
@@ -88,7 +88,7 @@ export async function exportMpsConsumablesWorkbook(model: MpsModel): Promise<voi
 export async function buildMpsConsumablesWorkbook(model: MpsModel): Promise<Uint8Array> {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
-  workbook.creator = 'Data Systems Suite';
+  workbook.creator = 'DCSS Suite';
 
   const sheet = workbook.addWorksheet('Consumibles y Repuestos');
   sheet.addRow(['LISTADO OFICIAL DE INSUMOS Y PARTES CONSUMIBLES CANON MPS']);

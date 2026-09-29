@@ -87,7 +87,7 @@ export function buildOperationsExportData(customers: readonly CustomerRecord[]):
 export async function buildOperationsWorkbook(customers: readonly CustomerRecord[]): Promise<ExcelBuffer> {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
-  workbook.creator = 'Data Systems Suite';
+  workbook.creator = 'DCSS Suite';
   const data = buildOperationsExportData(customers);
 
   addDataSheet(workbook.addWorksheet('Clientes'), [
@@ -158,7 +158,7 @@ export async function exportOperationsWorkbook(customers: readonly CustomerRecor
 export async function buildCustomerPortfolioWorkbook(customer: CustomerRecord): Promise<ExcelBuffer> {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
-  workbook.creator = 'Data Systems Suite';
+  workbook.creator = 'DCSS Suite';
   const sourceDetailRows: ExportRow[] = [];
 
   appendSourceDetails(

@@ -126,7 +126,7 @@ export function renderCoveragePrintReportMarkup({
       </section>
       <footer class="coverage-print-footer">
         ${inputMode === 'pdf' ? 'Cobertura calculada localmente a partir del PDF' : 'Cobertura recuperada de datos guardados'} · Rendimiento teórico basado en cobertura media y referencia nominal al 5%.
-        <span>Data Systems Suite</span>
+        <span>DCSS Suite</span>
       </footer>
     </article>`;
 }

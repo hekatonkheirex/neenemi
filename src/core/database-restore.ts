@@ -99,7 +99,7 @@ async function validateBackup(databasePath: string): Promise<void> {
 
     const tables = new Set((backup.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all() as Array<{ name: string }>).map((row) => row.name));
     if (!tables.has('schema_migrations') || !tables.has('import_files')) {
-      throw new Error('El archivo no es un respaldo de Data Systems Suite.');
+      throw new Error('El archivo no es un respaldo de DCSS Suite.');
     }
 
     const migrations = backup.prepare('SELECT version, name FROM schema_migrations ORDER BY version').all() as Array<{ version: number; name: string }>;

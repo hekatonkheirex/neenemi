@@ -92,7 +92,7 @@ export default function MpsPrintReport({ model, analysis, projections }: MpsPrin
         <p>* Nota: los cálculos se estiman cruzando la información declarada por Canon bajo el estándar ISO/IEC 19752/19798.</p>
         <p>Los resultados modelan de forma sugerida la frecuencia de desgaste y re-pedidos, sirviendo para la estructuración de costos en ofertas MPS.</p>
       </div>
-      <footer>Generado localmente por Data Systems Suite · {generatedAt}</footer>
+      <footer>Generado localmente por DCSS Suite · {generatedAt}</footer>
     </section>
   );
 }

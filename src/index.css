@@ -75,9 +75,9 @@ button {
   border-radius: 0.65rem;
   color: #a7c5ff;
   background: linear-gradient(145deg, rgba(70, 124, 255, 0.45), rgba(56, 82, 145, 0.25));
-  font-size: 0.72rem;
+  font-size: 0.61rem;
   font-weight: 900;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.07em;
 }
 
 .module-nav {

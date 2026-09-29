@@ -85,7 +85,7 @@ export default function MaintenanceExecutivePrintReport({
         </p>
       </section>
 
-      <footer className="maintenance-executive-print-footer">Área de planificación y soporte · Generado localmente por Data Systems Suite</footer>
+      <footer className="maintenance-executive-print-footer">Área de planificación y soporte · Generado localmente por DCSS Suite</footer>
     </section>
   );
 }

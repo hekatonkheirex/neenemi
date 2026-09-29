@@ -1,4 +1,4 @@
-# Data Systems Suite Context
+# DCSS Suite Context
 
 Este contexto define el lenguaje común de la suite local de Data Systems. La aplicación reúne los módulos heredados en una sola ventana Electron, conserva las fuentes originales y proyecta sus datos en una SQLite compartida.
 

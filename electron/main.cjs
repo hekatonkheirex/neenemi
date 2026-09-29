@@ -41,7 +41,7 @@ function createWindow(rendererUrl) {
     height: 920,
     minWidth: 960,
     minHeight: 680,
-    title: 'Data Systems Suite',
+    title: 'DCSS Suite',
     backgroundColor: WINDOW_BACKGROUND_COLOR,
     webPreferences: {
       contextIsolation: true,
@@ -68,11 +68,11 @@ function createWindow(rendererUrl) {
 
 ipcMain.handle('datasystems:save-current-page-as-pdf', async (event, options) => {
   const window = BrowserWindow.fromWebContents(event.sender);
-  if (!window) throw new Error('No se encontró la ventana de Data Systems Suite.');
+  if (!window) throw new Error('No se encontró la ventana de DCSS Suite.');
 
   const requestedName = options && typeof options.defaultFileName === 'string'
     ? options.defaultFileName
-    : 'data-systems-suite-informe';
+    : 'dcss-suite-informe';
   const landscape = options && options.landscape === true;
   const defaultFileName = `${safeFileName(requestedName)}.pdf`;
   const dialogResult = await dialog.showSaveDialog(window, {
@@ -107,7 +107,7 @@ ipcMain.handle('datasystems:save-current-page-as-pdf', async (event, options) =>
 
 ipcMain.handle('datasystems:save-structured-report-as-pdf', async (event, options) => {
   const parentWindow = BrowserWindow.fromWebContents(event.sender);
-  if (!parentWindow) throw new Error('No se encontró la ventana de Data Systems Suite.');
+  if (!parentWindow) throw new Error('No se encontró la ventana de DCSS Suite.');
 
   const html = options && typeof options.html === 'string' ? options.html : '';
   if (!html.startsWith('<!doctype html>') || html.length > 5_000_000 || /<\s*script\b/i.test(html)) {
@@ -254,7 +254,7 @@ if (!hasSingleInstanceLock) {
       if (BrowserWindow.getAllWindows().length === 0 && activeRendererUrl) createWindow(activeRendererUrl);
     });
   }).catch((error) => {
-    console.error('No se pudo iniciar Data Systems Suite:', error);
+    console.error('No se pudo iniciar DCSS Suite:', error);
     app.quit();
   });
 }
@@ -277,5 +277,5 @@ function safeFileName(value) {
     .replace(/[^a-zA-Z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 80)
-    .toLowerCase() || 'data-systems-suite-informe';
+    .toLowerCase() || 'dcss-suite-informe';
 }

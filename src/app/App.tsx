@@ -182,10 +182,10 @@ export default function App() {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand-block">
-          <div className="brand-mark">DS</div>
+          <div className="brand-mark">DCSS</div>
           <div>
-            <strong>Data Systems</strong>
-            <span>Suite local</span>
+            <strong>DCSS Suite</strong>
+            <span>Document &amp; Collaborative Solutions Support</span>
           </div>
         </div>
 
@@ -224,14 +224,14 @@ export default function App() {
           <span className={`status-dot ${health?.ok ? 'ready' : health ? 'error' : 'pending'}`} />
           <span>{databaseLabel}</span>
         </div>
-        <div className="sidebar-version" aria-label={`Versión ${suiteVersion}`}>
-          Versión {suiteVersion}
+        <div className="sidebar-version" aria-label={`Versión v${suiteVersion}`}>
+          Versión v{suiteVersion}
         </div>
       </aside>
 
       <main className="content">
         <header className="topbar">
-          <span className="breadcrumb">Data Systems / {activeModule?.label ?? 'Resumen'}</span>
+          <span className="breadcrumb">DCSS Suite / {activeModule?.label ?? 'Resumen'}</span>
           <div className="topbar-actions">
             <span className="local-badge">● Solo en este equipo</span>
             {clearImportsMessage ? <span className={`global-clear-message ${clearImportsMessage.tone}`} role={clearImportsMessage.tone === 'error' ? 'alert' : 'status'}>{clearImportsMessage.text}</span> : null}
@@ -306,8 +306,8 @@ function Dashboard({
   return (
     <div className="page-content">
       <section className="hero-block">
-        <div className="eyebrow">DATA SYSTEMS / CONTROL CENTER</div>
-        <h1>Una suite para todo tu flujo.</h1>
+        <div className="eyebrow">DCSS SUITE / DATA SYSTEMS</div>
+        <h1>DCSS Suite</h1>
         <p className="lead">
           Un solo Electron, una base local y todos los módulos de trabajo en el mismo lugar.
         </p>

@@ -1,7 +1,7 @@
 {
   "name": "datasystems-suite",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Suite local unificada de Data Systems para Electron",
   "author": "Data Systems S.A.E.C.A.",
   "type": "module",

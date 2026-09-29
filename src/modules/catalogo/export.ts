@@ -7,10 +7,10 @@ type ExcelBuffer = Awaited<ReturnType<ExcelWorkbook['xlsx']['writeBuffer']>>;
 export async function buildCatalogWorkbook(parts: readonly CatalogPart[]): Promise<ExcelBuffer> {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
-  workbook.creator = 'Data Systems Suite';
+  workbook.creator = 'DCSS Suite';
   const sheet = workbook.addWorksheet('Catálogo Canon');
 
-  sheet.addRow(['Catálogo Canon · Data Systems Suite']);
+  sheet.addRow(['Catálogo Canon · DCSS Suite']);
   sheet.addRow(['Registros exportados', parts.length]);
   sheet.addRow([]);
   const headerRow = sheet.addRow([

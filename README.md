@@ -1,10 +1,16 @@
-# Data Systems Suite
+# DCSS Suite
 
-Nueva suite unificada de Data Systems para Electron.
+DCSS significa **Document & Collaborative Solutions Support**. Es la suite unificada de Data Systems para Electron.
 
 Este proyecto se construirá de forma aislada de las aplicaciones actuales del
 workspace. Los directorios hermanos son la referencia funcional durante la migración y
 no deben modificarse para implementar esta suite.
+
+## Versionado
+
+Cada cambio entregado actualiza la versión visible en la barra lateral, el manifiesto y el
+instalador. Se incrementa el parche por defecto; cambios funcionales o incompatibles
+pueden requerir un incremento menor o mayor. La versión v0.1.1 incluye el nombre DCSS Suite.
 
 ## Alcance
 
@@ -20,6 +26,9 @@ La base final se ubicará en el directorio de datos de usuario de Electron:
 ```text
 %APPDATA%/Data Systems Suite/data/datasystems.sqlite
 ```
+
+El nombre `Data Systems Suite` se conserva en la ruta de datos y en la identidad del
+instalador para que las instalaciones existentes sigan encontrando su base SQLite.
 
 Los originales importados se guardan como BLOB en `import_files`, junto con sus metadatos
 y los resultados normalizados, para que un respaldo SQLite pueda ser autocontenido. Durante

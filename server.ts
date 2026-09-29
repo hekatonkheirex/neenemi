@@ -3824,23 +3824,23 @@ export function startServer(options: StartServerOptions = {}) {
   server = app.listen(port, host, () => {
     const address = server?.address();
     const actualPort = typeof address === 'object' && address ? address.port : port;
-    console.log(`Data Systems Suite API: http://127.0.0.1:${actualPort}`);
+    console.log(`DCSS Suite API: http://127.0.0.1:${actualPort}`);
   });
 
   void backfillStoredSourceMetadata({ dataDirectory, database }).then((summary) => {
     if (summary.batches === 0 && summary.rawRows === 0) return;
     console.log(
-      `Data Systems Suite: reindexadas ${summary.usageRecords} filas de Consumibles, `
+      `DCSS Suite: reindexadas ${summary.usageRecords} filas de Consumibles, `
       + `${summary.outputRecords} salidas, ${summary.serviceRecords} servicios y ${summary.travelTrips} viajes; `
       + `actualizados ${summary.travelCostCatalogs} catálogos de Viáticos; `
       + `recuperadas ${summary.rawRows} filas originales.`,
     );
     if (summary.errors.length > 0) {
-      console.warn(`Data Systems Suite: ${summary.errors.length} archivos no pudieron reindexarse.`);
+      console.warn(`DCSS Suite: ${summary.errors.length} archivos no pudieron reindexarse.`);
     }
   }).catch((error: unknown) => {
     console.warn(
-      `Data Systems Suite: no se pudo completar la reindexación de fuentes: ${error instanceof Error ? error.message : 'error desconocido'}`,
+      `DCSS Suite: no se pudo completar la reindexación de fuentes: ${error instanceof Error ? error.message : 'error desconocido'}`,
     );
   });
 

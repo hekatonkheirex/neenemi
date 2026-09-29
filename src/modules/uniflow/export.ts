@@ -8,7 +8,7 @@ export async function exportUniflowExcel(
 ): Promise<void> {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
-  workbook.creator = 'Data Systems Suite';
+  workbook.creator = 'DCSS Suite';
   const sheet = workbook.addWorksheet('Configuración uniFLOW');
 
   const titleRow = sheet.addRow(['CONFIGURACIÓN UNIFLOW ONLINE']);

@@ -58,7 +58,7 @@ function watchApi(child) {
   child.once('exit', (code, signal) => {
     if (stopping || apiProcess !== child) return;
     apiProcess = null;
-    console.error(`Data Systems Suite API terminó (código ${code ?? 'n/a'}, señal ${signal ?? 'n/a'}). Se intentará reiniciar.`);
+    console.error(`DCSS Suite API terminó (código ${code ?? 'n/a'}, señal ${signal ?? 'n/a'}). Se intentará reiniciar.`);
     scheduleApiRestart();
   });
 }
@@ -82,7 +82,7 @@ async function restartApi() {
 
   try {
     await waitFor(`${apiUrl}/api/health`, child, 10_000);
-    console.log(`Data Systems Suite API restablecida: ${apiUrl}`);
+    console.log(`DCSS Suite API restablecida: ${apiUrl}`);
   } catch (error) {
     if (stopping) return;
     console.error(error instanceof Error ? error.message : 'No se pudo reiniciar la API local.');

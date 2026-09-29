@@ -46,7 +46,7 @@ export async function buildPriceListWorkbook(
 ): Promise<ReturnType<ExcelWorkbook['xlsx']['writeBuffer']> extends Promise<infer Value> ? Value : never> {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
-  workbook.creator = 'Data Systems Suite';
+  workbook.creator = 'DCSS Suite';
   const models = normalizeSelectedModels(selectedModels);
   const summaryItems = models.length > 0
     ? uniqueItems(items.filter((item) => models.some((model) => item.models.some((itemModel) => sameModel(itemModel, model)))))
@@ -245,7 +245,7 @@ function uniqueSheetName(model: string, used: Set<string>): string {
 export async function buildProformaWorkbook(proforma: Proforma, logoBase64?: string): Promise<ExcelBuffer> {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
-  workbook.creator = 'Data Systems Suite';
+  workbook.creator = 'DCSS Suite';
   workbook.created = new Date(proforma.createdAt);
   const priceLabel = proformaPriceLabel(proforma.currency);
 
@@ -284,7 +284,7 @@ export async function buildProformaWorkbook(proforma: Proforma, logoBase64?: str
       sheet.getCell(`${column}2`).border = proformaBorder(false, false, true, false) as never;
     }
   } else {
-    setProformaValue(sheet, 'A2:C5', 'DS\nData Systems\nSuite local', {
+    setProformaValue(sheet, 'A2:C5', 'DCSS Suite\nData Systems', {
       font: { name: 'Arial', size: 10, bold: true, color: { argb: PROFORMA_NAVY } },
       alignment: { horizontal: 'center', vertical: 'middle', wrapText: true },
       border: proformaBorder(true, false, true, false),
