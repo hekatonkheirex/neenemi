@@ -70,20 +70,12 @@ button {
 }
 
 .brand-mark {
-  display: grid;
+  display: block;
   width: 2.7rem;
   height: 2.7rem;
   flex: 0 0 auto;
-  place-items: center;
-  border: 1px solid var(--ds-orange);
   border-radius: 0.8rem;
-  color: #ffffff;
-  background: var(--ds-navy);
-}
-
-.brand-mark svg {
-  width: 2rem;
-  height: 2rem;
+  object-fit: contain;
 }
 
 .module-nav {

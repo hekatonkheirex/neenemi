@@ -20,6 +20,7 @@ import { persistTheme, readTheme, type Theme } from './theme';
 import ImportArchivePanel from './ImportArchivePanel';
 import DatabaseRecoveryPanel from './DatabaseRecoveryPanel';
 import { version as suiteVersion } from '../../package.json';
+import suiteLogoUrl from '../../build/icon.png';
 
 const CatalogModule = lazy(() => import('../modules/catalogo/CatalogModule'));
 const MantenimientoModule = lazy(() => import('../modules/operaciones/MantenimientoModule'));
@@ -218,12 +219,7 @@ export default function App() {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand-block">
-          <div className="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9.5 8h9.8C27.1 8 31 12.5 31 20s-3.9 12-11.7 12H9.5V8Z" stroke="currentColor" strokeWidth="2.6" strokeLinejoin="round" />
-              <path d="M25.3 14.5c-1.3-1.5-3.1-2.3-5.2-2.3-4.5 0-7.1 3.2-7.1 7.8s2.6 7.8 7.1 7.8c2.1 0 3.9-.8 5.2-2.3" stroke="var(--ds-orange)" strokeWidth="2.8" strokeLinecap="square" />
-            </svg>
-          </div>
+          <img className="brand-mark" src={suiteLogoUrl} alt="" />
           <div>
             <strong>DCSS Suite</strong>
             <span>Document &amp; Collaborative Solutions Support</span>
