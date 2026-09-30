@@ -23,6 +23,7 @@ del servicio, muestra los errores del Resumen y lleva el monograma al icono inst
 v0.1.10 mejora el contraste y unifica los botones de cierre de los diálogos de Proformas.
 v0.1.11 actualiza el icono instalado con el logotipo DCSS suministrado.
 v0.1.12 actualiza el logo del encabezado con el logotipo DCSS suministrado.
+v0.1.13 reemplaza el favicon SVG legado por el icono DCSS en PNG.
 
 ## Alcance
 
