@@ -76,6 +76,10 @@ resuelve el archivo de globals inyectado sin externalizarlo y limita las entrada
 a `index.html`, excluyendo el HTML de los artefactos de `release/`.
 v0.1.37 añade `src/modules/tracking/parser.test.ts` (11 pruebas): normalización de series e identidades, fechas
 imposibles, separador `;`, CSV inválido, encabezados faltantes, marcaciones inconsistentes y cruce de informes.
+v0.1.38 corrige «Analizar con Gemini» en Software Selector: el prompt pedía 14 claves que no existen en el catálogo
+(p. ej. `secure-print`) y sus resultados se descartaban; ahora lista los ids reales y descarta los desconocidos
+(`src/modules/software-selector/ai.ts`). Añade `npm run eval:gemini` (`evals/gemini/`), una eval de pago con umbral
+de recall de 80 % sobre 10 pliegos sintéticos.
 
 ## Alcance
 

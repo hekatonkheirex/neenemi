@@ -1,7 +1,7 @@
 {
   "name": "dcss-suite",
   "private": true,
-  "version": "0.1.37",
+  "version": "0.1.38",
   "description": "Suite local unificada de Data Systems para Electron",
   "author": "Data Systems S.A.E.C.A.",
   "type": "module",
@@ -17,7 +17,8 @@
     "desktop": "node scripts/ensure-native.mjs --electron && electron .",
     "desktop:check": "npm run build && node scripts/ensure-native.mjs --electron && node scripts/release-check.mjs",
     "desktop:package": "node scripts/desktop-package.mjs --dir",
-    "desktop:package:win": "node scripts/desktop-package.mjs --win"
+    "desktop:package:win": "node scripts/desktop-package.mjs --win",
+    "eval:gemini": "node --import tsx evals/gemini/run.ts"
   },
   "dependencies": {
     "@google/genai": "^2.24.0",

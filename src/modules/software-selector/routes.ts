@@ -5,6 +5,7 @@ import { createGeminiClient, getGeminiApiKey, getGeminiErrorMessage, getGeminiEr
 import { parseTextAnalysisInput } from '../../core/validation';
 import { SOFTWARE_FEATURES, SOFTWARE_PRODUCTS } from './catalog';
 import { analyzeSoftwareRequirements, buildSoftwareAnalysisResponse } from './analysis';
+import { buildSoftwareAiPrompt, mergeAiFeatures } from './ai';
 import { SoftwareSelectorRepository } from './repository';
 
 export function registerSoftwareSelectorRoutes(app: Express, database: SuiteDatabase): void {
@@ -49,8 +50,8 @@ export function registerSoftwareSelectorRoutes(app: Express, database: SuiteData
         return;
       }
       const ai = createGeminiClient(apiKey);
-      const prompt = `Analiza este pliego técnico de software y hardware de impresión. Identifica qué funcionalidades se solicitan. Devuelve un objeto JSON con una propiedad "features" que sea un array de strings (las claves). Usa exclusivamente estas claves soportadas:\nprint-management, secure-print, ocr, reporting, advanced-scanning, cost-centers, rfid-auth, mobile-print, mdm-integration, single-sign-on, rule-based-routing, guest-printing, cloud-storage, ha-clustering.\nTexto:\n\n${text.slice(0, 30000)}`;
-      
+      const prompt = buildSoftwareAiPrompt(text);
+
       const result = await ai.models.generateContent({
         model: 'gemini-3.6-flash',
         contents: prompt,
@@ -62,14 +63,8 @@ export function registerSoftwareSelectorRoutes(app: Express, database: SuiteData
       const payload = JSON.parse(result.text ?? '{}');
       if (!Array.isArray(payload.features)) throw new Error('Respuesta IA inválida.');
       
-      const features = payload.features as string[];
-      const baseAnalysis = analyzeSoftwareRequirements(text, fileName ?? 'texto.txt');
-      const mergedFeatures = Array.from(new Set([...baseAnalysis.selectedFeatureIds, ...features]));
-      baseAnalysis.selectedFeatureIds = mergedFeatures;
-      for (const feat of features) {
-        if (!baseAnalysis.reasoning[feat]) baseAnalysis.reasoning[feat] = 'Detectado por IA Gemini.';
-      }
-      baseAnalysis.source = 'IA Gemini';
+      const { analysis: baseAnalysis, rejected } = mergeAiFeatures(analyzeSoftwareRequirements(text, fileName ?? 'texto.txt'), payload.features);
+      if (rejected.length > 0) console.warn('Gemini devolvió funcionalidades fuera del catálogo:', rejected.join(', '));
       const stored = softwareSelector.saveAnalysis(baseAnalysis);
       response.json(buildSoftwareAnalysisResponse(stored));
     } catch (e: unknown) {
