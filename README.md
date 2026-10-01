@@ -63,6 +63,9 @@ v0.1.31 mueve las rutas de Operaciones (cartera, metadatos, Discontinuador y sto
 v0.1.32 mueve las rutas de Consumibles a `src/modules/consumibles/routes.ts` y la carga coordinada (preparación,
 staging y aplicación en una transacción) a `src/modules/consumibles/bundle-server.ts`; `server.ts` queda con 22 rutas
 y 658 líneas.
+v0.1.33 mueve las rutas de Sistema (resumen, fuentes, respaldo, restauración, configuración) a
+`src/core/system-routes.ts` y las de Importaciones a `src/core/import-api-routes.ts`; `server.ts` queda con 179
+líneas: solo middlewares de seguridad, registro de rutas y arranque.
 
 ## Alcance
 
