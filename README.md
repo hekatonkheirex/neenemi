@@ -68,14 +68,14 @@ v0.1.33 mueve las rutas de Sistema (resumen, fuentes, respaldo, restauración, c
 líneas: solo middlewares de seguridad, registro de rutas y arranque.
 v0.1.34 reparte `server.test.ts` (3.084 líneas) en una prueba `routes.test.ts` junto a las rutas de cada
 módulo, con ayudantes compartidos en `src/test-support/api-helpers.ts`; las 316 pruebas se conservan.
-v0.1.35 añade `src/modules/tracking/parser.test.ts` (11 pruebas): normalización de series e identidades, fechas
-imposibles, separador `;`, CSV inválido, encabezados faltantes, marcaciones inconsistentes y cruce de informes.
 v0.1.35 corrige UUID con un override a 11.1.1 sin degradar ExcelJS 4.4.0; el renderer
 compila las fuentes de ExcelJS y JSZip en lugar de reutilizar sus bundles precompilados,
 con una única implementación de Buffer para las importaciones y exportaciones XLSX.
 v0.1.36 corrige el escaneo inicial de dependencias de Vite con caché vacía:
 resuelve el archivo de globals inyectado sin externalizarlo y limita las entradas
 a `index.html`, excluyendo el HTML de los artefactos de `release/`.
+v0.1.37 añade `src/modules/tracking/parser.test.ts` (11 pruebas): normalización de series e identidades, fechas
+imposibles, separador `;`, CSV inválido, encabezados faltantes, marcaciones inconsistentes y cruce de informes.
 
 ## Alcance
 
