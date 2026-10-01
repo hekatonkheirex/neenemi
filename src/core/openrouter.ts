@@ -39,6 +39,22 @@ export function getOpenRouterConfig(settings: SettingsRepository, embedded: Embe
   };
 }
 
+export type OpenRouterKeySource = 'installation' | 'environment' | 'installer' | 'none';
+
+/** Estado de la configuración sin revelar la clave: de dónde sale y qué modelo se usará. */
+export function describeOpenRouterConfig(settings: SettingsRepository, embedded: EmbeddedAiConfig = loadEmbeddedAiConfig()): { configured: boolean; source: OpenRouterKeySource; model: string } {
+  const source: OpenRouterKeySource = settings.get('ai', 'openrouter_api_key', '') ? 'installation'
+    : process.env.OPENROUTER_API_KEY ? 'environment'
+      : embedded.apiKey ? 'installer'
+        : 'none';
+  return { configured: source !== 'none', source, model: getOpenRouterConfig(settings, embedded).model };
+}
+
+/** Las claves de OpenRouter empiezan por `sk-or-` y no llevan espacios; se rechaza todo lo demás antes de guardarla. */
+export function isPlausibleOpenRouterKey(value: unknown): value is string {
+  return typeof value === 'string' && /^sk-or-[A-Za-z0-9_-]{16,200}$/.test(value);
+}
+
 export class OpenRouterError extends Error {
   constructor(readonly status: number | undefined, message: string) {
     super(message);

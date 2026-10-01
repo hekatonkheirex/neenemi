@@ -12920,3 +12920,33 @@ li::before {
     text-align: right;
   }
 }
+
+/* Panel de configuración de IA (OpenRouter) en SLA y Software Selector */
+.ai-key-panel {
+  border: 1px solid var(--ds-border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  background: var(--ds-surface);
+  color: var(--ds-ink);
+}
+.ai-key-panel summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.ai-key-status {
+  font-size: 0.85rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+.ai-key-status.ready { color: var(--ds-success); }
+.ai-key-status.missing { color: var(--ds-warning); }
+.ai-key-panel form { display: grid; gap: 0.75rem; margin-top: 0.75rem; }
+.ai-key-panel a { color: var(--ds-sky); text-decoration: underline; }
+.ai-key-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.ai-key-message.ok { color: var(--ds-success); }
+.ai-key-message.error { color: var(--ds-danger); }

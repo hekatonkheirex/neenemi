@@ -43,7 +43,7 @@ export function registerSlaRoutes(app: Express, database: SuiteDatabase): void {
     try {
       const { apiKey, model } = getOpenRouterConfig(settings);
       if (!apiKey) {
-        response.status(403).json({ error: 'Clave de OpenRouter no configurada.' });
+        response.status(403).json({ error: 'Clave de OpenRouter no configurada. Pégala en «Configuración de IA» de esta pantalla.' });
         return;
       }
       const payload = extractJson(await askOpenRouter(apiKey, model, buildSlaAiPrompt(text)));

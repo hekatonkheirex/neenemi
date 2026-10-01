@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
+import AiKeyPanel from '../../core/AiKeyPanel';
 import { extractDocxTextFromBytes } from '../../core/document-text';
 import { printOrSaveCurrentPageAsPdf } from '../../core/print';
 import { findSoftwareGaps, recommendSoftware } from './analysis';
@@ -324,6 +325,8 @@ export default function SoftwareSelectorModule() {
               <p className="form-hint">Fuente actual: <strong>{fileName}</strong>. PDF y DOCX se extraen localmente; el motor normaliza acentos y busca expresiones técnicas conocidas. Los resultados se guardan en la SQLite de esta instalación.</p>
             </form>
           </section>
+
+          <AiKeyPanel />
 
           <section className="sales-card software-feature-card">
             <div className="card-heading">

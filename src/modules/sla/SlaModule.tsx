@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
+import AiKeyPanel from '../../core/AiKeyPanel';
 import { printOrSaveCurrentPageAsPdf } from '../../core/print';
 import { extractPdfTextFromBytes } from '../ventas/service-report';
 import { analyzeSlaRequirements } from './analysis';
@@ -215,6 +216,8 @@ export default function SlaModule() {
               <p className="form-hint">{SLA_BASELINE_NOTE} Los PDF con capa de texto se extraen localmente; los PDF escaneados como imagen todavía requieren OCR externo o pegar el texto.</p>
             </form>
           </section>
+
+          <AiKeyPanel />
 
           {analysis ? <SlaResults analysis={analysis} statusCounts={statusCounts} /> : <section className="sales-card sla-empty-card"><strong>El informe aparecerá aquí.</strong><span>Carga el ejemplo o pega un fragmento del pliego para calcular el nivel de riesgo y las cláusulas a negociar.</span></section>}
         </main>

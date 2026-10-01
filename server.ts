@@ -8,6 +8,7 @@ import { ImportJobRegistry } from './src/core/import-jobs';
 import { backfillStoredSourceMetadata } from './src/core/source-metadata-backfill';
 import { storeAndRegisterImportFile } from './src/core/import-routes';
 import { registerSystemRoutes } from './src/core/system-routes';
+import { registerAiConfigRoutes } from './src/core/ai-config-routes';
 import { registerImportApiRoutes } from './src/core/import-api-routes';
 import { registerConsumablesRoutes } from './src/modules/consumibles/routes';
 import { registerOperationsRoutes } from './src/modules/operaciones/routes';
@@ -81,6 +82,7 @@ export function createServer(options: ServerOptions): { app: express.Express; da
 
   registerSystemRoutes(app, database, dataDirectory, importJobs, options);
   registerImportApiRoutes(app, database, dataDirectory, importJobs);
+  registerAiConfigRoutes(app, database);
   registerConsumablesRoutes(app, database, dataDirectory, importJobs);
   registerOperationsRoutes(app, database, dataDirectory, importJobs);
   registerCatalogRoutes(app, database);

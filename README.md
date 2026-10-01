@@ -90,14 +90,18 @@ defecto; se elimina `@google/genai` y `src/core/gemini.ts`, la eval pasa a `npm 
 dicen «Analizar con IA».
 v0.1.42 permite incluir la clave de OpenRouter en el instalador mediante `embedded-ai.json` (ignorado por git, copiado a
 `resources/` con `extraResources`); la API la usa solo si no hay clave en la instalación ni en el entorno.
+v0.1.43 añade el panel «Configuración de IA (OpenRouter)» en SLA y Software Selector con enlaces para crear una cuenta y
+generar una clave, y las rutas `GET/PUT/DELETE /api/ai/config` (valida el formato `sk-or-` y nunca devuelve la clave).
 
 ## Análisis con IA
 
 SLA Compliance Analyzer y Canon Software Selector llaman a **OpenRouter** (`https://openrouter.ai/api/v1`) desde la
 API local; el renderer nunca ve la clave. El modelo por defecto es gratuito (`nvidia/nemotron-3-super-120b-a12b:free`).
 
-- **Clave, por orden de prioridad:** (1) guardada en la instalación con `PUT /api/settings/ai/openrouter_api_key`
-  (`{"value":"sk-or-..."}`); (2) `OPENROUTER_API_KEY` en el entorno de la API; (3) la incluida en el instalador
+- **Clave desde la interfaz:** SLA Compliance Analyzer y Canon Software Selector tienen el panel plegable «Configuración de
+  IA (OpenRouter)» con el estado de la IA, enlaces para crear una cuenta en OpenRouter y generar una clave, y un campo
+  para guardarla o quitarla en este equipo (`GET/PUT/DELETE /api/ai/config`; la clave nunca vuelve al renderer).
+- **Clave, por orden de prioridad:** (1) guardada en la instalación desde ese panel; (2) `OPENROUTER_API_KEY` en el entorno de la API; (3) la incluida en el instalador
   (`embedded-ai.json`). Las dos primeras no se pueden leer desde la interfaz ni salen en los respaldos SQLite.
 - **Clave incluida en el instalador:** para que cualquiera con la app pueda usar la IA sin configurar nada, copia
   `embedded-ai.example.json` a `embedded-ai.json` (raíz del proyecto), pon la clave y empaqueta. El archivo está en
