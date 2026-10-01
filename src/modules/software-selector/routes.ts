@@ -1,7 +1,7 @@
 import type { Express } from 'express';
 import type { SuiteDatabase } from '../../db/database';
 import { SettingsRepository } from '../../db/repositories';
-import { createGeminiClient, getGeminiApiKey, getGeminiErrorMessage, getGeminiErrorStatus } from '../../core/gemini';
+import { askOpenRouter, extractJson, getOpenRouterConfig, OpenRouterError, openRouterErrorMessage, openRouterErrorStatus } from '../../core/openrouter';
 import { parseTextAnalysisInput } from '../../core/validation';
 import { SOFTWARE_FEATURES, SOFTWARE_PRODUCTS } from './catalog';
 import { analyzeSoftwareRequirements, buildSoftwareAnalysisResponse } from './analysis';
@@ -44,32 +44,22 @@ export function registerSoftwareSelectorRoutes(app: Express, database: SuiteData
       return;
     }
     try {
-      const apiKey = getGeminiApiKey(settings);
+      const { apiKey, model } = getOpenRouterConfig(settings);
       if (!apiKey) {
-        response.status(403).json({ error: 'Clave de Gemini API no configurada.' });
+        response.status(403).json({ error: 'Clave de OpenRouter no configurada.' });
         return;
       }
-      const ai = createGeminiClient(apiKey);
-      const prompt = buildSoftwareAiPrompt(text);
+      const payload = extractJson(await askOpenRouter(apiKey, model, buildSoftwareAiPrompt(text)));
+      const features = Array.isArray(payload) ? payload : (payload as { features?: unknown } | null)?.features;
+      if (!Array.isArray(features)) throw new OpenRouterError(undefined, 'Respuesta IA inválida.');
 
-      const result = await ai.models.generateContent({
-        model: 'gemini-3.6-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          temperature: 0,
-        }
-      });
-      const payload = JSON.parse(result.text ?? '{}');
-      if (!Array.isArray(payload.features)) throw new Error('Respuesta IA inválida.');
-      
-      const { analysis: baseAnalysis, rejected } = mergeAiFeatures(analyzeSoftwareRequirements(text, fileName ?? 'texto.txt'), payload.features);
-      if (rejected.length > 0) console.warn('Gemini devolvió funcionalidades fuera del catálogo:', rejected.join(', '));
+      const { analysis: baseAnalysis, rejected } = mergeAiFeatures(analyzeSoftwareRequirements(text, fileName ?? 'texto.txt'), features);
+      if (rejected.length > 0) console.warn('El modelo devolvió funcionalidades fuera del catálogo:', rejected.join(', '));
       const stored = softwareSelector.saveAnalysis(baseAnalysis);
       response.json(buildSoftwareAnalysisResponse(stored));
     } catch (e: unknown) {
-      console.error('Gemini API Error:', e);
-      response.status(getGeminiErrorStatus(e) ?? 500).json({ error: getGeminiErrorMessage(e) });
+      console.error('OpenRouter Error:', e);
+      response.status(openRouterErrorStatus(e) ?? 500).json({ error: openRouterErrorMessage(e) });
     }
   });
 }

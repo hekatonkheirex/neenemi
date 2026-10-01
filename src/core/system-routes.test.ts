@@ -171,7 +171,7 @@ describe('system API', () => {
     });
     imports.removeBatch(removedBatchId);
     const settings = new SettingsRepository(database);
-    settings.set('ai', 'gemini_api_key', 'secret-key');
+    settings.set('ai', 'openrouter_api_key', 'secret-key');
     settings.set('keep', 'value', 'ok');
     const server = app.listen(0, '127.0.0.1');
 
@@ -179,7 +179,7 @@ describe('system API', () => {
       await new Promise<void>((resolve) => server.once('listening', () => resolve()));
       const address = server.address();
       const port = typeof address === 'object' && address ? address.port : 0;
-      expect((await fetch(`http://127.0.0.1:${port}/api/settings/ai/gemini_api_key`)).status).toBe(403);
+      expect((await fetch(`http://127.0.0.1:${port}/api/settings/ai/openrouter_api_key`)).status).toBe(403);
       const response = await fetch(`http://127.0.0.1:${port}/api/system/backup`);
       const backup = Buffer.from(await response.arrayBuffer());
 

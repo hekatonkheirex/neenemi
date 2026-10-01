@@ -210,7 +210,7 @@ export default function SlaModule() {
                 <label className="file-input-button"><span>Cargar TXT / PDF</span><input type="file" accept=".txt,.md,.csv,.json,.pdf,text/plain,text/markdown,text/csv,application/json,application/pdf" onChange={(event) => void loadDocumentFile(event)} /></label>
                 <button className="secondary-button" type="button" onClick={loadDemo}>Cargar ejemplo</button>
                 <button className="secondary-button" type="submit" id="btn-local" disabled={analyzing || !text.trim()}>{analyzing ? 'Procesando…' : 'Ejecutar análisis local'}</button>
-                <button className="primary-button" type="submit" id="btn-ai" disabled={analyzing || !text.trim()}>Analizar con Gemini</button>
+                <button className="primary-button" type="submit" id="btn-ai" disabled={analyzing || !text.trim()}>Analizar con IA</button>
               </div>
               <p className="form-hint">{SLA_BASELINE_NOTE} Los PDF con capa de texto se extraen localmente; los PDF escaneados como imagen todavía requieren OCR externo o pegar el texto.</p>
             </form>

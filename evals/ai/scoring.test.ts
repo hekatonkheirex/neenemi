@@ -3,7 +3,7 @@ import { EVAL_DOCUMENTS } from './fixtures';
 import { normalizeForMatch, RECALL_THRESHOLD, scoreFeatures, scoreSla, summarizeFeatures, summarizeSla, verdict } from './scoring';
 import { SOFTWARE_FEATURES } from '../../src/modules/software-selector/catalog';
 
-describe('gemini eval fixtures', () => {
+describe('AI eval fixtures', () => {
   it('has 10 unique documents whose expected features exist in the catalog', () => {
     expect(EVAL_DOCUMENTS).toHaveLength(10);
     expect(new Set(EVAL_DOCUMENTS.map((document) => document.id)).size).toBe(10);
@@ -22,7 +22,7 @@ describe('gemini eval fixtures', () => {
   });
 });
 
-describe('gemini eval scoring', () => {
+describe('AI eval scoring', () => {
   const document = EVAL_DOCUMENTS[0];
 
   it('matches SLA anchors ignoring accents and case, and lists the missing ones', () => {

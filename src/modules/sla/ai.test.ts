@@ -17,7 +17,7 @@ describe('SLA AI step', () => {
       'texto suelto',
       42,
     ]);
-    expect(merged.source).toBe('IA Gemini');
+    expect(merged.source).toBe('IA OpenRouter');
     expect(merged.items).toHaveLength(baseCount + 2);
     const added = merged.items.slice(baseCount);
     expect(added[0]).toMatchObject({ category: '3.1', clientSource: 'Respuesta en 4 horas', status: 'gap', ourSource: 'Detectado por IA' });

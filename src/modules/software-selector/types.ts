@@ -34,7 +34,7 @@ export type SoftwareAnalysis = {
   textExcerpt: string;
   selectedFeatureIds: string[];
   reasoning: Record<string, string>;
-  source: 'heurística local' | 'IA Gemini';
+  source: 'heurística local' | 'IA OpenRouter' | 'IA Gemini';
   usedFallback: boolean;
   analyzedAt: string;
 };

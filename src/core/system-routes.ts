@@ -14,7 +14,7 @@ import { getSourceCoverage } from './source-catalog';
 import { isRecord } from './validation';
 import { stageDatabaseRestore } from './database-restore';
 
-// Claves de API (p. ej. ai/gemini_api_key): nunca salen de la instalación en respaldos ni lecturas.
+// Claves de API (p. ej. ai/openrouter_api_key): nunca salen de la instalación en respaldos ni lecturas.
 export const SECRET_SETTINGS_NAMESPACE = 'ai';
 
 function stripSecrets(snapshotPath: string): void {

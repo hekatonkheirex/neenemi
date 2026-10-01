@@ -1,7 +1,7 @@
 import type { Express } from 'express';
 import type { SuiteDatabase } from '../../db/database';
 import { SettingsRepository } from '../../db/repositories';
-import { createGeminiClient, getGeminiApiKey, getGeminiErrorMessage, getGeminiErrorStatus } from '../../core/gemini';
+import { askOpenRouter, extractJson, getOpenRouterConfig, OpenRouterError, openRouterErrorMessage, openRouterErrorStatus } from '../../core/openrouter';
 import { parseTextAnalysisInput } from '../../core/validation';
 import { analyzeSlaRequirements } from './analysis';
 import { buildSlaAiPrompt, mergeAiSlaItems } from './ai';
@@ -41,31 +41,19 @@ export function registerSlaRoutes(app: Express, database: SuiteDatabase): void {
       return;
     }
     try {
-      const apiKey = getGeminiApiKey(settings);
+      const { apiKey, model } = getOpenRouterConfig(settings);
       if (!apiKey) {
-        response.status(403).json({ error: 'Clave de Gemini API no configurada.' });
+        response.status(403).json({ error: 'Clave de OpenRouter no configurada.' });
         return;
       }
-      const ai = createGeminiClient(apiKey);
-      const prompt = buildSlaAiPrompt(text);
-
-      const result = await ai.models.generateContent({
-        model: 'gemini-3.6-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          temperature: 0,
-        }
-      });
-      const payload = JSON.parse(result.text ?? '[]');
-      if (!Array.isArray(payload)) throw new Error('Respuesta IA inválida.');
-      
+      const payload = extractJson(await askOpenRouter(apiKey, model, buildSlaAiPrompt(text)));
+      if (!Array.isArray(payload)) throw new OpenRouterError(undefined, 'Respuesta IA inválida.');
       const analysis = mergeAiSlaItems(text, fileName ?? 'pliego.txt', payload);
       const stored = sla.saveAnalysis(analysis);
       response.json(stored);
     } catch (e: unknown) {
-      console.error('Gemini API Error:', e);
-      response.status(getGeminiErrorStatus(e) ?? 500).json({ error: getGeminiErrorMessage(e) });
+      console.error('OpenRouter Error:', e);
+      response.status(openRouterErrorStatus(e) ?? 500).json({ error: openRouterErrorMessage(e) });
     }
   });
 }

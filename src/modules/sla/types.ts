@@ -18,7 +18,7 @@ export type SlaComplianceItem = {
 export type SlaAnalysis = {
   fileName: string;
   textExcerpt: string;
-  source: 'reglas locales' | 'IA Gemini';
+  source: 'reglas locales' | 'IA OpenRouter' | 'IA Gemini';
   usedFallback: boolean;
   analyzedAt: string;
   overallRisk: SlaRisk;

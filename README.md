@@ -85,6 +85,25 @@ aprobarla con el recall de los pliegos que sí respondieron.
 v0.1.40 el prompt y la fusión de IA del módulo SLA pasan a `src/modules/sla/ai.ts` (con pruebas) y se añade
 `npm run eval:openrouter`: la misma eval con modelos gratuitos de OpenRouter (solo sufijo `:free`), usada cuando la
 cuota de Gemini se agota. La app sigue usando únicamente Gemini.
+v0.1.41 reemplaza Gemini por OpenRouter en SLA y Software Selector (`src/core/openrouter.ts`), con modelo gratuito por
+defecto; se elimina `@google/genai` y `src/core/gemini.ts`, la eval pasa a `npm run eval:ai` (`evals/ai/`) y los botones
+dicen «Analizar con IA».
+
+## Análisis con IA
+
+SLA Compliance Analyzer y Canon Software Selector llaman a **OpenRouter** (`https://openrouter.ai/api/v1`) desde la
+API local; el renderer nunca ve la clave. El modelo por defecto es gratuito (`nvidia/nemotron-3-super-120b-a12b:free`).
+
+- **Clave:** `OPENROUTER_API_KEY` en el entorno de la API, o guardada en la instalación con
+  `PUT /api/settings/ai/openrouter_api_key` (`{"value":"sk-or-..."}`). Esa configuración no se puede leer desde la
+  interfaz y no se incluye en los respaldos SQLite.
+- **Modelo:** `OPENROUTER_MODEL` o `PUT /api/settings/ai/openrouter_model`. Los modelos con sufijo `:free` no tienen
+  costo, pero tienen límites de uso y disponibilidad; la API reintenta 429 y 5xx y muestra un mensaje claro si persisten.
+- **Privacidad:** se envía el texto del pliego (hasta 30.000 caracteres) al proveedor del modelo a través de OpenRouter.
+  Los modelos gratuitos pueden aplicar políticas de registro distintas a las de los modelos de pago: revisa la
+  configuración de privacidad de la cuenta de OpenRouter antes de enviar documentos de clientes.
+- **Calidad:** `npm run eval:ai` mide el recall sobre 10 pliegos sintéticos con umbral de 80 % (`evals/ai/README.md`).
+  Los análisis guardados antes con Gemini siguen visibles (`IA Gemini`).
 
 ## Alcance
 
@@ -417,15 +436,15 @@ impresión del navegador. También se puede exportar a XLSX.
 `Canon Software Selector` analiza texto de pliegos con reglas locales deterministas, permite
 revisar manualmente 35 requisitos, compara uniFLOW e imageWARE y conserva el último análisis en
 `app_settings`. Acepta TXT/MD/CSV/JSON, PDF con capa de texto y DOCX; la extracción se ejecuta
-localmente. Para el análisis IA usa únicamente Gemini, según el alcance acordado; al pulsar
-«Analizar con Gemini», el texto se envía a la API de Google.
+localmente. Para el análisis IA usa únicamente OpenRouter (ver «Análisis con IA»); al pulsar
+«Analizar con IA», el texto se envía a la API de OpenRouter.
 
 `SLA Compliance Analyzer` compara texto de pliegos con las cláusulas estándar de Data Systems,
 calcula score y riesgo, muestra trazabilidad por requisito y guarda el último informe en
 `app_settings`. Acepta TXT/MD/CSV/JSON y PDF con capa de texto; en Electron el informe se guarda
 como PDF mediante el diálogo nativo local, en Vite se abre la impresión del navegador, y también
-se puede exportar a HTML autónomo o JSON. Para el análisis IA usa únicamente Gemini, según el
-alcance acordado; los PDF escaneados todavía requieren OCR.
+se puede exportar a HTML autónomo o JSON. Para el análisis IA usa únicamente OpenRouter (ver
+«Análisis con IA»); los PDF escaneados todavía requieren OCR.
 
 La pestaña **Servicios vs Consumibles** de Analítica de consumibles puede importar uno o varios `Servicios LAM.xlsx`, conservar cada fuente original y
 guardar las intervenciones enlazadas a la cartera instalada. La pantalla permite buscar

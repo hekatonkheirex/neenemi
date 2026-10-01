@@ -8,7 +8,7 @@ export function buildSlaAiPrompt(text: string): string {
 /** Añade al análisis local los requisitos de la IA; ignora entradas que no sean objetos. */
 export function mergeAiSlaItems(text: string, fileName: string, payload: readonly unknown[]): SlaAnalysis {
   const analysis = analyzeSlaRequirements(text, fileName);
-  analysis.source = 'IA Gemini';
+  analysis.source = 'IA OpenRouter';
   for (const entry of payload) {
     if (typeof entry !== 'object' || entry === null) continue;
     const item = entry as Record<string, unknown>;

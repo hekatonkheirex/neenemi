@@ -20,9 +20,9 @@ describe('software selector AI step', () => {
     const { analysis, rejected } = mergeAiFeatures(base, ['secure_print_auth', 'cloud_ocr', 'secure-print', 42, null]);
     expect(analysis.selectedFeatureIds).toEqual([...base.selectedFeatureIds, 'cloud_ocr']);
     expect(rejected).toEqual(['secure-print', '42', 'null']);
-    expect(analysis.source).toBe('IA Gemini');
+    expect(analysis.source).toBe('IA OpenRouter');
     expect(analysis.reasoning.secure_print_auth).toBe(base.reasoning.secure_print_auth);
-    expect(analysis.reasoning.cloud_ocr).toContain('Detectado por IA Gemini');
+    expect(analysis.reasoning.cloud_ocr).toContain('Detectado por IA');
     expect(base.source).toBe('heurística local');
     expect(base.selectedFeatureIds).not.toContain('cloud_ocr');
   });

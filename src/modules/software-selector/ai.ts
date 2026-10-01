@@ -19,10 +19,10 @@ export function mergeAiFeatures(base: SoftwareAnalysis, aiIds: readonly unknown[
     ...base,
     selectedFeatureIds: Array.from(new Set([...base.selectedFeatureIds, ...accepted])),
     reasoning: { ...base.reasoning },
-    source: 'IA Gemini',
+    source: 'IA OpenRouter',
   };
   for (const id of accepted) {
-    if (!analysis.reasoning[id]) analysis.reasoning[id] = `${SOFTWARE_FEATURE_BY_ID.get(id)!.reason} Detectado por IA Gemini.`;
+    if (!analysis.reasoning[id]) analysis.reasoning[id] = `${SOFTWARE_FEATURE_BY_ID.get(id)!.reason} Detectado por IA.`;
   }
   return { analysis, rejected };
 }

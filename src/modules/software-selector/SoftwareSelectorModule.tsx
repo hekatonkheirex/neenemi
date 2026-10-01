@@ -319,7 +319,7 @@ export default function SoftwareSelectorModule() {
                 </label>
                 <button className="secondary-button" type="button" onClick={loadDemo}>Cargar ejemplo</button>
                 <button className="secondary-button" type="submit" id="btn-local" disabled={analyzing || !text.trim()}>{analyzing ? 'Procesando…' : 'Analizar localmente'}</button>
-                <button className="primary-button" type="submit" id="btn-ai" disabled={analyzing || !text.trim()}>Analizar con Gemini</button>
+                <button className="primary-button" type="submit" id="btn-ai" disabled={analyzing || !text.trim()}>Analizar con IA</button>
               </div>
               <p className="form-hint">Fuente actual: <strong>{fileName}</strong>. PDF y DOCX se extraen localmente; el motor normaliza acentos y busca expresiones técnicas conocidas. Los resultados se guardan en la SQLite de esta instalación.</p>
             </form>
