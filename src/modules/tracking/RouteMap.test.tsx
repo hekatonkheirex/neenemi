@@ -33,10 +33,10 @@ describe('RouteMap rendering', () => {
     expect(markup).toContain('https://tile.openstreetmap.org/12/');
     expect(markup).not.toContain('Usar centro del mapa');
   });
-  it('labels pins in Spanish; numbering follows the event index, so unlocated events leave a gap', () => {
+  it('labels pins in Spanish and numbers only located events consecutively', () => {
     const markup = render({ events: [event(1, asuncion), event(2, null), event(3, { latitude: -25.31, longitude: -57.61 }, 'out')] });
     expect(markup).toContain('1. Entrada I.S. 1, 08:30');
-    expect(markup).toContain('3. Salida I.S. 3, 08:30');
+    expect(markup).toContain('2. Salida I.S. 3, 08:30');
     expect(markup).not.toContain('No hay coordenadas');
   });
   it('draws one polyline per contiguous run of located events', () => {
@@ -49,6 +49,8 @@ describe('RouteMap rendering', () => {
     const markup = render({ events: [event(1, asuncion), event(2, asuncion)], selectedVisit: 'v2', sites: [site], candidate: asuncion });
     expect(markup.match(/tracking-event-pin in selected/g)).toHaveLength(1);
     expect(markup).toContain('tracking-candidate-pin');
+    expect(markup).toContain('<title>Sede confirmada: Acme Centro</title>');
+    expect(markup).toContain('<title>Cliente · I.S. 1 · 2026-09-01 08:30:00</title>');
   });
   it('offers center-as-site only in edit mode', () => {
     expect(render({ editing: true })).toContain('Usar centro del mapa como sede propuesta');

@@ -9,7 +9,7 @@ export function normalizeIdentity(value: string): string {
 const MISSING_SERIALS: Record<string, true> = { '-': true, 'N/A': true, 'S/N': true, 'SIN SERIE': true, 'SIN NUMERO DE SERIE': true };
 export function normalizeTrackingSerial(value: unknown): string {
   const serial = normalizeSerial(String(value ?? '').replace(/^'+/, ''));
-  return MISSING_SERIALS[serial] ? '' : serial;
+  return MISSING_SERIALS[normalizeIdentity(serial).toUpperCase()] ? '' : serial;
 }
 
 export function parseTimestamp(value: unknown): string | null {
