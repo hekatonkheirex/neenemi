@@ -66,6 +66,8 @@ y 658 líneas.
 v0.1.33 mueve las rutas de Sistema (resumen, fuentes, respaldo, restauración, configuración) a
 `src/core/system-routes.ts` y las de Importaciones a `src/core/import-api-routes.ts`; `server.ts` queda con 179
 líneas: solo middlewares de seguridad, registro de rutas y arranque.
+v0.1.34 reparte `server.test.ts` (3.084 líneas) en una prueba `routes.test.ts` junto a las rutas de cada
+módulo, con ayudantes compartidos en `src/test-support/api-helpers.ts`; las 316 pruebas se conservan.
 
 ## Alcance
 
