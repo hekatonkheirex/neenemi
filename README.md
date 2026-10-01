@@ -56,6 +56,8 @@ v0.1.28 mueve las rutas de Ventas (Listado de precios y Proformas) a `src/module
 `server.ts` queda con 62 rutas.
 v0.1.29 mueve las rutas de Catálogo y Mantenimiento a `routes.ts` de cada módulo;
 `server.ts` queda con 47 rutas.
+v0.1.30 añade `server.routes-smoke.test.ts`: cada GET `/api/*` sin parámetros debe responder sin error 5xx,
+para detectar de inmediato un import o validador perdido al mover rutas.
 
 ## Alcance
 
