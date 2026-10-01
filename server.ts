@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { GoogleGenAI } from '@google/genai';
+import Database from 'better-sqlite3';
 import { backfillImportFileBlobs, getImportOriginalsStatus } from './src/core/import-blob-backfill';
 import { openDatabase, resolveDatabasePath, type SuiteDatabase } from './src/db/database';
 import { ImportRepository, SettingsRepository } from './src/db/repositories';
@@ -99,6 +100,19 @@ import { calculateYield, normalizePageCoverage, summarizeDocumentCoverage } from
 import { CoverageRepository } from './src/modules/cobertura/repository';
 import type { CanonModelDraft, CoverageAnalysis, CoveragePageFailure } from './src/modules/cobertura/types';
 import { registerTrackingRoutes } from './src/modules/tracking/routes';
+
+// Claves de API (p. ej. ai/gemini_api_key): nunca salen de la instalación en respaldos ni lecturas.
+const SECRET_SETTINGS_NAMESPACE = 'ai';
+
+function stripSecrets(snapshotPath: string): void {
+  const snapshot = new Database(snapshotPath);
+  try {
+    snapshot.prepare('DELETE FROM app_settings WHERE namespace = ?').run(SECRET_SETTINGS_NAMESPACE);
+    snapshot.exec('VACUUM');
+  } finally {
+    snapshot.close();
+  }
+}
 
 type ImportJobUpdate = (progress: number, stage: string) => void;
 
@@ -294,6 +308,7 @@ export function createServer(options: ServerOptions): { app: express.Express; da
       temporaryDirectory = fs.mkdtempSync(path.join(dataDirectory, '.dcss-backup-'));
       const snapshotPath = path.join(temporaryDirectory, 'dcss.sqlite');
       await database.backup(snapshotPath);
+      stripSecrets(snapshotPath);
 
       response.setHeader('Cache-Control', 'no-store');
       response.setHeader('Content-Type', 'application/vnd.sqlite3');
@@ -473,6 +488,10 @@ export function createServer(options: ServerOptions): { app: express.Express; da
   });
 
   app.get('/api/settings/:namespace/:key', (request, response) => {
+    if (request.params.namespace === SECRET_SETTINGS_NAMESPACE) {
+      response.status(403).json({ error: 'Esta configuración no se puede leer desde la interfaz.' });
+      return;
+    }
     const value = settings.get(request.params.namespace, request.params.key, null);
     response.json({ value });
   });

@@ -3,6 +3,7 @@ import { suiteModules } from './modules';
 
 describe('suite module manifest', () => {
   it('contains every included legacy tool exactly once', () => {
+    expect(suiteModules).toHaveLength(13);
     expect(suiteModules.map((module) => module.id)).not.toContain('servicios');
     expect(new Set(suiteModules.map((module) => module.id)).size).toBe(suiteModules.length);
     expect(new Set(suiteModules.map((module) => module.route)).size).toBe(suiteModules.length);

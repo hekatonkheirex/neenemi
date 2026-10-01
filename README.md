@@ -40,6 +40,8 @@ los intervalos entre visitas, en lugar del período total de marcaciones.
 v0.1.20 incorpora direcciones de casa matriz cuando no hay sucursal y búsqueda
 externa puntual de ubicaciones propuestas, con confirmación manual antes de validar.
 v0.1.21 activa automáticamente el fondo de calles de Tracking, sin casilla de activación.
+v0.1.22 excluye las claves de API del respaldo SQLite y de la lectura de configuración, actualiza
+pdfjs-dist a 6.x (corrige ejecución de JavaScript con PDF maliciosos) y fija el total de módulos en la prueba del manifiesto.
 
 ## Alcance
 

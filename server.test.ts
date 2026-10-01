@@ -7,7 +7,7 @@ import Database from 'better-sqlite3';
 import ExcelJS from 'exceljs';
 import { afterEach, describe, expect, it } from 'vitest';
 import { createServer } from './server';
-import { ImportRepository } from './src/db/repositories';
+import { ImportRepository, SettingsRepository } from './src/db/repositories';
 import { storeImportFile } from './src/core/import-storage';
 import { openDatabase } from './src/db/database';
 import { PYG_TO_USD } from './src/modules/consumibles/analysis';
@@ -773,12 +773,16 @@ describe('suite local API', () => {
       contentBlob: removedOriginal,
     });
     imports.removeBatch(removedBatchId);
+    const settings = new SettingsRepository(database);
+    settings.set('ai', 'gemini_api_key', 'secret-key');
+    settings.set('keep', 'value', 'ok');
     const server = app.listen(0, '127.0.0.1');
 
     try {
       await new Promise<void>((resolve) => server.once('listening', () => resolve()));
       const address = server.address();
       const port = typeof address === 'object' && address ? address.port : 0;
+      expect((await fetch(`http://127.0.0.1:${port}/api/settings/ai/gemini_api_key`)).status).toBe(403);
       const response = await fetch(`http://127.0.0.1:${port}/api/system/backup`);
       const backup = Buffer.from(await response.arrayBuffer());
 
@@ -795,6 +799,8 @@ describe('suite local API', () => {
         expect(new Uint8Array(saved.content_blob)).toEqual(original);
         const archived = downloadedDatabase.prepare('SELECT content_blob FROM archived_import_files WHERE id = ?').get(removedFileId) as { content_blob: Buffer };
         expect(new Uint8Array(archived.content_blob)).toEqual(removedOriginal);
+        expect(downloadedDatabase.prepare("SELECT COUNT(*) AS n FROM app_settings WHERE namespace = 'ai'").get()).toEqual({ n: 0 });
+        expect(downloadedDatabase.prepare("SELECT value_json FROM app_settings WHERE namespace = 'keep'").get()).toEqual({ value_json: '"ok"' });
       } finally {
         downloadedDatabase.close();
       }
