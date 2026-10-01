@@ -88,15 +88,23 @@ cuota de Gemini se agota. La app sigue usando únicamente Gemini.
 v0.1.41 reemplaza Gemini por OpenRouter en SLA y Software Selector (`src/core/openrouter.ts`), con modelo gratuito por
 defecto; se elimina `@google/genai` y `src/core/gemini.ts`, la eval pasa a `npm run eval:ai` (`evals/ai/`) y los botones
 dicen «Analizar con IA».
+v0.1.42 permite incluir la clave de OpenRouter en el instalador mediante `embedded-ai.json` (ignorado por git, copiado a
+`resources/` con `extraResources`); la API la usa solo si no hay clave en la instalación ni en el entorno.
 
 ## Análisis con IA
 
 SLA Compliance Analyzer y Canon Software Selector llaman a **OpenRouter** (`https://openrouter.ai/api/v1`) desde la
 API local; el renderer nunca ve la clave. El modelo por defecto es gratuito (`nvidia/nemotron-3-super-120b-a12b:free`).
 
-- **Clave:** `OPENROUTER_API_KEY` en el entorno de la API, o guardada en la instalación con
-  `PUT /api/settings/ai/openrouter_api_key` (`{"value":"sk-or-..."}`). Esa configuración no se puede leer desde la
-  interfaz y no se incluye en los respaldos SQLite.
+- **Clave, por orden de prioridad:** (1) guardada en la instalación con `PUT /api/settings/ai/openrouter_api_key`
+  (`{"value":"sk-or-..."}`); (2) `OPENROUTER_API_KEY` en el entorno de la API; (3) la incluida en el instalador
+  (`embedded-ai.json`). Las dos primeras no se pueden leer desde la interfaz ni salen en los respaldos SQLite.
+- **Clave incluida en el instalador:** para que cualquiera con la app pueda usar la IA sin configurar nada, copia
+  `embedded-ai.example.json` a `embedded-ai.json` (raíz del proyecto), pon la clave y empaqueta. El archivo está en
+  `.gitignore`, no va en el repositorio, ni dentro del asar ni del renderer: electron-builder lo copia a
+  `resources/embedded-ai.json` y Electron pasa su ruta a la API (`DS_EMBEDDED_AI_FILE`). **Cualquiera que tenga el
+  instalador puede extraer esa clave**: usa una clave creada solo para esto, con límite de crédito en $0, y rótala si
+  el instalador sale de la empresa. Todas las instalaciones comparten el límite de uso de esa cuenta.
 - **Modelo:** `OPENROUTER_MODEL` o `PUT /api/settings/ai/openrouter_model`. Los modelos con sufijo `:free` no tienen
   costo, pero tienen límites de uso y disponibilidad; la API reintenta 429 y 5xx y muestra un mensaje claro si persisten.
 - **Privacidad:** se envía el texto del pliego (hasta 30.000 caracteres) al proveedor del modelo a través de OpenRouter.

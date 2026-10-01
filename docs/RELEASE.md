@@ -75,6 +75,14 @@ intenta reiniciarla y recarga la ventana en su nuevo puerto. Tras tres fallos, p
 una opción visible para reintentar o cerrar. El icono DCSS se incluye en el instalador
 y en la ventana Linux; `appId` y carpeta de datos se mantienen.
 
+## Clave de IA incluida en el instalador
+
+Antes de `npm run desktop:package` o `desktop:package:win`, crea `embedded-ai.json` en la raíz (formato en
+`embedded-ai.example.json`). Sin ese archivo el instalador sale sin clave y cada instalación debe configurarla
+(ver «Análisis con IA» en el README). El archivo está en `.gitignore`: no lo agregues al repositorio. Tras empaquetar,
+comprueba que aparece `resources/embedded-ai.json` y que `app.asar` no contiene la clave (`grep -a -c sk-or-v1 app.asar`
+debe dar 0). Cualquiera con el instalador puede leer la clave: usa una exclusiva, con límite de crédito en $0.
+
 ## Auditoría de dependencias
 
 La auditoría de 2026-10-01 (`npm audit`, incluidas las dependencias de desarrollo) no informa vulnerabilidades

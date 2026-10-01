@@ -207,6 +207,8 @@ function startLocalApi(reloadWindowsAfterReady = false) {
       ...process.env,
       DS_SERVER_AUTOSTART: 'false',
       DS_DATA_DIR: path.join(app.getPath('userData'), 'data'),
+      // Configuración de IA incluida por el instalador (extraResources); sin archivo, la API no recibe nada.
+      ...(app.isPackaged ? { DS_EMBEDDED_AI_FILE: path.join(process.resourcesPath, 'embedded-ai.json') } : {}),
       ELECTRON_RUN_AS_NODE: '1',
     },
     stdio: ['ignore', 'pipe', 'pipe', 'ipc'],

@@ -15,6 +15,11 @@ files:
 extraResources:
   - from: build/icon.png
     to: icon.png
+  # Clave de IA incluida solo si existe embedded-ai.json (ignorado por git); nunca va dentro del asar ni del renderer.
+  - from: .
+    to: .
+    filter:
+      - embedded-ai.json
 asarUnpack:
   - node_modules/better-sqlite3/**
 win:
