@@ -82,6 +82,9 @@ v0.1.38 corrige «Analizar con Gemini» en Software Selector: el prompt pedía 1
 de recall de 80 % sobre 10 pliegos sintéticos.
 v0.1.39 la eval de Gemini marca como INCOMPLETE una suite con pliegos sin evaluar (cuota 429, saturación 503) en lugar de
 aprobarla con el recall de los pliegos que sí respondieron.
+v0.1.40 el prompt y la fusión de IA del módulo SLA pasan a `src/modules/sla/ai.ts` (con pruebas) y se añade
+`npm run eval:openrouter`: la misma eval con modelos gratuitos de OpenRouter (solo sufijo `:free`), usada cuando la
+cuota de Gemini se agota. La app sigue usando únicamente Gemini.
 
 ## Alcance
 

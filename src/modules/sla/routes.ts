@@ -4,6 +4,7 @@ import { SettingsRepository } from '../../db/repositories';
 import { createGeminiClient, getGeminiApiKey, getGeminiErrorMessage, getGeminiErrorStatus } from '../../core/gemini';
 import { parseTextAnalysisInput } from '../../core/validation';
 import { analyzeSlaRequirements } from './analysis';
+import { buildSlaAiPrompt, mergeAiSlaItems } from './ai';
 import { SLA_REFERENCE_SECTIONS } from './constants';
 import { SlaRepository } from './repository';
 
@@ -46,8 +47,8 @@ export function registerSlaRoutes(app: Express, database: SuiteDatabase): void {
         return;
       }
       const ai = createGeminiClient(apiKey);
-      const prompt = `Analiza el siguiente texto de un pliego de condiciones (SLA) y devuelve un arreglo JSON estricto. Identifica todos los requisitos de nivel de servicio (tiempos de respuesta, solución, disponibilidad, multas, stock, guardias). Cada objeto debe tener:\n- section: string (número o nombre de la sección)\n- excerpt: string (el texto literal del requerimiento)\n- requirement: string (un resumen claro de la obligación)\nTexto:\n\n${text.slice(0, 30000)}`;
-      
+      const prompt = buildSlaAiPrompt(text);
+
       const result = await ai.models.generateContent({
         model: 'gemini-3.6-flash',
         contents: prompt,
@@ -59,20 +60,7 @@ export function registerSlaRoutes(app: Express, database: SuiteDatabase): void {
       const payload = JSON.parse(result.text ?? '[]');
       if (!Array.isArray(payload)) throw new Error('Respuesta IA inválida.');
       
-      const analysis = analyzeSlaRequirements(text, fileName ?? 'pliego.txt');
-      analysis.source = 'IA Gemini';
-      for (const item of payload) {
-        analysis.items.push({
-          id: crypto.randomUUID(),
-          category: String(item.section || 'General'),
-          clientSource: String(item.excerpt || ''),
-          clientRequirement: String(item.requirement || ''),
-          ourPosition: 'Revisión manual requerida',
-          ourSource: 'Detectado por IA',
-          status: 'gap',
-          advice: 'Evaluar factibilidad contra el estándar.',
-        });
-      }
+      const analysis = mergeAiSlaItems(text, fileName ?? 'pliego.txt', payload);
       const stored = sla.saveAnalysis(analysis);
       response.json(stored);
     } catch (e: unknown) {
