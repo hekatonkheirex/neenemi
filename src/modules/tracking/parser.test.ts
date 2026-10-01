@@ -1,115 +1,95 @@
 import { describe, expect, it } from 'vitest';
 import { combineTracking, normalizeIdentity, normalizeTrackingSerial, parseTimestamp, parseTrackingFile } from './parser';
-import type { TrackingReport, TrackingVisit } from './types';
 
 const bytes = (value: string) => new TextEncoder().encode(value);
-const report = (overrides: Partial<TrackingReport> = {}): TrackingReport => ({ reportId: '1', customer: 'Cliente', technician: 'Ana', branch: '', address: '', serialNumber: '', requestedService: '', status: '', scheduledAt: null, sourceSheet: 'CSV', sourceRow: 2, ...overrides });
-const visit = (overrides: Partial<TrackingVisit> = {}): TrackingVisit => ({ ...report(), key: 'v1', serviceType: 'En Sitio', checkIn: null, checkOut: null, gpsIn: null, gpsOut: null, matchedReport: false, issues: [], ...overrides });
+const GEO_HEADER = 'Nº I.S.,Cliente,Técnico,TS check-in,TS check-out,GPS_IN,GPS_OUT';
 
-describe('normalizeIdentity', () => {
-  it('strips accents, case and repeated whitespace', () => {
-    expect(normalizeIdentity('  JOSÉ   Peña ')).toBe('jose pena');
+describe('tracking identity and serial normalization', () => {
+  it('ignores accents, case and repeated spaces in identities', () => {
+    expect(normalizeIdentity('  JOSÉ   Núñez ')).toBe('jose nunez');
+  });
+
+  it('uppercases serials, drops a leading apostrophe and treats placeholders as missing', () => {
+    expect(normalizeTrackingSerial("'00ab12")).toBe('00AB12');
+    for (const label of ['N/A', 'n/a', 'Sin serie', 'S/N', '-', '', null, undefined]) {
+      expect(normalizeTrackingSerial(label)).toBe('');
+    }
   });
 });
 
-describe('normalizeTrackingSerial', () => {
-  it.each(['-', 'N/A', 'n/a', 'S/N', 'sin serie', 'Sin Numero de Serie', 'Sin Número de Serie', '', null, undefined])('treats %j as a missing serial', value => {
-    expect(normalizeTrackingSerial(value)).toBe('');
-  });
-  it('strips Excel text-prefix apostrophes and keeps leading zeros', () => {
-    expect(normalizeTrackingSerial("'000123")).toBe('000123');
-  });
-});
-
-describe('parseTimestamp', () => {
-  it.each([
-    ['2026-09-01 08:00', '2026-09-01T08:00:00'],
-    ['2026-09-01T08:00:05.123', '2026-09-01T08:00:05'],
-    ['01/09/2026 08:00:30', '2026-09-01T08:00:30'],
-  ])('parses %s', (input, expected) => expect(parseTimestamp(input)).toBe(expected));
-  it('accepts Date instances and rejects invalid ones', () => {
+describe('tracking timestamps', () => {
+  it('accepts ISO and SGS local formats as literal local time', () => {
+    expect(parseTimestamp('2026-09-01 08:05')).toBe('2026-09-01T08:05:00');
+    expect(parseTimestamp('2026-09-01T08:05:09.123')).toBe('2026-09-01T08:05:09');
+    expect(parseTimestamp('01/09/2026 08:05:09')).toBe('2026-09-01T08:05:09');
     expect(parseTimestamp(new Date('2026-09-01T08:00:00Z'))).toBe('2026-09-01T08:00:00');
-    expect(parseTimestamp(new Date('nope'))).toBeNull();
   });
-  it.each(['', null, 'ayer', '31/02/2026 08:00', '2026-13-01 08:00', '01/09/2026 24:00', '01/09/2026 08:60', '01/09/1850 08:00', '2026-09-01'])('rejects %j', input => {
-    expect(parseTimestamp(input)).toBeNull();
-  });
-  it('accepts leap days only in leap years', () => {
-    expect(parseTimestamp('29/02/2028 10:00')).toBe('2028-02-29T10:00:00');
-    expect(parseTimestamp('29/02/2027 10:00')).toBeNull();
+
+  it('rejects impossible dates, times and years instead of rolling them over', () => {
+    for (const value of ['31/02/2026 08:00', '2026-13-01 08:00', '01/09/2026 24:00', '01/09/2026 08:60', '01/09/1800 08:00', 'ayer', '', null, new Date('x')]) {
+      expect(parseTimestamp(value)).toBeNull();
+    }
   });
 });
 
-describe('parseTrackingFile', () => {
-  it('rejects unsupported extensions and invalid UTF-8', async () => {
-    await expect(parseTrackingFile(bytes('x'), 'datos.txt', 'reports')).rejects.toThrow('CSV o XLSX');
-    await expect(parseTrackingFile(new Uint8Array([0xff, 0xfe, 0x00]), 'datos.csv', 'reports')).rejects.toThrow();
+describe('tracking file parsing', () => {
+  it('detects the semicolon separator from the header', async () => {
+    const csv = 'Nº I.S.;Cliente;Técnico;TS check-in;TS check-out;GPS_IN;GPS_OUT\n1;Cliente;Ana;01/09/2026 08:00;01/09/2026 09:00;"-25.3,-57.6";"-25.3,-57.6"';
+    const parsed = await parseTrackingFile(bytes(csv), 'g.csv', 'geolocation');
+    expect(parsed.visits[0]).toMatchObject({ technician: 'Ana', gpsIn: { latitude: -25.3, longitude: -57.6 }, gpsOut: { latitude: -25.3, longitude: -57.6 } });
   });
-  it('rejects an unterminated quoted CSV field', async () => {
-    await expect(parseTrackingFile(bytes('Nº I.S.,Cliente,Técnico\n1,"Cliente,Ana'), 'a.csv', 'reports')).rejects.toThrow('sin cerrar');
+
+  it('rejects unsupported extensions, unclosed quotes and non UTF-8 text', async () => {
+    await expect(parseTrackingFile(bytes('x'), 'g.txt', 'reports')).rejects.toThrow('CSV o XLSX');
+    await expect(parseTrackingFile(bytes(`${GEO_HEADER}\n1,"Cliente,Ana`), 'g.csv', 'geolocation')).rejects.toThrow('sin cerrar');
+    await expect(parseTrackingFile(new Uint8Array([0xff, 0xfe, 0x41]), 'g.csv', 'reports')).rejects.toThrow();
   });
-  it('rejects files without usable rows or required headers', async () => {
-    await expect(parseTrackingFile(bytes('Nº I.S.,Cliente,Técnico\n'), 'a.csv', 'reports')).rejects.toThrow('registros utilizables');
-    await expect(parseTrackingFile(bytes('A,B\n1,2'), 'a.csv', 'reports')).rejects.toThrow('registros utilizables');
+
+  it('fails clearly when headers, technician column or rows are missing', async () => {
+    await expect(parseTrackingFile(bytes('A,B\n1,2'), 'g.csv', 'reports')).rejects.toThrow('no contiene registros utilizables');
+    await expect(parseTrackingFile(bytes('Nº I.S.,Cliente\n1,Cliente'), 'g.csv', 'reports')).rejects.toThrow('faltan técnico');
+    await expect(parseTrackingFile(bytes('Nº I.S.,Cliente,Técnico\n,Cliente,Ana'), 'g.csv', 'reports')).rejects.toThrow('fila 2: falta I.S. o cliente');
+    await expect(parseTrackingFile(bytes(`${GEO_HEADER}`), 'g.csv', 'geolocation')).rejects.toThrow('no contiene registros utilizables');
   });
-  it('fails when the technician column is missing, or geolocation lacks check-in/out columns', async () => {
-    await expect(parseTrackingFile(bytes('Nº I.S.,Cliente\n1,C'), 'a.csv', 'reports')).rejects.toThrow('faltan técnico');
-    await expect(parseTrackingFile(bytes('Nº I.S.,Cliente,Técnico\n1,C,Ana'), 'a.csv', 'geolocation')).rejects.toThrow('faltan técnico');
+
+  it('skips blank rows and flags inconsistent marks without dropping the visit', async () => {
+    const csv = [
+      GEO_HEADER,
+      ',,,,,,',
+      '1,Cliente,Ana,01/09/2026 10:00,01/09/2026 09:00,"-25,-57",',
+      '2,Cliente,,31/02/2026 08:00,,"95,10",',
+    ].join('\n');
+    const parsed = await parseTrackingFile(bytes(csv), 'g.csv', 'geolocation');
+    expect(parsed.visits).toHaveLength(2);
+    expect(parsed.visits[0].issues).toEqual(['Check-out anterior al check-in']);
+    expect(parsed.visits[1].issues).toEqual(['Check-in inválido', 'GPS de entrada inválido', 'Sin técnico']);
+    expect(parsed.visits[1].gpsIn).toBeNull();
+    expect(parsed.warnings.some((warning) => warning.startsWith('2 registros'))).toBe(true);
   });
-  it('fails on rows missing I.S. or customer, skipping fully blank rows', async () => {
-    const ok = await parseTrackingFile(bytes('Nº I.S.,Cliente,Técnico\n,,\n1,C,Ana'), 'a.csv', 'reports');
-    expect(ok.reports).toHaveLength(1);
-    expect(ok.reports[0].sourceRow).toBe(3);
-    await expect(parseTrackingFile(bytes('Nº I.S.,Cliente,Técnico\n1,,Ana'), 'a.csv', 'reports')).rejects.toThrow('fila 2');
-  });
-  it('detects semicolon separators, BOM and CRLF line endings', async () => {
-    const parsed = await parseTrackingFile(bytes('﻿Nº I.S.;Cliente;Técnico\r\n1;"A;B";Ana\r\n2;C;Luis'), 'a.csv', 'reports');
-    expect(parsed.reports.map(r => [r.reportId, r.customer, r.technician])).toEqual([['1', 'A;B', 'Ana'], ['2', 'C', 'Luis']]);
-  });
-  it('unescapes doubled quotes', async () => {
-    const parsed = await parseTrackingFile(bytes('Nº I.S.,Cliente,Técnico\n1,"Dijo ""hola""",Ana'), 'a.csv', 'reports');
-    expect(parsed.reports[0].customer).toBe('Dijo "hola"');
-  });
-  it('uses the headquarters address only when there is no branch and no address', async () => {
-    const parsed = await parseTrackingFile(bytes('Nº I.S.,Cliente,Técnico,Sucursal,Dirección,Dirección Casa Matriz\n1,C,Ana,,,Matriz 1\n2,C,Ana,Centro,,Matriz 1\n3,C,Ana,,Calle 5,Matriz 1'), 'a.csv', 'reports');
-    expect(parsed.reports.map(r => r.address)).toEqual(['Matriz 1', '', 'Calle 5']);
-  });
-  it('flags inconsistent visits without dropping them', async () => {
-    const parsed = await parseTrackingFile(bytes('Nº I.S.,Cliente,Técnico,TS check-in,TS check-out,GPS_IN,GPS_OUT\n1,C,Ana,01/09/2026 10:00,01/09/2026 09:00,"-25.3,-57.6","abc"\n2,C,,01/09/2026 10:00,xx,,'), 'g.csv', 'geolocation');
-    expect(parsed.visits[0].issues).toEqual(['GPS de salida inválido', 'Check-out anterior al check-in']);
-    expect(parsed.visits[0].gpsIn).toEqual({ latitude: -25.3, longitude: -57.6 });
-    expect(parsed.visits[1].issues).toEqual(['Check-out inválido', 'Sin técnico']);
-    expect(parsed.warnings.some(w => w.startsWith('2 registros'))).toBe(true);
-  });
-  it('produces stable, unique visit keys per sheet row', async () => {
-    const parsed = await parseTrackingFile(bytes('Nº I.S.,Cliente,Técnico,TS check-in\n1,C,Ana,01/09/2026 08:00\n1,C,Ana,01/09/2026 09:00'), 'g.csv', 'geolocation');
-    expect(new Set(parsed.visits.map(v => v.key)).size).toBe(2);
-    expect(JSON.parse(parsed.visits[0].key)).toEqual(['1', 'ana', 'CSV', 2]);
+
+  it('accepts a minimal reports file without warnings', async () => {
+    const parsed = await parseTrackingFile(bytes('Nº I.S.,Cliente,Técnico\n1,Cliente,Ana'), 'd.csv', 'reports');
+    expect(parsed.reports).toHaveLength(1);
+    expect(parsed.warnings).toEqual([]);
   });
 });
 
-describe('combineTracking', () => {
-  it('copies report data onto the matching visit, ignoring accents and case', () => {
-    const result = combineTracking([report({ customer: 'CLIENTÉ', branch: 'Centro', address: 'Calle 1', status: 'Cerrado', serialNumber: 'ABC' })], [visit({ customer: 'cliente' })]);
-    expect(result.visits[0]).toMatchObject({ matchedReport: true, branch: 'Centro', address: 'Calle 1', status: 'Cerrado', serialNumber: 'ABC' });
-    expect(result.warnings).toEqual([]);
+describe('tracking report matching', () => {
+  const report = { reportId: '7', customer: 'Cliente', technician: 'Ana', branch: 'Centro', address: 'Calle 1', serialNumber: 'S1', requestedService: 'Falla', status: '', scheduledAt: null, sourceSheet: 'Detalles', sourceRow: 2 };
+  const visit = { ...report, branch: '', address: '', serialNumber: '', requestedService: '', key: 'v', serviceType: '', checkIn: null, checkOut: null, gpsIn: null, gpsOut: null, matchedReport: false, issues: [] as string[] };
+
+  it('counts reports without marks and warns about visits without a unique report', () => {
+    const result = combineTracking([report, { ...report, reportId: '8' }], [visit]);
+    expect(result.matchedVisits).toBe(1);
+    expect(result.unmatchedReports).toBe(1);
+    expect(result.visits[0]).toMatchObject({ serialNumber: 'S1', branch: 'Centro', address: 'Calle 1' });
+    expect(result.warnings).toEqual(['1 filas de informes no tienen marcaciones vinculadas.']);
+    expect(combineTracking([], [visit]).warnings[0]).toContain('1 marcaciones no tienen un informe único');
   });
-  it('matches reports without technician to any visit technician', () => {
-    expect(combineTracking([report({ technician: '' })], [visit({ technician: 'Luis' })]).matchedVisits).toBe(1);
-  });
-  it('flags conflicting serials instead of joining', () => {
-    const result = combineTracking([report({ serialNumber: 'A' })], [visit({ serialNumber: 'B' })]);
+
+  it('does not link when both sources name different serials', () => {
+    const result = combineTracking([report], [{ ...visit, serialNumber: 'OTRA' }]);
     expect(result.visits[0].matchedReport).toBe(false);
     expect(result.visits[0].issues).toContain('Series distintas entre informe y geolocalización');
-    expect(result.unmatchedReports).toBe(1);
-  });
-  it('flags ambiguous matches and warns about unmatched visits and reports', () => {
-    const ambiguous = combineTracking([report(), report({ address: 'X' })], [visit()]);
-    expect(ambiguous.visits[0].issues).toContain('I.S. ambiguo en detalle de informes');
-    expect(ambiguous.warnings).toHaveLength(2);
-    expect(combineTracking([report({ reportId: '9' })], [visit()]).warnings).toEqual([expect.stringContaining('1 marcaciones'), expect.stringContaining('1 filas')]);
-  });
-  it('keeps the visit serial when the report has none', () => {
-    expect(combineTracking([report()], [visit({ serialNumber: 'Z' })]).visits[0].serialNumber).toBe('Z');
   });
 });

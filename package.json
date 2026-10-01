@@ -1,7 +1,7 @@
 {
   "name": "dcss-suite",
   "private": true,
-  "version": "0.1.36",
+  "version": "0.1.35",
   "description": "Suite local unificada de Data Systems para Electron",
   "author": "Data Systems S.A.E.C.A.",
   "type": "module",
