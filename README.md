@@ -58,6 +58,8 @@ v0.1.29 mueve las rutas de Catálogo y Mantenimiento a `routes.ts` de cada módu
 `server.ts` queda con 47 rutas.
 v0.1.30 añade `server.routes-smoke.test.ts`: cada GET `/api/*` sin parámetros debe responder sin error 5xx,
 para detectar de inmediato un import o validador perdido al mover rutas.
+v0.1.31 mueve las rutas de Operaciones (cartera, metadatos, Discontinuador y stock Waldbott) a
+`src/modules/operaciones/routes.ts`; `enqueueImportJob` pasa a `src/core/import-routes.ts`; `server.ts` queda con 33 rutas.
 
 ## Alcance
 

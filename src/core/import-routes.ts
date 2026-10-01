@@ -1,6 +1,8 @@
+import type { Response } from 'express';
 import { createHash } from 'node:crypto';
 import type { ImportRepository } from '../db/repositories';
 import { readWorkbookSheets } from '../modules/consumibles/xlsx-helpers';
+import type { ImportJobRegistry } from './import-jobs';
 import { archiveImportFiles, readStoredImportFile, storeImportFile, storedImportFileExists, writeStoredImportFile, type ArchivedImportFile } from './import-storage';
 
 export function archiveBatchImportFiles(
@@ -78,4 +80,28 @@ export function storeAndRegisterImportFile(
     contentBlob: contents,
   });
   return { id, ...stored };
+}
+
+export type ImportJobUpdate = (progress: number, stage: string) => void;
+
+export function enqueueImportJob(
+  registry: ImportJobRegistry,
+  response: Response,
+  input: { kind: string; sourceName: string },
+  task: (update: ImportJobUpdate) => Promise<unknown>,
+): void {
+  const job = registry.create(input);
+  void (async () => {
+    await new Promise<void>((resolve) => setImmediate(resolve));
+    registry.update(job.id, { status: 'running', progress: 5, stage: 'Preparando importación…' });
+    try {
+      const result = await task((progress, stage) => {
+        registry.update(job.id, { status: 'running', progress, stage });
+      });
+      registry.complete(job.id, result);
+    } catch (error) {
+      registry.fail(job.id, error instanceof Error ? error.message : 'No se pudo completar la importación.');
+    }
+  })();
+  response.status(202).json({ jobId: job.id, kind: input.kind, sourceName: input.sourceName });
 }
