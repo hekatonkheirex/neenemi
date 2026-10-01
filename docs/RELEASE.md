@@ -77,12 +77,36 @@ y en la ventana Linux; `appId` y carpeta de datos se mantienen.
 
 ## Auditoría de dependencias
 
-La auditoría de 2026-10-01 (`npm audit --omit=dev`) informa dos vulnerabilidades
-moderadas, ambas en `exceljs` por `uuid` 8.x. El aviso
-([GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq))
-afecta a `uuid` v3/v5/v6 con un buffer propio; no se comprobó cómo lo usa ExcelJS.
-La corrección que propone npm baja `exceljs` a 3.4.0, un retroceso incompatible,
-por lo que no se ejecuta `npm audit fix --force`. `pdfjs-dist` pasó a 6.x en v0.1.22
+La auditoría de 2026-10-01 (`npm audit`, incluidas las dependencias de desarrollo) no informa vulnerabilidades
+tras v0.1.35. Se conserva `exceljs` 4.4.0 y se fija su dependencia `uuid` a 11.1.1
+mediante un override limitado a ExcelJS, que incluye la corrección de
+[GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq).
+ExcelJS usa `v4()` sin buffer propio para identificar reglas de formato condicional;
+el aviso afecta a `v3()`/`v5()`/`v6()` con buffers de salida inválidos.
+
+El override no modifica el UUID embebido en el bundle de navegador publicado por
+ExcelJS. Por eso `vite.config.ts` compila `exceljs/lib/exceljs.bare.js` y la entrada
+fuente de JSZip, con los polyfills de Node necesarios y un único constructor Buffer.
+Node, la API y las pruebas conservan la entrada original de ExcelJS; los polyfills
+solo se aplican al renderer. La lectura y escritura XLSX se verificaron en Chromium
+y en un renderer Electron con sandbox, incluyendo formatos, fórmulas, protección
+de hojas y UUID de formato condicional. No se usa `npm audit fix --force`.
+Los polyfills criptográficos se limitan a hashes y bytes aleatorios seguros; no se
+incluyen `crypto-browserify`, `elliptic` ni `vm-browserify`. ExcelJS sigue cargándose
+bajo demanda, fuera de los recursos iniciales del renderer.
+
+Vite informa que `fs` se externaliza para el navegador: las APIs de ExcelJS que leen
+o escriben rutas del sistema de archivos no están disponibles en el renderer.
+La suite usa `xlsx.load()`/`xlsx.writeBuffer()` y las APIs de archivos del navegador;
+esas operaciones se verificaron sin errores ni advertencias en la consola.
+
+Desde v0.1.36, el escaneo inicial de Vite usa únicamente `index.html`; no recorre
+el HTML del paquete Electron en `release/`. El resolver de esbuild conserva como
+interno el archivo `exceljs-browser-globals.js` inyectado tanto durante el escaneo
+como en el prebundling. El arranque con una caché nueva y la lectura/escritura XLSX
+en desarrollo se verificaron sin el error de ruta inyectada externalizada.
+
+`pdfjs-dist` pasó a 6.x en v0.1.22
 ([GHSA-hq66-cqwq-w95j](https://github.com/advisories/GHSA-hq66-cqwq-w95j)) y
 `qs`/`brace-expansion` se actualizaron con `npm audit fix`. Próxima revisión: 2026-10-15.
 
