@@ -44,6 +44,7 @@ v0.1.22 excluye las claves de API del respaldo SQLite y de la lectura de configu
 pdfjs-dist a 6.x (corrige ejecución de JavaScript con PDF maliciosos) y fija el total de módulos en la prueba del manifiesto.
 v0.1.23 corrige contradicciones y erratas del README y documenta Tracking en la auditoría de
 paridad, el glosario y la nota de auditoría de dependencias.
+v0.1.24 elimina `docs/PARIDAD-LEGADO.md`, obsoleto tras la aprobación de la suite.
 
 ## Alcance
 
@@ -221,7 +222,7 @@ No se añadieron dependencias ni tablas nuevas.
 
 Rodrigo revisó todos los módulos actuales y aprobó el estado de la suite para despliegue
 y uso corporativo por el momento (2026-09-25). Las diferencias funcionales y limitaciones
-conocidas descritas aquí y en [la auditoría de paridad](docs/PARIDAD-LEGADO.md) quedan
+conocidas descritas aquí quedan
 aceptadas para esta etapa; las mejoras pendientes no bloquean esta aprobación.
 
 La carpeta contiene la shell Electron, el manifiesto de módulos, la API local y el
@@ -445,8 +446,7 @@ observaciones y contacto en las salidas; y tiempos, estados, cierres, ciudades y
 Servicios LAM, que además guarda esos 21 campos operativos en un bloque reutilizable por la API y
 los backfills históricos. Las columnas aún no proyectadas siguen visibles en la pestaña **Datos**; las de
 cartera ya proyectadas también se pueden desplegar desde Mantenimiento y Discontinuador.
-El detalle verificable de esa diferencia está en
-[`docs/PARIDAD-LEGADO.md`](docs/PARIDAD-LEGADO.md). El Resumen muestra las últimas cargas
+El Resumen muestra las últimas cargas
 detectadas y el estado operativo de la instalación.
 
 Cobertura permite subir un PDF y calcula en este equipo la cobertura por canal de cada página a
