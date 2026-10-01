@@ -50,6 +50,8 @@ módulo, centraliza Gemini en `src/core/gemini.ts` y valida con `src/core/valida
 las exportaciones de Viáticos y uniFLOW.
 v0.1.26 mueve también las rutas de MPS y Cobertura a `routes.ts` y reúne los validadores comunes en
 `src/core/validation.ts`; `server.ts` queda con 88 rutas.
+v0.1.27 mueve las rutas de Viáticos y Servicios a `routes.ts`, y los ayudantes compartidos de
+importación y consulta a `src/core/import-routes.ts` y `src/core/request-parsing.ts`; `server.ts` queda con 75 rutas.
 
 ## Alcance
 

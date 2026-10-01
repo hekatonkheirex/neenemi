@@ -14,7 +14,7 @@ import {
   type CatalogPartInput,
   type CatalogServiceItemInput,
 } from './src/modules/catalogo/repository';
-import { archiveImportFiles, readStoredImportFile, restoreArchivedImportFiles, storeImportFile, storedImportFileExists, writeStoredImportFile, type ArchivedImportFile } from './src/core/import-storage';
+import { readStoredImportFile, restoreArchivedImportFiles, storeImportFile, type ArchivedImportFile } from './src/core/import-storage';
 import { stageDatabaseRestore, activateStagedDatabaseRestore } from './src/core/database-restore';
 import { ImportJobRegistry } from './src/core/import-jobs';
 import { backfillStoredSourceMetadata } from './src/core/source-metadata-backfill';
@@ -66,23 +66,14 @@ import {
   type ParsedConsumablesRow,
   type ConsumablesSourceType,
 } from './src/modules/consumibles/types';
-import type { OperationalFilters } from './src/core/operational-filters';
 import { ServiceRepository } from './src/modules/servicios/repository';
 import { parseServicesWorkbook } from './src/modules/servicios/parser';
-import { SERVICE_SOURCE_TYPES, type ParsedServiceRow, type ServiceSourceType } from './src/modules/servicios/types';
-import { estimateTravelCosts } from './src/modules/viaticos/catalog';
-import { TravelRepository } from './src/modules/viaticos/repository';
-import { parseTravelWorkbook } from './src/modules/viaticos/parser';
-import {
-  TRAVEL_SOURCE_TYPES,
-  TRAVEL_STATUSES,
-  TRAVEL_TRANSPORTS,
-  type TravelSourceType,
-  type TravelStatus,
-  type TravelTransport,
-  type TravelTripInput,
-} from './src/modules/viaticos/types';
+import type { ParsedServiceRow } from './src/modules/servicios/types';
 import { registerTrackingRoutes } from './src/modules/tracking/routes';
+import { registerServiceRoutes } from './src/modules/servicios/routes';
+import { registerTravelRoutes } from './src/modules/viaticos/routes';
+import { archiveBatchImportFiles, storeSpreadsheetImport } from './src/core/import-routes';
+import { parseListLimit, parseOperationalFilters, parsePageRequest } from './src/core/request-parsing';
 import { registerMpsRoutes } from './src/modules/mps/routes';
 import { registerCoverageRoutes } from './src/modules/cobertura/routes';
 import { registerUniflowRoutes } from './src/modules/uniflow/routes';
@@ -155,7 +146,6 @@ export function createServer(options: ServerOptions): { app: express.Express; da
   const maintenance = new MaintenanceRepository(database);
   const consumables = new ConsumablesRepository(database);
   const services = new ServiceRepository(database);
-  const travel = new TravelRepository(database);
 
   // Reject DNS-rebinding hosts on reads as well as writes: backups and settings are readable.
   app.use((request, response, next) => {
@@ -193,6 +183,8 @@ export function createServer(options: ServerOptions): { app: express.Express; da
 
   app.use(express.json({ limit: '50mb' }));
 
+  registerServiceRoutes(app, database, dataDirectory);
+  registerTravelRoutes(app, database, dataDirectory);
   registerMpsRoutes(app, database, dataDirectory);
   registerCoverageRoutes(app, database);
   registerUniflowRoutes(app, database);
@@ -1537,339 +1529,6 @@ export function createServer(options: ServerOptions): { app: express.Express; da
     }
   });
 
-  app.get('/api/services/summary', (request, response) => {
-    response.json(services.getSummary(parseOperationalFilters(request.query)));
-  });
-
-  app.get('/api/services/records', (request, response) => {
-    const paginationRequested = request.query.page !== undefined || request.query.pageSize !== undefined;
-    const pageRequest = paginationRequested ? parsePageRequest(request.query.page, request.query.pageSize) : null;
-    if (paginationRequested && pageRequest === null) {
-      response.status(400).json({ error: 'page debe ser un entero positivo y pageSize un entero entre 1 y 100.' });
-      return;
-    }
-    const query = {
-      query: queryString(request.query.query),
-      taskType: queryString(request.query.taskType),
-      ...parseOperationalFilters(request.query),
-    };
-    if (pageRequest) {
-      response.json(services.listPage({ ...query, ...pageRequest }));
-      return;
-    }
-    const limit = parseListLimit(request.query.limit);
-    if (limit === null) {
-      response.status(400).json({ error: 'limit debe ser un entero entre 1 y 10000.' });
-      return;
-    }
-    response.json(services.list({ ...query, limit }));
-  });
-
-  app.post('/api/services/import-xlsx', async (request, response) => {
-    const body = (isRecord(request.body) ? request.body : {}) as {
-      sourceName?: unknown;
-      sourceType?: unknown;
-      contentBase64?: unknown;
-      replaceCurrent?: unknown;
-    };
-    const sourceType = parseServiceSourceType(body.sourceType);
-    if (!isNonEmptyString(body.sourceName) || !sourceType || !isNonEmptyString(body.contentBase64)) {
-      response.status(400).json({ error: 'sourceName, sourceType y contentBase64 son obligatorios.' });
-      return;
-    }
-    if (body.replaceCurrent !== undefined && typeof body.replaceCurrent !== 'boolean') {
-      response.status(400).json({ error: 'replaceCurrent debe ser booleano.' });
-      return;
-    }
-
-    const contents = decodeBase64(body.contentBase64);
-    if (!contents) {
-      response.status(400).json({ error: 'contentBase64 no es válido.' });
-      return;
-    }
-    if (contents.byteLength > 35 * 1024 * 1024) {
-      response.status(413).json({ error: 'El archivo de Servicios supera el límite de 35 MB.' });
-      return;
-    }
-
-    const sourceHash = createHash('sha256').update(contents).digest('hex');
-    const existingBatch = imports.findAppliedByHash('services', sourceHash);
-    if (existingBatch) {
-      response.json({
-        duplicate: true,
-        batchId: existingBatch.id,
-        sourceName: existingBatch.sourceName,
-        sourceHash,
-        sourceType,
-      });
-      return;
-    }
-
-    const typedReplacementBatches = body.replaceCurrent === true
-      ? imports.listAppliedBySourceType('services', sourceType)
-      : [];
-    const replacementBatches = typedReplacementBatches.length > 0 || body.replaceCurrent !== true
-      ? typedReplacementBatches
-      : imports.listApplied('services');
-    const archivedFiles: ArchivedImportFile[] = [];
-
-    const batchId = imports.createBatch({
-      domain: 'services',
-      sourceName: body.sourceName,
-      sourceType,
-      sourceHash,
-    });
-
-    try {
-      for (const replacementBatch of replacementBatches) {
-        archivedFiles.push(...archiveBatchImportFiles(dataDirectory, replacementBatch.id, imports));
-      }
-      const stored = await storeSpreadsheetImport(dataDirectory, imports, batchId, body.sourceName, contents);
-      const result = await services.importWorkbook(batchId, body.sourceName, contents, replacementBatches.map((batch) => batch.id));
-      response.status(201).json({
-        duplicate: false,
-        replaced: replacementBatches.length > 0,
-        batchId,
-        sourceName: body.sourceName,
-        sourceHash,
-        rawRows: stored.rawRows,
-        rawSheets: stored.rawSheets,
-        ...result,
-      });
-    } catch (error) {
-      if (archivedFiles) restoreArchivedImportFiles(dataDirectory, archivedFiles);
-      imports.markFailed(batchId);
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo importar Servicios.' });
-    }
-  });
-
-  app.get('/api/travel/summary', (_request, response) => {
-    response.json(travel.getSummary());
-  });
-
-  app.get('/api/travel/trips', (request, response) => {
-    const limit = request.query.limit === undefined ? undefined : parseListLimit(request.query.limit);
-    if (limit === null) {
-      response.status(400).json({ error: 'limit debe ser un entero entre 1 y 10000.' });
-      return;
-    }
-    const status = parseTravelStatus(request.query.status);
-    if (status === null) {
-      response.status(400).json({ error: 'status no es válido.' });
-      return;
-    }
-    const transport = parseTravelTransport(request.query.transport);
-    if (transport === null) {
-      response.status(400).json({ error: 'transport no es válido.' });
-      return;
-    }
-    response.json(travel.list({
-      query: queryString(request.query.query),
-      status,
-      transport,
-      month: queryString(request.query.month),
-      limit,
-    }));
-  });
-
-  app.get('/api/travel/historical', (_request, response) => {
-    response.json(travel.listHistorical());
-  });
-
-  app.get('/api/travel/cost-catalog', (_request, response) => {
-    response.json(travel.getCostCatalog());
-  });
-
-  app.get('/api/travel/cost-estimate', (request, response) => {
-    const destination = queryString(request.query.destination) ?? '';
-    const transport = parseTravelTransport(request.query.transport);
-    if (!destination || !transport) {
-      response.status(400).json({ error: 'destination y transport son obligatorios.' });
-      return;
-    }
-    const days = parseOptionalPositiveInteger(request.query.days, 1);
-    const nights = parseOptionalNonNegativeInteger(request.query.nights, 0);
-    const technicians = parseOptionalPositiveInteger(request.query.technicians, 1);
-    if (days === null || nights === null || technicians === null) {
-      response.status(400).json({ error: 'days, nights y technicians deben ser enteros válidos.' });
-      return;
-    }
-    response.json(estimateTravelCosts(travel.getCostCatalog(), destination, transport, { days, nights, technicians }));
-  });
-
-  app.post('/api/travel/trips', (request, response) => {
-    const input = parseSaveTravelTripInput(request.body);
-    if (!input) {
-      response.status(400).json({ error: 'Los datos del viaje no son válidos.' });
-      return;
-    }
-    try {
-      response.status(201).json(travel.saveTrip(input));
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo guardar el viaje.' });
-    }
-  });
-
-  app.put('/api/travel/trips/:id', (request, response) => {
-    const input = parseSaveTravelTripInput(request.body);
-    if (!input) {
-      response.status(400).json({ error: 'Los datos del viaje no son válidos.' });
-      return;
-    }
-    try {
-      response.json(travel.saveTrip(input, request.params.id));
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo actualizar el viaje.' });
-    }
-  });
-
-  app.delete('/api/travel/trips/:id', (request, response) => {
-    try {
-      response.json({ deleted: travel.deleteTrip(request.params.id) });
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo eliminar el viaje.' });
-    }
-  });
-
-  app.patch('/api/travel/trips/:id/status', (request, response) => {
-    const status = parseTravelStatus(isRecord(request.body) ? request.body.status : undefined);
-    if (!status) {
-      response.status(400).json({ error: 'status no es válido.' });
-      return;
-    }
-    try {
-      response.json(travel.updateStatus(request.params.id, status));
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo actualizar la rendición.' });
-    }
-  });
-
-  app.post('/api/travel/import-preview', async (request, response) => {
-    const body = (isRecord(request.body) ? request.body : {}) as {
-      sourceName?: unknown;
-      sourceType?: unknown;
-      contentBase64?: unknown;
-    };
-    const sourceType = parseTravelSourceType(body.sourceType);
-    if (!isNonEmptyString(body.sourceName) || !sourceType || !isNonEmptyString(body.contentBase64)) {
-      response.status(400).json({ error: 'sourceName, sourceType y contentBase64 son obligatorios.' });
-      return;
-    }
-    const contents = decodeBase64(body.contentBase64);
-    if (!contents) {
-      response.status(400).json({ error: 'contentBase64 no es válido.' });
-      return;
-    }
-    if (contents.byteLength > 35 * 1024 * 1024) {
-      response.status(413).json({ error: 'La planilla de Viáticos supera el límite de 35 MB.' });
-      return;
-    }
-
-    try {
-      const sourceHash = createHash('sha256').update(contents).digest('hex');
-      const parsed = await parseTravelWorkbook(contents, body.sourceName);
-      const incomingYears = [...new Set([
-        ...parsed.trips.map((trip) => Number(trip.recordedAt.slice(0, 4))).filter((year) => Number.isInteger(year) && year > 0),
-        ...(parsed.sourceYear ? [parsed.sourceYear] : []),
-      ])].sort((left, right) => left - right);
-      const existingBatch = imports.findAppliedByHash('viaticos', sourceHash);
-      const currentSourceBatch = imports.findLatestApplied('viaticos');
-      response.json({
-        duplicate: Boolean(existingBatch),
-        existingBatchId: existingBatch?.id ?? null,
-        currentSourceBatchId: currentSourceBatch?.id ?? null,
-        currentSourceName: travel.getSummary().sourceName,
-        sourceName: body.sourceName,
-        sourceHash,
-        sourceType,
-        primarySheetName: parsed.primarySheetName,
-        sourceSheetNames: parsed.sourceSheetNames,
-        sourceYear: parsed.sourceYear,
-        incomingYears,
-        trips: parsed.trips.length,
-        historicalSnapshots: parsed.historical.length,
-        busFares: parsed.costCatalog.busFares.length,
-        tollRoutes: parsed.costCatalog.tollRoutes.length,
-      });
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo analizar la planilla de Viáticos.' });
-    }
-  });
-
-  app.post('/api/travel/import-xlsx', async (request, response) => {
-    const body = (isRecord(request.body) ? request.body : {}) as {
-      sourceName?: unknown;
-      sourceType?: unknown;
-      contentBase64?: unknown;
-      replaceBatchId?: unknown;
-    };
-    const sourceType = parseTravelSourceType(body.sourceType);
-    if (!isNonEmptyString(body.sourceName) || !sourceType || !isNonEmptyString(body.contentBase64)) {
-      response.status(400).json({ error: 'sourceName, sourceType y contentBase64 son obligatorios.' });
-      return;
-    }
-    const contents = decodeBase64(body.contentBase64);
-    if (!contents) {
-      response.status(400).json({ error: 'contentBase64 no es válido.' });
-      return;
-    }
-    if (contents.byteLength > 35 * 1024 * 1024) {
-      response.status(413).json({ error: 'La planilla de Viáticos supera el límite de 35 MB.' });
-      return;
-    }
-
-    if (body.replaceBatchId !== undefined && !isNonEmptyString(body.replaceBatchId)) {
-      response.status(400).json({ error: 'replaceBatchId debe ser texto.' });
-      return;
-    }
-
-    const sourceHash = createHash('sha256').update(contents).digest('hex');
-    const existingBatch = imports.findAppliedByHash('viaticos', sourceHash);
-    if (existingBatch) {
-      const summary = travel.getSummary();
-      response.json({
-        ...summary,
-        duplicate: true,
-        batchId: existingBatch.id,
-        sourceName: existingBatch.sourceName,
-        sourceHash,
-        sourceType,
-      });
-      return;
-    }
-
-    const replaceBatchId = typeof body.replaceBatchId === 'string' ? body.replaceBatchId : undefined;
-    const replacementBatch = replaceBatchId ? imports.getBatch(replaceBatchId) : undefined;
-    if (replaceBatchId && (!replacementBatch || replacementBatch.domain !== 'viaticos' || replacementBatch.status !== 'applied')) {
-      response.status(409).json({ error: 'La fuente de Viáticos seleccionada para reemplazar no está aplicada.' });
-      return;
-    }
-
-    const batchId = imports.createBatch({ domain: 'viaticos', sourceName: body.sourceName, sourceType, sourceHash });
-    let archivedReplacementFiles: ReturnType<typeof archiveImportFiles> | undefined;
-    try {
-      if (replacementBatch) {
-        archivedReplacementFiles = archiveBatchImportFiles(dataDirectory, replacementBatch.id, imports);
-      }
-      const stored = await storeSpreadsheetImport(dataDirectory, imports, batchId, body.sourceName, contents);
-      const result = await travel.importWorkbook(batchId, body.sourceName, contents, replaceBatchId);
-      response.status(201).json({
-        duplicate: false,
-        replaced: Boolean(replaceBatchId),
-        batchId,
-        sourceName: body.sourceName,
-        sourceHash,
-        rawRows: stored.rawRows,
-        rawSheets: stored.rawSheets,
-        ...result,
-      });
-    } catch (error) {
-      if (archivedReplacementFiles) restoreArchivedImportFiles(dataDirectory, archivedReplacementFiles);
-      imports.markFailed(batchId);
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo importar Viáticos.' });
-    }
-  });
-
   app.get('/api/sales/pricing', (_request, response) => {
     response.json(sales.getPricing());
   });
@@ -2044,61 +1703,6 @@ function storeAndRegisterImportFile(
   return { id, ...stored };
 }
 
-function archiveBatchImportFiles(
-  dataDirectory: string,
-  batchId: string,
-  imports: ImportRepository,
-): ArchivedImportFile[] {
-  const files = imports.listFiles(batchId);
-  for (const file of files) {
-    const storedContents = imports.getFileContent(file.id);
-    const contents = storedContents ?? readStoredImportFile(dataDirectory, file.storedPath);
-    if (!contents) {
-      throw new Error(`No se puede archivar “${file.fileName}”: no está la copia física ni el original en SQLite.`);
-    }
-    if (contents.byteLength !== file.sizeBytes
-      || createHash('sha256').update(contents).digest('hex') !== file.contentHash) {
-      throw new Error(`No se puede archivar “${file.fileName}”: el original no coincide con su hash o tamaño.`);
-    }
-    if (!storedContents) imports.storeFileContent(file.id, contents);
-
-    if (storedImportFileExists(dataDirectory, file.storedPath)) {
-      const physicalContents = readStoredImportFile(dataDirectory, file.storedPath);
-      if (!physicalContents
-        || physicalContents.byteLength !== file.sizeBytes
-        || createHash('sha256').update(physicalContents).digest('hex') !== file.contentHash) {
-        throw new Error(`No se puede archivar “${file.fileName}”: la copia física no coincide con su original.`);
-      }
-    } else {
-      writeStoredImportFile(dataDirectory, file.storedPath, contents);
-    }
-  }
-  return archiveImportFiles(dataDirectory, batchId, files);
-}
-
-async function storeSpreadsheetImport(
-  dataDirectory: string,
-  imports: ImportRepository,
-  batchId: string,
-  fileName: string,
-  contents: Uint8Array,
-  contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-) {
-  const sheets = await readWorkbookSheets(contents);
-  const stored = storeImportFile(dataDirectory, batchId, fileName, contents);
-  const id = imports.addFile({
-    batchId,
-    fileName,
-    storedPath: stored.storedPath,
-    contentHash: stored.contentHash,
-    contentType,
-    sizeBytes: stored.sizeBytes,
-    contentBlob: contents,
-  });
-  const raw = imports.addSourceRows(batchId, id, sheets);
-  return { id, ...stored, rawRows: raw.rows, rawSheets: raw.sheets };
-}
-
 async function hydrateStoredSpreadsheetRows(
   dataDirectory: string,
   imports: ImportRepository,
@@ -2126,10 +1730,6 @@ function isSpreadsheetFile(fileName: string, contentType?: string | null): boole
 
 function isOptionalNonNegativeNumber(value: unknown): value is number | null | undefined {
   return value === undefined || value === null || isNonNegativeNumber(value);
-}
-
-function isFiniteNumber(value: unknown): value is number {
-  return typeof value === 'number' && Number.isFinite(value);
 }
 
 type ConsumablesBundleSourceId =
@@ -2728,17 +2328,6 @@ function parseCatalogServiceItems(value: unknown): CatalogServiceItemInput[] | n
   return parsed;
 }
 
-function parseOperationalFilters(value: unknown): OperationalFilters {
-  if (!isRecord(value)) return {};
-  return {
-    sector: queryString(value.sector),
-    department: queryString(value.department),
-    contractType: queryString(value.contractType),
-    dateFrom: queryString(value.dateFrom),
-    dateTo: queryString(value.dateTo),
-  };
-}
-
 function parseAnalysisMonths(value: unknown): number | null {
   if (value === undefined) return 3;
   if (typeof value !== 'string' || !/^\d+$/.test(value)) return null;
@@ -2752,104 +2341,15 @@ function parseConsumablesSourceType(value: unknown): ConsumablesSourceType | nul
     : null;
 }
 
-function parseServiceSourceType(value: unknown): ServiceSourceType | null {
-  return typeof value === 'string' && SERVICE_SOURCE_TYPES.includes(value as ServiceSourceType)
-    ? value as ServiceSourceType
-    : null;
-}
-
 function parseLegacyFleetMetadataSourceType(value: unknown): LegacyFleetMetadataType | null {
   return typeof value === 'string' && LEGACY_FLEET_METADATA_TYPES.includes(value as LegacyFleetMetadataType)
     ? value as LegacyFleetMetadataType
     : null;
 }
 
-function parseTravelSourceType(value: unknown): TravelSourceType | null {
-  return typeof value === 'string' && TRAVEL_SOURCE_TYPES.includes(value as TravelSourceType)
-    ? value as TravelSourceType
-    : null;
-}
-
-function parseTravelStatus(value: unknown): TravelStatus | undefined | null {
-  if (value === undefined) return undefined;
-  return typeof value === 'string' && TRAVEL_STATUSES.includes(value as TravelStatus)
-    ? value as TravelStatus
-    : null;
-}
-
-function parseTravelTransport(value: unknown): TravelTransport | undefined | null {
-  if (value === undefined) return undefined;
-  return typeof value === 'string' && TRAVEL_TRANSPORTS.includes(value as TravelTransport)
-    ? value as TravelTransport
-    : null;
-}
-
-function parseOptionalPositiveInteger(value: unknown, fallback: number): number | null {
-  if (value === undefined) return fallback;
-  if (typeof value !== 'string' || !/^\d+$/.test(value)) return null;
-  const parsed = Number(value);
-  return isPositiveInteger(parsed) ? parsed : null;
-}
-
-function parseOptionalNonNegativeInteger(value: unknown, fallback: number): number | null {
-  if (value === undefined) return fallback;
-  if (typeof value !== 'string' || !/^\d+$/.test(value)) return null;
-  const parsed = Number(value);
-  return isNonNegativeInteger(parsed) ? parsed : null;
-}
-
-function parseSaveTravelTripInput(value: unknown): TravelTripInput | null {
-  if (!isRecord(value)) return null;
-  const textFields = ['recordedAt', 'serviceNumber', 'customerName', 'destination', 'technician', 'driver', 'notes'] as const;
-  if (!textFields.every((field) => typeof value[field] === 'string')) return null;
-  if (!TRAVEL_TRANSPORTS.includes(value.transport as TravelTransport)) return null;
-  if (!isFiniteNumber(value.advance)) return null;
-  const numberFields = ['allowance', 'lodging', 'tolls', 'otherCost', 'vehiclePayment', 'technicianPayment', 'distanceKm', 'fuelCost'] as const;
-  if (!numberFields.every((field) => isNonNegativeNumber(value[field]))) return null;
-  return {
-    recordedAt: value.recordedAt as string,
-    serviceNumber: value.serviceNumber as string,
-    customerName: value.customerName as string,
-    destination: value.destination as string,
-    transport: value.transport as TravelTransport,
-    technician: value.technician as string,
-    driver: value.driver as string,
-    advance: value.advance as number,
-    allowance: value.allowance as number,
-    lodging: value.lodging as number,
-    tolls: value.tolls as number,
-    otherCost: value.otherCost as number,
-    vehiclePayment: value.vehiclePayment as number,
-    technicianPayment: value.technicianPayment as number,
-    distanceKm: value.distanceKm as number,
-    fuelCost: value.fuelCost as number,
-    notes: value.notes as string,
-  };
-}
-
 function parseConsumablesRecordKind(value: unknown): ConsumablesRecordKind | undefined | null {
   if (value === undefined) return undefined;
   return value === 'consumable' || value === 'part' ? value : null;
-}
-
-function parseListLimit(value: unknown): number | null {
-  if (value === undefined) return 500;
-  if (typeof value !== 'string' || !/^\d+$/.test(value)) return null;
-  const limit = Number(value);
-  return Number.isInteger(limit) && limit >= 1 && limit <= 10000 ? limit : null;
-}
-
-function parsePageRequest(pageValue: unknown, pageSizeValue: unknown): { page: number; pageSize: number } | null {
-  const page = pageValue === undefined ? 1 : parsePositiveInteger(pageValue);
-  const pageSize = pageSizeValue === undefined ? 50 : parsePositiveInteger(pageSizeValue);
-  if (page === null || page > 1_000_000 || pageSize === null || pageSize > 100) return null;
-  return { page, pageSize };
-}
-
-function parsePositiveInteger(value: unknown): number | null {
-  if (typeof value !== 'string' || !/^\d+$/.test(value)) return null;
-  const number = Number(value);
-  return Number.isSafeInteger(number) && number >= 1 ? number : null;
 }
 
 function parseRawRowsLimit(value: unknown): number | null {
