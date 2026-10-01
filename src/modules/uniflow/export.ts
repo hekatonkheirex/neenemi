@@ -2,10 +2,10 @@ import type { UniflowConfigurationSummary } from './types';
 
 const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
-export async function exportUniflowExcel(
+export async function buildUniflowWorkbook(
   results: UniflowConfigurationSummary,
   clientName: string,
-): Promise<void> {
+) {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
   workbook.creator = 'DCSS Suite';
@@ -41,8 +41,19 @@ export async function exportUniflowExcel(
   sheet.getColumn(4).numFmt = '#,##0';
   sheet.getColumn(5).numFmt = '$#,##0.00';
 
-  const buffer = await workbook.xlsx.writeBuffer();
-  download(buffer, `configuracion-uniflow-${sanitizeFilenamePart(clientName)}-${dateStamp()}.xlsx`);
+  return workbook.xlsx.writeBuffer();
+}
+
+export async function exportUniflowExcel(
+  results: UniflowConfigurationSummary,
+  clientName: string,
+): Promise<void> {
+  const buffer = await buildUniflowWorkbook(results, clientName);
+  download(buffer, `${uniflowFileName(clientName)}`);
+}
+
+export function uniflowFileName(clientName: string): string {
+  return `configuracion-uniflow-${sanitizeFilenamePart(clientName)}-${dateStamp()}.xlsx`;
 }
 
 function addLicenseRow(

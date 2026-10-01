@@ -45,6 +45,9 @@ pdfjs-dist a 6.x (corrige ejecución de JavaScript con PDF maliciosos) y fija el
 v0.1.23 corrige contradicciones y erratas del README y documenta Tracking en la auditoría de
 paridad, el glosario y la nota de auditoría de dependencias.
 v0.1.24 elimina `docs/PARIDAD-LEGADO.md`, obsoleto tras la aprobación de la suite.
+v0.1.25 mueve las rutas de uniFLOW, Software Selector y SLA fuera de `server.ts` a `routes.ts` de cada
+módulo, centraliza Gemini en `src/core/gemini.ts` y valida con `src/core/validation.ts`; añade pruebas de
+las exportaciones de Viáticos y uniFLOW.
 
 ## Alcance
 

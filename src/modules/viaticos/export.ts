@@ -3,7 +3,7 @@ import { TRAVEL_SOURCE_OPERATIONAL_FIELDS } from './source-operational';
 
 const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
-export async function exportTravelTrips(trips: readonly TravelTrip[]): Promise<void> {
+export async function buildTravelWorkbook(trips: readonly TravelTrip[]) {
   const { Workbook } = await import('exceljs');
   const workbook = new Workbook();
   workbook.creator = 'DCSS Suite';
@@ -71,7 +71,11 @@ export async function exportTravelTrips(trips: readonly TravelTrip[]): Promise<v
   sheet.getColumn(17).numFmt = '#,##0';
   sheet.views = [{ state: 'frozen', ySplit: 4 }];
 
-  const buffer = await workbook.xlsx.writeBuffer();
+  return workbook.xlsx.writeBuffer();
+}
+
+export async function exportTravelTrips(trips: readonly TravelTrip[]): Promise<void> {
+  const buffer = await buildTravelWorkbook(trips);
   download(buffer, `control-viaticos-${new Date().toISOString().slice(0, 10)}.xlsx`);
 }
 

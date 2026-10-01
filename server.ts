@@ -2,7 +2,6 @@ import express, { type Response } from 'express';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
-import { GoogleGenAI } from '@google/genai';
 import Database from 'better-sqlite3';
 import { backfillImportFileBlobs, getImportOriginalsStatus } from './src/core/import-blob-backfill';
 import { openDatabase, resolveDatabasePath, type SuiteDatabase } from './src/db/database';
@@ -86,20 +85,14 @@ import {
   type TravelTransport,
   type TravelTripInput,
 } from './src/modules/viaticos/types';
-import { UNIFLOW_DEVICE_MODELS } from './src/modules/uniflow/catalog';
-import { calculateUniflowConfiguration } from './src/modules/uniflow/pricing';
-import { UniflowRepository } from './src/modules/uniflow/repository';
-import type { UniflowAddedDevice, UniflowConfigurationInput, UniflowPriceCatalog } from './src/modules/uniflow/types';
-import { SOFTWARE_FEATURES, SOFTWARE_PRODUCTS } from './src/modules/software-selector/catalog';
-import { analyzeSoftwareRequirements, buildSoftwareAnalysisResponse } from './src/modules/software-selector/analysis';
-import { SoftwareSelectorRepository } from './src/modules/software-selector/repository';
-import { analyzeSlaRequirements } from './src/modules/sla/analysis';
-import { SLA_REFERENCE_SECTIONS } from './src/modules/sla/constants';
-import { SlaRepository } from './src/modules/sla/repository';
 import { calculateYield, normalizePageCoverage, summarizeDocumentCoverage } from './src/modules/cobertura/calculations';
 import { CoverageRepository } from './src/modules/cobertura/repository';
 import type { CanonModelDraft, CoverageAnalysis, CoveragePageFailure } from './src/modules/cobertura/types';
 import { registerTrackingRoutes } from './src/modules/tracking/routes';
+import { registerUniflowRoutes } from './src/modules/uniflow/routes';
+import { registerSoftwareSelectorRoutes } from './src/modules/software-selector/routes';
+import { registerSlaRoutes } from './src/modules/sla/routes';
+import { isNonEmptyString, isPositiveInteger, isRecord } from './src/core/validation';
 
 // Claves de API (p. ej. ai/gemini_api_key): nunca salen de la instalación en respaldos ni lecturas.
 const SECRET_SETTINGS_NAMESPACE = 'ai';
@@ -115,61 +108,6 @@ function stripSecrets(snapshotPath: string): void {
 }
 
 type ImportJobUpdate = (progress: number, stage: string) => void;
-
-function createGeminiClient(apiKey: string): GoogleGenAI {
-  return new GoogleGenAI({
-    apiKey,
-    httpOptions: {
-      retryOptions: {
-        attempts: 5,
-        initialDelay: 1,
-        maxDelay: 8,
-        expBase: 2,
-        jitter: 1,
-      },
-    },
-  });
-}
-
-function getGeminiErrorStatus(error: unknown): number | undefined {
-  if (!error || typeof error !== 'object') return undefined;
-  const details = error as Record<string, unknown>;
-  for (const key of ['status', 'statusCode']) {
-    const status = details[key];
-    if (typeof status === 'number') return status;
-  }
-
-  const rawMessage = error instanceof Error ? error.message : details.message;
-  if (typeof rawMessage !== 'string') return undefined;
-  try {
-    const payload = JSON.parse(rawMessage) as { error?: { code?: unknown } };
-    return typeof payload.error?.code === 'number' ? payload.error.code : undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-function getGeminiErrorMessage(error: unknown): string {
-  const status = getGeminiErrorStatus(error);
-  if (status === 503) {
-    return 'Gemini está temporalmente saturado. La solicitud se reintentó automáticamente; espera un momento e inténtalo de nuevo.';
-  }
-  if (status === 429) {
-    return 'Gemini alcanzó un límite de uso. Espera un momento y vuelve a intentarlo.';
-  }
-
-  const rawMessage = error instanceof Error ? error.message : '';
-  if (rawMessage) {
-    try {
-      const payload = JSON.parse(rawMessage) as { error?: { message?: unknown } };
-      if (typeof payload.error?.message === 'string') return payload.error.message;
-    } catch {
-      // The SDK also returns human-readable messages that are not JSON.
-    }
-    return rawMessage;
-  }
-  return 'No se pudo completar el análisis con Gemini.';
-}
 
 function enqueueImportJob(
   registry: ImportJobRegistry,
@@ -223,9 +161,6 @@ export function createServer(options: ServerOptions): { app: express.Express; da
   const consumables = new ConsumablesRepository(database);
   const services = new ServiceRepository(database);
   const travel = new TravelRepository(database);
-  const uniflow = new UniflowRepository(database);
-  const softwareSelector = new SoftwareSelectorRepository(database);
-  const sla = new SlaRepository(database);
   const coverage = new CoverageRepository(database);
 
   // Reject DNS-rebinding hosts on reads as well as writes: backups and settings are readable.
@@ -264,6 +199,9 @@ export function createServer(options: ServerOptions): { app: express.Express; da
 
   app.use(express.json({ limit: '50mb' }));
 
+  registerUniflowRoutes(app, database);
+  registerSoftwareSelectorRoutes(app, database);
+  registerSlaRoutes(app, database);
   registerTrackingRoutes(app, database, (batchId, fileName, bytes, contentType) =>
     storeAndRegisterImportFile(dataDirectory, imports, batchId, fileName, bytes, contentType));
 
@@ -2054,172 +1992,6 @@ export function createServer(options: ServerOptions): { app: express.Express; da
     }
   });
 
-  app.get('/api/uniflow/models', (_request, response) => {
-    response.json(UNIFLOW_DEVICE_MODELS);
-  });
-
-  app.get('/api/uniflow/catalog', (_request, response) => {
-    response.json(uniflow.getCatalog());
-  });
-
-  app.put('/api/uniflow/catalog', (request, response) => {
-    if (!isRecord(request.body)) {
-      response.status(400).json({ error: 'El catálogo uniFLOW no es válido.' });
-      return;
-    }
-    try {
-      response.json(uniflow.saveCatalog(request.body as UniflowPriceCatalog));
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo guardar el catálogo uniFLOW.' });
-    }
-  });
-
-  app.post('/api/uniflow/configure', (request, response) => {
-    const input = parseUniflowConfigurationInput(request.body);
-    if (!input) {
-      response.status(400).json({ error: 'months y devices deben contener una configuración válida.' });
-      return;
-    }
-    response.json(calculateUniflowConfiguration(input.devices, input.months, uniflow.getCatalog()));
-  });
-
-  app.get('/api/software-selector/catalog', (_request, response) => {
-    response.json({ features: SOFTWARE_FEATURES, products: SOFTWARE_PRODUCTS });
-  });
-
-  app.get('/api/software-selector/last', (_request, response) => {
-    const analysis = softwareSelector.getLastAnalysis();
-    response.json(analysis ? buildSoftwareAnalysisResponse(analysis) : null);
-  });
-
-  app.post('/api/software-selector/analyze', (request, response) => {
-    const input = parseSoftwareSelectorInput(request.body);
-    if (!input) {
-      response.status(400).json({ error: 'text debe contener requisitos de texto y fileName debe ser válido.' });
-      return;
-    }
-
-    const analysis = softwareSelector.saveAnalysis(analyzeSoftwareRequirements(input.text, input.fileName));
-    response.json(buildSoftwareAnalysisResponse(analysis));
-  });
-
-  app.delete('/api/software-selector/last', (_request, response) => {
-    softwareSelector.clearLastAnalysis();
-    response.status(204).end();
-  });
-
-  app.get('/api/sla/reference', (_request, response) => {
-    response.json(SLA_REFERENCE_SECTIONS);
-  });
-
-  app.get('/api/sla/last', (_request, response) => {
-    response.json(sla.getLastAnalysis());
-  });
-
-  app.post('/api/sla/analyze', (request, response) => {
-    const input = parseSlaInput(request.body);
-    if (!input) {
-      response.status(400).json({ error: 'text debe contener el pliego y fileName debe ser válido.' });
-      return;
-    }
-    response.json(sla.saveAnalysis(analyzeSlaRequirements(input.text, input.fileName)));
-  });
-
-  app.delete('/api/sla/last', (_request, response) => {
-    sla.clearLastAnalysis();
-    response.status(204).end();
-  });
-
-  app.post('/api/ai/analyze-sla', async (request, response) => {
-    const { text, fileName } = request.body;
-    if (typeof text !== 'string' || !text) {
-      response.status(400).json({ error: 'Falta el texto a analizar.' });
-      return;
-    }
-    try {
-      const apiKey = settings.get('ai', 'gemini_api_key', process.env.GEMINI_API_KEY || '');
-      if (!apiKey) {
-        response.status(403).json({ error: 'Clave de Gemini API no configurada.' });
-        return;
-      }
-      const ai = createGeminiClient(apiKey);
-      const prompt = `Analiza el siguiente texto de un pliego de condiciones (SLA) y devuelve un arreglo JSON estricto. Identifica todos los requisitos de nivel de servicio (tiempos de respuesta, solución, disponibilidad, multas, stock, guardias). Cada objeto debe tener:\n- section: string (número o nombre de la sección)\n- excerpt: string (el texto literal del requerimiento)\n- requirement: string (un resumen claro de la obligación)\nTexto:\n\n${text.slice(0, 30000)}`;
-      
-      const result = await ai.models.generateContent({
-        model: 'gemini-3.6-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          temperature: 0,
-        }
-      });
-      const payload = JSON.parse(result.text ?? '[]');
-      if (!Array.isArray(payload)) throw new Error('Respuesta IA inválida.');
-      
-      const analysis = analyzeSlaRequirements(text, fileName ?? 'pliego.txt');
-      analysis.source = 'IA Gemini';
-      for (const item of payload) {
-        analysis.items.push({
-          id: crypto.randomUUID(),
-          category: String(item.section || 'General'),
-          clientSource: String(item.excerpt || ''),
-          clientRequirement: String(item.requirement || ''),
-          ourPosition: 'Revisión manual requerida',
-          ourSource: 'Detectado por IA',
-          status: 'gap',
-          advice: 'Evaluar factibilidad contra el estándar.',
-        });
-      }
-      const stored = sla.saveAnalysis(analysis);
-      response.json(stored);
-    } catch (e: unknown) {
-      console.error('Gemini API Error:', e);
-      response.status(getGeminiErrorStatus(e) ?? 500).json({ error: getGeminiErrorMessage(e) });
-    }
-  });
-
-  app.post('/api/ai/analyze-software', async (request, response) => {
-    const { text, fileName } = request.body;
-    if (typeof text !== 'string' || !text) {
-      response.status(400).json({ error: 'Falta el texto a analizar.' });
-      return;
-    }
-    try {
-      const apiKey = settings.get('ai', 'gemini_api_key', process.env.GEMINI_API_KEY || '');
-      if (!apiKey) {
-        response.status(403).json({ error: 'Clave de Gemini API no configurada.' });
-        return;
-      }
-      const ai = createGeminiClient(apiKey);
-      const prompt = `Analiza este pliego técnico de software y hardware de impresión. Identifica qué funcionalidades se solicitan. Devuelve un objeto JSON con una propiedad "features" que sea un array de strings (las claves). Usa exclusivamente estas claves soportadas:\nprint-management, secure-print, ocr, reporting, advanced-scanning, cost-centers, rfid-auth, mobile-print, mdm-integration, single-sign-on, rule-based-routing, guest-printing, cloud-storage, ha-clustering.\nTexto:\n\n${text.slice(0, 30000)}`;
-      
-      const result = await ai.models.generateContent({
-        model: 'gemini-3.6-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          temperature: 0,
-        }
-      });
-      const payload = JSON.parse(result.text ?? '{}');
-      if (!Array.isArray(payload.features)) throw new Error('Respuesta IA inválida.');
-      
-      const features = payload.features as string[];
-      const baseAnalysis = analyzeSoftwareRequirements(text, fileName ?? 'texto.txt');
-      const mergedFeatures = Array.from(new Set([...baseAnalysis.selectedFeatureIds, ...features]));
-      baseAnalysis.selectedFeatureIds = mergedFeatures;
-      for (const feat of features) {
-        if (!baseAnalysis.reasoning[feat]) baseAnalysis.reasoning[feat] = 'Detectado por IA Gemini.';
-      }
-      baseAnalysis.source = 'IA Gemini';
-      const stored = softwareSelector.saveAnalysis(baseAnalysis);
-      response.json(buildSoftwareAnalysisResponse(stored));
-    } catch (e: unknown) {
-      console.error('Gemini API Error:', e);
-      response.status(getGeminiErrorStatus(e) ?? 500).json({ error: getGeminiErrorMessage(e) });
-    }
-  });
-
   app.get('/api/coverage/models', (_request, response) => {
     response.json(coverage.listModels());
   });
@@ -2538,10 +2310,6 @@ async function hydrateStoredSpreadsheetRows(
 function isSpreadsheetFile(fileName: string, contentType?: string | null): boolean {
   return contentType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     || fileName.toLocaleLowerCase().endsWith('.xlsx');
-}
-
-function isNonEmptyString(value: unknown): value is string {
-  return typeof value === 'string' && value.trim().length > 0;
 }
 
 function isNonNegativeInteger(value: unknown): value is number {
@@ -3015,10 +2783,6 @@ function removeTemporaryDirectory(directory: string | null): void {
   fs.rmSync(directory, { recursive: true, force: true });
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
 function parseCatalogParts(value: unknown): CatalogPartInput[] | null {
   if (!Array.isArray(value)) return null;
 
@@ -3270,44 +3034,6 @@ function parseSaveTravelTripInput(value: unknown): TravelTripInput | null {
     distanceKm: value.distanceKm as number,
     fuelCost: value.fuelCost as number,
     notes: value.notes as string,
-  };
-}
-
-function parseUniflowConfigurationInput(value: unknown): UniflowConfigurationInput | null {
-  if (!isRecord(value) || !isPositiveInteger(value.months) || !Array.isArray(value.devices) || value.devices.length === 0 || value.devices.length > 100) {
-    return null;
-  }
-  const devices: UniflowAddedDevice[] = [];
-  for (const [index, item] of value.devices.entries()) {
-    if (!isRecord(item) || typeof item.modelName !== 'string' || !isPositiveInteger(item.quantity)) return null;
-    if (item.withCIP !== undefined && typeof item.withCIP !== 'boolean') return null;
-    devices.push({
-      id: typeof item.id === 'string' && item.id.trim() ? item.id : `row-${index + 1}`,
-      modelName: item.modelName,
-      quantity: item.quantity,
-      withCIP: item.withCIP === true,
-    });
-  }
-  return { months: value.months, devices };
-}
-
-function parseSoftwareSelectorInput(value: unknown): { text: string; fileName: string } | null {
-  if (!isRecord(value) || !isNonEmptyString(value.text)) return null;
-  if (value.text.length > 250_000) return null;
-  if (value.fileName !== undefined && !isNonEmptyString(value.fileName)) return null;
-  return {
-    text: value.text,
-    fileName: value.fileName === undefined ? 'texto_pegado.txt' : value.fileName,
-  };
-}
-
-function parseSlaInput(value: unknown): { text: string; fileName: string } | null {
-  if (!isRecord(value) || !isNonEmptyString(value.text)) return null;
-  if (value.text.length > 250_000) return null;
-  if (value.fileName !== undefined && !isNonEmptyString(value.fileName)) return null;
-  return {
-    text: value.text,
-    fileName: value.fileName === undefined ? 'pliego.txt' : value.fileName,
   };
 }
 
@@ -3824,10 +3550,6 @@ function parseSaveProformaInput(value: unknown): SaveProformaInput | null {
 
 function optionalString(value: unknown): string {
   return typeof value === 'string' ? value : '';
-}
-
-function isPositiveInteger(value: unknown): value is number {
-  return typeof value === 'number' && Number.isInteger(value) && value > 0;
 }
 
 export function startServer(options: StartServerOptions = {}) {
