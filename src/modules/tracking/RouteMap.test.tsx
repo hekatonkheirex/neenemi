@@ -49,6 +49,8 @@ describe('RouteMap rendering', () => {
     const markup = render({ events: [event(1, asuncion), event(2, asuncion)], selectedVisit: 'v2', sites: [site], candidate: asuncion });
     expect(markup.match(/tracking-event-pin in selected/g)).toHaveLength(1);
     expect(markup).toContain('tracking-candidate-pin');
+    expect(markup).toContain('<title>Sede confirmada: Acme Centro</title>');
+    expect(markup).toContain('<title>Cliente · I.S. 1 · 2026-09-01 08:30:00</title>');
   });
   it('offers center-as-site only in edit mode', () => {
     expect(render({ editing: true })).toContain('Usar centro del mapa como sede propuesta');
