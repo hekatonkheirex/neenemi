@@ -40,3 +40,11 @@ export function summarizeFeatures(documents: DocumentScore[]): SuiteScore {
   const returned = documents.reduce((sum, item) => sum + item.found + item.extra, 0);
   return summarize(documents, returned);
 }
+
+export type Verdict = 'PASS' | 'FAIL' | 'INCOMPLETE';
+
+/** Una suite con documentos sin evaluar (cuota, saturación) no aprueba: su recall solo describe los evaluados. */
+export function verdict(score: SuiteScore, totalDocuments: number): Verdict {
+  if (score.documents.length < totalDocuments) return 'INCOMPLETE';
+  return score.passed ? 'PASS' : 'FAIL';
+}

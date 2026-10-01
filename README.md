@@ -80,6 +80,8 @@ v0.1.38 corrige «Analizar con Gemini» en Software Selector: el prompt pedía 1
 (p. ej. `secure-print`) y sus resultados se descartaban; ahora lista los ids reales y descarta los desconocidos
 (`src/modules/software-selector/ai.ts`). Añade `npm run eval:gemini` (`evals/gemini/`), una eval de pago con umbral
 de recall de 80 % sobre 10 pliegos sintéticos.
+v0.1.39 la eval de Gemini marca como INCOMPLETE una suite con pliegos sin evaluar (cuota 429, saturación 503) en lugar de
+aprobarla con el recall de los pliegos que sí respondieron.
 
 ## Alcance
 

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { EVAL_DOCUMENTS } from './fixtures';
-import { RECALL_THRESHOLD, scoreFeatures, scoreSla, summarizeFeatures, summarizeSla, type DocumentScore, type SuiteScore } from './scoring';
+import { RECALL_THRESHOLD, scoreFeatures, scoreSla, summarizeFeatures, summarizeSla, verdict, type DocumentScore, type SuiteScore } from './scoring';
 
 if (!process.env.GEMINI_API_KEY) {
   console.error('Falta GEMINI_API_KEY. Esta eval hace llamadas de pago a Gemini y no se ejecuta sin la clave.');
@@ -57,7 +57,7 @@ const suites: Record<string, SuiteScore> = {
 const pct = (value: number | null) => (value === null ? 'n/d' : `${(value * 100).toFixed(1)} %`);
 console.log(`Umbral de recall: ${pct(RECALL_THRESHOLD)} · documentos evaluados: ${EVAL_DOCUMENTS.length - errors.length}/${EVAL_DOCUMENTS.length}`);
 for (const [name, score] of Object.entries(suites)) {
-  console.log(`${score.passed ? 'OK  ' : 'FAIL'} ${name.padEnd(26)} recall ${pct(score.recall).padStart(8)}  precisión ${pct(score.precision).padStart(8)}`);
+  console.log(`${verdict(score, EVAL_DOCUMENTS.length).padEnd(10)} ${name.padEnd(26)} ${score.documents.length}/${EVAL_DOCUMENTS.length} pliegos  recall ${pct(score.recall).padStart(8)}  precisión ${pct(score.precision).padStart(8)}`);
 }
 for (const [name, score] of Object.entries(suites)) {
   for (const item of score.documents.filter((entry) => entry.missing.length > 0)) console.log(`  ${name} · ${item.id}: faltan ${item.missing.join(', ')}`);
@@ -67,8 +67,8 @@ for (const error of errors) console.error(`ERROR ${error}`);
 const reportDirectory = path.join(os.tmpdir(), 'dcss-evals');
 fs.mkdirSync(reportDirectory, { recursive: true });
 const reportPath = path.join(reportDirectory, `gemini-${new Date().toISOString().replaceAll(':', '-')}.json`);
-fs.writeFileSync(reportPath, JSON.stringify({ threshold: RECALL_THRESHOLD, suites, errors }, null, 2));
+fs.writeFileSync(reportPath, JSON.stringify({ threshold: RECALL_THRESHOLD, verdicts: Object.fromEntries(Object.entries(suites).map(([name, score]) => [name, verdict(score, EVAL_DOCUMENTS.length)])), suites, errors }, null, 2));
 console.log(`Informe: ${reportPath}`);
 
 // El criterio de aprobación es el de las corridas con Gemini; las reglas locales son la línea base.
-process.exit(errors.length === 0 && suites['SLA con Gemini'].passed && suites['Software con Gemini'].passed ? 0 : 1);
+process.exit(['SLA con Gemini', 'Software con Gemini'].every((name) => verdict(suites[name], EVAL_DOCUMENTS.length) === 'PASS') ? 0 : 1);

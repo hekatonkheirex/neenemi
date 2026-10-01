@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { EVAL_DOCUMENTS } from './fixtures';
-import { normalizeForMatch, RECALL_THRESHOLD, scoreFeatures, scoreSla, summarizeFeatures, summarizeSla } from './scoring';
+import { normalizeForMatch, RECALL_THRESHOLD, scoreFeatures, scoreSla, summarizeFeatures, summarizeSla, verdict } from './scoring';
 import { SOFTWARE_FEATURES } from '../../src/modules/software-selector/catalog';
 
 describe('gemini eval fixtures', () => {
@@ -46,5 +46,12 @@ describe('gemini eval scoring', () => {
 
   it('is vacuously perfect with nothing expected', () => {
     expect(summarizeSla([]).recall).toBe(1);
+  });
+
+  it('never passes a suite with unevaluated documents', () => {
+    const full = summarizeSla([{ id: 'a', expected: 2, found: 2, missing: [], extra: 0 }]);
+    expect(verdict(full, 1)).toBe('PASS');
+    expect(verdict(full, 2)).toBe('INCOMPLETE');
+    expect(verdict(summarizeSla([{ id: 'a', expected: 2, found: 0, missing: ['x', 'y'], extra: 0 }]), 1)).toBe('FAIL');
   });
 });
