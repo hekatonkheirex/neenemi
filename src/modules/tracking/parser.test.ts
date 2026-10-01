@@ -13,7 +13,7 @@ describe('normalizeIdentity', () => {
 });
 
 describe('normalizeTrackingSerial', () => {
-  it.each(['-', 'N/A', 'n/a', 'S/N', 'sin serie', 'Sin Numero de Serie', '', null, undefined])('treats %j as a missing serial', value => {
+  it.each(['-', 'N/A', 'n/a', 'S/N', 'sin serie', 'Sin Numero de Serie', 'Sin Número de Serie', '', null, undefined])('treats %j as a missing serial', value => {
     expect(normalizeTrackingSerial(value)).toBe('');
   });
   it('strips Excel text-prefix apostrophes and keeps leading zeros', () => {

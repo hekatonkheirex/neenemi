@@ -100,9 +100,8 @@ export default function RouteMap({ events, sites, selectedVisit, candidate, edit
         const p = project(site); const radius = 100 / (40_075_017 * Math.cos(site.latitude * Math.PI / 180)) * world;
         return <g key={site.key}><circle cx={p.x * world - left} cy={p.y * world - top} r={radius} className="tracking-site-radius" /><path transform={`translate(${p.x * world - left} ${p.y * world - top})`} d="M0 -10 L10 0 L0 10 L-10 0 Z" className="tracking-site-pin"><title>{`Sede confirmada: ${site.customer} ${site.branch}`}</title></path></g>;
       })}
-      {events.map((event, index) => {
-        if (!event.coordinate) return null;
-        const p = project(event.coordinate);
+      {events.filter(event => event.coordinate).map((event, index) => {
+        const p = project(event.coordinate!);
         return <g key={event.key} transform={`translate(${p.x * world - left} ${p.y * world - top})`} className={`tracking-event-pin ${event.kind} ${selectedVisit === event.visitKey ? 'selected' : ''}`} role="button" tabIndex={0} aria-label={`${index + 1}. ${event.kind === 'in' ? 'Entrada' : 'Salida'} I.S. ${event.reportId}, ${event.timestamp.slice(11, 16)}`}
           onPointerDown={e => { if (!editing) e.stopPropagation(); }} onClick={e => { if (!editing) { e.stopPropagation(); onSelect(event.visitKey); } }} onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && !editing) { e.preventDefault(); onSelect(event.visitKey); } }}>
           <circle r="13" /><text textAnchor="middle" dominantBaseline="central">{index + 1}</text><title>{`${event.customer} · I.S. ${event.reportId} · ${event.timestamp.replace('T', ' ')}`}</title>
