@@ -54,6 +54,8 @@ v0.1.27 mueve las rutas de Viáticos y Servicios a `routes.ts`, y los ayudantes 
 importación y consulta a `src/core/import-routes.ts` y `src/core/request-parsing.ts`; `server.ts` queda con 75 rutas.
 v0.1.28 mueve las rutas de Ventas (Listado de precios y Proformas) a `src/modules/ventas/routes.ts`;
 `server.ts` queda con 62 rutas.
+v0.1.29 mueve las rutas de Catálogo y Mantenimiento a `routes.ts` de cada módulo;
+`server.ts` queda con 47 rutas.
 
 ## Alcance
 

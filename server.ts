@@ -7,13 +7,6 @@ import { backfillImportFileBlobs, getImportOriginalsStatus } from './src/core/im
 import { openDatabase, resolveDatabasePath, type SuiteDatabase } from './src/db/database';
 import { ImportRepository, SettingsRepository } from './src/db/repositories';
 import { OverviewRepository } from './src/db/overview';
-import {
-  CatalogRepository,
-  type CatalogModelFamilyInput,
-  type CatalogModelNoteInput,
-  type CatalogPartInput,
-  type CatalogServiceItemInput,
-} from './src/modules/catalogo/repository';
 import { readStoredImportFile, restoreArchivedImportFiles, storeImportFile, type ArchivedImportFile } from './src/core/import-storage';
 import { stageDatabaseRestore, activateStagedDatabaseRestore } from './src/core/database-restore';
 import { ImportJobRegistry } from './src/core/import-jobs';
@@ -41,15 +34,6 @@ import {
   type LegacyPortfolioParseResult,
   type LegacyFleetMetadataType,
 } from './src/modules/operaciones/legacy';
-import {
-  MaintenanceRepository,
-  type LegacyMaintenanceDatabaseInput,
-  type LegacyMaintenanceModelInput,
-  type LegacyMaintenanceRecordInput,
-  type SaveMaintenanceRuleInput,
-} from './src/modules/mantenimiento/repository';
-import { DEFAULT_MAINTENANCE_RULES } from './src/modules/mantenimiento/defaults';
-import { parseMaintenanceCounterCsv, parseMaintenanceCounterWorkbook } from './src/modules/mantenimiento/counters-parser';
 import { ConsumablesRepository } from './src/modules/consumibles/repository';
 import {
   CONSUMABLES_SOURCE_TYPES,
@@ -62,17 +46,19 @@ import { ServiceRepository } from './src/modules/servicios/repository';
 import { parseServicesWorkbook } from './src/modules/servicios/parser';
 import type { ParsedServiceRow } from './src/modules/servicios/types';
 import { registerTrackingRoutes } from './src/modules/tracking/routes';
+import { registerCatalogRoutes } from './src/modules/catalogo/routes';
+import { registerMaintenanceRoutes } from './src/modules/mantenimiento/routes';
 import { registerSalesRoutes } from './src/modules/ventas/routes';
 import { registerServiceRoutes } from './src/modules/servicios/routes';
 import { registerTravelRoutes } from './src/modules/viaticos/routes';
-import { archiveBatchImportFiles, storeSpreadsheetImport } from './src/core/import-routes';
+import { archiveBatchImportFiles, storeAndRegisterImportFile, storeSpreadsheetImport } from './src/core/import-routes';
 import { parseListLimit, parseOperationalFilters, parsePageRequest } from './src/core/request-parsing';
 import { registerMpsRoutes } from './src/modules/mps/routes';
 import { registerCoverageRoutes } from './src/modules/cobertura/routes';
 import { registerUniflowRoutes } from './src/modules/uniflow/routes';
 import { registerSoftwareSelectorRoutes } from './src/modules/software-selector/routes';
 import { registerSlaRoutes } from './src/modules/sla/routes';
-import { decodeBase64, isNonEmptyString, isNonNegativeInteger, isNonNegativeNumber, isOptionalNonNegativeNumber, isPositiveInteger, isRecord, queryString } from './src/core/validation';
+import { decodeBase64, isNonEmptyString, isNonNegativeInteger, isRecord, queryString } from './src/core/validation';
 
 // Claves de API (p. ej. ai/gemini_api_key): nunca salen de la instalación en respaldos ni lecturas.
 const SECRET_SETTINGS_NAMESPACE = 'ai';
@@ -133,9 +119,7 @@ export function createServer(options: ServerOptions): { app: express.Express; da
   const importJobs = new ImportJobRegistry();
   let archiveBackfillJobId: string | null = null;
   const overview = new OverviewRepository(database);
-  const catalog = new CatalogRepository(database);
   const operations = new OperationsRepository(database);
-  const maintenance = new MaintenanceRepository(database);
   const consumables = new ConsumablesRepository(database);
   const services = new ServiceRepository(database);
 
@@ -175,6 +159,8 @@ export function createServer(options: ServerOptions): { app: express.Express; da
 
   app.use(express.json({ limit: '50mb' }));
 
+  registerCatalogRoutes(app, database);
+  registerMaintenanceRoutes(app, database, dataDirectory);
   registerSalesRoutes(app, database);
   registerServiceRoutes(app, database, dataDirectory);
   registerTravelRoutes(app, database, dataDirectory);
@@ -654,65 +640,6 @@ export function createServer(options: ServerOptions): { app: express.Express; da
       });
   });
 
-  app.post('/api/catalog/parts', (request, response) => {
-    const { batchId, parts, modelFamilies, modelNotes, serviceItems, replaceAll } = (isRecord(request.body) ? request.body : {}) as {
-      batchId?: unknown;
-      parts?: unknown;
-      modelFamilies?: unknown;
-      modelNotes?: unknown;
-      serviceItems?: unknown;
-      replaceAll?: unknown;
-    };
-    const parsedParts = parseCatalogParts(parts);
-    const parsedModelFamilies = parseCatalogModelFamilies(modelFamilies);
-    const parsedModelNotes = parseCatalogModelNotes(modelNotes);
-    const parsedServiceItems = parseCatalogServiceItems(serviceItems);
-    if (!isNonEmptyString(batchId) || !parsedParts || !parsedModelFamilies || !parsedModelNotes || !parsedServiceItems || replaceAll !== undefined && typeof replaceAll !== 'boolean') {
-      response.status(400).json({ error: 'batchId, parts y datos comerciales del catálogo deben ser válidos.' });
-      return;
-    }
-
-    try {
-      response.json(catalog.replaceFromBatch(batchId, parsedParts, {
-        replaceAll: replaceAll === true,
-        modelFamilies: parsedModelFamilies,
-        modelNotes: parsedModelNotes,
-        serviceItems: parsedServiceItems,
-      }));
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'Importación inválida.' });
-    }
-  });
-
-  app.get('/api/catalog/parts', (request, response) => {
-    response.json(catalog.list({
-      query: queryString(request.query.query),
-      modelName: queryString(request.query.modelName),
-      modelLinkedOnly: request.query.modelLinkedOnly === 'true',
-      stockOnly: request.query.stockOnly === 'true',
-      excludeDiscontinued: request.query.excludeDiscontinued === 'true',
-    }));
-  });
-
-  app.get('/api/catalog/source', (_request, response) => {
-    response.json(catalog.getLatestSourceFile());
-  });
-
-  app.get('/api/catalog/model-notes', (_request, response) => {
-    response.json(catalog.listModelNotes());
-  });
-
-  app.get('/api/catalog/families', (_request, response) => {
-    response.json(catalog.listFamilySummaries());
-  });
-
-  app.get('/api/catalog/service-items', (request, response) => {
-    response.json(catalog.listServiceItems({
-      query: queryString(request.query.query),
-      modelName: queryString(request.query.modelName),
-    }));
-  });
-
   app.get('/api/operations/customers', (request, response) => {
     response.json(operations.listCustomers(queryString(request.query.query)));
   });
@@ -1072,219 +999,6 @@ export function createServer(options: ServerOptions): { app: express.Express; da
     }
   });
 
-  app.get('/api/maintenance/summary', (_request, response) => {
-    response.json(maintenance.getCurrentSummary());
-  });
-
-  app.delete('/api/maintenance/import', (_request, response) => {
-    const batches = imports.listApplied('maintenance');
-    const archivedFiles: ArchivedImportFile[] = [];
-    try {
-      for (const batch of batches) {
-        archivedFiles.push(...archiveBatchImportFiles(dataDirectory, batch.id, imports));
-      }
-      const removed = maintenance.removeImportedBatches(batches.map((batch) => batch.id));
-      response.json({ ok: true, batches: removed, archivedFiles: archivedFiles.length });
-    } catch (error) {
-      if (archivedFiles.length > 0) restoreArchivedImportFiles(dataDirectory, archivedFiles);
-      response.status(500).json({ error: error instanceof Error ? error.message : 'No se pudieron limpiar las cargas de mantenimiento.' });
-    }
-  });
-
-  app.get('/api/maintenance/analysis', (request, response) => {
-    const months = parseAnalysisMonths(request.query.months);
-    if (!months) {
-      response.status(400).json({ error: 'months debe ser un entero entre 1 y 12.' });
-      return;
-    }
-    response.json(maintenance.listCurrentAnalyses(queryString(request.query.query), months));
-  });
-
-  app.post('/api/maintenance/import-legacy', (request, response) => {
-    const input = parseLegacyMaintenanceImport(request.body);
-    if (!input) {
-      response.status(400).json({ error: 'El archivo de mantenimiento no tiene el formato esperado.' });
-      return;
-    }
-
-    const contents = decodeBase64(input.contentBase64);
-    if (!contents) {
-      response.status(400).json({ error: 'contentBase64 no es válido.' });
-      return;
-    }
-    if (contents.byteLength > 35 * 1024 * 1024) {
-      response.status(413).json({ error: 'El archivo de mantenimiento supera el límite de 35 MB.' });
-      return;
-    }
-
-    const sourceHash = createHash('sha256').update(contents).digest('hex');
-    const existingBatch = imports.findAppliedByHash('maintenance', sourceHash);
-    if (existingBatch) {
-      response.json({
-        ...maintenance.getCurrentSummary(),
-        duplicate: true,
-        batchId: existingBatch.id,
-        sourceName: existingBatch.sourceName,
-        sourceHash,
-      });
-      return;
-    }
-
-    const batchId = imports.createBatch({
-      domain: 'maintenance',
-      sourceName: input.sourceName,
-      sourceHash,
-    });
-
-    try {
-      const stored = storeImportFile(dataDirectory, batchId, input.sourceName, contents);
-      imports.addFile({
-        batchId,
-        fileName: input.sourceName,
-        storedPath: stored.storedPath,
-        contentHash: stored.contentHash,
-        contentType: 'application/json',
-        sizeBytes: stored.sizeBytes,
-        contentBlob: contents,
-      });
-      const result = maintenance.importLegacyDatabase(batchId, input.database);
-      response.status(201).json({
-        duplicate: false,
-        batchId,
-        sourceName: input.sourceName,
-        sourceHash,
-        ...result,
-      });
-    } catch (error) {
-      imports.markFailed(batchId);
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo importar mantenimiento.' });
-    }
-  });
-
-  app.get('/api/maintenance/rules', (_request, response) => {
-    response.json(maintenance.listCurrentRules());
-  });
-
-  app.post('/api/maintenance/rules', (request, response) => {
-    const input = parseSaveMaintenanceRuleInput(request.body);
-    if (!input) {
-      response.status(400).json({ error: 'La regla requiere modelo, vida útil, óptimo base y merma válidos.' });
-      return;
-    }
-    try {
-      response.status(input.id ? 200 : 201).json(maintenance.saveCurrentRule(input));
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo guardar la regla.' });
-    }
-  });
-
-  app.delete('/api/maintenance/rules/:id', (request, response) => {
-    if (!isNonEmptyString(request.params.id)) {
-      response.status(400).json({ error: 'La regla indicada no es válida.' });
-      return;
-    }
-    try {
-      response.json({ deleted: maintenance.deleteCurrentRule(request.params.id) });
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo eliminar la regla.' });
-    }
-  });
-
-  app.post('/api/maintenance/rules/reset', (_request, response) => {
-    try {
-      response.json({ rules: maintenance.resetCurrentRules() });
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudieron restaurar las reglas.' });
-    }
-  });
-
-  app.post('/api/maintenance/import-counters', async (request, response) => {
-    const body = isRecord(request.body) ? request.body : {};
-    if (!isNonEmptyString(body.sourceName) || !isNonEmptyString(body.contentBase64)) {
-      response.status(400).json({ error: 'sourceName y contentBase64 son obligatorios.' });
-      return;
-    }
-
-    const contents = decodeBase64(body.contentBase64);
-    if (!contents) {
-      response.status(400).json({ error: 'contentBase64 no es válido.' });
-      return;
-    }
-    if (contents.byteLength > 35 * 1024 * 1024) {
-      response.status(413).json({ error: 'El archivo de contadores supera el límite de 35 MB.' });
-      return;
-    }
-
-    const sourceName = body.sourceName;
-    const isCsv = sourceName.toLocaleLowerCase().endsWith('.csv');
-    const isXlsx = sourceName.toLocaleLowerCase().endsWith('.xlsx');
-    if (!isCsv && !isXlsx) {
-      response.status(400).json({ error: 'El archivo debe ser CSV o XLSX. El formato XLS antiguo no se puede leer con el motor actual.' });
-      return;
-    }
-
-    let parsed;
-    try {
-      parsed = isCsv
-        ? parseMaintenanceCounterCsv(new TextDecoder().decode(contents))
-        : await parseMaintenanceCounterWorkbook(contents);
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo leer el archivo de contadores.' });
-      return;
-    }
-    if (parsed.records.length === 0) {
-      response.status(400).json({ error: parsed.skippedRows > 0 ? `No se encontraron lecturas válidas; se descartaron ${parsed.skippedRows} fila(s).` : 'No se encontraron filas de contadores válidas.' });
-      return;
-    }
-
-    const sourceHash = createHash('sha256').update(contents).digest('hex');
-    const existingBatch = imports.findAppliedByHash('maintenance', sourceHash);
-    if (existingBatch) {
-      response.json({
-        ...maintenance.getCurrentSummary(),
-        duplicate: true,
-        skippedRows: parsed.skippedRows,
-        batchId: existingBatch.id,
-        sourceName: existingBatch.sourceName,
-        sourceHash,
-      });
-      return;
-    }
-
-    const batchId = imports.createBatch({ domain: 'maintenance', sourceName, sourceHash });
-    try {
-      if (isCsv) {
-        const stored = storeAndRegisterImportFile(dataDirectory, imports, batchId, sourceName, contents, 'text/csv');
-        imports.addSourceRows(batchId, stored.id, parsed.sourceSheets);
-      } else {
-        await storeSpreadsheetImport(dataDirectory, imports, batchId, sourceName, contents);
-      }
-
-      const existingRules = maintenance.listCurrentRules();
-      const models: LegacyMaintenanceModelInput[] = existingRules.length > 0
-        ? existingRules.map((rule) => ({
-            name: rule.modelLabel,
-            usefulLife: rule.usefulLife,
-            optimalBase: rule.optimalBase,
-            maxWaste: rule.maxWaste,
-          }))
-        : DEFAULT_MAINTENANCE_RULES.map((rule) => ({ ...rule }));
-      const result = maintenance.importLegacyDatabase(batchId, { models, records: parsed.records });
-      response.status(201).json({
-        duplicate: false,
-        batchId,
-        sourceName,
-        sourceHash,
-        skippedRows: parsed.skippedRows,
-        sheets: parsed.sheets,
-        ...result,
-      });
-    } catch (error) {
-      imports.markFailed(batchId);
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo importar el archivo de contadores.' });
-    }
-  });
-
   app.get('/api/consumables/summary', (request, response) => {
     response.json(consumables.getSummary(parseOperationalFilters(request.query)));
   });
@@ -1534,27 +1248,6 @@ export function createServer(options: ServerOptions): { app: express.Express; da
   }
 
   return { app, database };
-}
-
-function storeAndRegisterImportFile(
-  dataDirectory: string,
-  imports: ImportRepository,
-  batchId: string,
-  fileName: string,
-  contents: Uint8Array,
-  contentType?: string,
-) {
-  const stored = storeImportFile(dataDirectory, batchId, fileName, contents);
-  const id = imports.addFile({
-    batchId,
-    fileName,
-    storedPath: stored.storedPath,
-    contentHash: stored.contentHash,
-    contentType,
-    sizeBytes: stored.sizeBytes,
-    contentBlob: contents,
-  });
-  return { id, ...stored };
 }
 
 async function hydrateStoredSpreadsheetRows(
@@ -2027,164 +1720,6 @@ function removeTemporaryDirectory(directory: string | null): void {
   fs.rmSync(directory, { recursive: true, force: true });
 }
 
-function parseCatalogParts(value: unknown): CatalogPartInput[] | null {
-  if (!Array.isArray(value)) return null;
-
-  const parsed: CatalogPartInput[] = [];
-  for (const item of value) {
-    if (!isRecord(item)) return null;
-    const models = item.models;
-    const discontinuedAt = item.discontinuedAt;
-    const legacyTextFields = ['group', 'reference', 'usefulLife'] as const;
-    if (
-      !isNonEmptyString(item.brand) ||
-      typeof item.description !== 'string' ||
-      !isNonEmptyString(item.code) ||
-      !Array.isArray(models) ||
-      !models.every(isNonEmptyString) ||
-      !isNonNegativeInteger(item.stock) ||
-      !isNonNegativeNumber(item.priceUsd) ||
-      !isNonNegativeNumber(item.priceLocal) ||
-      !isNonNegativeNumber(item.markup) ||
-      (item.costAvailable !== undefined && typeof item.costAvailable !== 'boolean') ||
-      (discontinuedAt !== null && discontinuedAt !== undefined && !isNonEmptyString(discontinuedAt))
-      || !legacyTextFields.every((field) => isOptionalCatalogText(item[field]))
-    ) {
-      return null;
-    }
-
-    parsed.push({
-      brand: item.brand,
-      code: item.code,
-      description: item.description,
-      models,
-      stock: item.stock,
-      priceUsd: item.priceUsd,
-      priceLocal: item.priceLocal,
-      markup: item.markup,
-      discontinuedAt: discontinuedAt === undefined ? null : discontinuedAt,
-      costAvailable: item.costAvailable === undefined ? undefined : item.costAvailable,
-      group: parseOptionalCatalogText(item.group),
-      reference: parseOptionalCatalogText(item.reference),
-      usefulLife: parseOptionalCatalogText(item.usefulLife),
-    });
-  }
-  return parsed;
-}
-
-function isOptionalCatalogText(value: unknown): boolean {
-  return value === undefined || value === null || isNonEmptyString(value) && value.length <= 500;
-}
-
-function parseOptionalCatalogText(value: unknown): string | null | undefined {
-  if (value === undefined) return undefined;
-  if (value === null) return null;
-  return (value as string).trim();
-}
-
-function parseCatalogModelFamilies(value: unknown): CatalogModelFamilyInput[] | null {
-  if (value === undefined) return [];
-  if (!Array.isArray(value) || value.length > 100_000) return null;
-
-  const parsed: CatalogModelFamilyInput[] = [];
-  for (const item of value) {
-    if (!isRecord(item)
-      || !isNonEmptyString(item.brand)
-      || !isNonEmptyString(item.familyName)
-      || !isNonEmptyString(item.modelName)
-      || item.brand.length > 500
-      || item.familyName.length > 500
-      || item.modelName.length > 500
-      || !isOptionalPositiveNumber(item.exchangeRate)
-      || !isOptionalPositiveNumber(item.factor)) {
-      return null;
-    }
-    parsed.push({
-      brand: item.brand,
-      familyName: item.familyName,
-      modelName: item.modelName,
-      exchangeRate: parseOptionalPositiveNumber(item.exchangeRate),
-      factor: parseOptionalPositiveNumber(item.factor),
-    });
-  }
-  return parsed;
-}
-
-function isOptionalPositiveNumber(value: unknown): value is number | null | undefined {
-  return value === undefined || value === null || isNonNegativeNumber(value) && value > 0;
-}
-
-function parseOptionalPositiveNumber(value: unknown): number | null | undefined {
-  if (value === undefined) return undefined;
-  if (value === null) return null;
-  return value as number;
-}
-
-function parseCatalogModelNotes(value: unknown): CatalogModelNoteInput[] | null {
-  if (value === undefined) return [];
-  if (!Array.isArray(value) || value.length > 20_000) return null;
-
-  const parsed: CatalogModelNoteInput[] = [];
-  for (const item of value) {
-    if (!isRecord(item)
-      || !isNonEmptyString(item.brand)
-      || !isNonEmptyString(item.familyName)
-      || !isNonEmptyString(item.modelName)
-      || !isNonEmptyString(item.note)
-      || item.note.length > 5_000) {
-      return null;
-    }
-    parsed.push({
-      brand: item.brand,
-      familyName: item.familyName,
-      modelName: item.modelName,
-      note: item.note,
-    });
-  }
-  return parsed;
-}
-
-function parseCatalogServiceItems(value: unknown): CatalogServiceItemInput[] | null {
-  if (value === undefined) return [];
-  if (!Array.isArray(value) || value.length > 100_000) return null;
-
-  const parsed: CatalogServiceItemInput[] = [];
-  for (const item of value) {
-    if (!isRecord(item)
-      || !isNonEmptyString(item.brand)
-      || !isNonEmptyString(item.familyName)
-      || !isNonEmptyString(item.modelName)
-      || !isNonEmptyString(item.description)
-      || item.description.length > 5_000
-      || (item.kind !== 'labor' && item.kind !== 'fixed')) {
-      return null;
-    }
-
-    const fixedPriceLocal = item.fixedPriceLocal === undefined ? null : item.fixedPriceLocal;
-    if (!isOptionalNonNegativeNumber(fixedPriceLocal)
-      || item.kind === 'fixed' && fixedPriceLocal === null) {
-      return null;
-    }
-
-    parsed.push({
-      brand: item.brand,
-      familyName: item.familyName,
-      modelName: item.modelName,
-      kind: item.kind,
-      description: item.description,
-      fixedPriceLocal,
-    });
-  }
-  return parsed;
-}
-
-function parseAnalysisMonths(value: unknown): number | null {
-  if (value === undefined) return 3;
-  if (typeof value !== 'string' || !/^\d+$/.test(value)) return null;
-  const months = Number(value);
-  return Number.isInteger(months) && months >= 1 && months <= 12 ? months : null;
-}
-
 function parseConsumablesSourceType(value: unknown): ConsumablesSourceType | null {
   return typeof value === 'string' && CONSUMABLES_SOURCE_TYPES.includes(value as ConsumablesSourceType)
     ? value as ConsumablesSourceType
@@ -2214,66 +1749,6 @@ function parseRawRowsOffset(value: unknown): number | null {
   if (typeof value !== 'string' || !/^\d+$/.test(value)) return null;
   const offset = Number(value);
   return Number.isInteger(offset) && offset >= 0 && offset <= 1_000_000 ? offset : null;
-}
-
-function parseLegacyMaintenanceImport(value: unknown): {
-  sourceName: string;
-  contentBase64: string;
-  database: LegacyMaintenanceDatabaseInput;
-} | null {
-  if (!isRecord(value) || !isNonEmptyString(value.sourceName) || !isNonEmptyString(value.contentBase64) || !isRecord(value.database)) return null;
-  const database = value.database;
-  if (!Array.isArray(database.models) || !Array.isArray(database.records)) return null;
-
-  const models: LegacyMaintenanceModelInput[] = [];
-  for (const item of database.models) {
-    if (!isRecord(item) || !isNonEmptyString(item.name) || !isPositiveInteger(item.vidaUtil) || !isNonNegativeInteger(item.optimoBase) || !isFiniteFraction(item.mermaMax)) return null;
-    models.push({ name: item.name, usefulLife: item.vidaUtil, optimalBase: item.optimoBase, maxWaste: item.mermaMax });
-  }
-
-  const records: LegacyMaintenanceRecordInput[] = [];
-  for (const item of database.records) {
-    if (
-      !isRecord(item) ||
-      !isNonEmptyString(item.cliente) ||
-      !isNonEmptyString(item.equipo) ||
-      !isNonEmptyString(item.nserie) ||
-      !isNonEmptyString(item.periodo) ||
-      !isNonNegativeNumber(item.copias) ||
-      !isNonNegativeNumber(item.contador) ||
-      (item.ov !== undefined && typeof item.ov !== 'string') ||
-      (item.papel !== undefined && typeof item.papel !== 'string')
-    ) return null;
-    records.push({
-      customerName: item.cliente,
-      contractReference: typeof item.ov === 'string' ? item.ov : '',
-      modelLabel: item.equipo,
-      serialNumber: item.nserie,
-      period: item.periodo,
-      paperType: typeof item.papel === 'string' ? item.papel : '',
-      copies: item.copias,
-      counter: item.contador,
-    });
-  }
-
-  return { sourceName: value.sourceName, contentBase64: value.contentBase64, database: { models, records } };
-}
-
-function parseSaveMaintenanceRuleInput(value: unknown): SaveMaintenanceRuleInput | null {
-  if (!isRecord(value) || !isNonEmptyString(value.modelLabel)) return null;
-  if (!isPositiveInteger(value.usefulLife) || !isNonNegativeInteger(value.optimalBase) || !isFiniteFraction(value.maxWaste)) return null;
-  if (value.id !== undefined && !isNonEmptyString(value.id)) return null;
-  return {
-    id: typeof value.id === 'string' ? value.id : undefined,
-    modelLabel: value.modelLabel,
-    usefulLife: value.usefulLife,
-    optimalBase: value.optimalBase,
-    maxWaste: value.maxWaste,
-  };
-}
-
-function isFiniteFraction(value: unknown): value is number {
-  return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 1;
 }
 
 function parseSaveCustomerInput(value: unknown): SaveCustomerInput | null {

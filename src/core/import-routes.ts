@@ -58,3 +58,24 @@ export async function storeSpreadsheetImport(
   const raw = imports.addSourceRows(batchId, id, sheets);
   return { id, ...stored, rawRows: raw.rows, rawSheets: raw.sheets };
 }
+
+export function storeAndRegisterImportFile(
+  dataDirectory: string,
+  imports: ImportRepository,
+  batchId: string,
+  fileName: string,
+  contents: Uint8Array,
+  contentType?: string,
+) {
+  const stored = storeImportFile(dataDirectory, batchId, fileName, contents);
+  const id = imports.addFile({
+    batchId,
+    fileName,
+    storedPath: stored.storedPath,
+    contentHash: stored.contentHash,
+    contentType,
+    sizeBytes: stored.sizeBytes,
+    contentBlob: contents,
+  });
+  return { id, ...stored };
+}
