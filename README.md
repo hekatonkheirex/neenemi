@@ -48,6 +48,8 @@ v0.1.24 elimina `docs/PARIDAD-LEGADO.md`, obsoleto tras la aprobación de la sui
 v0.1.25 mueve las rutas de uniFLOW, Software Selector y SLA fuera de `server.ts` a `routes.ts` de cada
 módulo, centraliza Gemini en `src/core/gemini.ts` y valida con `src/core/validation.ts`; añade pruebas de
 las exportaciones de Viáticos y uniFLOW.
+v0.1.26 mueve también las rutas de MPS y Cobertura a `routes.ts` y reúne los validadores comunes en
+`src/core/validation.ts`; `server.ts` queda con 88 rutas.
 
 ## Alcance
 

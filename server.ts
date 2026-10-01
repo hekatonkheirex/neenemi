@@ -46,9 +46,7 @@ import {
   parseLegacyPortfolioWorkbook,
   parseWaldbottStockWorkbook,
   type LegacyFleetMetadataParseResult,
-  type LegacyFleetMetadataRow,
   type LegacyPortfolioParseResult,
-  type LegacyPortfolioRow,
   type LegacyFleetMetadataType,
 } from './src/modules/operaciones/legacy';
 import {
@@ -60,7 +58,6 @@ import {
 } from './src/modules/mantenimiento/repository';
 import { DEFAULT_MAINTENANCE_RULES } from './src/modules/mantenimiento/defaults';
 import { parseMaintenanceCounterCsv, parseMaintenanceCounterWorkbook } from './src/modules/mantenimiento/counters-parser';
-import { MpsRepository, readLegacyMpsDatabase, type SaveMpsModelInput } from './src/modules/mps/repository';
 import { ConsumablesRepository } from './src/modules/consumibles/repository';
 import {
   CONSUMABLES_SOURCE_TYPES,
@@ -85,14 +82,13 @@ import {
   type TravelTransport,
   type TravelTripInput,
 } from './src/modules/viaticos/types';
-import { calculateYield, normalizePageCoverage, summarizeDocumentCoverage } from './src/modules/cobertura/calculations';
-import { CoverageRepository } from './src/modules/cobertura/repository';
-import type { CanonModelDraft, CoverageAnalysis, CoveragePageFailure } from './src/modules/cobertura/types';
 import { registerTrackingRoutes } from './src/modules/tracking/routes';
+import { registerMpsRoutes } from './src/modules/mps/routes';
+import { registerCoverageRoutes } from './src/modules/cobertura/routes';
 import { registerUniflowRoutes } from './src/modules/uniflow/routes';
 import { registerSoftwareSelectorRoutes } from './src/modules/software-selector/routes';
 import { registerSlaRoutes } from './src/modules/sla/routes';
-import { isNonEmptyString, isPositiveInteger, isRecord } from './src/core/validation';
+import { decodeBase64, isNonEmptyString, isNonNegativeInteger, isNonNegativeNumber, isPositiveInteger, isPositiveNumber, isRecord, queryString } from './src/core/validation';
 
 // Claves de API (p. ej. ai/gemini_api_key): nunca salen de la instalación en respaldos ni lecturas.
 const SECRET_SETTINGS_NAMESPACE = 'ai';
@@ -157,11 +153,9 @@ export function createServer(options: ServerOptions): { app: express.Express; da
   const sales = new SalesRepository(database);
   const operations = new OperationsRepository(database);
   const maintenance = new MaintenanceRepository(database);
-  const mps = new MpsRepository(database);
   const consumables = new ConsumablesRepository(database);
   const services = new ServiceRepository(database);
   const travel = new TravelRepository(database);
-  const coverage = new CoverageRepository(database);
 
   // Reject DNS-rebinding hosts on reads as well as writes: backups and settings are readable.
   app.use((request, response, next) => {
@@ -199,6 +193,8 @@ export function createServer(options: ServerOptions): { app: express.Express; da
 
   app.use(express.json({ limit: '50mb' }));
 
+  registerMpsRoutes(app, database, dataDirectory);
+  registerCoverageRoutes(app, database);
   registerUniflowRoutes(app, database);
   registerSoftwareSelectorRoutes(app, database);
   registerSlaRoutes(app, database);
@@ -384,7 +380,6 @@ export function createServer(options: ServerOptions): { app: express.Express; da
       return;
     }
 
-    const files = imports.listFiles(batch.id);
     let archivedFiles;
     try {
       archivedFiles = archiveBatchImportFiles(dataDirectory, batch.id, imports);
@@ -1305,123 +1300,6 @@ export function createServer(options: ServerOptions): { app: express.Express; da
     }
   });
 
-  app.get('/api/mps/summary', (_request, response) => {
-    response.json(mps.getCurrentSummary());
-  });
-
-  app.get('/api/mps/models', (request, response) => {
-    response.json(mps.listModels(queryString(request.query.query)));
-  });
-
-  app.post('/api/mps/models', (request, response) => {
-    const input = parseSaveMpsModelInput(request.body);
-    if (!input) {
-      response.status(400).json({ error: 'La marca, el modelo y al menos un consumible son obligatorios; los parámetros deben ser válidos.' });
-      return;
-    }
-    try {
-      response.status(201).json(mps.saveCustomModel(input));
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'No se pudo crear el perfil MPS.';
-      response.status(mpsOperationErrorStatus(message)).json({ error: message });
-    }
-  });
-
-  app.put('/api/mps/models/:id', (request, response) => {
-    if (!isNonEmptyString(request.params.id)) {
-      response.status(400).json({ error: 'El perfil MPS indicado no es válido.' });
-      return;
-    }
-    const input = parseSaveMpsModelInput(request.body, request.params.id);
-    if (!input) {
-      response.status(400).json({ error: 'La marca, el modelo y al menos un consumible son obligatorios; los parámetros deben ser válidos.' });
-      return;
-    }
-    try {
-      response.json(mps.saveCustomModel(input));
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'No se pudo actualizar el perfil MPS.';
-      response.status(mpsOperationErrorStatus(message)).json({ error: message });
-    }
-  });
-
-  app.delete('/api/mps/models/:id', (request, response) => {
-    if (!isNonEmptyString(request.params.id)) {
-      response.status(400).json({ error: 'El perfil MPS indicado no es válido.' });
-      return;
-    }
-    try {
-      response.json({ deleted: mps.deleteCustomModel(request.params.id) });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'No se pudo eliminar el perfil MPS.';
-      response.status(mpsOperationErrorStatus(message)).json({ error: message });
-    }
-  });
-
-  app.post('/api/mps/import-legacy', (request, response) => {
-    const { sourceName, contentBase64 } = (isRecord(request.body) ? request.body : {}) as {
-      sourceName?: unknown;
-      contentBase64?: unknown;
-    };
-    if (!isNonEmptyString(sourceName) || !isNonEmptyString(contentBase64)) {
-      response.status(400).json({ error: 'sourceName y contentBase64 son obligatorios.' });
-      return;
-    }
-
-    const contents = decodeBase64(contentBase64);
-    if (!contents) {
-      response.status(400).json({ error: 'contentBase64 no es válido.' });
-      return;
-    }
-    if (contents.byteLength > 35 * 1024 * 1024) {
-      response.status(413).json({ error: 'La base MPS supera el límite de 35 MB.' });
-      return;
-    }
-
-    const sourceHash = createHash('sha256').update(contents).digest('hex');
-    const existingBatch = imports.findAppliedByHash('mps', sourceHash);
-    if (existingBatch) {
-      response.json({
-        ...mps.getCurrentSummary(),
-        duplicate: true,
-        batchId: existingBatch.id,
-        sourceName: existingBatch.sourceName,
-        sourceHash,
-      });
-      return;
-    }
-
-    const batchId = imports.createBatch({
-      domain: 'mps',
-      sourceName,
-      sourceHash,
-    });
-
-    try {
-      const stored = storeImportFile(dataDirectory, batchId, sourceName, contents);
-      imports.addFile({
-        batchId,
-        fileName: sourceName,
-        storedPath: stored.storedPath,
-        contentHash: stored.contentHash,
-        contentType: 'application/vnd.sqlite3',
-        sizeBytes: stored.sizeBytes,
-        contentBlob: contents,
-      });
-      const result = mps.importLegacyDatabase(batchId, readLegacyMpsDatabase(contents));
-      response.status(201).json({
-        duplicate: false,
-        batchId,
-        sourceName,
-        sourceHash,
-        ...result,
-      });
-    } catch (error) {
-      imports.markFailed(batchId);
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo importar la base MPS.' });
-    }
-  });
-
   app.get('/api/consumables/summary', (request, response) => {
     response.json(consumables.getSummary(parseOperationalFilters(request.query)));
   });
@@ -1992,72 +1870,6 @@ export function createServer(options: ServerOptions): { app: express.Express; da
     }
   });
 
-  app.get('/api/coverage/models', (_request, response) => {
-    response.json(coverage.listModels());
-  });
-
-  app.post('/api/coverage/models', (request, response) => {
-    const draft = parseCoverageModelDraft(request.body);
-    if (!draft) {
-      response.status(400).json({ error: 'El modelo Canon y sus rendimientos no son válidos.' });
-      return;
-    }
-    try {
-      response.status(201).json(coverage.saveModel(draft));
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo guardar el modelo Canon.' });
-    }
-  });
-
-  app.put('/api/coverage/models/:id', (request, response) => {
-    const draft = parseCoverageModelDraft(request.body);
-    if (!draft) {
-      response.status(400).json({ error: 'El modelo Canon y sus rendimientos no son válidos.' });
-      return;
-    }
-    try {
-      response.json(coverage.saveModel(draft, request.params.id));
-    } catch (error) {
-      response.status(400).json({ error: error instanceof Error ? error.message : 'No se pudo actualizar el modelo Canon.' });
-    }
-  });
-
-  app.delete('/api/coverage/models/:id', (request, response) => {
-    try {
-      coverage.removeModel(request.params.id);
-      response.status(204).end();
-    } catch (error) {
-      response.status(404).json({ error: error instanceof Error ? error.message : 'El modelo Canon no existe.' });
-    }
-  });
-
-  app.get('/api/coverage/last', (_request, response) => {
-    response.json(coverage.getLastAnalysis());
-  });
-
-  app.post('/api/coverage/analyze', (request, response) => {
-    const input = parseCoverageAnalysisInput(request.body);
-    if (!input) {
-      response.status(400).json({ error: 'Selecciona un PDF válido con páginas de cobertura analizables.' });
-      return;
-    }
-    const documentCoverage = summarizeDocumentCoverage(input.pages);
-    const analysis: CoverageAnalysis = coverage.saveAnalysis({
-      sourceName: input.sourceName,
-      coverage: documentCoverage,
-      analyzedAt: new Date().toISOString(),
-      inputMode: 'pdf',
-      failedPages: input.failedPages,
-    });
-    const model = input.modelId ? coverage.listModels().find((item) => item.id === input.modelId) : undefined;
-    response.json({ analysis, yieldEstimate: model ? calculateYield(model, documentCoverage.average) : null });
-  });
-
-  app.delete('/api/coverage/last', (_request, response) => {
-    coverage.clearLastAnalysis();
-    response.status(204).end();
-  });
-
   app.get('/api/sales/pricing', (_request, response) => {
     response.json(sales.getPricing());
   });
@@ -2312,30 +2124,12 @@ function isSpreadsheetFile(fileName: string, contentType?: string | null): boole
     || fileName.toLocaleLowerCase().endsWith('.xlsx');
 }
 
-function isNonNegativeInteger(value: unknown): value is number {
-  return typeof value === 'number' && Number.isInteger(value) && value >= 0;
-}
-
-function isNonNegativeNumber(value: unknown): value is number {
-  return typeof value === 'number' && Number.isFinite(value) && value >= 0;
-}
-
 function isOptionalNonNegativeNumber(value: unknown): value is number | null | undefined {
   return value === undefined || value === null || isNonNegativeNumber(value);
 }
 
 function isFiniteNumber(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value);
-}
-
-function isPositiveNumber(value: unknown): value is number {
-  return typeof value === 'number' && Number.isFinite(value) && value > 0;
-}
-
-function decodeBase64(value: string): Uint8Array | null {
-  if (!/^[a-zA-Z0-9+/]*={0,2}$/.test(value) || value.length % 4 !== 0) return null;
-  const contents = Buffer.from(value, 'base64');
-  return contents.byteLength > 0 ? new Uint8Array(contents) : null;
 }
 
 type ConsumablesBundleSourceId =
@@ -2934,10 +2728,6 @@ function parseCatalogServiceItems(value: unknown): CatalogServiceItemInput[] | n
   return parsed;
 }
 
-function queryString(value: unknown): string | undefined {
-  return typeof value === 'string' ? value : undefined;
-}
-
 function parseOperationalFilters(value: unknown): OperationalFilters {
   if (!isRecord(value)) return {};
   return {
@@ -3037,41 +2827,6 @@ function parseSaveTravelTripInput(value: unknown): TravelTripInput | null {
   };
 }
 
-function parseCoverageModelDraft(value: unknown): CanonModelDraft | null {
-  if (!isRecord(value) || !isNonEmptyString(value.name) || (value.colorType !== 'mono' && value.colorType !== 'color')) return null;
-  if (!isRecord(value.nominalYield) || !isPositiveNumber(value.nominalYield.black)) return null;
-  const nominalYield = value.nominalYield;
-  if (value.colorType === 'color' && (!isPositiveNumber(nominalYield.cyan) || !isPositiveNumber(nominalYield.magenta) || !isPositiveNumber(nominalYield.yellow))) return null;
-  return {
-    name: value.name,
-    colorType: value.colorType,
-    nominalYield: value.colorType === 'mono'
-      ? { black: nominalYield.black as number }
-      : { black: nominalYield.black as number, cyan: nominalYield.cyan as number, magenta: nominalYield.magenta as number, yellow: nominalYield.yellow as number },
-  };
-}
-
-function parseCoverageAnalysisInput(value: unknown): { sourceName: string; pages: ReturnType<typeof normalizePageCoverage>[]; failedPages: CoveragePageFailure[]; modelId?: string } | null {
-  if (!isRecord(value) || value.inputMode !== 'pdf' || !isNonEmptyString(value.sourceName) || !Array.isArray(value.pages) || value.pages.length === 0 || value.pages.length > 2000) return null;
-  if (value.modelId !== undefined && !isNonEmptyString(value.modelId)) return null;
-  if (value.failedPages !== undefined && (!Array.isArray(value.failedPages) || value.failedPages.length > 2000)) return null;
-  const pages = [] as ReturnType<typeof normalizePageCoverage>[];
-  for (const item of value.pages) {
-    if (!isRecord(item) || !isPositiveInteger(item.page) || !isNonNegativeNumber(item.black) || !isNonNegativeNumber(item.cyan) || !isNonNegativeNumber(item.magenta) || !isNonNegativeNumber(item.yellow)) return null;
-    try {
-      pages.push(normalizePageCoverage({ page: item.page, black: item.black, cyan: item.cyan, magenta: item.magenta, yellow: item.yellow }));
-    } catch {
-      return null;
-    }
-  }
-  const failedPages: CoveragePageFailure[] = [];
-  for (const item of value.failedPages ?? []) {
-    if (!isRecord(item) || !isPositiveInteger(item.page) || !isNonEmptyString(item.message)) return null;
-    failedPages.push({ page: item.page, message: item.message.slice(0, 1000) });
-  }
-  return { sourceName: value.sourceName, pages, failedPages, modelId: value.modelId as string | undefined };
-}
-
 function parseConsumablesRecordKind(value: unknown): ConsumablesRecordKind | undefined | null {
   if (value === undefined) return undefined;
   return value === 'consumable' || value === 'part' ? value : null;
@@ -3165,51 +2920,6 @@ function parseSaveMaintenanceRuleInput(value: unknown): SaveMaintenanceRuleInput
     optimalBase: value.optimalBase,
     maxWaste: value.maxWaste,
   };
-}
-
-function parseSaveMpsModelInput(value: unknown, id?: string): SaveMpsModelInput | null {
-  if (!isRecord(value) || !isNonEmptyString(value.brand) || !isNonEmptyString(value.model)) return null;
-  if (typeof value.isColor !== 'boolean' || !isNonNegativeInteger(value.recVolumeMin) || !isNonNegativeInteger(value.recVolumeMax)) return null;
-  if (value.recVolumeMax < value.recVolumeMin || !Array.isArray(value.consumables) || value.consumables.length === 0) return null;
-
-  const speedPpm = value.speedPpm === undefined || value.speedPpm === null
-    ? null
-    : isNonNegativeInteger(value.speedPpm)
-      ? value.speedPpm
-      : undefined;
-  if (speedPpm === undefined) return null;
-
-  const consumables = [];
-  for (const item of value.consumables) {
-    if (!isRecord(item) || !isNonEmptyString(item.name) || !isNonEmptyString(item.type) || !isNonEmptyString(item.color) || !isPositiveInteger(item.yieldPages)) return null;
-    if (item.id !== undefined && !isNonEmptyString(item.id)) return null;
-    if (item.sku !== undefined && typeof item.sku !== 'string') return null;
-    consumables.push({
-      id: typeof item.id === 'string' ? item.id : undefined,
-      name: item.name,
-      type: item.type,
-      yieldPages: item.yieldPages,
-      color: item.color,
-      sku: typeof item.sku === 'string' ? item.sku : '',
-    });
-  }
-
-  return {
-    id,
-    brand: value.brand,
-    model: value.model,
-    speedPpm,
-    isColor: value.isColor,
-    recVolumeMin: value.recVolumeMin,
-    recVolumeMax: value.recVolumeMax,
-    consumables,
-  };
-}
-
-function mpsOperationErrorStatus(message: string): number {
-  if (message.startsWith('Ya existe') || message.includes('permanece intacto')) return 409;
-  if (message.startsWith('No existe')) return 404;
-  return 400;
 }
 
 function isFiniteFraction(value: unknown): value is number {

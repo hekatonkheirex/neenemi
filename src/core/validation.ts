@@ -17,3 +17,30 @@ export function parseTextAnalysisInput(value: unknown, defaultFileName: string):
   if (value.fileName !== undefined && !isNonEmptyString(value.fileName)) return null;
   return { text: value.text, fileName: value.fileName === undefined ? defaultFileName : value.fileName };
 }
+
+export function isNonNegativeInteger(value: unknown): value is number {
+  return typeof value === 'number' && Number.isInteger(value) && value >= 0;
+}
+
+
+export function isNonNegativeNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0;
+}
+
+
+export function isPositiveNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+}
+
+
+export function decodeBase64(value: string): Uint8Array | null {
+  if (!/^[a-zA-Z0-9+/]*={0,2}$/.test(value) || value.length % 4 !== 0) return null;
+  const contents = Buffer.from(value, 'base64');
+  return contents.byteLength > 0 ? new Uint8Array(contents) : null;
+}
+
+
+export function queryString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined;
+}
+
