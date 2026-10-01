@@ -55,3 +55,17 @@ _Avoid_: equipo instalado, regla de mantenimiento
 **Perfil manual**:
 Un perfil MPS creado o ajustado en la suite, separado de la fuente importada para conservar las dos referencias.
 _Avoid_: modificación de la fuente original
+
+## Tracking de técnicos
+
+**Marcación**:
+Un registro de geolocalización con hora de check-in o check-out y, si existe, coordenadas GPS de entrada o salida.
+_Avoid_: visita, informe
+
+**Sede confirmada**:
+La ubicación real de un cliente o equipo que una persona fijó y confirmó manualmente; es la única referencia para validar la proximidad de una marcación.
+_Avoid_: posición del técnico, dirección propuesta
+
+**Traslado**:
+El intervalo y la distancia geodésica directa entre la salida de una visita y la entrada de la siguiente; puede incluir esperas y no equivale a tiempo de conducción ni a kilometraje vial.
+_Avoid_: recorrido, viaje

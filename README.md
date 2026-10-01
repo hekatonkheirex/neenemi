@@ -42,6 +42,8 @@ externa puntual de ubicaciones propuestas, con confirmación manual antes de val
 v0.1.21 activa automáticamente el fondo de calles de Tracking, sin casilla de activación.
 v0.1.22 excluye las claves de API del respaldo SQLite y de la lectura de configuración, actualiza
 pdfjs-dist a 6.x (corrige ejecución de JavaScript con PDF maliciosos) y fija el total de módulos en la prueba del manifiesto.
+v0.1.23 corrige contradicciones y erratas del README y documenta Tracking en la auditoría de
+paridad, el glosario y la nota de auditoría de dependencias.
 
 ## Alcance
 
@@ -349,7 +351,7 @@ anuales. La pantalla permite registrar viajes manuales, estimar costos orientati
 buscar por cliente/destino, columnas calculadas y gestionar el estado de cada rendición. Sus vistas separadas
 de Resumen, Viajes, Rendiciones e Histórico recuperan el flujo de la aplicación anterior;
 el Resumen también muestra la distribución del gasto por medio y los destinos con mayor costo.
-el Histórico permite comparar actividad/costos, revisar la tendencia mensual y navegar las
+El Histórico permite comparar actividad/costos, revisar la tendencia mensual y navegar las
 hojas y filas originales conservadas con sus encabezados detectados por hoja. La importación se previsualiza antes de modificar la
 base y muestra viajes, años, hojas, históricos y referencias de costos. Si ya existe una fuente
 aplicada, la confirmación la reemplaza, conserva los viajes manuales y mantiene estado/notas
@@ -453,8 +455,9 @@ persiste el último análisis y conserva el catálogo manual de modelos Canon co
 rendimiento ISO/IEC 19798. Se retiraron las entradas de cobertura manual y la importación JSON;
 el informe se puede guardar como PDF.
 
-La suite no modifica ni migra automáticamente bases históricas al abrirse: cada fuente se
-incorpora mediante su importador explícito, se archiva junto con sus filas originales y no
+Salvo la copia inicial de los datos de prueba y la reindexación idempotente de fuentes ya
+archivadas, descritas en «Persistencia objetivo», la suite no modifica ni migra bases
+históricas al abrirse: cada fuente se incorpora mediante su importador explícito, se archiva junto con sus filas originales y no
 altera los proyectos originales. Esto permite revisar y repetir la carga desde el módulo
 correspondiente; Consumibles ya consume la cartera compartida para asociar sus líneas a
 contratos y equipos.

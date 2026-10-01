@@ -77,15 +77,14 @@ y en la ventana Linux; `appId` y carpeta de datos se mantienen.
 
 ## Auditoría de dependencias
 
-La auditoría de 2026-09-29 informa cuatro vulnerabilidades moderadas en
-`express`/`qs` y `exceljs`/`uuid`, y una alta en `pdfjs-dist` 5.x
-([GHSA-hq66-cqwq-w95j](https://github.com/advisories/GHSA-hq66-cqwq-w95j)).
-La alerta alta requiere abrir un PDF malicioso con scripting activado en el
-visor PDF.js; la suite usa `getDocument` para extraer y rasterizar páginas, no
-el visor con scripting. No se ejecuta `npm audit fix --force`: actualizar
-`pdfjs-dist` a 6.x y sustituir ExcelJS por una versión anterior son cambios
-incompatibles que requieren una migración y pruebas específicas. Revisar antes
-de distribuir con PDFs no confiables; próxima revisión: 2026-10-15.
+La auditoría de 2026-10-01 (`npm audit --omit=dev`) informa dos vulnerabilidades
+moderadas, ambas en `exceljs` por `uuid` 8.x. El aviso
+([GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq))
+afecta a `uuid` v3/v5/v6 con un buffer propio; no se comprobó cómo lo usa ExcelJS.
+La corrección que propone npm baja `exceljs` a 3.4.0, un retroceso incompatible,
+por lo que no se ejecuta `npm audit fix --force`. `pdfjs-dist` pasó a 6.x en v0.1.22
+([GHSA-hq66-cqwq-w95j](https://github.com/advisories/GHSA-hq66-cqwq-w95j)) y
+`qs`/`brace-expansion` se actualizaron con `npm audit fix`. Próxima revisión: 2026-10-15.
 
 ## Validación en una máquina limpia
 
