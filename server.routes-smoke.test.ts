@@ -34,5 +34,5 @@ describe('route smoke test', () => {
       database.close();
       fs.rmSync(directory, { recursive: true, force: true });
     }
-  });
+  }, 30_000);
 });

@@ -34,3 +34,17 @@ export function parsePositiveInteger(value: unknown): number | null {
   const number = Number(value);
   return Number.isSafeInteger(number) && number >= 1 ? number : null;
 }
+
+export function parseRawRowsLimit(value: unknown): number | null {
+  if (value === undefined) return 100;
+  if (typeof value !== 'string' || !/^\d+$/.test(value)) return null;
+  const limit = Number(value);
+  return Number.isInteger(limit) && limit >= 1 && limit <= 500 ? limit : null;
+}
+
+export function parseRawRowsOffset(value: unknown): number | null {
+  if (value === undefined) return 0;
+  if (typeof value !== 'string' || !/^\d+$/.test(value)) return null;
+  const offset = Number(value);
+  return Number.isInteger(offset) && offset >= 0 && offset <= 1_000_000 ? offset : null;
+}

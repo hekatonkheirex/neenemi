@@ -60,6 +60,9 @@ v0.1.30 añade `server.routes-smoke.test.ts`: cada GET `/api/*` sin parámetros 
 para detectar de inmediato un import o validador perdido al mover rutas.
 v0.1.31 mueve las rutas de Operaciones (cartera, metadatos, Discontinuador y stock Waldbott) a
 `src/modules/operaciones/routes.ts`; `enqueueImportJob` pasa a `src/core/import-routes.ts`; `server.ts` queda con 33 rutas.
+v0.1.32 mueve las rutas de Consumibles a `src/modules/consumibles/routes.ts` y la carga coordinada (preparación,
+staging y aplicación en una transacción) a `src/modules/consumibles/bundle-server.ts`; `server.ts` queda con 22 rutas
+y 658 líneas.
 
 ## Alcance
 

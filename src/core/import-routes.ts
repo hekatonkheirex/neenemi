@@ -105,3 +105,28 @@ export function enqueueImportJob(
   })();
   response.status(202).json({ jobId: job.id, kind: input.kind, sourceName: input.sourceName });
 }
+
+export async function hydrateStoredSpreadsheetRows(
+  dataDirectory: string,
+  imports: ImportRepository,
+  batchId: string,
+): Promise<void> {
+  const hydratedFileIds = new Set(imports.listSourceSheets(batchId).map((source) => source.importFileId));
+
+  for (const file of imports.listFiles(batchId)) {
+    if (!isSpreadsheetFile(file.fileName, file.contentType)) continue;
+    if (hydratedFileIds.has(file.id)) continue;
+    const contents = imports.getFileContent(file.id)
+      ?? readStoredImportFile(dataDirectory, file.storedPath);
+    if (!contents) continue;
+
+    const sheets = await readWorkbookSheets(contents);
+    imports.addSourceRows(batchId, file.id, sheets);
+    hydratedFileIds.add(file.id);
+  }
+}
+
+export function isSpreadsheetFile(fileName: string, contentType?: string | null): boolean {
+  return contentType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    || fileName.toLocaleLowerCase().endsWith('.xlsx');
+}
