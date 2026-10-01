@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isNonEmptyString, isPositiveInteger, isRecord, parseTextAnalysisInput } from './validation';
+import { isNonEmptyString, isOptionalNonNegativeNumber, isPositiveInteger, isRecord, parseTextAnalysisInput } from './validation';
 
 describe('validation helpers', () => {
   it('classifies records, strings and positive integers', () => {
@@ -15,5 +15,12 @@ describe('validation helpers', () => {
     expect(parseTextAnalysisInput({ text: ' ' }, 'd.txt')).toBeNull();
     expect(parseTextAnalysisInput({ text: 'x'.repeat(250_001) }, 'd.txt')).toBeNull();
     expect(parseTextAnalysisInput(null, 'd.txt')).toBeNull();
+  });
+});
+
+describe('optional number validator', () => {
+  it('accepts undefined, null and non-negative numbers only', () => {
+    expect([undefined, null, 0, 5].map(isOptionalNonNegativeNumber)).toEqual([true, true, true, true]);
+    expect([-1, '1', NaN].map(isOptionalNonNegativeNumber)).toEqual([false, false, false]);
   });
 });

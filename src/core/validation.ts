@@ -44,3 +44,7 @@ export function queryString(value: unknown): string | undefined {
   return typeof value === 'string' ? value : undefined;
 }
 
+export function isOptionalNonNegativeNumber(value: unknown): value is number | null | undefined {
+  return value === undefined || value === null || isNonNegativeNumber(value);
+}
+

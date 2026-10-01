@@ -52,6 +52,8 @@ v0.1.26 mueve también las rutas de MPS y Cobertura a `routes.ts` y reúne los v
 `src/core/validation.ts`; `server.ts` queda con 88 rutas.
 v0.1.27 mueve las rutas de Viáticos y Servicios a `routes.ts`, y los ayudantes compartidos de
 importación y consulta a `src/core/import-routes.ts` y `src/core/request-parsing.ts`; `server.ts` queda con 75 rutas.
+v0.1.28 mueve las rutas de Ventas (Listado de precios y Proformas) a `src/modules/ventas/routes.ts`;
+`server.ts` queda con 62 rutas.
 
 ## Alcance
 
