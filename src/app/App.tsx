@@ -34,6 +34,7 @@ const UniflowModule = lazy(() => import('../modules/uniflow/UniflowModule'));
 const SoftwareSelectorModule = lazy(() => import('../modules/software-selector/SoftwareSelectorModule'));
 const SlaModule = lazy(() => import('../modules/sla/SlaModule'));
 const CoberturaModule = lazy(() => import('../modules/cobertura/CoberturaModule'));
+const TrackingModule = lazy(() => import('../modules/tracking/TrackingModule'));
 
 type Health = {
   ok: boolean;
@@ -76,6 +77,7 @@ const moduleIcons = {
   mps: Calculator01Icon,
   cobertura: PrinterIcon,
   viaticos: Airplane01Icon,
+  tracking: Analytics01Icon,
   uniflow: CloudIcon,
   'listado-precios': Tag01Icon,
   proformas: Invoice01Icon,
@@ -85,7 +87,7 @@ const moduleIcons = {
 
 const numberFormat = new Intl.NumberFormat('es-PY');
 
-const functionalModuleIds = new Set(['catalogo', 'mantenimiento', 'descontinuador', 'listado-precios', 'proformas', 'mps', 'consumibles', 'viaticos', 'uniflow', 'software-selector', 'sla', 'cobertura']);
+const functionalModuleIds = new Set(['catalogo', 'mantenimiento', 'descontinuador', 'listado-precios', 'proformas', 'mps', 'consumibles', 'viaticos', 'tracking', 'uniflow', 'software-selector', 'sla', 'cobertura']);
 
 function getThemeStorage(): Storage | undefined {
   if (typeof window === 'undefined') {
@@ -322,6 +324,7 @@ function renderModule(module: SuiteModule) {
   if (module.id === 'mps') return <MpsModule />;
   if (module.id === 'consumibles') return <ConsumiblesModule />;
   if (module.id === 'viaticos') return <ViaticosModule />;
+  if (module.id === 'tracking') return <TrackingModule />;
   if (module.id === 'uniflow') return <UniflowModule />;
   if (module.id === 'software-selector') return <SoftwareSelectorModule />;
   if (module.id === 'sla') return <SlaModule />;

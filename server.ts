@@ -98,6 +98,7 @@ import { SlaRepository } from './src/modules/sla/repository';
 import { calculateYield, normalizePageCoverage, summarizeDocumentCoverage } from './src/modules/cobertura/calculations';
 import { CoverageRepository } from './src/modules/cobertura/repository';
 import type { CanonModelDraft, CoverageAnalysis, CoveragePageFailure } from './src/modules/cobertura/types';
+import { registerTrackingRoutes } from './src/modules/tracking/routes';
 
 type ImportJobUpdate = (progress: number, stage: string) => void;
 
@@ -249,6 +250,9 @@ export function createServer(options: ServerOptions): { app: express.Express; da
 
   app.use(express.json({ limit: '50mb' }));
 
+  registerTrackingRoutes(app, database, (batchId, fileName, bytes, contentType) =>
+    storeAndRegisterImportFile(dataDirectory, imports, batchId, fileName, bytes, contentType));
+
   app.get('/api/health', (_request, response) => {
     const result = database.prepare('SELECT 1 AS ok').get() as { ok: number };
     response.json({ ok: result.ok === 1, database: 'ready' });
@@ -378,6 +382,7 @@ export function createServer(options: ServerOptions): { app: express.Express; da
         archivedFiles.push(...archiveBatchImportFiles(dataDirectory, batch.id, imports));
       }
       imports.clearImportedBatches(batches.map((batch) => batch.id));
+      settings.remove('tracking', 'snapshot');
       response.json({
         ok: true,
         batches: batches.length,

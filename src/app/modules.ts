@@ -89,6 +89,17 @@ export const suiteModules = [
     outputs: ['liquidaciones', 'resumen de gastos'],
   },
   {
+    id: 'tracking',
+    label: 'Tracking de técnicos',
+    section: 'operaciones',
+    route: '/tracking',
+    sourceProject: 'tracking',
+    owner: 'Operaciones',
+    dataOwner: ['app_settings', 'import_batches'],
+    inputs: ['informes de servicio CSV/XLSX', 'marcaciones GPS CSV/XLSX', 'sedes confirmadas manualmente'],
+    outputs: ['recorrido diario por técnico', 'intervalos y distancias directas', 'validación de check-in/check-out a 100 metros'],
+  },
+  {
     id: 'uniflow',
     label: 'Configurador uniFLOW Online',
     section: 'ventas',

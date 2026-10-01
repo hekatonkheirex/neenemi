@@ -24,6 +24,22 @@ v0.1.10 mejora el contraste y unifica los botones de cierre de los diálogos de 
 v0.1.11 actualiza el icono instalado con el logotipo DCSS suministrado.
 v0.1.12 actualiza el logo del encabezado con el logotipo DCSS suministrado.
 v0.1.13 reemplaza el favicon SVG legado por el icono DCSS en PNG.
+v0.1.14 incorpora Tracking de técnicos: carga coordinada CSV/XLSX, mapa diario de
+marcaciones, intervalos y distancias directas, y validación de proximidad a sedes
+confirmadas manualmente con radio de 100 metros.
+v0.1.15 guarda las sedes de Tracking por número de serie y las asigna automáticamente
+a los informes y futuras cargas del mismo equipo.
+v0.1.16 identifica debajo de cada selector de archivos el reporte de Superset
+correspondiente: SGS - Tecnicos asignados y SGS - I.S. Pendientes y Asignados - Tracking.
+v0.1.17 completa las rutas de exportación de Superset con las opciones
+“Detalle de Servicios” para informes y “Del mobile” para geolocalización.
+v0.1.18 añade un resumen diario de Tracking con distancia directa acumulada,
+tiempo total registrado y tiempo de servicios sin duplicar intervalos solapados.
+v0.1.19 corrige el resumen: muestra el tiempo total estimado de traslado sumando
+los intervalos entre visitas, en lugar del período total de marcaciones.
+v0.1.20 incorpora direcciones de casa matriz cuando no hay sucursal y búsqueda
+externa puntual de ubicaciones propuestas, con confirmación manual antes de validar.
+v0.1.21 activa automáticamente el fondo de calles de Tracking, sin casilla de activación.
 
 ## Alcance
 
@@ -81,6 +97,122 @@ La misma pestaña permite limpiar todas las cargas directas de Consumibles con c
 archivos originales se mueven al archivo recuperable `data/imports/.removed/` y las fuentes
 relacionadas quedan intactas.
 
+## Tracking de técnicos
+
+En **Operaciones → Tracking de técnicos**, selecciona dos fuentes originales CSV UTF-8
+o XLSX: detalle de informes y geolocalización. El límite es 18 MB por archivo.
+La carga se procesa en conjunto y conserva ambos originales, todas las filas y sus
+posiciones en el archivo de importaciones compartido. El análisis vigente y las
+referencias de sedes se guardan en SQLite (`app_settings`, namespace `tracking`).
+Una nueva carga reemplaza el análisis vigente, conserva las referencias y mantiene
+las importaciones anteriores en el archivo histórico. “Limpiar cargas” retira el
+análisis y archiva los originales; no borra las referencias manuales.
+
+El cruce usa **Nº I.S., técnico y cliente**; un informe sin técnico sólo se vincula
+si existe una coincidencia única del I.S. y cliente. Las filas ambiguas o sin
+coincidencia permanecen visibles, sin atribuirles un detalle de otro informe.
+El detalle admite columnas opcionales `Sucursal`/`Sede` y `Dirección`/`Domicilio`.
+Ambas fuentes admiten columnas de número de serie (`Nº de serie`, `N Serie`,
+`Serial`, `Serial Number`, entre otras variantes). Se conservan los ceros iniciales
+cuando el archivo los contiene como texto. Las series se normalizan a mayúsculas,
+sin unir identificadores distintos; etiquetas como `N/A` o `Sin serie` no identifican
+un equipo. Si las dos fuentes indican series distintas para el mismo informe,
+el detalle no se vincula y se muestra la discrepancia.
+La geolocalización lee `TS check-in`, `TS check-out`, `GPS_IN` y `GPS_OUT`.
+Las columnas `GPS IN` y `GPS OUT` del export SGS son indicadores, no coordenadas.
+Los CSV de referencia suministrados tienen 34 filas de informes, 6.610 registros de
+geolocalización de 24 técnicos y ningún Nº I.S. compartido; el módulo informa esa
+falta de cobertura sin descartar las marcaciones.
+
+Selecciona técnico y día de **marcación**, no fecha de creación del informe.
+Por defecto sólo se incluyen servicios “En Sitio”. El mapa conecta en orden
+cronológico los puntos registrados; no reconstruye calles ni posiciones entre
+eventos. Un evento sin GPS corta la línea, sin puentear una ubicación desconocida.
+La tabla de traslados calcula la distancia geodésica directa entre el GPS de salida
+y el siguiente GPS de entrada, y el intervalo entre ambas horas. Ese intervalo puede
+incluir esperas y paradas: **no representa tiempo efectivo de conducción**.
+Salidas faltantes, marcaciones inconsistentes y servicios solapados se identifican
+sin fabricar métricas. Las horas se interpretan como horas locales literales de SGS,
+sin convertir su zona horaria; entradas y salidas que cruzan medianoche aparecen
+en sus respectivos días.
+
+El **Resumen general**, debajo de los traslados, respeta el técnico, día y filtro
+de servicios seleccionados. Suma las distancias directas calculables entre visitas,
+no kilometraje vial ni desplazamientos al inicio o fin de la jornada. Indica cuántos
+tramos tienen evidencia y señala un total parcial cuando faltan distancias.
+El tiempo total estimado de traslado suma los intervalos calculables entre el
+check-out de una visita y el siguiente check-in, sin incluir tiempo de servicios.
+Las horas permiten calcularlo aunque falte GPS; los tramos sin horas válidas
+o solapados se excluyen y se señala un total parcial. Puede incluir esperas
+y pausas, por lo que no acredita tiempo efectivo de conducción.
+El tiempo de servicios es la unión de los intervalos completos de check-in/check-out:
+los duplicados y solapamientos no se suman dos veces, los intervalos que cruzan
+medianoche se limitan al día seleccionado y los incompletos o invertidos se excluyen
+con aviso. Sin evidencia calculable se muestra “No calculable”, no un cero supuesto.
+Estas horas provienen de las marcaciones y **no demuestran trabajo real dentro
+del cliente**; la validación geográfica de la sede permanece independiente.
+
+Para validar una visita, selecciona su I.S., elige la **sede real** en el mapa o
+introduce coordenadas verificadas y pulsa “Confirmar sede verificada”.
+No se propone la posición del técnico como referencia: sería una validación circular.
+La dirección puede importarse desde `Dirección`/`Domicilio`/`Dir/Tel`. Las columnas
+`Dirección Casa Matriz`, `Domicilio Casa Matriz`, `Dirección Matriz` o
+`Dirección de Casa Matriz` se usan sólo cuando falta la dirección de servicio y no
+hay sucursal informada. Esto propone una referencia; no demuestra que el equipo
+esté en la matriz. Si el archivo no trae direcciones, se pueden escribir en el formulario.
+
+“Buscar dirección en Paraguay” consulta [Photon/Komoot](https://github.com/komoot/photon)
+solamente al pulsar el botón y envía el texto de la dirección, no los archivos,
+series, nombres de técnicos ni marcaciones GPS. No hay búsquedas automáticas,
+por lote o al escribir. Usa una dirección pública con ciudad, calle y número;
+no envíes información confidencial. La búsqueda se restringe a Paraguay y muestra
+hasta cinco coincidencias con tipo de ubicación y coordenadas. Elegir una centra
+el mapa y propone un pin: **no guarda ni valida la sede** hasta confirmar.
+Un resultado puede ser una calle, ciudad o sitio aproximado, no el acceso exacto.
+Revisa el punto y, si hace falta, ajústalo manualmente antes de confirmar.
+El servicio público permite [uso moderado y no garantiza disponibilidad](https://github.com/komoot/photon#demo-server).
+La API local limita consultas concurrentes y separa los inicios al menos un segundo;
+un error o falta de coincidencias deja disponible la selección manual.
+Los resultados muestran atribución a Photon/Komoot y OpenStreetMap.
+Si el informe tiene **número de serie**, la referencia se guarda por ese identificador
+y se utiliza automáticamente en todos sus informes, técnicos, días y futuras cargas,
+sin tener que confirmar la ubicación de nuevo para cada I.S.
+El campo “Número de serie del equipo” permite asociarla manualmente al I.S. y cliente
+cuando no viene en los archivos. Esa asociación se conserva en SQLite
+(`series-by-report`) y se aplica a las filas del mismo informe y cliente, sin modificar
+los originales. Una asociación manual confirmada tiene prioridad para ese I.S.
+Si se introduce una serie que ya tiene sede confirmada, el formulario recupera
+sus coordenadas; confirmar vincula ese informe al equipo.
+Cuando un archivo no incluye series, los otros I.S. deben identificarse
+manualmente o recibirse en una nueva exportación con la columna de serie.
+No se deduce el equipo a partir del nombre del cliente ni la descripción del servicio.
+
+Sin serie, se mantiene el alcance anterior por cliente y sucursal; sin sucursal,
+queda limitado al mismo cliente y Nº I.S. Las referencias existentes se conservan
+y no se convierten automáticamente en referencias de equipos sin una confirmación.
+Si el equipo se traslada, reconfirma su ubicación: la nueva referencia reemplaza
+la sede compartida de esa serie y recalcula sus marcaciones. Retirar la referencia
+de una serie deja sin sede confirmada todos los informes que la reutilizaban.
+Entrada y salida se evalúan independientemente: dentro de 100 m (inclusive), fuera
+de 100 m, sin marcación, sin GPS o sin sede confirmada. Se muestran las horas, las
+coordenadas y la distancia a la referencia. La proximidad **no demuestra ingreso
+físico al edificio ni, por sí sola, una conducta irregular**.
+
+El fondo de calles OpenStreetMap se activa automáticamente y requiere internet;
+ya no hay una casilla para habilitarlo. El proveedor recibe la zona visible del mapa,
+no los archivos, nombres de técnicos ni direcciones. Si falla la carga del fondo,
+se informa el error y se muestra la cuadrícula geográfica; los puntos y cálculos
+locales siguen disponibles. El mapa permite desplazamiento, zoom, ajuste del recorrido
+y selección manual de ubicaciones. La confirmación de sede sigue siendo explícita.
+La superficie objetivo es la aplicación Electron de escritorio.
+
+API local: `GET /api/tracking`, `POST /api/tracking/import` (dos archivos con
+`fileName` y `contentBase64`), `PUT /api/tracking/sites` (`visitKey`, `latitude`,
+`longitude`, `address` y `serialNumber` opcionales) y `DELETE /api/tracking/sites/:key`.
+La búsqueda usa `POST /api/tracking/geocode` (`address`, de 5 a 500 caracteres);
+devuelve ubicaciones propuestas sin modificar referencias ni el análisis importado.
+No se añadieron dependencias ni tablas nuevas.
+
 ## Estado
 
 Rodrigo revisó todos los módulos actuales y aprobó el estado de la suite para despliegue
@@ -90,7 +222,7 @@ aceptadas para esta etapa; las mejoras pendientes no bloquean esta aprobación.
 
 La carpeta contiene la shell Electron, el manifiesto de módulos, la API local y el
 kernel SQLite. El slice funcional actual incluye Catálogo, Listado de Precios,
-Proformas, Mantenimiento, Discontinuador, Consumibles (incluida la vista de Servicios vs Consumibles), Viáticos, uniFLOW Online, Software Selector, SLA, Cobertura y MPS: los XLSX se normalizan en
+Proformas, Mantenimiento, Discontinuador, Consumibles (incluida la vista de Servicios vs Consumibles), Viáticos, Tracking de técnicos, uniFLOW Online, Software Selector, SLA, Cobertura y MPS: los XLSX se normalizan en
 la base compartida, las reglas comerciales y proformas se guardan en SQLite, y la base
 instalada de clientes, contratos y equipos se consulta y actualiza desde las importaciones de Operaciones.
 Discontinuador ya cruza las fechas de soporte Canon con los modelos instalados. Mantenimiento
