@@ -97,7 +97,7 @@ describe('record keys', () => {
     expect(createTravelRecordKey({ ...base, customerName: 'NANDU LTDA', destination: 'ASUNCION' })).toBe(createTravelRecordKey(base));
   });
   it('identity key ignores the destination', () => {
-    expect(createTravelIdentityKey({ ...base, destination: 'Otra' })).toBe(createTravelIdentityKey(base));
+    expect(createTravelIdentityKey({ ...base, ...{ destination: 'Otra' } })).toBe(createTravelIdentityKey(base));
     expect(createTravelIdentityKey(base)).toBe('2026-03-02|is-1|nandu ltda|bus');
   });
 });
