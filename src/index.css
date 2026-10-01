@@ -12921,14 +12921,7 @@ li::before {
   }
 }
 
-/* Panel de configuración de IA (OpenRouter) en SLA y Software Selector */
-.ai-key-panel {
-  border: 1px solid var(--ds-border);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-  background: var(--ds-surface);
-  color: var(--ds-ink);
-}
+/* Panel de configuración de IA (OpenRouter) en SLA y Software Selector: hereda el fondo de .sales-card en ambos temas */
 .ai-key-panel summary {
   display: flex;
   flex-wrap: wrap;
@@ -12943,10 +12936,14 @@ li::before {
   border-radius: 999px;
   border: 1px solid currentColor;
 }
-.ai-key-status.ready { color: var(--ds-success); }
-.ai-key-status.missing { color: var(--ds-warning); }
 .ai-key-panel form { display: grid; gap: 0.75rem; margin-top: 0.75rem; }
-.ai-key-panel a { color: var(--ds-sky); text-decoration: underline; }
+.ai-key-panel a { text-decoration: underline; color: #38bdf8; }
 .ai-key-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
-.ai-key-message.ok { color: var(--ds-success); }
-.ai-key-message.error { color: var(--ds-danger); }
+.ai-key-status.ready, .ai-key-message.ok { color: #4ade80; }
+.ai-key-status.missing { color: #fbbf24; }
+.ai-key-message.error { color: #f87171; }
+html[data-theme='light'] .ai-key-panel a { color: #0b6a9a; }
+html[data-theme='light'] .ai-key-status.ready,
+html[data-theme='light'] .ai-key-message.ok { color: var(--ds-success); }
+html[data-theme='light'] .ai-key-status.missing { color: var(--ds-warning); }
+html[data-theme='light'] .ai-key-message.error { color: var(--ds-danger); }

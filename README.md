@@ -92,6 +92,8 @@ v0.1.42 permite incluir la clave de OpenRouter en el instalador mediante `embedd
 `resources/` con `extraResources`); la API la usa solo si no hay clave en la instalación ni en el entorno.
 v0.1.43 añade el panel «Configuración de IA (OpenRouter)» en SLA y Software Selector con enlaces para crear una cuenta y
 generar una clave, y las rutas `GET/PUT/DELETE /api/ai/config` (valida el formato `sk-or-` y nunca devuelve la clave).
+v0.1.44 corrige el panel de IA en modo oscuro (aparecía como tarjeta blanca): hereda el fondo de `.sales-card` y usa colores
+legibles en ambos temas.
 
 ## Análisis con IA
 

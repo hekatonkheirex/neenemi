@@ -55,7 +55,7 @@ export default function AiKeyPanel() {
   }
 
   return (
-    <details className="ai-key-panel" open={config !== null && !config.configured}>
+    <details className="sales-card ai-key-panel" open={config !== null && !config.configured}>
       <summary>
         <strong>Configuración de IA (OpenRouter)</strong>
         <span className={`ai-key-status ${config?.configured ? 'ready' : 'missing'}`}>{config ? `IA: ${SOURCE_LABEL[config.source]}` : 'Consultando…'}</span>
