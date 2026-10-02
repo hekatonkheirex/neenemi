@@ -5843,6 +5843,18 @@ li::before {
   align-items: start;
 }
 
+/* Con la columna lateral de 315 px, la proyección a 5 años quedaba en 703 px a 1440 y en 363 px a 1100. */
+@media (max-width: 1500px) {
+  .mps-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mps-layout > .operations-sidebar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
 .mps-model-heading-actions {
   display: flex;
   gap: 0.65rem;
@@ -6045,12 +6057,34 @@ li::before {
   background: rgba(57, 101, 190, 0.24);
 }
 
-.mps-projection-table {
-  min-width: 1000px;
-}
-
 .catalog-table-wrap {
   min-width: 0;
+}
+
+/* .catalog-table fija 780 px de mínimo; la proyección (8 columnas cortas) cabe en menos. */
+.mps-projection-table {
+  min-width: 0;
+}
+
+/* Los nombres de insumo son largos ("Unidad de Cilindro Negro GPR-1002"): con nowrap la columna medía 324 px. */
+.mps-projection-table .code-cell {
+  white-space: normal;
+}
+
+.mps-projection-table td:first-child {
+  min-width: 9rem;
+}
+
+@media (max-width: 1150px) {
+  .mps-projection-table th,
+  .mps-projection-table td {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .mps-projection-table td:first-child {
+    min-width: 7rem;
+  }
 }
 
 .mps-year-cell strong,
