@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { formatSourceLocation } from '../../core/source-location';
 import { estimateTravelCosts } from './catalog';
 import { DestinationCombobox } from './DestinationCombobox';
@@ -25,6 +25,8 @@ import {
 } from './TravelViews';
 import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
+import PaginationControls from '../../core/PaginationControls';
+import { paginateItems } from '../../core/pagination';
 
 function tripToForm(trip: TravelTrip): TravelTripInput {
   return {
@@ -118,6 +120,9 @@ export default function ViaticosModule() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<TravelView>('resumen');
+  const [tripPage, setTripPage] = useState(1);
+  const [tripPageSize, setTripPageSize] = useState(50);
+  const tripListRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     void refresh();
@@ -135,6 +140,17 @@ export default function ViaticosModule() {
         && (!monthFilter || trip.recordedAt.startsWith(monthFilter));
     });
   }, [monthFilter, query, statusFilter, transportFilter, trips]);
+
+  const tripPageData = useMemo(() => paginateItems(visibleTrips, tripPage, tripPageSize), [visibleTrips, tripPage, tripPageSize]);
+
+  // Al cambiar un filtro se vuelve a la primera página.
+  useEffect(() => { setTripPage(1); }, [monthFilter, query, statusFilter, transportFilter]);
+
+  function changeTripPage(page: number) {
+    setTripPage(page);
+    // El control está debajo de la tabla: sin esto la nueva página queda vista desde su final.
+    tripListRef.current?.scrollIntoView({ block: 'start' });
+  }
 
   const estimate = useMemo(
     () => catalog ? estimateTravelCosts(catalog, form.destination, form.transport, { days, nights, technicians }) : null,
@@ -390,7 +406,7 @@ export default function ViaticosModule() {
 
       <section className={`travel-layout ${activeView === 'rendiciones' || activeView === 'historico' ? 'travel-layout-single' : ''}`}>
         <div className="travel-main">
-          {(activeView === 'resumen' || activeView === 'viajes') && <section className="sales-card">
+          {(activeView === 'resumen' || activeView === 'viajes') && <section className="sales-card" ref={tripListRef}>
             <div className="card-heading">
               <div><div className="eyebrow">REGISTRO OPERATIVO</div><h2>Viajes del período</h2></div>
               <span className="muted-note">{summary?.firstDate && summary.lastDate ? `${summary.firstDate} → ${summary.lastDate}` : 'Sin período'}</span>
@@ -405,7 +421,7 @@ export default function ViaticosModule() {
               <table className="catalog-table travel-table">
                 <thead><tr><th>Fecha</th><th>Cliente / destino</th><th>Responsable</th><th>Medio</th><th className="align-right">Total</th><th>Rendición</th><th className="align-right">Acción</th></tr></thead>
                 <tbody>
-                  {visibleTrips.map((trip) => <tr key={trip.id}>
+                  {tripPageData.items.map((trip) => <tr key={trip.id}>
                     <td><span className="code-cell">{trip.recordedAt}</span><small className="table-secondary-text">{trip.serviceNumber || 'Sin I.S.'}</small><small className="table-secondary-text">{formatSourceLocation(trip.sourceFileName, trip.sourceSheetName, trip.sourceRowNumber)}</small></td>
                     <td><span className="code-cell">{trip.customerName}</span><small className="table-secondary-text">{trip.destination}</small></td>
                     <td><span>{trip.technician || 'Sin técnico'}</span><small className="table-secondary-text">{trip.driver || 'Sin chofer'}</small></td>
@@ -418,6 +434,14 @@ export default function ViaticosModule() {
                 </tbody>
               </table>
             </div>
+            <PaginationControls
+              label="Paginación de viajes"
+              page={tripPageData.page}
+              pageSize={tripPageData.pageSize}
+              total={tripPageData.total}
+              onPageChange={changeTripPage}
+              onPageSizeChange={(size) => { setTripPageSize(size); setTripPage(1); }}
+            />
           </section>}
 
           {activeView === 'resumen' && <section className="sales-card">

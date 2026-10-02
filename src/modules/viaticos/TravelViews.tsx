@@ -1,4 +1,6 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import PaginationControls from '../../core/PaginationControls';
+import { paginateItems } from '../../core/pagination';
 import { formatSourceLocation } from '../../core/source-location';
 import { travelSourceOperationalEntries } from './source-operational';
 import type { HistoricalSummary, TravelStatus, TravelTrip } from './types';
@@ -155,6 +157,9 @@ export function TravelRenditionsView({
 }) {
   const [filter, setFilter] = useState<'all' | TravelStatus>('all');
   const [expandedTripId, setExpandedTripId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+  const listRef = useRef<HTMLElement>(null);
   const counts = useMemo(() => ({
     pending: trips.filter((trip) => trip.status === 'pending').length,
     review: trips.filter((trip) => trip.status === 'review').length,
@@ -167,6 +172,16 @@ export function TravelRenditionsView({
       .sort((left, right) => right.recordedAt.localeCompare(left.recordedAt)),
     [filter, trips],
   );
+  const pageData = useMemo(() => paginateItems(visibleTrips, page, pageSize), [visibleTrips, page, pageSize]);
+
+  // Al cambiar el filtro se vuelve a la primera página y se cierra el detalle abierto.
+  useEffect(() => { setPage(1); setExpandedTripId(null); }, [filter]);
+
+  function changePage(next: number) {
+    setPage(next);
+    setExpandedTripId(null);
+    listRef.current?.scrollIntoView({ block: 'start' });
+  }
 
   return (
     <div className="travel-subpage">
@@ -185,7 +200,7 @@ export function TravelRenditionsView({
         <RenditionStat label="Aprobadas" value={counts.approved} tone="approved" />
       </div>
 
-      <section className="sales-card travel-rendition-card">
+      <section className="sales-card travel-rendition-card" ref={listRef}>
         <div className="card-heading">
           <div>
             <h2>Bandeja de rendiciones</h2>
@@ -212,7 +227,7 @@ export function TravelRenditionsView({
                 <tr><th>Viaje</th><th>Responsable</th><th className="align-right">Importe</th><th>Estado</th><th className="align-right">Acción</th></tr>
               </thead>
               <tbody>
-                {visibleTrips.map((trip) => {
+                {pageData.items.map((trip) => {
                   const expanded = expandedTripId === trip.id;
                   const detailId = `travel-rendition-detail-${trip.id.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
                   const operationalEntries = travelSourceOperationalEntries(trip.sourceOperational);
@@ -280,6 +295,14 @@ export function TravelRenditionsView({
             </table>
           </div>
         )}
+        {visibleTrips.length > 0 ? <PaginationControls
+          label="Paginación de rendiciones"
+          page={pageData.page}
+          pageSize={pageData.pageSize}
+          total={pageData.total}
+          onPageChange={changePage}
+          onPageSizeChange={(size) => { setPageSize(size); setPage(1); setExpandedTripId(null); }}
+        /> : null}
       </section>
     </div>
   );

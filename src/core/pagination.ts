@@ -26,3 +26,17 @@ export function buildPaginatedUrl(
   }
   return `${path}?${params.toString()}`;
 }
+
+/** Pagina una lista en memoria. La página se ajusta al rango válido (p. ej. tras borrar o filtrar). */
+export function paginateItems<T>(items: readonly T[], page: number, pageSize: number): PaginatedResult<T> {
+  const size = Math.max(1, Math.floor(pageSize));
+  const totalPages = Math.ceil(items.length / size);
+  const current = Math.min(Math.max(1, Math.floor(page) || 1), Math.max(totalPages, 1));
+  return {
+    items: items.slice((current - 1) * size, current * size),
+    total: items.length,
+    page: current,
+    pageSize: size,
+    totalPages,
+  };
+}
