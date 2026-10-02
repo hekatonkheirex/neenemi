@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
-import { formatSourceLocation } from '../../core/source-location';
+import { compactSourceLocation } from '../../core/source-location';
+import SourceLocationLabel from '../../core/SourceLocationLabel';
 import { estimateTravelCosts } from './catalog';
 import { DestinationCombobox } from './DestinationCombobox';
 import { exportTravelTrips } from './export';
@@ -546,16 +547,13 @@ export default function ViaticosModule() {
   );
 }
 
-/** Origen del registro: en la lista solo "Planilla · fila N"; el archivo y la hoja completos van en el tooltip. */
-export function compactSourceLabel(trip: Pick<TravelTrip, 'sourceFileName' | 'sourceSheetName' | 'sourceRowNumber'>): { text: string; title: string } | null {
-  const title = formatSourceLocation(trip.sourceFileName, trip.sourceSheetName, trip.sourceRowNumber);
-  if (!title) return null;
-  return { text: trip.sourceRowNumber > 0 ? `Planilla · fila ${trip.sourceRowNumber}` : title, title };
+/** Origen del registro en la lista: ver compactSourceLocation. */
+export function compactSourceLabel(trip: Pick<TravelTrip, 'sourceFileName' | 'sourceSheetName' | 'sourceRowNumber'>) {
+  return compactSourceLocation(trip.sourceFileName, trip.sourceSheetName, trip.sourceRowNumber);
 }
 
 function TripSourceLabel({ trip }: { trip: TravelTrip }) {
-  const label = compactSourceLabel(trip);
-  return label ? <small className="table-secondary-text" title={label.title}>{label.text}</small> : null;
+  return <SourceLocationLabel fileName={trip.sourceFileName} sheetName={trip.sourceSheetName} rowNumber={trip.sourceRowNumber} />;
 }
 
 function MoneyField({ label, value, allowNegative = false, onChange }: { label: string; value: number; allowNegative?: boolean; onChange: (value: string) => void }) {

@@ -7986,6 +7986,11 @@ li::before {
   border-radius: 999px;
 }
 
+/* La columna de fecha lleva origen, tipo de fuente y detalles: a 94 px cada línea se partía en 2-3 y las filas medían 235 px. */
+.consumables-table td:first-child {
+  min-width: 9rem;
+}
+
 .consumables-table td:nth-child(2),
 .consumables-table td:nth-child(4) {
   min-width: 165px;

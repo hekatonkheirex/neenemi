@@ -88,4 +88,8 @@ describe('layout entre 960 y 1350 px', () => {
     expect(css).not.toMatch(/\.travel-table\s*{[^}]*table-layout:\s*fixed/);
     expect(css).toMatch(/\.travel-table td:nth-child\(1\) \.code-cell,\s*\.travel-table td:nth-child\(5\) \.code-cell\s*{\s*white-space:\s*nowrap/);
   });
+
+  it('Consumibles: la columna de fecha tiene ancho mínimo para que el origen no se parta en 2-3 líneas', () => {
+    expect(css).toMatch(/\.consumables-table td:first-child\s*{\s*min-width:\s*9rem/);
+  });
 });
