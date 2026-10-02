@@ -74,7 +74,7 @@ export default function MpsPrintReport({ model, analysis, projections }: MpsPrin
         <tbody>
           {projections.map((projection) => (
             <tr key={projection.consumable.id}>
-              <td><strong>{projection.consumable.name} ({projection.consumable.color.toLocaleUpperCase('es-PY')})</strong>{projection.consumable.sku ? <small>{projection.consumable.sku}</small> : null}</td>
+              <td><strong>{formatConsumableName(projection.consumable.name, projection.consumable.color)}</strong>{projection.consumable.sku ? <small>{projection.consumable.sku}</small> : null}</td>
               <td>{consumableTypeLabels[projection.consumable.type] ?? projection.consumable.type}</td>
               <td className="align-center">{integerFormat.format(projection.consumable.yieldPages)} pág.</td>
               {Array.from({ length: 5 }, (_, index) => getYear(projection, index + 1)).map((year) => (
@@ -95,6 +95,22 @@ export default function MpsPrintReport({ model, analysis, projections }: MpsPrin
       <footer>Generado localmente por DCSS Suite · {generatedAt}</footer>
     </section>
   );
+}
+
+// Raíz para detectar el color en el nombre aunque cambie el género: "Amarillo" / "Amarilla", "Negro" / "Negra".
+const colors: Record<string, { label: string; stem: string }> = {
+  black: { label: 'Negro', stem: 'negr' },
+  cyan: { label: 'Cian', stem: 'cian' },
+  magenta: { label: 'Magenta', stem: 'magenta' },
+  yellow: { label: 'Amarillo', stem: 'amarill' },
+};
+const fold = (text: string) => text.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+
+/** Añade el color solo si es un color real (no "other"/"monochrome") y el nombre no lo dice ya. */
+export function formatConsumableName(name: string, color: string): string {
+  const entry = colors[color.trim().toLowerCase()];
+  if (!entry || fold(name).includes(entry.stem)) return name;
+  return `${name} (${entry.label})`;
 }
 
 function getYear(projection: MpsProjection, year: number): { year: number; replacements: number; units: number } {

@@ -49,4 +49,10 @@ describe('layout entre 960 y 1350 px', () => {
     expect(override).toBeGreaterThan(css.search(/\.catalog-table\s*{[^}]*min-width:\s*780px/));
     expect(css).toMatch(/\.mps-projection-table \.code-cell\s*{\s*white-space:\s*normal/);
   });
+
+  it('PDF de MPS: el título no hereda el h1 global y las tarjetas no heredan el estilo de tarjeta de theme.css', () => {
+    expect(css).toMatch(/\.mps-print-title-row h1\s*{\s*max-width:\s*none[^}]*letter-spacing:\s*-0\.01em/);
+    // theme.css pinta [class*='-card'] (incluye mps-print-meta-card); la anulación necesita más especificidad.
+    expect(css).toMatch(/html body\[data-print-mode='mps-analysis'\] \.mps-print-meta-card\s*{\s*border:\s*0;\s*background:\s*transparent;\s*box-shadow:\s*none/);
+  });
 });
