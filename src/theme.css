@@ -3324,3 +3324,14 @@ html:not([data-theme='light']) .uniflow-quantity-control {
 html[data-theme] .maintenance-view-tabs button:focus-visible {
   outline-color: #7cc4ff;
 }
+
+/* La cabecera del editor MPS y de los diálogos de Proformas es azul marino en los dos temas: ahí el anillo es el claro (1,32:1 en tema claro). */
+html[data-theme] .mps-editor-close:focus-visible {
+  outline-color: #7cc4ff;
+}
+
+/* Placeholders en oscuro: #536887 (2,9:1) y el gris por defecto del navegador #757575 (3,6:1) no llegan a AA. */
+html:not([data-theme='light']) :is(input, textarea)::placeholder {
+  color: #8ea3c4;
+  opacity: 1;
+}

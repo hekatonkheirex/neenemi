@@ -106,7 +106,14 @@ describe('contraste del tema claro', () => {
       expect(theme).toMatch(/html\[data-theme='light'\] :is\(input[\s\S]*?, select, textarea\)\s*{\s*border-color:\s*#73869f/);
       expect(theme).toMatch(/html\[data-theme\] :is\(a, button, input, select, textarea, summary, \[tabindex\]\):focus-visible\s*{\s*outline:\s*3px solid var\(--focus-ring\)/);
       expect(theme).toMatch(/\.maintenance-view-tabs button:focus-visible\s*{\s*outline-color:\s*#7cc4ff/);
+      expect(theme).toMatch(/\.mps-editor-close:focus-visible\s*{\s*outline-color:\s*#7cc4ff/);
       expect(theme).toMatch(/\.uniflow-quantity-control\s*{\s*border-color:\s*#73869f/);
     });
+  });
+
+  it('placeholders en oscuro: #8ea3c4 cumple 4,5:1 sobre campo oscuro y sobre el extremo claro del degradado', () => {
+    expect(ratio('#8ea3c4', '#0f1b30')).toBeGreaterThanOrEqual(4.5);
+    expect(ratio('#8ea3c4', '#1b335e')).toBeGreaterThanOrEqual(4.5);
+    expect(theme).toMatch(/:is\(input, textarea\)::placeholder\s*{\s*color:\s*#8ea3c4/);
   });
 });
