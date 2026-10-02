@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { submitImportJob, type ImportJobSnapshot } from '../core/import-job-client';
+import { confirmAction } from '../core/confirm';
 
 type ImportFileContentStatus = {
   totalFiles: number;
@@ -82,9 +83,11 @@ export default function DatabaseRecoveryPanel({ refreshKey }: DatabaseRecoveryPa
       setMessage({ tone: 'error', text: 'Selecciona un archivo .sqlite o .db.' });
       return;
     }
-    const confirmed = window.confirm(
-      `Vas a reemplazar toda la base activa con “${file.name}”. Antes de activarla, la Suite validará el respaldo y guardará una copia automática de la base actual. La aplicación se reiniciará. ¿Continuar?`,
-    );
+    const confirmed = await confirmAction({
+      title: 'Restaurar respaldo',
+      message: `Vas a reemplazar toda la base activa con “${file.name}”. Antes de activarla, la Suite validará el respaldo y guardará una copia automática de la base actual. La aplicación se reiniciará.`,
+      confirmLabel: 'Reemplazar base',
+    });
     if (!confirmed) return;
 
     setRestoring(true);

@@ -23,6 +23,7 @@ import {
   type TravelImportPreview,
   type TravelView,
 } from './TravelViews';
+import { confirmAction } from '../../core/confirm';
 
 const EMPTY_TRIP: TravelTripInput = {
   recordedAt: new Date().toISOString().slice(0, 10),
@@ -218,7 +219,11 @@ export default function ViaticosModule() {
 
   async function deleteTrip(trip: TravelTrip) {
     const description = [trip.customerName, trip.destination].filter(Boolean).join(' · ') || 'este viaje';
-    if (!window.confirm(`¿Eliminar ${description}? Esta acción no se puede deshacer.`)) return;
+    if (!await confirmAction({
+      title: 'Eliminar viaje',
+      message: `Se eliminará ${description}. Esta acción no se puede deshacer.`,
+      confirmLabel: 'Eliminar viaje',
+    })) return;
 
     setSaving(true);
     setError(null);

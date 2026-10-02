@@ -6,6 +6,7 @@ import {
   type ConsumablesBundleFiles,
   type ConsumablesBundleSourceId,
 } from './bundle';
+import { confirmAction } from '../../core/confirm';
 
 type ConsumablesBundlePanelProps = {
   importing: boolean;
@@ -26,11 +27,14 @@ export default function ConsumablesBundlePanel({ importing, busy, files, onFiles
     onFilesChange({});
   }
 
-  function startImport() {
+  async function startImport() {
     if (!complete || busy) return;
-    const confirmed = window.confirm(
-      'Primero se validarán las nueve fuentes. Si todas son legibles, las cinco fuentes de Consumibles y Servicios reemplazarán su carga aplicada anterior; las tres fuentes de cartera actualizarán la cartera compartida sin borrar altas manuales. ¿Querés continuar?',
-    );
+    const confirmed = await confirmAction({
+      title: 'Importar paquete de fuentes',
+      message: 'Primero se validarán las nueve fuentes. Si todas son legibles, las cinco fuentes de Consumibles y Servicios reemplazarán su carga aplicada anterior; las tres fuentes de cartera actualizarán la cartera compartida sin borrar altas manuales.',
+      confirmLabel: 'Importar paquete',
+      tone: 'default',
+    });
     if (!confirmed) return;
     void onImportBundle(files);
   }
@@ -89,7 +93,7 @@ export default function ConsumablesBundlePanel({ importing, busy, files, onFiles
         </span>
         <div>
           <button className="secondary-button" type="button" onClick={clearSelection} disabled={busy || selectedCount === 0}>Limpiar selección</button>
-          <button className="primary-button" type="button" onClick={startImport} disabled={busy || !complete}>{importing ? 'Importando paquete…' : 'Importar paquete'}</button>
+          <button className="primary-button" type="button" onClick={() => void startImport()} disabled={busy || !complete}>{importing ? 'Importando paquete…' : 'Importar paquete'}</button>
         </div>
       </div>
     </section>

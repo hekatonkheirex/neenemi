@@ -2720,3 +2720,91 @@ html[data-theme='light'] .travel-overview-panels > .travel-overview-card {
 html[data-theme='light'] .travel-page :where(.summary-card, .sales-card, .total-card) {
   box-shadow: none !important;
 }
+
+/* Diálogo de confirmación (src/core/ConfirmDialog.tsx) */
+.confirm-dialog {
+  width: min(28rem, calc(100vw - 2rem));
+  padding: 1.4rem 1.5rem 1.25rem;
+  border: 1px solid rgba(144, 174, 229, 0.28);
+  border-radius: 0.8rem;
+  color: #edf3ff;
+  background: #0f1b30;
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.5);
+}
+
+.confirm-dialog::backdrop {
+  background: rgba(4, 9, 18, 0.62);
+}
+
+.confirm-dialog h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
+}
+
+.confirm-dialog p {
+  margin: 0;
+  color: #b9c9e6;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+}
+
+.confirm-dialog-actions button:focus-visible {
+  outline: 3px solid rgba(0, 163, 224, 0.5);
+  outline-offset: 2px;
+}
+
+.confirm-dialog-danger {
+  border-color: rgba(255, 107, 0, 0.7);
+  color: #fff4ec;
+  background: linear-gradient(135deg, #e86400, #b84d00);
+  box-shadow: none;
+}
+
+.confirm-dialog-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff7a1a, #cc5700);
+}
+
+html[data-theme='light'] .confirm-dialog {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-navy);
+  background: var(--ds-surface);
+  box-shadow: 0 1.5rem 4rem rgba(9, 16, 28, 0.25);
+}
+
+html[data-theme='light'] .confirm-dialog::backdrop {
+  background: rgba(9, 16, 28, 0.4);
+}
+
+html[data-theme='light'] .confirm-dialog p {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .confirm-dialog-danger {
+  border-color: #b84d00;
+  color: #fff;
+  background: #c75300;
+}
+
+html[data-theme='light'] .confirm-dialog-danger:hover:not(:disabled) {
+  background: #a84500;
+}
+
+/* Respeta la preferencia del sistema: sin animaciones ni transiciones largas. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

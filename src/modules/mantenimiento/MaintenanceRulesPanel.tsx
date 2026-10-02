@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { MaintenanceModelRule } from './analysis';
+import { confirmAction } from '../../core/confirm';
 
 type RuleDraft = {
   id?: string;
@@ -85,7 +86,11 @@ export default function MaintenanceRulesPanel({
   }
 
   async function deleteRule(rule: MaintenanceModelRule) {
-    if (!window.confirm(`¿Eliminar la regla ${rule.modelLabel}?`)) return;
+    if (!await confirmAction({
+      title: 'Eliminar regla',
+      message: `Se eliminará la regla ${rule.modelLabel}.`,
+      confirmLabel: 'Eliminar regla',
+    })) return;
     try {
       const response = await fetch(`/api/maintenance/rules/${encodeURIComponent(rule.id)}`, { method: 'DELETE' });
       const result = await readJson<{ deleted: boolean }>(response);
@@ -96,7 +101,11 @@ export default function MaintenanceRulesPanel({
   }
 
   async function resetRules() {
-    if (!window.confirm('Se restaurarán los límites base del Gestor de Mantenimiento. ¿Continuar?')) return;
+    if (!await confirmAction({
+      title: 'Restaurar límites base',
+      message: 'Se restaurarán los límites base del Gestor de Mantenimiento.',
+      confirmLabel: 'Restaurar límites',
+    })) return;
     try {
       const response = await fetch('/api/maintenance/rules/reset', { method: 'POST' });
       const result = await readJson<{ rules: MaintenanceModelRule[] }>(response);

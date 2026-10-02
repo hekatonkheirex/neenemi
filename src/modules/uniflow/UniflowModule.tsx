@@ -17,6 +17,7 @@ import type {
   UniflowSku,
 } from './types';
 import { UNIFLOW_PRICE_TABS } from './types';
+import { confirmAction } from '../../core/confirm';
 
 const INITIAL_DEVICE: UniflowAddedDevice = { id: 'row-1', modelName: '', quantity: 1, withCIP: false };
 const PRICE_TAB_LABELS: Record<UniflowPriceTabId, string> = {
@@ -186,8 +187,12 @@ export default function UniflowModule() {
     }
   }
 
-  function resetPriceDraft() {
-    if (!window.confirm('¿Restaurar las tarifas y códigos SKU originales de uniFLOW?')) return;
+  async function resetPriceDraft() {
+    if (!await confirmAction({
+      title: 'Restaurar tarifas base',
+      message: 'Se restaurarán las tarifas y códigos SKU originales de uniFLOW en el borrador.',
+      confirmLabel: 'Restaurar base',
+    })) return;
     setPriceDraft(cloneUniflowPriceCatalog(DEFAULT_UNIFLOW_PRICE_CATALOG));
     setMessage('Borrador restaurado al catálogo base. Guarda para aplicarlo.');
   }
@@ -287,7 +292,7 @@ export default function UniflowModule() {
                 <tbody>{priceDraft?.lists[activePriceTab].map((item, index) => <tr key={`${item.sku}-${item.label}`}><td><span className="code-cell">{item.label}</span><small className="table-secondary-text">{item.maxQty === null ? 'Sin límite' : `${numberFormat.format(item.minQty)} a ${numberFormat.format(item.maxQty)}`}</small></td><td><input className="uniflow-inline-input" value={item.sku} onChange={(event) => updatePrice(activePriceTab, index, 'sku', event.target.value)} aria-label={`SKU ${item.label}`} /></td><td className="align-right"><input className="uniflow-inline-input price" min={0} step="0.01" type="number" value={item.price} onChange={(event) => updatePrice(activePriceTab, index, 'price', event.target.value)} aria-label={`Precio ${item.label}`} /></td></tr>)}</tbody>
               </table>
             </div>
-            <div className="uniflow-price-actions"><button className="secondary-button" type="button" onClick={resetPriceDraft}>Restaurar base</button><button className="primary-button" type="button" onClick={() => void savePrices()} disabled={saving || !priceDraft}>{saving ? 'Guardando…' : 'Guardar precios'}</button></div>
+            <div className="uniflow-price-actions"><button className="secondary-button" type="button" onClick={() => void resetPriceDraft()}>Restaurar base</button><button className="primary-button" type="button" onClick={() => void savePrices()} disabled={saving || !priceDraft}>{saving ? 'Guardando…' : 'Guardar precios'}</button></div>
           </section>
         </aside>
       </section>

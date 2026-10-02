@@ -21,6 +21,8 @@ import ImportArchivePanel from './ImportArchivePanel';
 import DatabaseRecoveryPanel from './DatabaseRecoveryPanel';
 import { version as suiteVersion } from '../../package.json';
 import suiteLogoUrl from '../../build/icon.png';
+import { confirmAction } from '../core/confirm';
+import ConfirmDialogHost from '../core/ConfirmDialog';
 
 const CatalogModule = lazy(() => import('../modules/catalogo/CatalogModule'));
 const MantenimientoModule = lazy(() => import('../modules/operaciones/MantenimientoModule'));
@@ -174,9 +176,11 @@ export default function App() {
 
   async function clearImportedFiles() {
     if (clearingImports) return;
-    const confirmed = window.confirm(
-      'Se quitarán las cargas importadas y sus datos derivados de la Suite. Los archivos originales se moverán al archivo recuperable; los perfiles MPS manuales, viajes manuales y configuraciones se conservarán. ¿Desea continuar?',
-    );
+    const confirmed = await confirmAction({
+      title: 'Limpiar todas las cargas',
+      message: 'Se quitarán las cargas importadas y sus datos derivados de la Suite. Los archivos originales se moverán al archivo recuperable; los perfiles MPS manuales, viajes manuales y configuraciones se conservarán.',
+      confirmLabel: 'Limpiar cargas',
+    });
     if (!confirmed) return;
 
     setClearingImports(true);
@@ -231,6 +235,7 @@ export default function App() {
         <nav className="module-nav" aria-label="Módulos de la suite">
           <button
             className={`nav-item ${activeModuleId === null ? 'active' : ''}`}
+            aria-current={activeModuleId === null ? 'page' : undefined}
             type="button"
             onClick={() => setActiveModuleId(null)}
           >
@@ -247,6 +252,7 @@ export default function App() {
                   <button
                     className={`nav-item ${activeModuleId === module.id ? 'active' : ''}`}
                     key={module.id}
+                    aria-current={activeModuleId === module.id ? 'page' : undefined}
                     type="button"
                     onClick={() => setActiveModuleId(module.id)}
                   >
@@ -311,6 +317,7 @@ export default function App() {
           />}
         </Suspense>
       </main>
+      <ConfirmDialogHost />
     </div>
   );
 }

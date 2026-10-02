@@ -8,6 +8,7 @@ import MpsPrintReport from './MpsPrintReport';
 import { exportMpsConsumablesWorkbook, exportMpsWorkbook } from './export';
 import type { MpsAnalysis } from './analysis';
 import type { MpsImportSummary, MpsModel, MpsProjection, SaveMpsModelInput } from './repository';
+import { confirmAction } from '../../core/confirm';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1 });
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
@@ -189,7 +190,12 @@ export default function MpsModule() {
   }
 
   async function deleteModel(model: MpsModel) {
-    if (!model.isEditable || !window.confirm(`¿Eliminar el perfil manual “${model.modelLabel}”?`)) return;
+    if (!model.isEditable) return;
+    if (!await confirmAction({
+      title: 'Eliminar perfil manual',
+      message: `Se eliminará el perfil manual “${model.modelLabel}”.`,
+      confirmLabel: 'Eliminar perfil',
+    })) return;
     setError(null);
     setMessage('');
     try {

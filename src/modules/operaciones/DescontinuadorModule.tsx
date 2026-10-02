@@ -18,6 +18,7 @@ import type {
   ModelDiscontinuationRecord,
   WaldbottStockRecord,
 } from './repository';
+import { confirmAction } from '../../core/confirm';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const customerTypes: readonly CustomerType[] = ['Publico', 'Privado'];
@@ -627,9 +628,11 @@ export default function DescontinuadorModule() {
 
   async function clearExclusiveImports() {
     if (clearingExclusiveImports || (modelItems.length === 0 && stockItems.length === 0)) return;
-    const confirmed = window.confirm(
-      'Se quitarán las listas Canon y el stock Waldbott cargados desde Discontinuador. Los originales se conservarán en el archivo recuperable; la cartera compartida de clientes, contratos y equipos no se eliminará. ¿Desea continuar?',
-    );
+    const confirmed = await confirmAction({
+      title: 'Quitar cargas de Discontinuador',
+      message: 'Se quitarán las listas Canon y el stock Waldbott cargados desde Discontinuador. Los originales se conservarán en el archivo recuperable; la cartera compartida de clientes, contratos y equipos no se eliminará.',
+      confirmLabel: 'Quitar cargas',
+    });
     if (!confirmed) return;
 
     setClearingExclusiveImports(true);

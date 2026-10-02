@@ -13,6 +13,7 @@ import MaintenanceRulesPanel from '../mantenimiento/MaintenanceRulesPanel';
 import MaintenanceExecutiveSummary, { type MaintenanceExportKind } from '../mantenimiento/MaintenanceExecutiveSummary';
 import MaintenanceExecutivePrintReport from '../mantenimiento/MaintenanceExecutivePrintReport';
 import { maintenanceAnalysisMatchesSearch } from '../mantenimiento/search';
+import { confirmAction } from '../../core/confirm';
 
 type CounterImportResponse = MaintenanceImportSummary & {
   duplicate: boolean;
@@ -314,9 +315,11 @@ export default function MantenimientoModule() {
 
   async function clearMaintenanceImport() {
     if (!maintenanceSummary?.batchId || clearingImport) return;
-    const confirmed = window.confirm(
-      'Se quitarán las cargas activas de contadores y sus reglas del análisis. Los archivos originales se conservarán en el archivo recuperable y la cartera compartida no se eliminará. ¿Querés continuar?',
-    );
+    const confirmed = await confirmAction({
+      title: 'Quitar cargas de Mantenimiento',
+      message: 'Se quitarán las cargas activas de contadores y sus reglas del análisis. Los archivos originales se conservarán en el archivo recuperable y la cartera compartida no se eliminará.',
+      confirmLabel: 'Quitar cargas',
+    });
     if (!confirmed) return;
 
     setClearingImport(true);

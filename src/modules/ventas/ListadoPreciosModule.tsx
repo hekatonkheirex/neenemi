@@ -4,6 +4,7 @@ import { loadLegacyPriceListSeed } from '../catalogo/legacy-seed';
 import { normalizeModelName, type CatalogFamilySummary, type CatalogModelNote, type CatalogServiceItem, type CatalogSourceFile } from '../catalogo/repository';
 import { exportPriceList } from './export';
 import type { PricingSettings, SalesPricePart } from './types';
+import { confirmAction } from '../../core/confirm';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const decimalFormat = new Intl.NumberFormat('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
@@ -333,7 +334,11 @@ export default function ListadoPreciosModule() {
 
   async function handleRestoreSeed() {
     if (restoringSeed) return;
-    if (!window.confirm('La semilla heredada reemplazará únicamente el catálogo Canon compartido. ¿Continuar?')) return;
+    if (!await confirmAction({
+      title: 'Restaurar semilla heredada',
+      message: 'La semilla heredada reemplazará únicamente el catálogo Canon compartido.',
+      confirmLabel: 'Reemplazar catálogo',
+    })) return;
 
     setRestoringSeed(true);
     setError(null);

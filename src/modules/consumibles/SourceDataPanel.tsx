@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { SourceMetadataBackfillSummary } from '../../core/source-metadata-backfill';
 import type { ConsumablesBundleFiles, ConsumablesBundleSourceId } from './bundle';
 import ConsumablesBundlePanel from './ConsumiblesBundlePanel';
+import { confirmAction } from '../../core/confirm';
 export { findSourceHeaderRow } from '../../core/source-header-row';
 
 type ImportBatchSummary = {
@@ -85,7 +86,11 @@ export default function SourceDataPanel({ onImportBundle, onBundleFilesChange, o
 
   async function clearConsumables(): Promise<void> {
     if (!hasConsumablesBatches || busy) return;
-    const confirmed = window.confirm('Se quitarán todas las cargas directas de Consumibles. Los XLSX originales se conservarán archivados y no se tocarán cartera, Servicios ni Viáticos. ¿Querés continuar?');
+    const confirmed = await confirmAction({
+      title: 'Quitar cargas de Consumibles',
+      message: 'Se quitarán todas las cargas directas de Consumibles. Los XLSX originales se conservarán archivados y no se tocarán cartera, Servicios ni Viáticos.',
+      confirmLabel: 'Quitar cargas',
+    });
     if (!confirmed) return;
     setClearing(true);
     setReindexMessage(null);

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { findSourceHeaderRow } from '../core/source-header-row';
+import { confirmAction } from '../core/confirm';
 
 type ImportBatchSummary = {
   id: string;
@@ -177,7 +178,11 @@ export default function ImportArchivePanel({ refreshKey, onRemoveBatch }: Import
   const canGoForward = Boolean(selectedSheet && (page + 1) * 100 < selectedSheet.rowCount);
 
   async function removeBatch(batch: ImportBatchSummary): Promise<void> {
-    const confirmed = window.confirm(`Se quitará la carga ${batch.sourceName} y sus líneas normalizadas. El XLSX original se conservará en la carpeta de archivados. ¿Querés continuar?`);
+    const confirmed = await confirmAction({
+      title: 'Quitar carga importada',
+      message: `Se quitará la carga ${batch.sourceName} y sus líneas normalizadas. El XLSX original se conservará en la carpeta de archivados.`,
+      confirmLabel: 'Quitar carga',
+    });
     if (!confirmed) return;
 
     setRemovingBatchId(batch.id);
