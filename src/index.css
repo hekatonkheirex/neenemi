@@ -8113,21 +8113,15 @@ li::before {
   min-width: 0;
 }
 
-.travel-main,
-.travel-sidebar {
+.travel-main {
   min-width: 0;
   display: grid;
   gap: 1.25rem;
 }
 
-.travel-main > *,
-.travel-sidebar > * {
+.travel-main > * {
   min-width: 0;
   max-width: 100%;
-}
-
-.travel-sidebar {
-  position: static;
 }
 
 .travel-controls {
@@ -10366,7 +10360,6 @@ li::before {
   }
 
   .operations-sidebar,
-  .travel-sidebar,
   .uniflow-sidebar {
     position: static;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -10551,7 +10544,6 @@ li::before {
 
   .travel-controls,
   .travel-overview-panels,
-  .travel-sidebar,
   .uniflow-sidebar,
   .form-grid-2,
   .travel-estimate-inputs {
