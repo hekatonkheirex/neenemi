@@ -31,5 +31,7 @@ describe('formularios con asterisco', () => {
     const src = readFileSync(new URL('../modules/mps/MpsModelEditor.tsx', import.meta.url), 'utf8');
     expect(src).toMatch(/<span>Marca \*<\/span><input required pattern="\.\*\\S\.\*" title="[^"]+" name="brand"/);
     expect(src).toMatch(/<span>Modelo \*<\/span><input required pattern="\.\*\\S\.\*" title="[^"]+" name="model"/);
+    expect(src).toMatch(/<input required pattern="\.\*\\S\.\*" title="[^"]+" name=\{`consumable-\$\{index\}-name`\}/);
+    expect(src).toMatch(/<input required name=\{`consumable-\$\{index\}-yield`\} type="number" min="1"/);
   });
 });
