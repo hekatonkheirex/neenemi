@@ -26,4 +26,9 @@ describe('layout entre 960 y 1350 px', () => {
     expect(css).toMatch(/\.sla-table\s*{[^}]*min-width:\s*600px/);
     expect(css).toMatch(/@media \(max-width: 1400px\)\s*{\s*\.sla-layout\s*{\s*grid-template-columns:\s*1fr/);
   });
+
+  it('Proformas: la columna lateral baja bajo 1500 px y la tabla de líneas no fija 940 px', () => {
+    expect(css).toMatch(/@media \(max-width: 1500px\)\s*{\s*\.proforma-layout\s*{\s*grid-template-columns:\s*1fr/);
+    expect(css).not.toMatch(/\.proforma-table\s*{[^}]*min-width/);
+  });
 });

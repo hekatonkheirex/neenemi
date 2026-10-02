@@ -1469,6 +1469,18 @@ li::before {
   gap: 1.25rem;
 }
 
+/* Con la columna lateral de 300 px, la tabla de líneas (940 px) quedaba en 718 px a 1440: el total y "quitar" ocultos. */
+@media (max-width: 1500px) {
+  .proforma-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .proforma-sidebar {
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    align-items: start;
+  }
+}
+
 .sales-card,
 .total-card {
   min-width: 0;
@@ -1611,7 +1623,6 @@ li::before {
 
 .proforma-table {
   width: 100%;
-  min-width: 940px;
   border-collapse: collapse;
   color: #c8d6ed;
   font-size: 0.76rem;
@@ -1757,6 +1768,14 @@ li::before {
   padding: 0.75rem;
   border-bottom: 1px solid rgba(144, 174, 229, 0.08);
   vertical-align: middle;
+}
+
+@media (max-width: 1150px) {
+  .proforma-table th,
+  .proforma-table td {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
 }
 
 .proforma-table tr:last-child td {
