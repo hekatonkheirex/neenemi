@@ -48,4 +48,11 @@ describe('contraste del tema claro', () => {
     expect(ratio('#93a8ca', '#182b4a')).toBeGreaterThanOrEqual(4.5);
     expect(ratio('#b84d00', white)).toBeGreaterThanOrEqual(4.5); // pestaña activa: píldora blanca con texto naranja oscuro
   });
+
+  it('Editor MPS: el texto pálido es solo el de la cabecera navy; la ayuda del cuerpo usa el gris del tema', () => {
+    expect(theme).toMatch(/\.mps-editor-header p\s*{\s*color:\s*#d9e8f4/);
+    expect(theme).toMatch(/\.mps-copy-row small,\s*html\[data-theme='light'\] \.mps-consumables-heading p\s*{\s*color:\s*var\(--ds-muted\)/);
+    expect(ratio('#d9e8f4', '#1a2c4c')).toBeGreaterThanOrEqual(4.5); // sobre la cabecera navy sí se lee
+    expect(ratio('#d9e8f4', white)).toBeLessThan(2);                  // sobre blanco no: por eso no puede compartir regla
+  });
 });

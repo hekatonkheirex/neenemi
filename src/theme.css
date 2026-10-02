@@ -1839,10 +1839,14 @@ html[data-theme='light'] .mps-editor-header {
   background: linear-gradient(135deg, var(--ds-navy), #28466f);
 }
 
-html[data-theme='light'] .mps-editor-header p,
+html[data-theme='light'] .mps-editor-header p {
+  color: #d9e8f4;
+}
+
+/* Estos dos estaban agrupados con el p de la cabecera navy: texto pálido sobre blanco (1,1:1). */
 html[data-theme='light'] .mps-copy-row small,
 html[data-theme='light'] .mps-consumables-heading p {
-  color: #d9e8f4;
+  color: var(--ds-muted);
 }
 
 html[data-theme='light'] .mps-editor-close {
@@ -1878,7 +1882,7 @@ html[data-theme='light'] .mps-consumable-editor-row {
 }
 
 html[data-theme='light'] .mps-consumable-index {
-  color: #007ea8;
+  color: #00698f;
 }
 
 html[data-theme='light'] .mps-editor-empty {
