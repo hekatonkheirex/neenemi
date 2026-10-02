@@ -77,4 +77,15 @@ describe('layout entre 960 y 1350 px', () => {
       expect(minWidth('.legacy-ranking-table')).toBe('1160px');
     });
   });
+
+  it('Consumibles: la columna lateral de importaciones baja bajo 1500 px', () => {
+    expect(css).toMatch(/@media \(max-width: 1500px\)\s*{\s*\.consumables-layout\s*{\s*grid-template-columns:\s*1fr/);
+  });
+
+  it('Viáticos: la tabla no se aprieta por debajo de 860 px y el formulario queda al lado', () => {
+    // table-layout: fixed + columnas en %: a 673 px el 40 % de las celdas se solapaban.
+    expect(css).toMatch(/\.travel-table\s*{[^}]*min-width:\s*860px[^}]*table-layout:\s*fixed/);
+    // Solo entre 1051 y 1500 px: por debajo, el apilado existente (<=1050) debe seguir mandando.
+    expect(css).toMatch(/@media \(min-width: 1051px\) and \(max-width: 1500px\)\s*{\s*\.travel-layout:not\(\.travel-layout-single\)\s*{\s*grid-template-columns:\s*minmax\(0, 1fr\) 300px/);
+  });
 });

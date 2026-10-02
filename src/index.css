@@ -6720,6 +6720,18 @@ li::before {
   align-items: start;
 }
 
+/* La columna lateral (tarjetas de importación) dejaba las tablas en 363 px a 1100. Va después de la base: ver MPS. */
+@media (max-width: 1500px) {
+  .consumables-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .consumables-layout > .operations-sidebar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
 .consumables-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -8101,6 +8113,13 @@ li::before {
   min-width: 0;
 }
 
+/* El formulario "Registrar viaje" tiene que seguir al lado: la lista no se pagina (1.026 filas) y debajo quedaría inalcanzable. */
+@media (min-width: 1051px) and (max-width: 1500px) {
+  .travel-layout:not(.travel-layout-single) {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
+
 .travel-main,
 .travel-sidebar {
   min-width: 0;
@@ -8127,7 +8146,10 @@ li::before {
 }
 
 .travel-table {
-  min-width: 0;
+  /* Con table-layout: fixed las columnas son % del ancho: a 673 px la fecha (11 %) medía 74 px y se solapaba con
+     el cliente (40 % de las celdas desbordaban a 1440 px). A 860 px el importe ("₲ 2.023.759") deja de pisar al
+     vecino (medido 780: 33 celdas, 840: 11, 860: 0). La tabla scrollea en vez de apretarse. */
+  min-width: 860px;
   table-layout: fixed;
 }
 
