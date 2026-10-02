@@ -1,11 +1,10 @@
 import { useEffect, useState, type FormEvent } from 'react';
 
-type AiConfig = { configured: boolean; source: 'installation' | 'environment' | 'installer' | 'none'; model: string };
+type AiConfig = { configured: boolean; source: 'installation' | 'environment' | 'none'; model: string };
 
 const SOURCE_LABEL: Record<AiConfig['source'], string> = {
   installation: 'clave guardada en este equipo',
   environment: 'clave del entorno de la aplicación',
-  installer: 'clave incluida en el instalador',
   none: 'sin clave',
 };
 

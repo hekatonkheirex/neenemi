@@ -9,6 +9,3 @@ coverage/
 .env.local
 
 .impeccable/
-
-# Clave de OpenRouter incluida al empaquetar: nunca se sube al repositorio.
-embedded-ai.json

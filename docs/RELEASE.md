@@ -75,13 +75,11 @@ intenta reiniciarla y recarga la ventana en su nuevo puerto. Tras tres fallos, p
 una opción visible para reintentar o cerrar. El icono DCSS se incluye en el instalador
 y en la ventana Linux; `appId` y carpeta de datos se mantienen.
 
-## Clave de IA incluida en el instalador
+## Clave de IA
 
-Antes de `npm run desktop:package` o `desktop:package:win`, crea `embedded-ai.json` en la raíz (formato en
-`embedded-ai.example.json`). Sin ese archivo el instalador sale sin clave y cada instalación debe configurarla
-(ver «Análisis con IA» en el README). El archivo está en `.gitignore`: no lo agregues al repositorio. Tras empaquetar,
-comprueba que aparece `resources/embedded-ai.json` y que `app.asar` no contiene la clave (`grep -a -c sk-or-v1 app.asar`
-debe dar 0). Cualquiera con el instalador puede leer la clave: usa una exclusiva, con límite de crédito en $0.
+El instalador no incluye ninguna clave de API. Cada instalación configura la suya en el panel «Configuración de IA
+(OpenRouter)» de SLA y Software Selector (ver «Análisis con IA» en el README). No agregues claves al repositorio ni a
+los recursos del instalador: cualquiera que tenga el instalador podría leerlas.
 
 ## Auditoría de dependencias
 

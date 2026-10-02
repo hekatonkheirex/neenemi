@@ -94,6 +94,8 @@ v0.1.43 añade el panel «Configuración de IA (OpenRouter)» en SLA y Software 
 generar una clave, y las rutas `GET/PUT/DELETE /api/ai/config` (valida el formato `sk-or-` y nunca devuelve la clave).
 v0.1.44 corrige el panel de IA en modo oscuro (aparecía como tarjeta blanca): hereda el fondo de `.sales-card` y usa colores
 legibles en ambos temas.
+v0.1.45 retira el mecanismo de clave incluida en el instalador (`embedded-ai.json`, `extraResources`, `DS_EMBEDDED_AI_FILE`):
+el instalador no lleva ninguna clave y la IA se configura solo desde el panel o `OPENROUTER_API_KEY`.
 
 ## Análisis con IA
 
@@ -103,14 +105,10 @@ API local; el renderer nunca ve la clave. El modelo por defecto es gratuito (`nv
 - **Clave desde la interfaz:** SLA Compliance Analyzer y Canon Software Selector tienen el panel plegable «Configuración de
   IA (OpenRouter)» con el estado de la IA, enlaces para crear una cuenta en OpenRouter y generar una clave, y un campo
   para guardarla o quitarla en este equipo (`GET/PUT/DELETE /api/ai/config`; la clave nunca vuelve al renderer).
-- **Clave, por orden de prioridad:** (1) guardada en la instalación desde ese panel; (2) `OPENROUTER_API_KEY` en el entorno de la API; (3) la incluida en el instalador
-  (`embedded-ai.json`). Las dos primeras no se pueden leer desde la interfaz ni salen en los respaldos SQLite.
-- **Clave incluida en el instalador:** para que cualquiera con la app pueda usar la IA sin configurar nada, copia
-  `embedded-ai.example.json` a `embedded-ai.json` (raíz del proyecto), pon la clave y empaqueta. El archivo está en
-  `.gitignore`, no va en el repositorio, ni dentro del asar ni del renderer: electron-builder lo copia a
-  `resources/embedded-ai.json` y Electron pasa su ruta a la API (`DS_EMBEDDED_AI_FILE`). **Cualquiera que tenga el
-  instalador puede extraer esa clave**: usa una clave creada solo para esto, con límite de crédito en $0, y rótala si
-  el instalador sale de la empresa. Todas las instalaciones comparten el límite de uso de esa cuenta.
+- **Clave, por orden de prioridad:** (1) guardada en la instalación desde ese panel; (2) `OPENROUTER_API_KEY` en el
+  entorno de la API. Ninguna se puede leer desde la interfaz ni sale en los respaldos SQLite. **El instalador no
+  incluye ninguna clave:** cada persona crea su cuenta de OpenRouter y pega su propia clave en el panel, y tiene el
+  límite de uso de su propia cuenta.
 - **Modelo:** `OPENROUTER_MODEL` o `PUT /api/settings/ai/openrouter_model`. Los modelos con sufijo `:free` no tienen
   costo, pero tienen límites de uso y disponibilidad; la API reintenta 429 y 5xx y muestra un mensaje claro si persisten.
 - **Privacidad:** se envía el texto del pliego (hasta 30.000 caracteres) al proveedor del modelo a través de OpenRouter.

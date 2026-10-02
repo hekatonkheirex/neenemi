@@ -27,7 +27,7 @@ describe('AI configuration API', () => {
 
       const initial = await (await send('GET')).json() as { configured: boolean; source: string; model: string };
       expect(initial.model).toContain(':free');
-      expect(['none', 'installer']).toContain(initial.source);
+      expect(initial.source).toBe('none');
 
       for (const bad of [undefined, '', 'abc', 'sk-or- with spaces 0123456789abcdef', 'sk-x-0123456789abcdef0123456789', 42]) {
         expect((await send('PUT', { apiKey: bad })).status).toBe(400);

@@ -1,53 +1,26 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import type { SettingsRepository } from '../db/repositories';
 
 const ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
 /** Modelo gratuito por defecto; se cambia con `ai/openrouter_model` o la variable OPENROUTER_MODEL. */
 export const DEFAULT_OPENROUTER_MODEL = 'nvidia/nemotron-3-super-120b-a12b:free';
 
-export type EmbeddedAiConfig = { apiKey?: string; model?: string };
-
 /**
- * Configuración incluida al empaquetar (`embedded-ai.json`, ignorado por git; ver `embedded-ai.example.json`).
- * El instalador la copia a `resources/` y Electron pasa su ruta en DS_EMBEDDED_AI_FILE; en desarrollo se busca en el
- * directorio de trabajo. Un archivo ausente o inválido equivale a no tener configuración.
+ * Orden de prioridad: configuración de la instalación (`ai/openrouter_*`, desde el panel de IA) y variables de entorno.
+ * Un valor vacío cuenta como no definido. La clave nunca sale en respaldos ni lecturas.
  */
-export function loadEmbeddedAiConfig(file = process.env.DS_EMBEDDED_AI_FILE || (process.env.NODE_ENV === 'production' ? '' : path.join(process.cwd(), 'embedded-ai.json'))): EmbeddedAiConfig {
-  if (!file) return {};
-  try {
-    const parsed: unknown = JSON.parse(fs.readFileSync(file, 'utf8'));
-    if (typeof parsed !== 'object' || parsed === null) return {};
-    const { openrouterApiKey, openrouterModel } = parsed as Record<string, unknown>;
-    return {
-      apiKey: typeof openrouterApiKey === 'string' && openrouterApiKey.trim() ? openrouterApiKey.trim() : undefined,
-      model: typeof openrouterModel === 'string' && openrouterModel.trim() ? openrouterModel.trim() : undefined,
-    };
-  } catch {
-    return {};
-  }
-}
-
-/**
- * Orden de prioridad: configuración de la instalación (`ai/openrouter_*`), variables de entorno y, por último, la
- * configuración incluida en el instalador. Un valor vacío cuenta como no definido. La clave nunca sale en respaldos ni lecturas.
- */
-export function getOpenRouterConfig(settings: SettingsRepository, embedded: EmbeddedAiConfig = loadEmbeddedAiConfig()): { apiKey: string; model: string } {
+export function getOpenRouterConfig(settings: SettingsRepository): { apiKey: string; model: string } {
   return {
-    apiKey: settings.get('ai', 'openrouter_api_key', '') || process.env.OPENROUTER_API_KEY || embedded.apiKey || '',
-    model: settings.get('ai', 'openrouter_model', '') || process.env.OPENROUTER_MODEL || embedded.model || DEFAULT_OPENROUTER_MODEL,
+    apiKey: settings.get('ai', 'openrouter_api_key', '') || process.env.OPENROUTER_API_KEY || '',
+    model: settings.get('ai', 'openrouter_model', '') || process.env.OPENROUTER_MODEL || DEFAULT_OPENROUTER_MODEL,
   };
 }
 
-export type OpenRouterKeySource = 'installation' | 'environment' | 'installer' | 'none';
+export type OpenRouterKeySource = 'installation' | 'environment' | 'none';
 
 /** Estado de la configuración sin revelar la clave: de dónde sale y qué modelo se usará. */
-export function describeOpenRouterConfig(settings: SettingsRepository, embedded: EmbeddedAiConfig = loadEmbeddedAiConfig()): { configured: boolean; source: OpenRouterKeySource; model: string } {
-  const source: OpenRouterKeySource = settings.get('ai', 'openrouter_api_key', '') ? 'installation'
-    : process.env.OPENROUTER_API_KEY ? 'environment'
-      : embedded.apiKey ? 'installer'
-        : 'none';
-  return { configured: source !== 'none', source, model: getOpenRouterConfig(settings, embedded).model };
+export function describeOpenRouterConfig(settings: SettingsRepository): { configured: boolean; source: OpenRouterKeySource; model: string } {
+  const source: OpenRouterKeySource = settings.get('ai', 'openrouter_api_key', '') ? 'installation' : process.env.OPENROUTER_API_KEY ? 'environment' : 'none';
+  return { configured: source !== 'none', source, model: getOpenRouterConfig(settings).model };
 }
 
 /** Las claves de OpenRouter empiezan por `sk-or-` y no llevan espacios; se rechaza todo lo demás antes de guardarla. */
