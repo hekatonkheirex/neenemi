@@ -8133,11 +8133,9 @@ li::before {
 }
 
 .travel-table {
-  /* Con table-layout: fixed las columnas son % del ancho: a 673 px la fecha (11 %) medía 74 px y se solapaba con
-     el cliente (40 % de las celdas desbordaban a 1440 px). A 860 px el importe ("₲ 2.023.759") deja de pisar al
-     vecino (medido 780: 33 celdas, 840: 11, 860: 0). La tabla scrollea en vez de apretarse. */
-  min-width: 860px;
-  table-layout: fixed;
+  /* Layout automático: con fixed + columnas en % la tabla necesitaba 860 px (la fecha y el importe pisaban al vecino
+     por debajo). Así el piso lo marca el contenido: ~700 px, 0 celdas desbordadas a 960-1440 px. */
+  min-width: 0;
 }
 
 .travel-table-wrap {
@@ -8145,47 +8143,15 @@ li::before {
   max-width: 100%;
 }
 
-.travel-table th:nth-child(1),
-.travel-table td:nth-child(1) {
-  width: 11%;
+.travel-table .code-cell {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
-.travel-table th:nth-child(2),
-.travel-table td:nth-child(2) {
-  width: 26%;
-}
-
-.travel-table th:nth-child(3),
-.travel-table td:nth-child(3) {
-  width: 17%;
-}
-
-.travel-table th:nth-child(4),
-.travel-table td:nth-child(4) {
-  width: 12%;
-}
-
-.travel-table th:nth-child(5),
-.travel-table td:nth-child(5) {
-  width: 11%;
-}
-
-.travel-table th:nth-child(6),
-.travel-table td:nth-child(6) {
-  width: 14%;
-}
-
-.travel-table th:nth-child(7),
-.travel-table td:nth-child(7) {
-  width: 9%;
-}
-
-.travel-table td:nth-child(2) {
-  min-width: 175px;
-}
-
-.travel-table td:nth-child(3) {
-  min-width: 145px;
+/* La fecha y el importe no se parten. */
+.travel-table td:nth-child(1) .code-cell,
+.travel-table td:nth-child(5) .code-cell {
+  white-space: nowrap;
 }
 
 .travel-table td:nth-child(6) .status-select {

@@ -82,8 +82,10 @@ describe('layout entre 960 y 1350 px', () => {
     expect(css).toMatch(/@media \(max-width: 1500px\)\s*{\s*\.consumables-layout\s*{\s*grid-template-columns:\s*1fr/);
   });
 
-  it('Viáticos: la tabla no se aprieta por debajo de 860 px (el formulario ahora va en un panel)', () => {
-    expect(css).toMatch(/\.travel-table\s*{[^}]*min-width:\s*860px[^}]*table-layout:\s*fixed/);
-    expect(css).not.toMatch(/\.travel-layout:not\(\.travel-layout-single\)/);
+  it('Viáticos: la tabla usa layout automático (sin columnas en % ni mínimo fijo) y no parte fecha ni importe', () => {
+    expect(css).toMatch(/\.travel-table\s*{[^}]*min-width:\s*0;[^}]*}/);
+    expect(css).not.toMatch(/\.travel-table th:nth-child\(1\),\s*\.travel-table td:nth-child\(1\)\s*{\s*width:/);
+    expect(css).not.toMatch(/\.travel-table\s*{[^}]*table-layout:\s*fixed/);
+    expect(css).toMatch(/\.travel-table td:nth-child\(1\) \.code-cell,\s*\.travel-table td:nth-child\(5\) \.code-cell\s*{\s*white-space:\s*nowrap/);
   });
 });

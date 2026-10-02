@@ -446,7 +446,7 @@ export default function ViaticosModule() {
                 <thead><tr><th>Fecha</th><th>Cliente / destino</th><th>Responsable</th><th>Medio</th><th className="align-right">Total</th><th>Rendición</th><th className="align-right">Acción</th></tr></thead>
                 <tbody>
                   {tripPageData.items.map((trip) => <tr key={trip.id}>
-                    <td><span className="code-cell">{trip.recordedAt}</span><small className="table-secondary-text">{trip.serviceNumber || 'Sin I.S.'}</small><small className="table-secondary-text">{formatSourceLocation(trip.sourceFileName, trip.sourceSheetName, trip.sourceRowNumber)}</small></td>
+                    <td><span className="code-cell">{trip.recordedAt}</span><small className="table-secondary-text">{trip.serviceNumber || 'Sin I.S.'}</small><TripSourceLabel trip={trip} /></td>
                     <td><span className="code-cell">{trip.customerName}</span><small className="table-secondary-text">{trip.destination}</small></td>
                     <td><span>{trip.technician || 'Sin técnico'}</span><small className="table-secondary-text">{trip.driver || 'Sin chofer'}</small></td>
                     <td><span className="badge ok">{trip.transport.replace('MOVIL ', 'MÓVIL ')}</span></td>
@@ -544,6 +544,18 @@ export default function ViaticosModule() {
       {pendingImport && <TravelImportPreviewDialog preview={pendingImport.preview} importing={importing} onCancel={() => setPendingImport(null)} onConfirm={() => void confirmImport()} />}
     </div>
   );
+}
+
+/** Origen del registro: en la lista solo "Planilla · fila N"; el archivo y la hoja completos van en el tooltip. */
+export function compactSourceLabel(trip: Pick<TravelTrip, 'sourceFileName' | 'sourceSheetName' | 'sourceRowNumber'>): { text: string; title: string } | null {
+  const title = formatSourceLocation(trip.sourceFileName, trip.sourceSheetName, trip.sourceRowNumber);
+  if (!title) return null;
+  return { text: trip.sourceRowNumber > 0 ? `Planilla · fila ${trip.sourceRowNumber}` : title, title };
+}
+
+function TripSourceLabel({ trip }: { trip: TravelTrip }) {
+  const label = compactSourceLabel(trip);
+  return label ? <small className="table-secondary-text" title={label.title}>{label.text}</small> : null;
 }
 
 function MoneyField({ label, value, allowNegative = false, onChange }: { label: string; value: number; allowNegative?: boolean; onChange: (value: string) => void }) {
