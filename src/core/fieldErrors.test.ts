@@ -22,3 +22,12 @@ describe('fieldErrorMessage', () => {
     expect(msg({ valueMissing: true, patternMismatch: true })).toBe('Este campo es obligatorio.');
   });
 });
+
+describe('formularios con asterisco', () => {
+  it('Marca y Modelo del editor MPS son required (el chequeo JS queda solo como respaldo)', async () => {
+    const { readFileSync } = await import('node:fs');
+    const src = readFileSync(new URL('../modules/mps/MpsModelEditor.tsx', import.meta.url), 'utf8');
+    expect(src).toMatch(/<span>Marca \*<\/span><input required name="brand"/);
+    expect(src).toMatch(/<span>Modelo \*<\/span><input required name="model"/);
+  });
+});
