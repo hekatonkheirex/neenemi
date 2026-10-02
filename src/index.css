@@ -679,6 +679,13 @@ li::before {
   justify-content: flex-end;
 }
 
+/* Las acciones de la cabecera pasan a otra línea en vez de empujar la página fuera de la ventana. */
+.catalog-header .sales-actions,
+.catalog-header .sla-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .catalog-header-actions > :where(.primary-button, .secondary-button) {
   margin: 0;
 }
@@ -3030,10 +3037,6 @@ li::before {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .discontinuation-insights {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .discontinuation-insight-card:first-child {
     grid-column: 1 / -1;
   }
@@ -3201,10 +3204,6 @@ li::before {
   .discontinuation-view-tabs {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .discontinuation-insights {
-    grid-template-columns: 1fr;
   }
 
   .discontinuation-models-heading {
@@ -3614,6 +3613,19 @@ li::before {
   grid-template-columns: minmax(280px, 1.1fr) repeat(2, minmax(220px, 1fr));
   gap: 0.65rem;
   margin-bottom: 1rem;
+}
+
+/* Van después de la regla base: las versiones anteriores, dentro de los @media de arriba, perdían por orden de fuente. */
+@media (max-width: 1050px) {
+  .discontinuation-insights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .discontinuation-insights {
+    grid-template-columns: 1fr;
+  }
 }
 
 .discontinuation-models {
@@ -5342,7 +5354,7 @@ li::before {
 
 .maintenance-analysis-filters {
   display: grid;
-  grid-template-columns: minmax(12rem, 1.5fr) repeat(3, minmax(9rem, 1fr)) auto;
+  grid-template-columns: minmax(12rem, 1.5fr) repeat(3, minmax(9rem, 1fr)) minmax(0, auto);
   gap: 0.7rem;
   align-items: end;
   margin: 1rem 0;
@@ -5576,7 +5588,6 @@ li::before {
   color: #a9bee0;
   font-size: 0.7rem;
   font-weight: 700;
-  white-space: nowrap;
 }
 
 .maintenance-normal-toggle input {
