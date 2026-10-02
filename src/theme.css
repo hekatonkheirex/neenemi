@@ -3366,3 +3366,22 @@ html:not([data-theme='light']) .history-item small {
 html:not([data-theme='light']) tr.is-discontinued .muted-note {
   color: #9fb3d4;
 }
+
+/* Campos inválidos (tras escribir/salir o al enviar; :user-invalid no marca el formulario recién abierto). Borde más grueso además del color (WCAG 1.4.1). */
+html[data-theme] :is(input:not([type='checkbox']):not([type='radio']):not([type='range']), select, textarea):is(:user-invalid, [aria-invalid='true']) {
+  border-color: #b3261e;
+  box-shadow: inset 0 0 0 1px #b3261e;
+}
+
+html:not([data-theme='light']) :is(input:not([type='checkbox']):not([type='radio']):not([type='range']), select, textarea):is(:user-invalid, [aria-invalid='true']) {
+  border-color: #ff8a80;
+  box-shadow: inset 0 0 0 1px #ff8a80;
+}
+
+html[data-theme] label:has(:is(input, select, textarea):is(:user-invalid, [aria-invalid='true'])) > span:first-child {
+  color: #b3261e;
+}
+
+html:not([data-theme='light']) label:has(:is(input, select, textarea):is(:user-invalid, [aria-invalid='true'])) > span:first-child {
+  color: #ffb4ab;
+}

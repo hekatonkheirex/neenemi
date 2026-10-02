@@ -127,4 +127,11 @@ describe('contraste del tema claro', () => {
     expect(theme).toMatch(/\.module-nav \.nav-item[\s\S]*?\):focus-visible\s*{\s*outline-offset:\s*-3px/);
     expect(theme).toMatch(/tr\.is-discontinued \.muted-note\s*{\s*color:\s*#9fb3d4/);
   });
+  it('campos inválidos: borde y etiqueta cumplen en ambos temas y el CSS usa :user-invalid y aria-invalid', () => {
+    for (const [fg, bg] of [['#b3261e', '#ffffff'], ['#b3261e', '#eef3f8'], ['#ff8a80', '#0f1b30'], ['#ff8a80', '#1b335e'], ['#ffb4ab', '#0f1b30'], ['#ffb4ab', '#1b335e']]) {
+      expect(ratio(fg, bg), `${fg} sobre ${bg}`).toBeGreaterThanOrEqual(4.5);
+    }
+    expect(theme).toMatch(/select, textarea\):is\(:user-invalid, \[aria-invalid='true'\]\)\s*{\s*border-color:\s*#b3261e/);
+    expect(theme).toMatch(/label:has\(/);
+  });
 });
