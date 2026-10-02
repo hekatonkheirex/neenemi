@@ -23,6 +23,8 @@ import { version as suiteVersion } from '../../package.json';
 import suiteLogoUrl from '../../build/icon.png';
 import { confirmAction } from '../core/confirm';
 import ConfirmDialogHost from '../core/ConfirmDialog';
+import CommandPalette from './CommandPalette';
+import { buildPaletteEntries } from './commandPalette';
 
 const CatalogModule = lazy(() => import('../modules/catalogo/CatalogModule'));
 const MantenimientoModule = lazy(() => import('../modules/operaciones/MantenimientoModule'));
@@ -113,6 +115,7 @@ export default function App() {
   const [clearingImports, setClearingImports] = useState(false);
   const [clearImportsMessage, setClearImportsMessage] = useState<ClearImportsMessage | null>(null);
   const [importsRefreshKey, setImportsRefreshKey] = useState(0);
+  const [paletteOpen, setPaletteOpen] = useState(false);
 
   const activeModule = suiteModules.find((module) => module.id === activeModuleId);
 
@@ -124,6 +127,16 @@ export default function App() {
       ?.setAttribute('content', theme === 'light' ? '#f4f6f9' : '#09101c');
     persistTheme(theme, getThemeStorage());
   }, [theme]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 'k') return;
+      event.preventDefault();
+      setPaletteOpen((open) => !open);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -279,16 +292,8 @@ export default function App() {
           <span className="breadcrumb">DCSS Suite / {activeModule?.label ?? 'Resumen'}</span>
           <div className="topbar-actions">
             <span className="local-badge">● Solo en este equipo</span>
-            {clearImportsMessage ? <span className={`global-clear-message ${clearImportsMessage.tone}`} role={clearImportsMessage.tone === 'error' ? 'alert' : 'status'}>{clearImportsMessage.text}</span> : null}
-            <button
-              className="global-clear-button"
-              type="button"
-              onClick={() => void clearImportedFiles()}
-              disabled={clearingImports}
-              aria-busy={clearingImports}
-              title="Quitar las cargas importadas y conservar los originales en el archivo recuperable"
-            >
-              {clearingImports ? 'Limpiando…' : 'Limpiar cargas'}
+            <button className="palette-button" type="button" onClick={() => setPaletteOpen(true)} aria-keyshortcuts="Control+K Meta+K" title="Ir a un módulo (Ctrl/⌘ K)">
+              Ir a… <kbd>Ctrl K</kbd>
             </button>
             <button
               className="theme-toggle"
@@ -314,9 +319,19 @@ export default function App() {
             onRetryOverview={() => setOverviewRetryKey((value) => value + 1)}
             importsRefreshKey={importsRefreshKey}
             onRemoveImport={removeImportBatch}
+            onClearImports={() => void clearImportedFiles()}
+            clearingImports={clearingImports}
+            clearImportsMessage={clearImportsMessage}
           />}
         </Suspense>
       </main>
+      {paletteOpen ? (
+        <CommandPalette
+          entries={buildPaletteEntries(suiteModules, sectionLabels)}
+          onSelect={(id) => { setActiveModuleId(id); setPaletteOpen(false); }}
+          onClose={() => setPaletteOpen(false)}
+        />
+      ) : null}
       <ConfirmDialogHost />
     </div>
   );
@@ -346,6 +361,9 @@ function Dashboard({
   onRetryOverview,
   importsRefreshKey,
   onRemoveImport,
+  onClearImports,
+  clearingImports,
+  clearImportsMessage,
 }: {
   onSelect: (moduleId: string) => void;
   overview: SuiteOverview | null;
@@ -353,6 +371,9 @@ function Dashboard({
   onRetryOverview: () => void;
   importsRefreshKey: number;
   onRemoveImport: (batch: ImportArchiveBatch) => Promise<void>;
+  onClearImports: () => void;
+  clearingImports: boolean;
+  clearImportsMessage: ClearImportsMessage | null;
 }) {
   const functionalModuleCount = suiteModules.filter((module) => functionalModuleIds.has(module.id)).length;
 
@@ -421,6 +442,13 @@ function Dashboard({
           </div>
         </div>
         )}
+        <div className="overview-clear">
+          <p>Quitar todas las cargas importadas y sus datos derivados. Los originales quedan en el archivo recuperable.</p>
+          {clearImportsMessage ? <span className={`global-clear-message ${clearImportsMessage.tone}`} role={clearImportsMessage.tone === 'error' ? 'alert' : 'status'}>{clearImportsMessage.text}</span> : null}
+          <button className="global-clear-button" type="button" onClick={onClearImports} disabled={clearingImports} aria-busy={clearingImports}>
+            {clearingImports ? 'Limpiando…' : 'Limpiar cargas'}
+          </button>
+        </div>
       </section>
 
       <DatabaseRecoveryPanel refreshKey={importsRefreshKey} />

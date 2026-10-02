@@ -60,7 +60,10 @@ export default function MantenimientoModule() {
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
-      if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 'k') return;
+      // Ctrl/⌘ K pertenece a la paleta global; aquí "/" enfoca la búsqueda.
+      const target = event.target as HTMLElement | null;
+      if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey) return;
+      if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
       event.preventDefault();
       analysisSearchRef.current?.focus();
       analysisSearchRef.current?.select();
@@ -432,7 +435,7 @@ export default function MantenimientoModule() {
             </div>
             {maintenanceSummary?.batchId ? <p className="analysis-meta">Fuente: <strong>{maintenanceSummary.sourceName}</strong> · {maintenanceSummary.records.toLocaleString('es-PY')} lecturas · {maintenanceSummary.matchedRecords.toLocaleString('es-PY')} modelos reconocidos</p> : null}
             <div className="maintenance-analysis-filters">
-              <label className="search-field"><span>Buscar <kbd className="maintenance-search-shortcut">Ctrl/⌘ K</kbd></span><input ref={analysisSearchRef} value={analysisQuery} onChange={(event) => setAnalysisQuery(event.target.value)} placeholder="Buscar por N° de serie…" /></label>
+              <label className="search-field"><span>Buscar <kbd className="maintenance-search-shortcut">/</kbd></span><input ref={analysisSearchRef} value={analysisQuery} onChange={(event) => setAnalysisQuery(event.target.value)} placeholder="Buscar por N° de serie…" /></label>
               <label className="search-field"><span>Cliente</span><select value={analysisClient} onChange={(event) => setAnalysisClient(event.target.value)}><option value="">Todos</option>{analysisClients.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
               <label className="search-field"><span>Modelo</span><select value={analysisModel} onChange={(event) => setAnalysisModel(event.target.value)}><option value="">Todos</option>{analysisModels.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
               <label className="search-field"><span>Período</span><select value={analysisPeriod} onChange={(event) => setAnalysisPeriod(event.target.value)}><option value="">Todos</option>{analysisPeriods.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
