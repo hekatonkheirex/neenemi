@@ -9,3 +9,6 @@ coverage/
 .env.local
 
 .impeccable/
+
+# Capturas y logs del navegador de pruebas (Playwright MCP)
+.playwright-mcp/
