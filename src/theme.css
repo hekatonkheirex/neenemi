@@ -3006,3 +3006,119 @@ html[data-theme='light'] .skeleton-block {
 html[data-theme='light'] .total-breakdown b {
   color: var(--ds-navy);
 }
+
+/* Panel lateral de Viáticos (src/modules/viaticos/TravelDrawer.tsx): "Registrar viaje" y la referencia de costos. */
+.travel-drawer {
+  width: min(28rem, 100vw);
+  max-width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0 0 0 auto;
+  padding: 0;
+  overflow-y: auto;
+  border: 0;
+  border-left: 1px solid rgba(144, 174, 229, 0.28);
+  color: #edf3ff;
+  background: #0f1b30;
+  box-shadow: -1.5rem 0 4rem rgba(0, 0, 0, 0.45);
+  animation: travel-drawer-in 160ms ease-out;
+}
+
+.travel-drawer::backdrop {
+  background: rgba(4, 9, 18, 0.55);
+}
+
+@keyframes travel-drawer-in {
+  from { opacity: 0; transform: translateX(1.5rem); }
+}
+
+.travel-drawer-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.25rem 1.4rem 1rem;
+  border-bottom: 1px solid rgba(144, 174, 229, 0.16);
+  background: #0f1b30;
+}
+
+.travel-drawer-header .eyebrow {
+  margin-bottom: 0.4rem;
+}
+
+.travel-drawer-header h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.travel-drawer-close {
+  width: 2.2rem;
+  height: 2.2rem;
+  flex: 0 0 auto;
+  border: 1px solid rgba(144, 174, 229, 0.28);
+  border-radius: 0.55rem;
+  color: inherit;
+  background: transparent;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.travel-drawer-close:hover {
+  border-color: rgba(117, 166, 255, 0.55);
+  background: rgba(39, 67, 112, 0.5);
+}
+
+.travel-drawer-close:focus-visible {
+  outline: 3px solid rgba(0, 163, 224, 0.5);
+  outline-offset: 2px;
+}
+
+.travel-drawer-body {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.25rem 1.4rem 1.6rem;
+}
+
+/* Dentro del panel las tarjetas no llevan marco propio (el panel ya es la superficie). */
+html body .travel-drawer .sales-card {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+html body .travel-drawer .sales-card + .sales-card {
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(144, 174, 229, 0.16);
+}
+
+html[data-theme='light'] .travel-drawer {
+  border-left-color: var(--ds-border-strong);
+  color: var(--ds-navy);
+  background: var(--ds-surface);
+  box-shadow: -1.5rem 0 4rem rgba(9, 16, 28, 0.25);
+}
+
+html[data-theme='light'] .travel-drawer::backdrop {
+  background: rgba(9, 16, 28, 0.4);
+}
+
+html[data-theme='light'] .travel-drawer-header {
+  border-bottom-color: var(--ds-border);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .travel-drawer-close {
+  border-color: var(--ds-border-strong);
+}
+
+html[data-theme='light'] .travel-drawer-close:hover {
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] body .travel-drawer .sales-card + .sales-card {
+  border-top-color: var(--ds-border);
+}

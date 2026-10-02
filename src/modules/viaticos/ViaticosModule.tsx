@@ -26,6 +26,7 @@ import {
 import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
 import PaginationControls from '../../core/PaginationControls';
+import TravelDrawer from './TravelDrawer';
 import { paginateItems } from '../../core/pagination';
 
 function tripToForm(trip: TravelTrip): TravelTripInput {
@@ -102,9 +103,11 @@ export default function ViaticosModule() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const editedTrip = editingId ? trips.find((trip) => trip.id === editingId) : undefined;
   // En un viaje nuevo la fecha es un valor por defecto: no cuenta como cambio.
-  useUnsavedChanges(editedTrip
+  const formDirty = editedTrip
     ? JSON.stringify(form) !== JSON.stringify(tripToForm(editedTrip))
-    : JSON.stringify({ ...form, recordedAt: '' }) !== JSON.stringify({ ...EMPTY_TRIP, recordedAt: '' }));
+    : JSON.stringify({ ...form, recordedAt: '' }) !== JSON.stringify({ ...EMPTY_TRIP, recordedAt: '' });
+  useUnsavedChanges(formDirty);
+  const [formOpen, setFormOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [transportFilter, setTransportFilter] = useState('');
@@ -190,19 +193,39 @@ export default function ViaticosModule() {
     setForm((current) => ({ ...current, [field]: Number(value) || 0 }));
   }
 
-  function beginNewTrip() {
-    setActiveView('viajes');
+  function resetForm() {
     setEditingId(null);
     setForm({ ...EMPTY_TRIP, recordedAt: new Date().toISOString().slice(0, 10) });
+  }
+
+  /** "Limpiar" dentro del panel: deja un viaje nuevo en blanco sin cerrarlo. */
+  function beginNewTrip() {
+    resetForm();
     setMessage('');
     setError(null);
   }
 
+  function openNewTrip() {
+    beginNewTrip();
+    setFormOpen(true);
+  }
+
+  /** El panel se abre sobre la vista actual (Viajes, Resumen o Rendiciones): no hace falta cambiar de pestaña. */
   function beginEdit(trip: TravelTrip) {
-    setActiveView('viajes');
     setEditingId(trip.id);
     setForm(tripToForm(trip));
     setError(null);
+    setFormOpen(true);
+  }
+
+  async function requestCloseForm() {
+    if (formDirty && !await confirmAction({
+      title: 'Descartar cambios',
+      message: 'El viaje tiene cambios sin guardar. Si cierras el panel se perderán.',
+      confirmLabel: 'Descartar cambios',
+    })) return;
+    resetForm();
+    setFormOpen(false);
   }
 
   async function saveTrip(event: FormEvent<HTMLFormElement>) {
@@ -216,8 +239,9 @@ export default function ViaticosModule() {
         body: JSON.stringify(form),
       });
       const saved = await readJson<TravelTrip>(response);
+      resetForm();
+      setFormOpen(false);
       setMessage(editingId ? `Viaje actualizado: ${saved.customerName}.` : `Viaje registrado: ${saved.customerName}.`);
-      beginNewTrip();
       await refresh();
     } catch (saveError: unknown) {
       setError(toErrorMessage(saveError));
@@ -258,8 +282,8 @@ export default function ViaticosModule() {
       const result = await readJson<{ deleted: boolean }>(response);
       if (!result.deleted) throw new Error('El viaje no estaba disponible.');
       if (editingId === trip.id) {
-        setEditingId(null);
-        setForm({ ...EMPTY_TRIP, recordedAt: new Date().toISOString().slice(0, 10) });
+        resetForm();
+        setFormOpen(false);
       }
       setMessage(`Viaje eliminado: ${description}.`);
       await refresh();
@@ -372,7 +396,7 @@ export default function ViaticosModule() {
         <div className="travel-actions">
           <label className="secondary-button file-button"><span>{importing ? 'Importando…' : 'Importar planilla'}</span><input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(event) => void importFile(event)} disabled={importing} /></label>
           <button className="secondary-button" type="button" onClick={() => void exportTrips()} disabled={exporting || trips.length === 0}>{exporting ? 'Exportando…' : 'Exportar XLSX'}</button>
-          <button className="primary-button" type="button" onClick={beginNewTrip}>Nuevo viaje</button>
+          <button className="primary-button" type="button" onClick={openNewTrip}>Nuevo viaje</button>
         </div>
       </section>
 
@@ -404,7 +428,7 @@ export default function ViaticosModule() {
 
       {activeView === 'resumen' && summary && <TravelOverviewPanels summary={summary} />}
 
-      <section className={`travel-layout ${activeView === 'rendiciones' || activeView === 'historico' ? 'travel-layout-single' : ''}`}>
+      <section className="travel-layout travel-layout-single">
         <div className="travel-main">
           {(activeView === 'resumen' || activeView === 'viajes') && <section className="sales-card" ref={tripListRef}>
             <div className="card-heading">
@@ -458,10 +482,15 @@ export default function ViaticosModule() {
           {activeView === 'historico' && <TravelHistoricalView summaries={historical} sourceName={summary?.sourceName ?? null} sourceBatchId={sourceBatchId} />}
         </div>
 
-        {(activeView === 'resumen' || activeView === 'viajes') && <aside className="travel-sidebar">
+      </section>
+
+      {formOpen ? (
+        <TravelDrawer
+          eyebrow={editingId ? 'EDITAR REGISTRO' : 'NUEVO REGISTRO'}
+          title={editingId ? 'Actualizar viaje' : 'Registrar viaje'}
+          onRequestClose={() => void requestCloseForm()}
+        >
           <section className="sales-card form-card">
-            <div className="eyebrow">{editingId ? 'EDITAR REGISTRO' : 'NUEVO REGISTRO'}</div>
-            <h2>{editingId ? 'Actualizar viaje' : 'Registrar viaje'}</h2>
             <form className="travel-form" onSubmit={(event) => void saveTrip(event)}>
               <label className="search-field"><span>Fecha</span><input required type="date" value={form.recordedAt} onChange={(event) => updateText('recordedAt', event.target.value)} /></label>
               <div className="form-grid-2"><label className="search-field"><span>I.S.</span><input value={form.serviceNumber} onChange={(event) => updateText('serviceNumber', event.target.value)} placeholder="Opcional" /></label><label className="search-field"><span>Medio</span><select value={form.transport} onChange={(event) => setForm((current) => ({ ...current, transport: event.target.value as TravelTransport }))}>{TRAVEL_TRANSPORTS.map((item) => <option key={item} value={item}>{item.replace('MOVIL ', 'MÓVIL ')}</option>)}</select></label></div>
@@ -509,8 +538,8 @@ export default function ViaticosModule() {
               </div>
             </details>}
           </section>
-        </aside>}
-      </section>
+        </TravelDrawer>
+      ) : null}
 
       {pendingImport && <TravelImportPreviewDialog preview={pendingImport.preview} importing={importing} onCancel={() => setPendingImport(null)} onConfirm={() => void confirmImport()} />}
     </div>

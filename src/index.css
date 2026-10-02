@@ -8113,13 +8113,6 @@ li::before {
   min-width: 0;
 }
 
-/* El formulario "Registrar viaje" tiene que seguir al lado: la lista no se pagina (1.026 filas) y debajo quedaría inalcanzable. */
-@media (min-width: 1051px) and (max-width: 1500px) {
-  .travel-layout:not(.travel-layout-single) {
-    grid-template-columns: minmax(0, 1fr) 300px;
-  }
-}
-
 .travel-main,
 .travel-sidebar {
   min-width: 0;
