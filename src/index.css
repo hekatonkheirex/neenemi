@@ -1472,12 +1472,56 @@ li::before {
 /* Con la columna lateral de 300 px, la tabla de líneas (940 px) quedaba en 718 px a 1440: el total y "quitar" ocultos. */
 @media (max-width: 1500px) {
   .proforma-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .proforma-main {
+    grid-column: 1 / -1;
+  }
+
+  /* El campo enfocado con Tab no debe quedar tapado por la barra fija. */
+  html:has(.proforma-layout) {
+    scroll-padding-bottom: 6rem;
+  }
+
+  /* Las tarjetas del lateral pasan a ser celdas del grid; el Resumen se vuelve una barra fija. */
   .proforma-sidebar {
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    align-items: start;
+    display: contents;
+  }
+
+  .proforma-sidebar > .total-card {
+    position: sticky;
+    top: auto;
+    bottom: 0.75rem;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    align-items: center;
+    grid-column: 1 / -1;
+    padding: 0.85rem 1.25rem;
+    background: linear-gradient(145deg, rgba(30, 59, 113, 0.68), rgba(15, 27, 48, 0.82)), #0b1220;
+    box-shadow: 0 0.6rem 2rem rgba(0, 0, 0, 0.4);
+  }
+
+  .proforma-sidebar > .total-card .eyebrow {
+    display: none;
+  }
+
+  .proforma-sidebar > .total-card > strong {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  .proforma-sidebar > .total-card .total-breakdown {
+    gap: 0.5rem;
+    padding: 0;
+    border-top: 0;
+  }
+
+  .proforma-sidebar > .total-card .full-button {
+    width: auto;
+    margin: 0 0 0 auto;
   }
 }
 

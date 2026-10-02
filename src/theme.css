@@ -3001,3 +3001,8 @@ html[data-theme='light'] .skeleton-block {
 @media (max-width: 720px) {
   .skeleton-cards { grid-template-columns: 1fr; }
 }
+
+/* Los importes del Resumen de Proformas usaban #d8e6fb (pensado para el fondo oscuro). */
+html[data-theme='light'] .total-breakdown b {
+  color: var(--ds-navy);
+}

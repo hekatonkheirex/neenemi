@@ -27,8 +27,17 @@ describe('layout entre 960 y 1350 px', () => {
     expect(css).toMatch(/@media \(max-width: 1400px\)\s*{\s*\.sla-layout\s*{\s*grid-template-columns:\s*1fr/);
   });
 
-  it('Proformas: la columna lateral baja bajo 1500 px y la tabla de líneas no fija 940 px', () => {
-    expect(css).toMatch(/@media \(max-width: 1500px\)\s*{\s*\.proforma-layout\s*{\s*grid-template-columns:\s*1fr/);
+  it('Proformas: bajo 1500 px el lateral pasa a celdas del grid y el Resumen es una barra fija inferior', () => {
+    const block = css.match(/@media \(max-width: 1500px\)\s*{\s*\.proforma-layout[\s\S]*?\n}\n/)?.[0] ?? '';
+    expect(block).toMatch(/\.proforma-sidebar\s*{\s*display:\s*contents/);
+    expect(block).toMatch(/\.proforma-sidebar > \.total-card\s*{[^}]*position:\s*sticky[^}]*bottom:/);
+    expect(block).toMatch(/html:has\(\.proforma-layout\)\s*{\s*scroll-padding-bottom/);
     expect(css).not.toMatch(/\.proforma-table\s*{[^}]*min-width/);
+  });
+
+  it('Proformas: la barra tiene fondo opaco y los importes se leen en tema claro', () => {
+    expect(css).toMatch(/\.proforma-sidebar > \.total-card\s*{[^}]*,\s*#0b1220/);
+    const theme = fs.readFileSync(new URL('./theme.css', import.meta.url), 'utf8');
+    expect(theme).toMatch(/html\[data-theme='light'\] \.total-breakdown b\s*{\s*color:\s*var\(--ds-navy\)/);
   });
 });
