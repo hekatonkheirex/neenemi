@@ -116,4 +116,15 @@ describe('contraste del tema claro', () => {
     expect(ratio('#8ea3c4', '#1b335e')).toBeGreaterThanOrEqual(4.5);
     expect(theme).toMatch(/:is\(input, textarea\)::placeholder\s*{\s*color:\s*#8ea3c4/);
   });
+  it('hover y recortes: pestañas de Mantenimiento, botón Inspector, primario y anillo hacia dentro', () => {
+    expect(ratio('#b84d00', '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    expect(ratio('#182b4a', '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    expect(ratio('#182b4a', '#ff8533')).toBeGreaterThanOrEqual(4.5);
+    expect(ratio('#9fb3d4', '#1b335e')).toBeGreaterThanOrEqual(4.5);
+    expect(theme).toMatch(/\.maintenance-view-tabs button:is\(:hover, \.is-active\)\s*,?[\s\S]*?color:\s*#b84d00/);
+    expect(theme).toMatch(/\.maintenance-inspector-button:hover:not\(:disabled\),[\s\S]*?color:\s*var\(--ds-navy\)/);
+    expect(theme).toMatch(/\.primary-button:hover:not\(:disabled\)\s*{\s*background:\s*#ff8533/);
+    expect(theme).toMatch(/\.module-nav \.nav-item[\s\S]*?\):focus-visible\s*{\s*outline-offset:\s*-3px/);
+    expect(theme).toMatch(/tr\.is-discontinued \.muted-note\s*{\s*color:\s*#9fb3d4/);
+  });
 });

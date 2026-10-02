@@ -3335,3 +3335,34 @@ html:not([data-theme='light']) :is(input, textarea)::placeholder {
   color: #8ea3c4;
   opacity: 1;
 }
+
+/* El anillo de foco (3 px + 2 px de separación) se salía del contenedor y quedaba cortado: .module-nav, el grupo de cantidad de uniFLOW,
+   la lista de modelos MPS y la barra de pestañas de Mantenimiento tienen overflow. Los ítems que llenan su contenedor lo llevan hacia dentro. */
+html[data-theme] :is(.module-nav .nav-item, .mps-model-list .mps-model-select, .maintenance-view-tabs button, .uniflow-quantity-control :is(button, input), .catalog-table th button):focus-visible {
+  outline-offset: -3px;
+}
+
+/* Hover y estado activo (medido clonando las reglas :hover): naranja sobre blanco y blanco sobre naranja no llegan a AA. */
+html[data-theme] .page-content .maintenance-view-tabs button:is(:hover, .is-active),
+html[data-theme] .page-content .maintenance-view-tabs button:is(:hover, .is-active) > span,
+html[data-theme] .page-content .maintenance-view-tabs button:is(:hover, .is-active) > strong,
+html[data-theme] .page-content .maintenance-view-tabs button:not(.is-active):hover > span:first-child {
+  color: #b84d00;
+}
+
+html[data-theme] .maintenance-inspector-button:hover:not(:disabled),
+html[data-theme] .maintenance-inspector-button.is-open {
+  color: var(--ds-navy);
+}
+
+html[data-theme='light'] .primary-button:hover:not(:disabled) {
+  background: #ff8533;
+}
+
+html:not([data-theme='light']) .history-item small {
+  color: #9fb3d4;
+}
+
+html:not([data-theme='light']) tr.is-discontinued .muted-note {
+  color: #9fb3d4;
+}
