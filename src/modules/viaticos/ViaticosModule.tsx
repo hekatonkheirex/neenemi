@@ -24,6 +24,29 @@ import {
   type TravelView,
 } from './TravelViews';
 import { confirmAction } from '../../core/confirm';
+import { useUnsavedChanges } from '../../core/unsavedChanges';
+
+function tripToForm(trip: TravelTrip): TravelTripInput {
+  return {
+    recordedAt: trip.recordedAt,
+    serviceNumber: trip.serviceNumber,
+    customerName: trip.customerName,
+    destination: trip.destination,
+    transport: trip.transport,
+    technician: trip.technician,
+    driver: trip.driver,
+    advance: trip.advance,
+    allowance: trip.allowance,
+    lodging: trip.lodging,
+    tolls: trip.tolls,
+    otherCost: trip.otherCost,
+    vehiclePayment: trip.vehiclePayment,
+    technicianPayment: trip.technicianPayment,
+    distanceKm: trip.distanceKm,
+    fuelCost: trip.fuelCost,
+    notes: trip.notes,
+  };
+}
 
 const EMPTY_TRIP: TravelTripInput = {
   recordedAt: new Date().toISOString().slice(0, 10),
@@ -75,6 +98,11 @@ export default function ViaticosModule() {
   const [catalog, setCatalog] = useState<TravelCostCatalog | null>(null);
   const [form, setForm] = useState<TravelTripInput>(EMPTY_TRIP);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const editedTrip = editingId ? trips.find((trip) => trip.id === editingId) : undefined;
+  // En un viaje nuevo la fecha es un valor por defecto: no cuenta como cambio.
+  useUnsavedChanges(editedTrip
+    ? JSON.stringify(form) !== JSON.stringify(tripToForm(editedTrip))
+    : JSON.stringify({ ...form, recordedAt: '' }) !== JSON.stringify({ ...EMPTY_TRIP, recordedAt: '' }));
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [transportFilter, setTransportFilter] = useState('');
@@ -157,25 +185,7 @@ export default function ViaticosModule() {
   function beginEdit(trip: TravelTrip) {
     setActiveView('viajes');
     setEditingId(trip.id);
-    setForm({
-      recordedAt: trip.recordedAt,
-      serviceNumber: trip.serviceNumber,
-      customerName: trip.customerName,
-      destination: trip.destination,
-      transport: trip.transport,
-      technician: trip.technician,
-      driver: trip.driver,
-      advance: trip.advance,
-      allowance: trip.allowance,
-      lodging: trip.lodging,
-      tolls: trip.tolls,
-      otherCost: trip.otherCost,
-      vehiclePayment: trip.vehiclePayment,
-      technicianPayment: trip.technicianPayment,
-      distanceKm: trip.distanceKm,
-      fuelCost: trip.fuelCost,
-      notes: trip.notes,
-    });
+    setForm(tripToForm(trip));
     setError(null);
   }
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { MaintenanceModelRule } from './analysis';
 import { confirmAction } from '../../core/confirm';
+import { useUnsavedChanges } from '../../core/unsavedChanges';
 
 type RuleDraft = {
   id?: string;
@@ -25,10 +26,17 @@ export default function MaintenanceRulesPanel({
   onError: (message: string) => void;
 }) {
   const [draft, setDraft] = useState<RuleDraft | null>(null);
+  const [draftBaseline, setDraftBaseline] = useState('');
+  useUnsavedChanges(draft !== null && JSON.stringify(draft) !== draftBaseline);
+
+  function openDraft(next: RuleDraft) {
+    setDraftBaseline(JSON.stringify(next));
+    setDraft(next);
+  }
   const [saving, setSaving] = useState(false);
 
   function startNewRule() {
-    setDraft({
+    openDraft({
       modelLabel: '',
       usefulLife: '1000000',
       monthlyRange: String(Math.round(10000 / OPTIMAL_BASE_FACTOR)),
@@ -38,7 +46,7 @@ export default function MaintenanceRulesPanel({
   }
 
   function startEdit(rule: MaintenanceModelRule) {
-    setDraft({
+    openDraft({
       id: rule.id,
       modelLabel: rule.modelLabel,
       usefulLife: String(rule.usefulLife),

@@ -298,7 +298,7 @@ export default function App() {
           })}
         </nav>
 
-        <div className="sidebar-footer">
+        <div className="sidebar-footer" role="status">
           <span className={`status-dot ${health?.ok ? 'ready' : health ? 'error' : 'pending'}`} />
           <span>{databaseLabel}</span>
         </div>

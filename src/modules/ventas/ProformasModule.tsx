@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { checkCurrentAppliedImport } from '../../core/import-status';
+import { useUnsavedChanges } from '../../core/unsavedChanges';
 import { normalizePartCode } from '../catalogo/normalization';
 import { exportProforma } from './export';
 import OpenContractImportPanel from './OpenContractImportPanel';
@@ -66,6 +67,7 @@ export default function ProformasModule() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
+  useUnsavedChanges(hasProformaDraft(savedProforma, header, lines, laborRows));
   const lineLookupControllers = useRef(new Map<string, AbortController>());
 
   const contractParts = useMemo(
@@ -917,6 +919,15 @@ function createLaborRow(): DraftLaborLine {
 
 function createLaborRows(count = PROFORMA_LABOR_ROWS): DraftLaborLine[] {
   return Array.from({ length: Math.max(0, count) }, createLaborRow);
+}
+
+/** Hay una proforma a medio armar que todavía no se guardó (cada edición limpia savedProforma). */
+export function hasProformaDraft(saved: Proforma | null, header: ProformaHeader, lines: readonly unknown[], laborRows: readonly DraftLaborLine[]): boolean {
+  if (saved) return false;
+  const { customerName, customerContact, serviceReport, serviceReportNumber, reference, attendedBy, modelName, serialNumber } = header;
+  return lines.length > 0
+    || laborRows.some(isLaborRowUsed)
+    || [customerName, customerContact, serviceReport, serviceReportNumber, reference, attendedBy, modelName, serialNumber].some((value) => value.trim() !== '');
 }
 
 function isLaborRowUsed(row: DraftLaborLine): boolean {
