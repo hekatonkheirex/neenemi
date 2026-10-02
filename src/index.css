@@ -1054,9 +1054,10 @@ li::before {
   background: rgba(12, 23, 41, 0.7);
 }
 
+/* Sin min-width fijo: el contenido ya impone su piso (nowrap, palabras largas) y la tabla scrollea solo si no cabe. */
 .catalog-table {
   width: 100%;
-  min-width: 780px;
+  min-width: 0;
   border-collapse: collapse;
   color: #c8d6ed;
   font-size: 0.78rem;
@@ -4200,7 +4201,7 @@ li::before {
 }
 
 .discontinuation-equipment-table {
-  min-width: 900px;
+  min-width: 0;
 }
 
 .operations-layout {
@@ -4397,7 +4398,7 @@ li::before {
 }
 
 .operations-table {
-  min-width: 720px;
+  min-width: 0;
 }
 
 .operations-table td:first-child {
@@ -4412,7 +4413,7 @@ li::before {
 }
 
 .discontinuation-table {
-  min-width: 900px;
+  min-width: 0;
 }
 
 .stock-table {
@@ -4434,7 +4435,7 @@ li::before {
 }
 
 .maintenance-table {
-  min-width: 1040px;
+  min-width: 0;
 }
 
 .maintenance-table .action-cell {
@@ -6061,11 +6062,6 @@ li::before {
   min-width: 0;
 }
 
-/* .catalog-table fija 780 px de mínimo; la proyección (8 columnas cortas) cabe en menos. */
-.mps-projection-table {
-  min-width: 0;
-}
-
 /* Los nombres de insumo son largos ("Unidad de Cilindro Negro GPR-1002"): con nowrap la columna medía 324 px. */
 .mps-projection-table .code-cell {
   white-space: normal;
@@ -7254,7 +7250,7 @@ li::before {
 }
 
 .contract-analytics-table {
-  min-width: 900px;
+  min-width: 0;
 }
 
 .dispatch-equipment-panel {
@@ -7262,7 +7258,7 @@ li::before {
 }
 
 .dispatch-equipment-table {
-  min-width: 1060px;
+  min-width: 0;
 }
 
 .dispatch-equipment-table td:nth-child(1),
@@ -7475,7 +7471,7 @@ li::before {
 }
 
 .outputs-table {
-  min-width: 1040px;
+  min-width: 0;
 }
 
 .outputs-table td:nth-child(3),
@@ -7496,7 +7492,7 @@ li::before {
 }
 
 .consumables-table {
-  min-width: 980px;
+  min-width: 0;
 }
 
 .consumables-code-table {
@@ -7773,10 +7769,17 @@ li::before {
   font-size: 0.95rem;
 }
 
-.legacy-contract-table,
-.legacy-ranking-table,
-.legacy-equipment-table {
+.legacy-ranking-table {
   min-width: 1160px;
+}
+
+/* Medido a 1100 px: 900 deja el scroll en 202 px sin agrandar las filas (con 0 pasan de 142 a 217 px). */
+.legacy-contract-table {
+  min-width: 900px;
+}
+
+.legacy-equipment-table {
+  min-width: 0;
 }
 
 .legacy-equipment-ranking-table {
@@ -7784,7 +7787,7 @@ li::before {
 }
 
 .legacy-ficha-table {
-  min-width: 980px;
+  min-width: 0;
 }
 
 .legacy-service-table {
@@ -8501,7 +8504,7 @@ li::before {
 }
 
 .historical-travel-table {
-  min-width: 780px;
+  min-width: 0;
 }
 
 .travel-layout-single {
@@ -8766,7 +8769,7 @@ li::before {
 }
 
 .travel-rendition-table {
-  min-width: 760px;
+  min-width: 0;
   table-layout: fixed;
 }
 
