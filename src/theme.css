@@ -8,7 +8,7 @@
   --ds-surface-alt: #eef3f8;
   --ds-ink: #18243a;
   --ds-muted: #4a5568;
-  --ds-subtle: #66758a;
+  --ds-subtle: #58677d;
   --ds-border: #d6deea;
   --ds-border-strong: #b7c8da;
   --ds-blue-wash: #e9f5fb;
@@ -339,8 +339,9 @@ html[data-theme='light'] .theme-toggle-track {
   background: #d7e3ee;
 }
 
+/* #007ea8 daba 4,26:1 sobre blanco a 11 px; #00698f llega a 6:1. */
 html[data-theme='light'] .eyebrow {
-  color: #007ea8;
+  color: #00698f;
 }
 
 html[data-theme='light'] h1,
@@ -818,7 +819,7 @@ html[data-theme='light'] .coverage-catalog-empty {
 }
 
 html[data-theme='light'] .source-details summary {
-  color: var(--ds-sky);
+  color: #00698f;
 }
 
 html[data-theme='light'] .source-details-grid {
@@ -3121,4 +3122,87 @@ html[data-theme='light'] .travel-drawer-close:hover {
 
 html[data-theme='light'] body .travel-drawer .sales-card + .sales-card {
   border-top-color: var(--ds-border);
+}
+
+/* Cobertura: la zona de carga del PDF y sus textos no tenían variante clara (bloque gris con texto de 2,9:1). */
+html[data-theme='light'] .coverage-upload-dropzone {
+  border-color: var(--ds-border-strong);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .coverage-upload-dropzone.is-dragging {
+  border-color: var(--ds-sky);
+  background: #d4ecf7;
+}
+
+html[data-theme='light'] .coverage-upload-copy strong {
+  color: var(--ds-navy);
+}
+
+html[data-theme='light'] .coverage-upload-copy span,
+html[data-theme='light'] .coverage-upload-description,
+html[data-theme='light'] .coverage-empty {
+  color: var(--ds-muted);
+}
+
+/* Selector de software: pestañas de categoría y resumen de cada recomendación. */
+html[data-theme='light'] .software-category-tabs button {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-muted);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .software-category-tabs button:hover,
+html[data-theme='light'] .software-category-tabs button.active {
+  border-color: var(--ds-sky);
+  color: var(--ds-navy);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .software-recommendation summary {
+  color: #00698f;
+}
+
+/* Barrido de contraste en tema claro (WCAG AA): texto naranja, blanco sobre naranja y colores del tema oscuro sin variante clara. */
+html[data-theme='light'] .maintenance-view-tabs button.is-active,
+html[data-theme='light'] .maintenance-view-tabs button.is-active span,
+html[data-theme='light'] .maintenance-view-tabs button.is-active strong {
+  color: #b84d00;
+}
+
+html[data-theme='light'] .maintenance-source-upload-primary,
+html[data-theme='light'] .maintenance-source-upload-primary span {
+  color: var(--ds-navy);
+}
+
+html[data-theme='light'] .consumables-tabs button.active {
+  color: var(--ds-navy);
+}
+
+html[data-theme='light'] .mps-presets button {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-navy);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .history-item b {
+  color: var(--ds-success);
+}
+
+html[data-theme='light'] code {
+  color: #0b5d83;
+}
+
+html[data-theme='light'] .discontinuation-model-count {
+  color: #00698f;
+}
+
+/* Mantenimiento: números de paso, copias por equipo y porcentaje de prioridad (3,9-4,4:1 -> AA). */
+html[data-theme='light'] .maintenance-view-tabs button:not(.is-active) span:first-child,
+html[data-theme='light'] .maintenance-subset-row b {
+  color: var(--ds-subtle);
+}
+
+html[data-theme='light'] .maintenance-priority-row b {
+  color: #7a4a00;
 }
