@@ -3216,3 +3216,73 @@ html[data-theme='light'] .page-content .maintenance-priority-row b {
 html[data-theme] .page-content .maintenance-view-tabs button:not(.is-active) span:first-child {
   color: #93a8ca;
 }
+
+/* Tema oscuro (barrido que ya mide degradados): textos secundarios y acentos pensados para fondos claros.
+   :not([data-theme='light']) los limita al oscuro; en claro siguen los valores existentes. */
+html:not([data-theme='light']) :is(
+  .detail-label, .overview-import-meta, .scope-note, .summary-card-note, .travel-history-metric small,
+  .database-recovery-copy small, .sla-score-card span, .maintenance-source-dropzone-copy span, .mps-model-volume,
+  .mps-model-select small, .maintenance-priority-row small, .maintenance-subset-row small,
+  .travel-overview-row-heading small, .pricing-panel .search-field > span,
+  .travel-source-sheet-list small, .travel-source-heading-actions .muted-note, .travel-source-pagination span
+) {
+  color: #9fb3d4;
+}
+
+html:not([data-theme='light']) .catalog-table th {
+  color: #9fb3d4;
+}
+
+html:not([data-theme='light']) .maintenance-priority-index {
+  color: #4cc3f0;
+}
+
+html:not([data-theme='light']) .maintenance-priority-row b {
+  color: #ff8a93;
+}
+
+html:not([data-theme='light']) .maintenance-priority-panel.attention .maintenance-priority-row b {
+  color: #f0b44c;
+}
+
+html:not([data-theme='light']) .maintenance-subset-row b {
+  color: #b9afff;
+}
+
+html:not([data-theme='light']) .maintenance-subset-panel.idle .maintenance-subset-row b {
+  color: #a3b0c4;
+}
+
+html:not([data-theme='light']) .maintenance-subset-panel.recommended .maintenance-subset-row b {
+  color: #ff9a6e;
+}
+
+/* Pestaña activa de Consumibles: sobre el naranja translúcido ni el blanco (3,4:1) ni el navy (2,4:1) llegan a AA.
+   Oscuro: naranja profundo opaco con texto blanco (>= 4,8:1). Claro: naranja sólido con texto navy. */
+html:not([data-theme='light']) .consumables-tabs button.active {
+  border-color: #c24d00;
+  color: #ffffff;
+  background: linear-gradient(135deg, #c24d00, #a83f00);
+}
+
+html[data-theme='light'] .consumables-tabs button.active {
+  color: var(--ds-navy);
+}
+
+/* Estados vacíos y de error con estilos solo del tema oscuro (2,7:1 y 3,9:1). */
+html[data-theme='light'] .software-shortcut {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-navy);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .software-shortcut span {
+  color: var(--ds-muted);
+}
+
+/* El aviso de error de Tracking es rosado en los dos temas; su botón de reintento no debe heredar el fondo oscuro. */
+html[data-theme] .tracking-error .secondary-button {
+  border-color: #e1b4ae;
+  color: var(--ds-navy);
+  background: #ffffff;
+}

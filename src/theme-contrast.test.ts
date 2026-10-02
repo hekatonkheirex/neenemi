@@ -55,4 +55,36 @@ describe('contraste del tema claro', () => {
     expect(ratio('#d9e8f4', '#1a2c4c')).toBeGreaterThanOrEqual(4.5); // sobre la cabecera navy sí se lee
     expect(ratio('#d9e8f4', white)).toBeLessThan(2);                  // sobre blanco no: por eso no puede compartir regla
   });
+
+  describe('tema oscuro (medido contra degradados)', () => {
+    const css = fs.readFileSync(new URL('./index.css', import.meta.url), 'utf8');
+
+    it.each([
+      ['botón primario: texto sobre el extremo claro del degradado', '#eff5ff', '#3466cf'],
+      ['botón primario: hover', '#eff5ff', '#3768d6'],
+      ['pestaña activa de Consumibles', '#ffffff', '#c24d00'],
+      ['gris secundario sobre tarjeta oscura', '#9fb3d4', '#1b335e'],
+      ['rojo del tablero ejecutivo', '#ff8a93', '#1c1420'],
+      ['ámbar del tablero ejecutivo', '#f0b44c', '#1c1420'],
+      ['violeta del tablero ejecutivo', '#b9afff', '#141830'],
+    ])('%s cumple 4,5:1', (_name, fg, bg) => {
+      expect(ratio(fg, bg)).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('el CSS usa el degradado corregido del botón primario', () => {
+      expect(css).toMatch(/\.primary-button\s*{[^}]*linear-gradient\(135deg, #3466cf, #2347a3\)/);
+      expect(theme).toMatch(/html:not\(\[data-theme='light'\]\) \.consumables-tabs button\.active\s*{[^}]*#c24d00/);
+    });
+
+    it('la regla de grises secundarios no pisa el texto del botón de carga naranja', () => {
+      expect(theme).not.toMatch(/\.maintenance-source-upload span/);
+      expect(theme).toMatch(/\.maintenance-source-dropzone-copy span/);
+    });
+  });
+
+  it('estados vacíos y de error: reglas para el selector de atajos (claro) y el reintento de Tracking (ambos temas)', () => {
+    expect(theme).toMatch(/html\[data-theme='light'\] \.software-shortcut\s*{[^}]*background:\s*var\(--ds-surface-alt\)/);
+    expect(theme).toMatch(/html\[data-theme\] \.tracking-error \.secondary-button\s*{[^}]*background:\s*#ffffff/);
+    expect(ratio('#1a2c4c', '#ffffff')).toBeGreaterThanOrEqual(4.5);
+  });
 });
