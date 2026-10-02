@@ -21,4 +21,9 @@ describe('layout entre 960 y 1350 px', () => {
     expect(overrides.length).toBeGreaterThanOrEqual(2);
     for (const index of overrides) expect(index).toBeGreaterThan(base);
   });
+
+  it('SLA: la tabla de resultados no obliga a scroll horizontal y la columna lateral baja en ventanas medianas', () => {
+    expect(css).toMatch(/\.sla-table\s*{[^}]*min-width:\s*600px/);
+    expect(css).toMatch(/@media \(max-width: 1400px\)\s*{\s*\.sla-layout\s*{\s*grid-template-columns:\s*1fr/);
+  });
 });

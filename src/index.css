@@ -11729,7 +11729,7 @@ li::before {
 
 .sla-table {
   width: 100%;
-  min-width: 980px;
+  min-width: 600px;
   border-collapse: collapse;
   color: #c8d6ed;
   font-size: 0.72rem;
@@ -11875,6 +11875,17 @@ li::before {
 
 .sla-clear-saved {
   justify-self: start;
+}
+
+/* Con la columna lateral de 340 px, la tabla de resultados quedaba en 338 px a 1100 y en 588 px a 1350. */
+@media (max-width: 1400px) {
+  .sla-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sla-sidebar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 1050px) {
