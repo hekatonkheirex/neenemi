@@ -27,6 +27,7 @@ import CommandPalette from './CommandPalette';
 import ModuleSkeleton from './ModuleSkeleton';
 import { persistLastModule, readLastModule } from './lastModule';
 import { guardUnload, hasUnsavedChanges } from '../core/unsavedChanges';
+import { installFieldErrors } from '../core/fieldErrors';
 import { buildPaletteEntries } from './commandPalette';
 
 const CatalogModule = lazy(() => import('../modules/catalogo/CatalogModule'));
@@ -126,6 +127,8 @@ export default function App() {
     window.addEventListener('beforeunload', guardUnload);
     return () => window.removeEventListener('beforeunload', guardUnload);
   }, []);
+
+  useEffect(() => installFieldErrors(), []);
 
   useEffect(() => {
     persistLastModule(activeModuleId, getThemeStorage());

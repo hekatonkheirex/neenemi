@@ -134,4 +134,10 @@ describe('contraste del tema claro', () => {
     expect(theme).toMatch(/select, textarea\):is\(:user-invalid, \[aria-invalid='true'\]\)\s*{\s*border-color:\s*#b3261e/);
     expect(theme).toMatch(/label:has\(/);
   });
+  it('mensaje de error persistente: color AA en ambos temas', () => {
+    expect(ratio('#b3261e', '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    expect(ratio('#ffb4ab', '#1b335e')).toBeGreaterThanOrEqual(4.5);
+    expect(theme).toMatch(/\.field-error\s*{[^}]*color:\s*#b3261e/);
+    expect(theme).toMatch(/not\(\[data-theme='light'\]\) \.field-error\s*{\s*color:\s*#ffb4ab/);
+  });
 });

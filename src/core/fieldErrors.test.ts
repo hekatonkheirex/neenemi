@@ -1,0 +1,24 @@
+import { describe, expect, it } from 'vitest';
+import { fieldErrorMessage } from './fieldErrors';
+
+const ok = { valueMissing: false, typeMismatch: false, rangeUnderflow: false, rangeOverflow: false, patternMismatch: false, tooShort: false, tooLong: false, stepMismatch: false, badInput: false };
+const msg = (flags: Partial<typeof ok>, extra: object = {}) => fieldErrorMessage({ validity: { ...ok, ...flags }, validationMessage: 'nativo', ...extra });
+
+describe('fieldErrorMessage', () => {
+  it.each([
+    [{ valueMissing: true }, {}, 'Este campo es obligatorio.'],
+    [{ valueMissing: true }, { type: 'file' }, 'Elige un archivo.'],
+    [{ typeMismatch: true }, { type: 'email' }, 'Escribe un correo válido.'],
+    [{ rangeUnderflow: true }, { min: '1' }, 'Debe ser como mínimo 1.'],
+    [{ rangeOverflow: true }, { max: '9' }, 'Debe ser como máximo 9.'],
+    [{ tooShort: true }, { minLength: 3 }, 'Usa al menos 3 caracteres.'],
+    [{ badInput: true }, {}, 'El valor no es válido.'],
+    [{}, {}, 'nativo'],
+  ])('%j %j -> %s', (flags, extra, expected) => {
+    expect(msg(flags, extra)).toBe(expected);
+  });
+
+  it('un campo obligatorio vacío gana a otros errores', () => {
+    expect(msg({ valueMissing: true, patternMismatch: true })).toBe('Este campo es obligatorio.');
+  });
+});
