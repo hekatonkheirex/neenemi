@@ -212,8 +212,8 @@ export default function MpsModelEditor({ mode, model, models, saving, onCancel, 
             {formError ? <div className="mps-editor-error" role="alert">{formError}</div> : null}
 
             <div className="mps-editor-fields">
-              <label className="search-field"><span>Marca *</span><input required name="brand" value={draft.brand} onChange={(event) => updateDraft('brand', event.target.value)} placeholder="Canon" autoFocus /></label>
-              <label className="search-field"><span>Modelo *</span><input required name="model" value={draft.model} onChange={(event) => updateDraft('model', event.target.value)} placeholder="imageRUNNER ADVANCE…" /></label>
+              <label className="search-field"><span>Marca *</span><input required pattern=".*\S.*" title="No puede quedar vacío ni solo con espacios." name="brand" value={draft.brand} onChange={(event) => updateDraft('brand', event.target.value)} placeholder="Canon" autoFocus /></label>
+              <label className="search-field"><span>Modelo *</span><input required pattern=".*\S.*" title="No puede quedar vacío ni solo con espacios." name="model" value={draft.model} onChange={(event) => updateDraft('model', event.target.value)} placeholder="imageRUNNER ADVANCE…" /></label>
               <label className="search-field"><span>Velocidad PPM</span><input name="speedPpm" type="number" min="0" step="1" value={draft.speedPpm} onChange={(event) => updateDraft('speedPpm', event.target.value)} placeholder="Opcional" /></label>
               <label className="search-field"><span>Tipo de equipo</span><select name="equipmentType" value={draft.isColor ? 'color' : 'mono'} onChange={(event) => updateDraft('isColor', event.target.value === 'color')}><option value="mono">Monocromático</option><option value="color">Color</option></select></label>
               <label className="search-field"><span>Volumen mínimo / mes</span><input name="recVolumeMin" type="number" min="0" step="1" value={draft.recVolumeMin} onChange={(event) => updateDraft('recVolumeMin', event.target.value)} /></label>

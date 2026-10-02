@@ -1,7 +1,7 @@
 /** Mensaje de error persistente junto al campo inválido, en español (la burbuja nativa desaparece y no la leen todos los lectores de pantalla). */
 
 type ValidityLike = Pick<ValidityState, 'valueMissing' | 'typeMismatch' | 'rangeUnderflow' | 'rangeOverflow' | 'patternMismatch' | 'tooShort' | 'tooLong' | 'stepMismatch' | 'badInput'>;
-type ControlLike = { validity: ValidityLike; validationMessage: string; type?: string; min?: string; max?: string; minLength?: number; maxLength?: number };
+type ControlLike = { validity: ValidityLike; validationMessage: string; type?: string; min?: string; max?: string; minLength?: number; maxLength?: number; title?: string };
 
 export function fieldErrorMessage(el: ControlLike): string {
   const v = el.validity;
@@ -13,7 +13,7 @@ export function fieldErrorMessage(el: ControlLike): string {
   if (v.stepMismatch) return 'El valor no es un múltiplo permitido.';
   if (v.tooShort) return `Usa al menos ${el.minLength} caracteres.`;
   if (v.tooLong) return `Usa como máximo ${el.maxLength} caracteres.`;
-  if (v.patternMismatch) return 'El formato no es válido.';
+  if (v.patternMismatch) return el.title || 'El formato no es válido.';
   return el.validationMessage || 'El valor no es válido.';
 }
 

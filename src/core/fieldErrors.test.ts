@@ -13,6 +13,8 @@ describe('fieldErrorMessage', () => {
     [{ rangeOverflow: true }, { max: '9' }, 'Debe ser como máximo 9.'],
     [{ tooShort: true }, { minLength: 3 }, 'Usa al menos 3 caracteres.'],
     [{ badInput: true }, {}, 'El valor no es válido.'],
+    [{ patternMismatch: true }, { title: 'No puede quedar vacío.' }, 'No puede quedar vacío.'],
+    [{ patternMismatch: true }, {}, 'El formato no es válido.'],
     [{}, {}, 'nativo'],
   ])('%j %j -> %s', (flags, extra, expected) => {
     expect(msg(flags, extra)).toBe(expected);
@@ -27,7 +29,7 @@ describe('formularios con asterisco', () => {
   it('Marca y Modelo del editor MPS son required (el chequeo JS queda solo como respaldo)', async () => {
     const { readFileSync } = await import('node:fs');
     const src = readFileSync(new URL('../modules/mps/MpsModelEditor.tsx', import.meta.url), 'utf8');
-    expect(src).toMatch(/<span>Marca \*<\/span><input required name="brand"/);
-    expect(src).toMatch(/<span>Modelo \*<\/span><input required name="model"/);
+    expect(src).toMatch(/<span>Marca \*<\/span><input required pattern="\.\*\\S\.\*" title="[^"]+" name="brand"/);
+    expect(src).toMatch(/<span>Modelo \*<\/span><input required pattern="\.\*\\S\.\*" title="[^"]+" name="model"/);
   });
 });
