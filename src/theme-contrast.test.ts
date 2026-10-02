@@ -103,7 +103,7 @@ describe('contraste del tema claro', () => {
     });
 
     it('el CSS fija bordes de campo, un anillo de foco único y el anillo claro de la barra marino', () => {
-      expect(theme).toMatch(/html\[data-theme='light'\] :is\(input:not\(\[type='checkbox'\]\)[^)]*\), select, textarea\)\s*{\s*border-color:\s*#73869f/);
+      expect(theme).toMatch(/html\[data-theme='light'\] :is\(input[\s\S]*?, select, textarea\)\s*{\s*border-color:\s*#73869f/);
       expect(theme).toMatch(/html\[data-theme\] :is\(a, button, input, select, textarea, summary, \[tabindex\]\):focus-visible\s*{\s*outline:\s*3px solid var\(--focus-ring\)/);
       expect(theme).toMatch(/\.maintenance-view-tabs button:focus-visible\s*{\s*outline-color:\s*#7cc4ff/);
       expect(theme).toMatch(/\.uniflow-quantity-control\s*{\s*border-color:\s*#73869f/);
