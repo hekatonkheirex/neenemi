@@ -3164,14 +3164,16 @@ html[data-theme='light'] .software-recommendation summary {
 }
 
 /* Barrido de contraste en tema claro (WCAG AA): texto naranja, blanco sobre naranja y colores del tema oscuro sin variante clara. */
-html[data-theme='light'] .maintenance-view-tabs button.is-active,
-html[data-theme='light'] .maintenance-view-tabs button.is-active span,
-html[data-theme='light'] .maintenance-view-tabs button.is-active strong {
+/* La pestaña activa es una píldora blanca y el botón de carga es naranja en los dos temas. */
+/* html[data-theme] (0,1,1) está en los dos temas y gana a las reglas claras existentes, que llevan prefijo. */
+html[data-theme] .maintenance-view-tabs button.is-active,
+html[data-theme] .maintenance-view-tabs button.is-active span,
+html[data-theme] .maintenance-view-tabs button.is-active strong {
   color: #b84d00;
 }
 
-html[data-theme='light'] .maintenance-source-upload-primary,
-html[data-theme='light'] .maintenance-source-upload-primary span {
+html[data-theme] .maintenance-source-upload-primary,
+html[data-theme] .maintenance-source-upload-primary span {
   color: var(--ds-navy);
 }
 
@@ -3198,11 +3200,15 @@ html[data-theme='light'] .discontinuation-model-count {
 }
 
 /* Mantenimiento: números de paso, copias por equipo y porcentaje de prioridad (3,9-4,4:1 -> AA). */
-html[data-theme='light'] .maintenance-view-tabs button:not(.is-active) span:first-child,
-html[data-theme='light'] .maintenance-subset-row b {
+html[data-theme='light'] .page-content .maintenance-subset-row b {
   color: var(--ds-subtle);
 }
 
-html[data-theme='light'] .maintenance-priority-row b {
+html[data-theme='light'] .page-content .maintenance-priority-row b {
   color: #7a4a00;
+}
+
+/* La barra de pestañas es azul marino (#182b4a) en los dos temas: los números de paso (#7187aa, 3,9:1) van claros en ambos. */
+html[data-theme] .page-content .maintenance-view-tabs button:not(.is-active) span:first-child {
+  color: #93a8ca;
 }

@@ -37,4 +37,15 @@ describe('contraste del tema claro', () => {
     expect(theme).toMatch(/\.coverage-upload-dropzone\s*{[^}]*background:\s*var\(--ds-blue-wash\)/);
     expect(theme).toMatch(/\.software-category-tabs button\.active\s*{[^}]*background:\s*var\(--ds-blue-wash\)/);
   });
+
+  it('Mantenimiento: las reglas válidas en los dos temas llevan html[data-theme] (sin él pierden frente a las claras)', () => {
+    expect(theme).toMatch(/html\[data-theme\] \.maintenance-view-tabs button\.is-active,/);
+    expect(theme).toMatch(/html\[data-theme\] \.maintenance-source-upload-primary,/);
+    expect(theme).toMatch(/html\[data-theme\] \.page-content \.maintenance-view-tabs button:not\(\.is-active\) span:first-child\s*{\s*color:\s*#93a8ca/);
+  });
+
+  it('la barra azul marino de pestañas: los números claros cumplen 4,5:1', () => {
+    expect(ratio('#93a8ca', '#182b4a')).toBeGreaterThanOrEqual(4.5);
+    expect(ratio('#b84d00', white)).toBeGreaterThanOrEqual(4.5); // pestaña activa: píldora blanca con texto naranja oscuro
+  });
 });
