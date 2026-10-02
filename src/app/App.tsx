@@ -26,7 +26,7 @@ import ConfirmDialogHost from '../core/ConfirmDialog';
 import CommandPalette from './CommandPalette';
 import ModuleSkeleton from './ModuleSkeleton';
 import { persistLastModule, readLastModule } from './lastModule';
-import { hasUnsavedChanges } from '../core/unsavedChanges';
+import { guardUnload, hasUnsavedChanges } from '../core/unsavedChanges';
 import { buildPaletteEntries } from './commandPalette';
 
 const CatalogModule = lazy(() => import('../modules/catalogo/CatalogModule'));
@@ -121,6 +121,11 @@ export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   const activeModule = suiteModules.find((module) => module.id === activeModuleId);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', guardUnload);
+    return () => window.removeEventListener('beforeunload', guardUnload);
+  }, []);
 
   useEffect(() => {
     persistLastModule(activeModuleId, getThemeStorage());

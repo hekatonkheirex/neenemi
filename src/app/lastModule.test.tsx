@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { hasUnsavedChanges, registerUnsaved } from '../core/unsavedChanges';
+import { guardUnload, hasUnsavedChanges, registerUnsaved } from '../core/unsavedChanges';
 import ModuleSkeleton from './ModuleSkeleton';
 import { LAST_MODULE_STORAGE_KEY, persistLastModule, readLastModule, type ModuleStorage } from './lastModule';
 
@@ -65,6 +65,26 @@ describe('cambios sin guardar', () => {
     expect(hasUnsavedChanges()).toBe(true);
     b();
     expect(hasUnsavedChanges()).toBe(false);
+  });
+});
+
+describe('guardUnload (beforeunload)', () => {
+  it('no cancela el cierre si no hay borradores', () => {
+    const event = { preventDefault: () => { throw new Error('no debe cancelar'); }, returnValue: undefined as unknown };
+    guardUnload(event);
+    expect(event.returnValue).toBeUndefined();
+  });
+
+  it('cancela el cierre mientras haya un borrador y deja de hacerlo al liberarlo', () => {
+    const release = registerUnsaved();
+    let prevented = 0;
+    const event = { preventDefault: () => { prevented += 1; }, returnValue: undefined as unknown };
+    guardUnload(event);
+    expect(prevented).toBe(1);
+    expect(event.returnValue).toBe('');
+    release();
+    guardUnload({ preventDefault: () => { prevented += 1; } });
+    expect(prevented).toBe(1);
   });
 });
 

@@ -3,6 +3,7 @@ const { fork } = require('node:child_process');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { migrateLegacyDataDirectory, listLegacyDataSources } = require('./migrate-data.cjs');
+const { attachUnloadGuard } = require('./unload-guard.cjs');
 
 const WINDOW_BACKGROUND_COLOR = '#0b1220';
 let localApiProcess;
@@ -85,6 +86,8 @@ function createWindow(rendererUrl) {
       sandbox: true,
     },
   });
+
+  attachUnloadGuard(window, dialog);
 
   window.webContents.setWindowOpenHandler(({ url }) => {
     if (isLocalUrl(url)) return { action: 'deny' };
