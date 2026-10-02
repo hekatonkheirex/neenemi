@@ -5,6 +5,7 @@ import { normalizeModelName, type CatalogFamilySummary, type CatalogModelNote, t
 import { exportPriceList } from './export';
 import type { PricingSettings, SalesPricePart } from './types';
 import { confirmAction } from '../../core/confirm';
+import { useUnsavedChanges } from '../../core/unsavedChanges';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const decimalFormat = new Intl.NumberFormat('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
@@ -19,6 +20,7 @@ export default function ListadoPreciosModule() {
   const [sourceFile, setSourceFile] = useState<CatalogSourceFile | null>(null);
   const [pricing, setPricing] = useState<PricingSettings | null>(null);
   const [draftPricing, setDraftPricing] = useState<PricingSettings | null>(null);
+  useUnsavedChanges(draftPricing !== null && JSON.stringify(draftPricing) !== JSON.stringify(pricing));
   const [query, setQuery] = useState('');
   const [modelName, setModelName] = useState('');
   const [familyName, setFamilyName] = useState('');

@@ -18,6 +18,7 @@ import type {
 } from './types';
 import { UNIFLOW_PRICE_TABS } from './types';
 import { confirmAction } from '../../core/confirm';
+import { useUnsavedChanges } from '../../core/unsavedChanges';
 
 const INITIAL_DEVICE: UniflowAddedDevice = { id: 'row-1', modelName: '', quantity: 1, withCIP: false };
 const PRICE_TAB_LABELS: Record<UniflowPriceTabId, string> = {
@@ -38,6 +39,8 @@ type PrintableUniflowReport = {
 export default function UniflowModule() {
   const [catalog, setCatalog] = useState<UniflowPriceCatalog | null>(null);
   const [priceDraft, setPriceDraft] = useState<UniflowPriceCatalog | null>(null);
+  const priceDraftDirty = priceDraft !== null && JSON.stringify(priceDraft) !== JSON.stringify(catalog);
+  useUnsavedChanges(priceDraftDirty);
   const [devices, setDevices] = useState<UniflowAddedDevice[]>([{ ...INITIAL_DEVICE }]);
   const [months, setMonths] = useState(36);
   const [clientName, setClientName] = useState('');

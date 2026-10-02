@@ -2959,3 +2959,45 @@ html[data-theme='light'] .command-palette-list li.command-palette-empty {
 html[data-theme='light'] .command-palette-list li.active {
   background: var(--ds-blue-wash);
 }
+
+/* Skeleton de carga de módulo (src/app/ModuleSkeleton.tsx) */
+.module-skeleton {
+  /* Aparece tras 150 ms: si el módulo carga más rápido, no hay parpadeo. */
+  opacity: 0;
+  animation: skeleton-appear 0.01ms linear 150ms forwards;
+}
+
+@keyframes skeleton-appear {
+  to { opacity: 1; }
+}
+
+@keyframes skeleton-pulse {
+  50% { opacity: 0.55; }
+}
+
+.skeleton-block {
+  border-radius: 0.6rem;
+  background: rgba(144, 174, 229, 0.16);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-eyebrow { width: 9rem; height: 0.8rem; margin-bottom: 1rem; }
+.skeleton-title { width: min(26rem, 80%); height: 2.6rem; margin-bottom: 1.6rem; }
+.skeleton-table { height: 14rem; }
+
+.skeleton-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+
+.skeleton-cards .skeleton-block { height: 6rem; }
+
+html[data-theme='light'] .skeleton-block {
+  background: var(--ds-border);
+}
+
+@media (max-width: 720px) {
+  .skeleton-cards { grid-template-columns: 1fr; }
+}

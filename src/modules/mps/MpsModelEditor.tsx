@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
+import { useUnsavedChanges } from '../../core/unsavedChanges';
 import type { MpsConsumable, MpsModel, SaveMpsModelInput } from './repository';
 
 type EditorMode = 'create' | 'edit' | 'clone';
@@ -69,6 +70,7 @@ export default function MpsModelEditor({ mode, model, models, saving, onCancel, 
   const [draft, setDraft] = useState<ModelDraft>(() => makeDraft(mode, model));
   const [copySourceId, setCopySourceId] = useState('');
   const [formError, setFormError] = useState('');
+  useUnsavedChanges(JSON.stringify(draft) !== JSON.stringify(makeDraft(mode, model)));
 
   useEffect(() => {
     setDraft(makeDraft(mode, model));

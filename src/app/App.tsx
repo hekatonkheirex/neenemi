@@ -24,6 +24,9 @@ import suiteLogoUrl from '../../build/icon.png';
 import { confirmAction } from '../core/confirm';
 import ConfirmDialogHost from '../core/ConfirmDialog';
 import CommandPalette from './CommandPalette';
+import ModuleSkeleton from './ModuleSkeleton';
+import { persistLastModule, readLastModule } from './lastModule';
+import { hasUnsavedChanges } from '../core/unsavedChanges';
 import { buildPaletteEntries } from './commandPalette';
 
 const CatalogModule = lazy(() => import('../modules/catalogo/CatalogModule'));
@@ -110,7 +113,7 @@ export default function App() {
   const [overview, setOverview] = useState<SuiteOverview | null>(null);
   const [overviewState, setOverviewState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [overviewRetryKey, setOverviewRetryKey] = useState(0);
-  const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
+  const [activeModuleId, setActiveModuleId] = useState<string | null>(() => readLastModule(getThemeStorage(), suiteModules.map((module) => module.id)));
   const [theme, setTheme] = useState<Theme>(() => readTheme(getThemeStorage()));
   const [clearingImports, setClearingImports] = useState(false);
   const [clearImportsMessage, setClearImportsMessage] = useState<ClearImportsMessage | null>(null);
@@ -118,6 +121,23 @@ export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   const activeModule = suiteModules.find((module) => module.id === activeModuleId);
+
+  useEffect(() => {
+    persistLastModule(activeModuleId, getThemeStorage());
+  }, [activeModuleId]);
+
+  async function navigateTo(id: string | null) {
+    if (id === activeModuleId) return;
+    if (hasUnsavedChanges()) {
+      const leave = await confirmAction({
+        title: 'Salir sin guardar',
+        message: 'Hay cambios sin guardar en este módulo. Si sales ahora se perderán.',
+        confirmLabel: 'Salir sin guardar',
+      });
+      if (!leave) return;
+    }
+    setActiveModuleId(id);
+  }
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -250,7 +270,7 @@ export default function App() {
             className={`nav-item ${activeModuleId === null ? 'active' : ''}`}
             aria-current={activeModuleId === null ? 'page' : undefined}
             type="button"
-            onClick={() => setActiveModuleId(null)}
+            onClick={() => void navigateTo(null)}
           >
             <span className="nav-icon" aria-hidden="true"><HugeiconsIcon icon={GridViewIcon} size={16} /></span>
             <span>Resumen</span>
@@ -267,7 +287,7 @@ export default function App() {
                     key={module.id}
                     aria-current={activeModuleId === module.id ? 'page' : undefined}
                     type="button"
-                    onClick={() => setActiveModuleId(module.id)}
+                    onClick={() => void navigateTo(module.id)}
                   >
                     <span className="nav-icon" aria-hidden="true"><HugeiconsIcon icon={moduleIcons[module.id]} size={16} /></span>
                     <span>{module.label}</span>
@@ -311,9 +331,9 @@ export default function App() {
           </div>
         </header>
 
-        <Suspense fallback={<div className="page-content"><p className="lead">Cargando módulo…</p></div>}>
+        <Suspense fallback={<ModuleSkeleton />}>
           {activeModule ? renderModule(activeModule) : <Dashboard
-            onSelect={setActiveModuleId}
+            onSelect={(id) => void navigateTo(id)}
             overview={overview}
             overviewState={overviewState}
             onRetryOverview={() => setOverviewRetryKey((value) => value + 1)}
@@ -328,7 +348,7 @@ export default function App() {
       {paletteOpen ? (
         <CommandPalette
           entries={buildPaletteEntries(suiteModules, sectionLabels)}
-          onSelect={(id) => { setActiveModuleId(id); setPaletteOpen(false); }}
+          onSelect={(id) => { setPaletteOpen(false); void navigateTo(id); }}
           onClose={() => setPaletteOpen(false)}
         />
       ) : null}
