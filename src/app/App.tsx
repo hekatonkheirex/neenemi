@@ -25,6 +25,7 @@ import { confirmAction } from '../core/confirm';
 import ConfirmDialogHost from '../core/ConfirmDialog';
 import CommandPalette from './CommandPalette';
 import ModuleSkeleton from './ModuleSkeleton';
+import ChangelogDialog from './ChangelogDialog';
 import { persistLastModule, readLastModule } from './lastModule';
 import { guardUnload, hasUnsavedChanges } from '../core/unsavedChanges';
 import { installFieldErrors } from '../core/fieldErrors';
@@ -111,6 +112,7 @@ function getThemeStorage(): Storage | undefined {
 
 export default function App() {
   const [health, setHealth] = useState<Health | null>(null);
+  const [changelogOpen, setChangelogOpen] = useState(false);
   const [overview, setOverview] = useState<SuiteOverview | null>(null);
   const [overviewState, setOverviewState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [overviewRetryKey, setOverviewRetryKey] = useState(0);
@@ -209,12 +211,6 @@ export default function App() {
     return () => { cancelled = true; };
   }, [activeModuleId, importsRefreshKey, overviewRetryKey]);
 
-  const databaseLabel = health?.ok
-    ? 'SQLite local lista'
-    : health
-      ? 'SQLite requiere atención'
-      : 'Conectando con SQLite';
-
   async function clearImportedFiles() {
     if (clearingImports) return;
     const confirmed = await confirmAction({
@@ -306,12 +302,14 @@ export default function App() {
           })}
         </nav>
 
-        <div className="sidebar-footer" role="status">
-          <span className={`status-dot ${health?.ok ? 'ready' : health ? 'error' : 'pending'}`} />
-          <span>{databaseLabel}</span>
-        </div>
-        <div className="sidebar-version" aria-label={`Versión v${suiteVersion}`}>
-          Versión v{suiteVersion}
+        {health && !health.ok && (
+          <div className="sidebar-footer" role="status">
+            <span className="status-dot error" />
+            <span>SQLite requiere atención</span>
+          </div>
+        )}
+        <div className="sidebar-version">
+          <button type="button" className="sidebar-version-link" onClick={() => setChangelogOpen(true)} aria-haspopup="dialog" title="Ver historial de cambios">Versión v{suiteVersion}</button>
         </div>
       </aside>
 
@@ -319,7 +317,6 @@ export default function App() {
         <header className="topbar">
           <span className="breadcrumb">DCSS Suite / {activeModule?.label ?? 'Resumen'}</span>
           <div className="topbar-actions">
-            <span className="local-badge">● Solo en este equipo</span>
             <button className="palette-button" type="button" onClick={() => setPaletteOpen(true)} aria-keyshortcuts="Control+K Meta+K" title="Ir a un módulo (Ctrl/⌘ K)">
               Ir a… <kbd>Ctrl K</kbd>
             </button>
@@ -361,6 +358,7 @@ export default function App() {
         />
       ) : null}
       <ConfirmDialogHost />
+      {changelogOpen && <ChangelogDialog currentVersion={suiteVersion} onClose={() => setChangelogOpen(false)} />}
     </div>
   );
 }

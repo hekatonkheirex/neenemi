@@ -199,10 +199,6 @@ html[data-theme='light'] .breadcrumb {
   color: var(--ds-muted);
 }
 
-html[data-theme='light'] .local-badge {
-  color: var(--ds-success);
-}
-
 .topbar-actions {
   display: flex;
   gap: 0.75rem;

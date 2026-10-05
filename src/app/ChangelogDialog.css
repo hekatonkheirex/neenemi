@@ -1,0 +1,17 @@
+.changelog-overlay { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 1.5rem; background: rgba(26, 44, 76, 0.5); }
+.changelog-dialog { display: flex; flex-direction: column; width: min(42rem, 100%); max-height: min(44rem, 100%); border: 1px solid var(--ds-border-strong, #b7c8da); border-radius: .75rem; color: var(--ds-ink, #18243a); background: var(--ds-surface, #fff); box-shadow: 0 1.5rem 4rem rgba(26, 44, 76, .3); overflow: hidden; }
+html[data-theme='dark'] .changelog-dialog { --ds-ink: #edf3ff; --ds-muted: #a4b5ce; --ds-border: #30415c; --ds-surface: #0e1b31; --ds-wash: #1a2c4c; }
+.changelog-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--ds-border, #d6deea); }
+.changelog-header .eyebrow { margin: 0 0 .35rem; }
+.changelog-header h2 { margin: 0; color: inherit; font-size: 1.35rem; letter-spacing: -.02em; }
+.changelog-close { width: 2rem; height: 2rem; border: 1px solid var(--ds-border, #d6deea); border-radius: .5rem; color: inherit; background: none; font-size: 1.25rem; line-height: 1; cursor: pointer; }
+.changelog-list { margin: 0; padding: 0 1.25rem 1rem; overflow-y: auto; list-style: none; }
+.changelog-list li { padding: .9rem 0; border-bottom: 1px solid var(--ds-border, #d6deea); }
+.changelog-list li:last-child { border-bottom: 0; }
+.changelog-list li.current { margin: .5rem -.75rem 0; padding: .9rem .75rem; border-radius: .5rem; background: var(--ds-wash, #e9f5fb); }
+.changelog-meta { display: flex; align-items: center; gap: .6rem; margin-bottom: .35rem; font-size: .85rem; }
+.changelog-meta time { margin-left: auto; color: var(--ds-muted, #4a5568); font-size: .75rem; font-variant-numeric: tabular-nums; }
+.changelog-current { padding: .1rem .45rem; border-radius: .3rem; color: #fff; background: #176b45; font-size: .68rem; font-weight: 700; }
+.changelog-list p { margin: 0; color: var(--ds-muted, #4a5568); font-size: .85rem; line-height: 1.55; overflow-wrap: anywhere; }
+.changelog-list code { padding: .05rem .3rem; border-radius: .25rem; background: var(--ds-surface-alt, #eef3f8); color: inherit; font-size: .78rem; }
+html[data-theme='dark'] .changelog-list code { background: #1a2c4c; }

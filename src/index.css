@@ -159,6 +159,23 @@ button {
   text-align: right;
 }
 
+.sidebar-version-link {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.sidebar-version-link:hover,
+.sidebar-version-link:focus-visible {
+  color: #79aaff;
+}
+
 .content {
   min-width: 0;
 }
@@ -179,13 +196,6 @@ button {
   font-size: 0.75rem;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.local-badge {
-  flex: 0 0 auto;
-  color: #71dfa8;
-  font-size: 0.7rem;
-  font-weight: 700;
 }
 
 .page-content {
