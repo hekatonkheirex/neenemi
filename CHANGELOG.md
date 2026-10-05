@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.53 · 2026-10-05
+
+Reorganiza la barra lateral en cuatro secciones: Servicio Técnico (Gestor de mantenimiento, Analítica de consumibles, Seguimiento de técnicos), Administrativo (Control de viáticos, Listado de precios, Discontinuador, Proformas), Software (Selector de software, Configurador uniFLOW Online) y Herramientas (Cobertura de tóner, Calculadora de insumos MPS, Analizador de cumplimiento de SLA). Quita el módulo Catálogo de repuestos: Listado de precios ya cubre su función y los datos del catálogo siguen en la base. Los respaldos existentes se restauran sin cambios.
+
 ## 0.1.52 · 2026-10-05
 
 "Limpiar cargas" pasa al panel Respaldo y recuperación, junto a Restaurar respaldo (con su mensaje de resultado dentro del panel). El icono del aviso de respaldo se ve en blanco sobre el círculo de color.
