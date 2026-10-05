@@ -168,3 +168,52 @@ export function summarizeDay(analysis: DayAnalysis) {
     excludedServices,
   };
 }
+
+/** Company working hours: Monday to Friday, 07:00 to 18:00. */
+export const WORK_START_HOUR = 7;
+export const WORK_END_HOUR = 18;
+export const WORK_MINUTES = (WORK_END_HOUR - WORK_START_HOUR) * 60;
+export type IdleDay = { day: string; serviceMinutes: number; idleMinutes: number; marked: boolean; excludedServices: number };
+
+/**
+ * Non-effective time per weekday between the technician's first and last marked day: the working window minus merged service
+ * intervals inside it. Weekdays without marks count as fully non-effective (holidays and leave are unknown). Weekends are skipped.
+ */
+export function idleByDay(visits: TrackingVisit[], technician: string, onsiteOnly = true): IdleDay[] {
+  const markedDays = new Set<string>();
+  for (const visit of visits) {
+    if (normalizeIdentity(visit.technician) !== normalizeIdentity(technician) || onsiteOnly && normalizeIdentity(visit.serviceType) !== 'en sitio') continue;
+    for (const stamp of [visit.checkIn, visit.checkOut]) if (stamp) markedDays.add(stamp.slice(0, 10));
+  }
+  const sorted = [...markedDays].sort();
+  if (!sorted.length) return [];
+  const rows: IdleDay[] = [];
+  const last = Date.parse(`${sorted[sorted.length - 1]}T00:00:00Z`);
+  for (let t = Date.parse(`${sorted[0]}T00:00:00Z`); t <= last; t += 86_400_000) {
+    const weekday = new Date(t).getUTCDay();
+    if (weekday === 0 || weekday === 6) continue;
+    const day = new Date(t).toISOString().slice(0, 10);
+    const windowStart = t + WORK_START_HOUR * 3_600_000;
+    const windowEnd = t + WORK_END_HOUR * 3_600_000;
+    const intervals: [number, number][] = [];
+    let excludedServices = 0;
+    for (const visit of analyzeDay(visits, technician, day, onsiteOnly).visits) {
+      const start = visit.checkIn ? Date.parse(`${visit.checkIn}Z`) : NaN;
+      const end = visit.checkOut ? Date.parse(`${visit.checkOut}Z`) : NaN;
+      if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) { excludedServices += 1; continue; }
+      const clippedStart = Math.max(start, windowStart);
+      const clippedEnd = Math.min(end, windowEnd);
+      if (clippedEnd > clippedStart) intervals.push([clippedStart, clippedEnd]);
+    }
+    intervals.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    let ms = 0;
+    let coveredUntil = -Infinity;
+    for (const [start, end] of intervals) {
+      ms += Math.max(0, end - Math.max(start, coveredUntil));
+      coveredUntil = Math.max(coveredUntil, end);
+    }
+    const serviceMinutes = ms / 60_000;
+    rows.push({ day, serviceMinutes, idleMinutes: WORK_MINUTES - serviceMinutes, marked: markedDays.has(day), excludedServices });
+  }
+  return rows;
+}

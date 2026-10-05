@@ -1,4 +1,5 @@
-import { isSuspectLeg, legDistance, siteKey, summarizeDay, validateEvent } from './analysis';
+import { isSuspectLeg, legDistance, siteKey, summarizeDay, validateEvent, WORK_END_HOUR, WORK_START_HOUR } from './analysis';
+import type { IdleDay } from './analysis';
 import type { DayAnalysis, EventValidation, SiteReference, TrackingVisit } from './types';
 
 const validationLabels: Record<EventValidation['status'], string> = { inside: 'Dentro de 100 m', outside: 'Fuera de 100 m', 'missing-gps': 'Sin GPS', 'missing-event': 'Sin marcación', unconfirmed: 'Sin sede confirmada' };
@@ -21,7 +22,7 @@ function EventEvidence({ visit, kind, site }: { visit: TrackingVisit; kind: 'in'
     <small>{gps ? `${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}` : 'Sin coordenadas GPS'}</small></div>;
 }
 export type RoadStatus = 'none' | 'loading' | 'ready' | 'failed';
-export default function TrackingTables({ analysis, roadStatus, sites, selectedKey, onSelect }: { analysis: DayAnalysis; roadStatus: RoadStatus; sites: SiteReference[]; selectedKey: string | null; onSelect: (visit: TrackingVisit) => void }) {
+export default function TrackingTables({ analysis, idleDays, roadStatus, sites, selectedKey, onSelect }: { analysis: DayAnalysis; idleDays: IdleDay[]; roadStatus: RoadStatus; sites: SiteReference[]; selectedKey: string | null; onSelect: (visit: TrackingVisit) => void }) {
   const siteIndex = new Map(sites.map(site => [site.key, site]));
   const summary = summarizeDay(analysis);
   return <>
@@ -46,6 +47,12 @@ export default function TrackingTables({ analysis, roadStatus, sites, selectedKe
         <td><strong>{formatDuration(summary.serviceMinutes)}</strong><small>Intervalos completos de check-in a check-out, sin sumar dos veces solapamientos o duplicados. Los servicios que cruzan medianoche se limitan a este día.</small>{summary.excludedServices > 0 && <small className="tracking-issue">{summary.excludedServices} registros excluidos por marcaciones incompletas o inconsistentes · Total parcial.</small>}</td>
       </tr></tbody></table></div>
       <p>El tiempo de servicios se basa en las marcaciones, no demuestra horas de trabajo real ni presencia dentro del cliente. La proximidad a la sede se verifica por separado en la tabla de visitas.</p>
+    </section>
+    <section className="tracking-card tracking-idle-days"><h2>Horas no efectivas por día</h2><p>Jornada de lunes a viernes, {String(WORK_START_HOUR).padStart(2, '0')}:00 a {WORK_END_HOUR}:00 ({WORK_END_HOUR - WORK_START_HOUR} h). No efectivo = jornada menos servicios registrados dentro de ese horario, sin sumar dos veces solapamientos. Incluye traslados, esperas y marcaciones faltantes. Respeta el filtro de servicios.</p>
+      <div className="tracking-table-scroll"><table><thead><tr><th>Día</th><th>Servicios en jornada</th><th>No efectivo</th></tr></thead><tbody>
+        {idleDays.map(row => <tr key={row.day}><td>{row.day}</td><td>{formatDuration(row.serviceMinutes)}</td><td><strong>{formatDuration(row.idleMinutes)}</strong>{!row.marked && <small>Sin marcaciones: puede ser feriado, licencia o falta de registro.</small>}{row.excludedServices > 0 && <small className="tracking-issue">{row.excludedServices} registro(s) excluidos por marcaciones incompletas o inconsistentes · Puede sobrestimar.</small>}</td></tr>)}
+        <tr><td><strong>Total</strong></td><td><strong>{formatDuration(idleDays.reduce((sum, row) => sum + row.serviceMinutes, 0))}</strong></td><td><strong>{formatDuration(idleDays.reduce((sum, row) => sum + row.idleMinutes, 0))}</strong></td></tr>
+      </tbody></table></div>{!idleDays.length && <p role="status">Sin días con marcaciones para este técnico.</p>}
     </section>
   </>;
 }

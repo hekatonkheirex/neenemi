@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { analyzeDay, applyRoads, needsRoad, routePairs, siteKey } from './analysis';
+import { analyzeDay, applyRoads, idleByDay, needsRoad, routePairs, siteKey } from './analysis';
 import { normalizeIdentity, normalizeTrackingSerial } from './parser';
 import RouteMap from './RouteMap';
 import TrackingTables from './TrackingTables';
@@ -43,6 +43,7 @@ export default function TrackingModule() {
   const visits = snapshot?.visits;
   const technicians = useMemo(() => [...new Set((visits ?? []).map(v => v.technician).filter(Boolean))].sort((a, b) => a.localeCompare(b)), [visits]);
   const days = useMemo(() => [...new Set((visits ?? []).filter(v => normalizeIdentity(v.technician) === normalizeIdentity(technician) && (!onsiteOnly || normalizeIdentity(v.serviceType) === 'en sitio')).flatMap(v => [v.checkIn?.slice(0, 10), v.checkOut?.slice(0, 10)]).filter((value): value is string => Boolean(value)))].sort().reverse(), [visits, technician, onsiteOnly]);
+  const idleDays = useMemo(() => idleByDay(visits ?? [], technician, onsiteOnly), [visits, technician, onsiteOnly]);
   const straightAnalysis = useMemo(() => analyzeDay(visits ?? [], technician, day, onsiteOnly), [visits, technician, day, onsiteOnly]);
   const [roads, setRoads] = useState<{ source: DayAnalysis; routes: Record<string, RoadRoute | null> | 'failed' } | null>(null);
   const analysis = useMemo(() => roads?.source === straightAnalysis && roads.routes !== 'failed' ? applyRoads(straightAnalysis, roads.routes) : straightAnalysis, [roads, straightAnalysis]);
@@ -210,7 +211,7 @@ export default function TrackingModule() {
         </section>
       </div>
       <details className="tracking-card"><summary>Cronología de eventos ({analysis.events.length})</summary><ol className="tracking-timeline">{analysis.events.map((event, index) => <li key={event.key}><button type="button" onClick={() => { const visit = visits?.find(v => v.key === event.visitKey); if (visit) selectVisit(visit); }}>{index + 1}. {event.timestamp.slice(11, 19)} · {event.kind === 'in' ? 'Entrada' : 'Salida'} · I.S. {event.reportId} · {event.customer}{!event.coordinate ? ' · Sin GPS' : ''}</button></li>)}</ol></details>
-      <TrackingTables analysis={analysis} roadStatus={roadStatus} sites={state.sites} selectedKey={selectedKey} onSelect={selectVisit} />
+      <TrackingTables analysis={analysis} idleDays={idleDays} roadStatus={roadStatus} sites={state.sites} selectedKey={selectedKey} onSelect={selectVisit} />
       <details className="tracking-card"><summary>Informes sin marcaciones vinculadas ({unmatchedReports.length})</summary><div className="tracking-table-scroll"><table><thead><tr><th>I.S.</th><th>Cliente / sede</th><th>Técnico</th><th>Estado / servicio</th></tr></thead><tbody>{unmatchedReports.map(report => <tr key={`${report.sourceSheet}:${report.sourceRow}`}><td>{report.reportId}</td><td>{report.customer}<small>{report.branch || 'Sucursal no informada'} · {report.address || 'Dirección no informada'}</small></td><td>{report.technician || 'Sin técnico'}</td><td>{report.status}<small>{report.requestedService}</small></td></tr>)}</tbody></table></div></details>
       {undated.length > 0 && <details className="tracking-card"><summary>Registros sin fecha de marcación utilizable ({undated.length})</summary><ul>{undated.map(visit => <li key={visit.key}>I.S. {visit.reportId} · {visit.customer} · {visit.technician} · {visit.issues.join(', ') || 'Sin check-in ni check-out'}</li>)}</ul></details>}
     </>}

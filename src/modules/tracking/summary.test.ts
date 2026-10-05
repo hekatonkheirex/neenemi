@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeDay, applyRoads, pairKey, routePairs, summarizeDay } from './analysis';
+import { analyzeDay, applyRoads, idleByDay, pairKey, routePairs, summarizeDay } from './analysis';
 import type { TrackingVisit } from './types';
 
 function visit(key: string, checkIn: string | null, checkOut: string | null, overrides: Partial<TrackingVisit> = {}): TrackingVisit {
@@ -91,5 +91,36 @@ describe('tracking daily summary', () => {
     const routed = applyRoads(analysis, Object.fromEntries(routePairs(analysis).map(pair => [pair.key, road])));
     expect(routed.legs.every(leg => leg.road === road)).toBe(true);
     expect(summarizeDay(routed)).toMatchObject({ suspectLegs: 1, measuredLegs: 2, roadLegs: 2 });
+  });
+});
+
+describe('idle hours per day (07:00-18:00, Mon-Fri)', () => {
+  // 2026-09-01 is a Tuesday; 09-05 and 09-06 are the weekend; 09-07 is a Monday.
+  const on = (day: string, a: string, b: string, key = day + a) => visit(key, `2026-09-${day}T${a}:00`, `2026-09-${day}T${b}:00`);
+
+  it('subtracts merged services from the 11 h window, clips to it, and skips weekends', () => {
+    const rows = idleByDay([
+      on('01', '06:00', '08:00'), // 1 h inside the window
+      on('01', '09:00', '10:00'), on('01', '09:30', '10:30'), // overlap: 1.5 h once
+      on('01', '17:00', '19:00'), // 1 h inside the window
+      on('04', '08:00', '09:00'), on('05', '08:00', '09:00'), // Friday, then Saturday (ignored)
+      on('07', '08:00', '09:00'),
+    ], 'Ana');
+    expect(rows.map(r => r.day)).toEqual(['2026-09-01', '2026-09-02', '2026-09-03', '2026-09-04', '2026-09-07']);
+    expect(rows[0]).toMatchObject({ serviceMinutes: 210, idleMinutes: 450, marked: true });
+    expect(rows[1]).toMatchObject({ serviceMinutes: 0, idleMinutes: 660, marked: false });
+    expect(rows[3]).toMatchObject({ serviceMinutes: 60, idleMinutes: 600 });
+  });
+
+  it('flags incomplete services, honors the on-site filter and technician', () => {
+    const rows = idleByDay([
+      on('01', '08:00', '09:00'),
+      visit('open', '2026-09-01T10:00:00', null),
+      visit('remote', '2026-09-01T11:00:00', '2026-09-01T12:00:00', { serviceType: 'Remoto' }),
+      visit('other', '2026-09-01T13:00:00', '2026-09-01T14:00:00', { technician: 'Luis' }),
+    ], 'Ana');
+    expect(rows).toEqual([{ day: '2026-09-01', serviceMinutes: 60, idleMinutes: 600, marked: true, excludedServices: 1 }]);
+    expect(idleByDay([visit('remote', '2026-09-01T11:00:00', '2026-09-01T12:00:00', { serviceType: 'Remoto' })], 'Ana', false)[0].serviceMinutes).toBe(60);
+    expect(idleByDay([], 'Ana')).toEqual([]);
   });
 });
