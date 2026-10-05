@@ -120,7 +120,7 @@ export default function RouteMap({ events, legs = [], sites, selectedVisit, cand
       })}
       {candidate && (() => { const p = project(candidate); return <g transform={`translate(${p.x * world - left} ${p.y * world - top})`} className="tracking-candidate-pin"><circle r="12" /><path d="M-18 0 H18 M0 -18 V18" /><title>Ubicación propuesta, todavía no confirmada</title></g>; })()}
     </svg>
-    <div className="tracking-map-footer"><span>Azul: entrada · Naranja: salida · Rombo: sede confirmada (100 m). Línea continua: ruta recomendada por carretera entre visitas. Punteada: línea recta (dentro de la visita o sin ruta).</span><span>Centro: {mapCenter.latitude.toFixed(6)}, {mapCenter.longitude.toFixed(6)}</span></div>
+    <div className="tracking-map-footer"><span>Azul: entrada · Naranja: salida · Rombo: sede confirmada (100 m). Línea continua: posible ruta tomada por carretera entre visitas (estimada, no el GPS real). Punteada: línea recta (dentro de la visita o sin ruta).</span><span>Centro: {mapCenter.latitude.toFixed(6)}, {mapCenter.longitude.toFixed(6)}</span></div>
     {editing && <button type="button" className="secondary-button" onClick={() => onPick(mapCenter)}>Usar centro del mapa como sede propuesta</button>}
     <small>Fondo de calles activo automáticamente · requiere internet; envía la zona visible, no los archivos, nombres ni direcciones. © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a></small>
     {tilesFailed && <p role="status">No se pudo cargar parte del mapa base. Los puntos y cálculos locales siguen disponibles.</p>}

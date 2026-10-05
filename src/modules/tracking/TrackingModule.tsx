@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { analyzeDay, applyRoads, siteKey } from './analysis';
+import { analyzeDay, applyRoads, needsRoad, siteKey } from './analysis';
 import { normalizeIdentity, normalizeTrackingSerial } from './parser';
 import RouteMap from './RouteMap';
 import TrackingTables from './TrackingTables';
@@ -46,7 +46,7 @@ export default function TrackingModule() {
   const straightAnalysis = useMemo(() => analyzeDay(visits ?? [], technician, day, onsiteOnly), [visits, technician, day, onsiteOnly]);
   const [roads, setRoads] = useState<{ source: DayAnalysis; routes: (RoadRoute | null)[] | 'failed' } | null>(null);
   const analysis = useMemo(() => roads?.source === straightAnalysis && roads.routes !== 'failed' ? applyRoads(straightAnalysis, roads.routes) : straightAnalysis, [roads, straightAnalysis]);
-  const roadStatus = !straightAnalysis.legs.some(leg => leg.distanceMeters !== null) ? 'none' : roads?.source !== straightAnalysis ? 'loading' : roads.routes === 'failed' ? 'failed' : 'ready';
+  const roadStatus = !straightAnalysis.legs.some(needsRoad) ? 'none' : roads?.source !== straightAnalysis ? 'loading' : roads.routes === 'failed' ? 'failed' : 'ready';
   const selected = visits?.find(v => v.key === selectedKey) ?? null;
   const selectedSite = selected ? state.sites.find(site => site.key === siteKey(selected)) : undefined;
   const serialSite = state.sites.find(site => site.serialNumber && site.serialNumber === normalizeTrackingSerial(serialNumber));
@@ -62,7 +62,7 @@ export default function TrackingModule() {
     return () => { cancelled = true; };
   }, []);
   useEffect(() => {
-    const indexes = straightAnalysis.legs.flatMap((leg, index) => leg.distanceMeters !== null ? [index] : []);
+    const indexes = straightAnalysis.legs.flatMap((leg, index) => needsRoad(leg) ? [index] : []);
     if (!indexes.length) return;
     const controller = new AbortController();
     fetch('/api/tracking/route', {

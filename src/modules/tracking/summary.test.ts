@@ -60,4 +60,13 @@ describe('tracking daily summary', () => {
     expect(summary.distanceMeters).toBeCloseTo(1800 + 1111.95, 0);
     expect(summarizeDay(analysis).roadLegs).toBe(0);
   });
+
+  it('keeps the straight line for legs inside the site radius', () => {
+    const analysis = analyzeDay([
+      visit('1', at('08:00'), at('09:00'), { gpsOut: { latitude: -25, longitude: -57 } }),
+      visit('2', at('10:00'), at('11:00'), { gpsIn: { latitude: -25.0005, longitude: -57 } }),
+    ], 'Ana', '2026-09-01');
+    const road = { distanceMeters: 458, geometry: [{ latitude: -25, longitude: -57 }, { latitude: -25.0005, longitude: -57 }] };
+    expect(applyRoads(analysis, [road]).legs[0].road).toBeUndefined();
+  });
 });

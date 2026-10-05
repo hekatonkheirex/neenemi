@@ -63,9 +63,14 @@ export function legDistance(leg: TravelLeg): number | null {
   return leg.road?.distanceMeters ?? leg.distanceMeters;
 }
 
+/** Legs inside the site radius are same-place moves: snapping GPS noise to a street would invent distance. */
+export function needsRoad(leg: TravelLeg): boolean {
+  return leg.distanceMeters !== null && leg.distanceMeters > TRACKING_RADIUS_METERS;
+}
+
 /** `roads` is aligned with `analysis.legs`; null or missing entries keep the straight-line fallback. */
 export function applyRoads(analysis: DayAnalysis, roads: (RoadRoute | null)[]): DayAnalysis {
-  return { ...analysis, legs: analysis.legs.map((leg, index) => roads[index] && leg.distanceMeters !== null ? { ...leg, road: roads[index]! } : leg) };
+  return { ...analysis, legs: analysis.legs.map((leg, index) => roads[index] && needsRoad(leg) ? { ...leg, road: roads[index]! } : leg) };
 }
 
 export function summarizeDay(analysis: DayAnalysis) {
