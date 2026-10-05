@@ -291,6 +291,16 @@ h2 {
   letter-spacing: -0.07em;
 }
 
+/* Las tarjetas de resumen en rejilla escalan el valor con su ancho: un monto completo en guaraníes (₲ 2.723.113.406) a 2.5rem se salía de la tarjeta. */
+.summary-grid > .summary-card {
+  container-type: inline-size;
+}
+
+.summary-grid > .summary-card .summary-value {
+  font-size: clamp(1.5rem, 11cqi, 2.5rem);
+  white-space: nowrap;
+}
+
 .summary-label {
   color: #91a6c8;
   font-size: 0.75rem;
