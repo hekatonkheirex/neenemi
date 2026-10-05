@@ -24,6 +24,7 @@ import suiteLogoUrl from '../../build/icon.png';
 import { confirmAction } from '../core/confirm';
 import ConfirmDialogHost from '../core/ConfirmDialog';
 import CommandPalette from './CommandPalette';
+import BackupAlertDot from './BackupAlertDot';
 import ModuleSkeleton from './ModuleSkeleton';
 import ChangelogDialog from './ChangelogDialog';
 import { persistLastModule, readLastModule } from './lastModule';
@@ -291,7 +292,7 @@ export default function App() {
           >
             <span className="nav-icon" aria-hidden="true"><HugeiconsIcon icon={GridViewIcon} size={16} /></span>
             <span>Inicio</span>
-            {backupDue ? <span className="nav-alert" role="img" aria-label="Respaldo pendiente" title="Respaldo pendiente: abre Inicio para descargarlo" /> : null}
+            {backupDue ? <BackupAlertDot /> : null}
           </button>
 
           {sectionOrder.map((section) => {

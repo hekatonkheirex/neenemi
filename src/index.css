@@ -13093,4 +13093,6 @@ html[data-theme='light'] .ai-key-message.error { color: var(--ds-danger); }
 .database-recovery-body { display: grid; grid-template-columns: 1fr; gap: 1rem 2rem; align-items: center; }
 .database-recovery-body .database-recovery-copy h3 { font-size: 1rem; }
 
-.nav-alert { width: 0.6rem; height: 0.6rem; margin-left: auto; border-radius: 50%; background: #d92d20; box-shadow: 0 0 0 3px rgba(217, 45, 32, 0.22); }
+.nav-alert { position: relative; display: inline-block; flex: 0 0 auto; width: 0.6rem; height: 0.6rem; margin-left: auto; }
+.nav-alert-core, .nav-alert-ring { position: absolute; inset: 0; border-radius: 50%; background: #d92d20; }
+.nav-alert-ring { opacity: 0.6; }
