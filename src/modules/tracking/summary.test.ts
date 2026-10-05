@@ -80,16 +80,16 @@ describe('tracking daily summary', () => {
     expect(pairs.map(p => p.key)).toEqual([pairKey({ latitude: -25, longitude: -57 }, far)]);
   });
 
-  it('flags services whose check-in and check-out are over 5 km apart but still routes their legs', () => {
+  it('flags a leg only when both ends are services with check-in and check-out over 5 km apart', () => {
     const analysis = analyzeDay([
       visit('1', at('08:00'), at('09:00'), { gpsIn: { latitude: -25, longitude: -57 }, gpsOut: { latitude: -25, longitude: -57 } }),
       visit('2', at('10:00'), at('11:00'), { gpsIn: { latitude: -25.1, longitude: -57 }, gpsOut: { latitude: -25.2, longitude: -57 } }),
-      visit('3', at('12:00'), at('13:00'), { gpsIn: { latitude: -25.3, longitude: -57 }, gpsOut: { latitude: -25.3, longitude: -57 } }),
+      visit('3', at('12:00'), at('13:00'), { gpsIn: { latitude: -25.3, longitude: -57 }, gpsOut: { latitude: -25.4, longitude: -57 } }),
     ], 'Ana', '2026-09-01');
-    expect(analysis.suspectVisitKeys).toEqual(['2']);
+    expect(analysis.suspectVisitKeys).toEqual(['2', '3']);
     const road = { distanceMeters: 5, geometry: [{ latitude: 0, longitude: 0 }, { latitude: 1, longitude: 1 }] };
     const routed = applyRoads(analysis, Object.fromEntries(routePairs(analysis).map(pair => [pair.key, road])));
     expect(routed.legs.every(leg => leg.road === road)).toBe(true);
-    expect(summarizeDay(routed)).toMatchObject({ suspectLegs: 2, measuredLegs: 2, roadLegs: 2 });
+    expect(summarizeDay(routed)).toMatchObject({ suspectLegs: 1, measuredLegs: 2, roadLegs: 2 });
   });
 });

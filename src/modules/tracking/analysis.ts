@@ -69,11 +69,12 @@ export function needsRoad(leg: TravelLeg): boolean {
   return leg.distanceMeters !== null && leg.distanceMeters > TRACKING_RADIUS_METERS;
 }
 
+/** Doubtful only when both ends belong to services with inconsistent GPS; one doubtful end alone is not enough to discredit the move. */
 export function isSuspectLeg(analysis: DayAnalysis, leg: TravelLeg): boolean {
-  return analysis.suspectVisitKeys.includes(leg.from.key) || analysis.suspectVisitKeys.includes(leg.to.key);
+  return analysis.suspectVisitKeys.includes(leg.from.key) && analysis.suspectVisitKeys.includes(leg.to.key);
 }
 export function isSuspectSegment(analysis: Pick<DayAnalysis, 'suspectVisitKeys'>, from: RouteEvent, to: RouteEvent): boolean {
-  return analysis.suspectVisitKeys.includes(from.visitKey) || analysis.suspectVisitKeys.includes(to.visitKey);
+  return analysis.suspectVisitKeys.includes(from.visitKey) && analysis.suspectVisitKeys.includes(to.visitKey);
 }
 
 export const pairKey = (from: Coordinate, to: Coordinate) => `${from.latitude},${from.longitude};${to.latitude},${to.longitude}`;
