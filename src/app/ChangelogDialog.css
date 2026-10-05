@@ -11,7 +11,7 @@ html[data-theme='dark'] .changelog-dialog { --ds-ink: #edf3ff; --ds-muted: #a4b5
 .changelog-list li.current { margin: .5rem -.75rem 0; padding: .9rem .75rem; border-radius: .5rem; background: var(--ds-wash, #e9f5fb); }
 .changelog-meta { display: flex; align-items: center; gap: .6rem; margin-bottom: .35rem; font-size: .85rem; }
 .changelog-meta time { margin-left: auto; color: var(--ds-muted, #4a5568); font-size: .75rem; font-variant-numeric: tabular-nums; }
-.changelog-current { padding: .1rem .45rem; border-radius: .3rem; color: #fff; background: #176b45; font-size: .68rem; font-weight: 700; }
+html[data-theme] .changelog-meta .changelog-current { padding: .1rem .45rem; border-radius: .3rem; color: #fff; background: #176b45; font-size: .72rem; font-weight: 700; letter-spacing: .02em; }
 .changelog-list p { margin: 0; color: var(--ds-muted, #4a5568); font-size: .85rem; line-height: 1.55; overflow-wrap: anywhere; }
 .changelog-list code { padding: .05rem .3rem; border-radius: .25rem; background: var(--ds-surface-alt, #eef3f8); color: inherit; font-size: .78rem; }
 html[data-theme='dark'] .changelog-list code { background: #1a2c4c; }
