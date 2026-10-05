@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { filterPaletteEntries, type PaletteEntry } from './commandPalette';
+import { filterPaletteEntries, type PaletteEntry } from './commandPaletteModel';
 
 type Props = { entries: readonly PaletteEntry[]; onSelect: (id: string | null) => void; onClose: () => void };
 

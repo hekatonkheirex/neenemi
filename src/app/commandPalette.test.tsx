@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import App from './App';
 import CommandPalette from './CommandPalette';
-import { buildPaletteEntries, filterPaletteEntries } from './commandPalette';
+import { buildPaletteEntries, filterPaletteEntries } from './commandPaletteModel';
 import { suiteModules } from './modules';
 
 const labels = { catálogo: 'Catálogo', operaciones: 'Operaciones', ventas: 'Ventas', análisis: 'Análisis', soporte: 'Soporte' } as const;

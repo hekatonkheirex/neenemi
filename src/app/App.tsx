@@ -28,7 +28,7 @@ import ModuleSkeleton from './ModuleSkeleton';
 import { persistLastModule, readLastModule } from './lastModule';
 import { guardUnload, hasUnsavedChanges } from '../core/unsavedChanges';
 import { installFieldErrors } from '../core/fieldErrors';
-import { buildPaletteEntries } from './commandPalette';
+import { buildPaletteEntries } from './commandPaletteModel';
 
 const CatalogModule = lazy(() => import('../modules/catalogo/CatalogModule'));
 const MantenimientoModule = lazy(() => import('../modules/operaciones/MantenimientoModule'));
