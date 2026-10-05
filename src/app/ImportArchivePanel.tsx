@@ -271,10 +271,21 @@ function ImportBatchList({
           <strong>{batch.sourceName}</strong>
           <span>{formatImportDomain(batch.domain)} · {formatImportStatus(batch.status)}</span>
           <small>{numberFormat.format(batch.rawRows)} filas · {numberFormat.format(batch.rawSheets)} hojas originales</small>
+          <small className="source-data-batch-date">{formatBatchDate(batch)}</small>
         </button>
       ))}
     </div>
   );
+}
+
+const batchDateFormat = new Intl.DateTimeFormat('es-PY', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+
+/** Fecha de aplicación si ya se aplicó; si no, la de creación. */
+export function formatBatchDate(batch: Pick<ImportBatchSummary, 'status' | 'createdAt' | 'appliedAt'>): string {
+  const applied = batch.status === 'applied' && batch.appliedAt;
+  const date = new Date(applied || batch.createdAt);
+  if (Number.isNaN(date.getTime())) return 'Sin fecha';
+  return `${applied ? 'Aplicada' : 'Cargada'} ${batchDateFormat.format(date)}`;
 }
 
 function ImportArchiveViewer({
