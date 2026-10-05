@@ -690,8 +690,10 @@ li::before {
   padding-top: 3.8rem;
 }
 
+/* Con wrap, las acciones pasan debajo del título cuando no caben (960 px: Viáticos se salía 17 px). */
 .catalog-header {
   display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
   align-items: end;
   justify-content: space-between;
@@ -1568,8 +1570,10 @@ li::before {
   background: rgba(15, 27, 48, 0.72);
 }
 
+/* Con wrap, el contador o la nota pasa a otra línea si el título no deja sitio (SLA a 960 px: el badge "5" se salía 9 px). */
 .card-heading {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   align-items: end;
   justify-content: space-between;
@@ -3655,7 +3659,8 @@ li::before {
 }
 
 /* Van después de la regla base: las versiones anteriores, dentro de los @media de arriba, perdían por orden de fuente. */
-@media (max-width: 1050px) {
+/* Las tres tarjetas piden 741 px como mínimo; a 1051-1150 px de ventana el contenido mide ~700 px y la tercera se salía 41 px. */
+@media (max-width: 1150px) {
   .discontinuation-insights {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3724,9 +3729,11 @@ li::before {
   background: rgba(12, 23, 41, 0.42);
 }
 
+/* "Discontinuado" + "N equipos" ocupan 185 px de los 185 libres a 960 px: con 3 cifras ya se salía 5 px. */
 .discontinuation-model-card-heading {
   display: flex;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
   align-items: center;
   justify-content: space-between;
 }
@@ -5644,6 +5651,8 @@ html[data-theme='dark'] .anim-tabs {
 .anim-tabs.has-hint button {
   flex: 1 1 8.8rem;
   min-width: 8.8rem;
+  /* A 960 px cada pestaña mide ~155 px y el subtítulo (~165 px) se cortaba: que baje a otra línea. */
+  white-space: normal;
   padding: 0.65rem 0.85rem;
   text-align: left;
   text-transform: none;
@@ -8178,8 +8187,10 @@ html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
   padding-top: 3.8rem;
 }
 
+/* Con wrap, las acciones pasan debajo del título cuando no caben (960 px: Viáticos se salía 17 px). */
 .travel-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.65rem;
   align-items: center;
 }
@@ -8554,7 +8565,8 @@ html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
   display: grid;
   grid-template-columns: repeat(12, minmax(3.2rem, 1fr));
   gap: 0.55rem;
-  min-width: 560px;
+  /* 12 columnas de 3.2rem + 11 huecos de 0.55rem: con 560 px las últimas columnas se salían de la rejilla (el contenedor ya hace scroll). */
+  min-width: calc(12 * 3.2rem + 11 * 0.55rem);
   align-items: end;
 }
 
@@ -8643,9 +8655,22 @@ html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
 }
 
 /* Etiqueta + "N viajes" en una celda de ~130 px: que el contador pase a la línea de abajo en vez de cortar el nombre ("MÓVIL P…"). */
-.travel-overview-row-heading {
+.travel-overview-row-heading,
+.travel-overview-destination-content > div:first-child {
   flex-wrap: wrap;
   row-gap: 0.1rem;
+}
+
+/* Tarjetas de ~270 px (960-1150 px de ventana): etiqueta y monto arriba, barra debajo; en 3 columnas sumaban 353 px. */
+@media (max-width: 1150px) {
+  .travel-overview-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .travel-overview-row > .travel-overview-track {
+    grid-row: 2;
+    grid-column: 1 / -1;
+  }
 }
 
 .travel-overview-row-heading strong,

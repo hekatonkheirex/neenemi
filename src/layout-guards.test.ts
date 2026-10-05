@@ -30,6 +30,26 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
     expect(block).toMatch(/border:\s*1px solid rgba\(144, 174, 229, 0\.17\)/);
   });
   it('Viáticos: el contador de viajes pasa a otra línea en vez de cortar el nombre del medio', () => {
-    expect(rule('.travel-overview-row-heading')).toMatch(/flex-wrap:\s*wrap/);
+    expect(css).toMatch(/\.travel-overview-row-heading,\n\.travel-overview-destination-content > div:first-child \{\s*flex-wrap:\s*wrap/);
+  });
+  it('960 px: cabecera y acciones envuelven, y la rejilla mensual cabe sus 12 columnas', () => {
+    expect(rule('.catalog-header')).toMatch(/flex-wrap:\s*wrap/);
+    expect(rule('.travel-actions')).toMatch(/flex-wrap:\s*wrap/);
+    expect(rule('.travel-bars-grid')).toMatch(/min-width:\s*calc\(12 \* 3\.2rem \+ 11 \* 0\.55rem\)/);
+  });
+  it('tarjetas estrechas de Viáticos: fila de medio en dos líneas (la barra debajo)', () => {
+    expect(css).toMatch(/@media \(max-width: 1150px\) \{\s*\.travel-overview-row \{\s*grid-template-columns:\s*minmax\(0, 1fr\) auto/);
+  });
+  it('pestañas con subtítulo: el texto puede bajar de línea en vez de cortarse a 960 px', () => {
+    expect(rule('.anim-tabs.has-hint button')).toMatch(/white-space:\s*normal/);
+  });
+  it('encabezados de tarjeta: el contador pasa a otra línea si no cabe (SLA, badge "5" a 960 px)', () => {
+    expect(rule('.card-heading')).toMatch(/flex-wrap:\s*wrap/);
+  });
+  it('Discontinuador: las tres tarjetas de resumen pasan a 2 columnas hasta 1150 px (piden 741 px mínimo)', () => {
+    expect(css).toMatch(/@media \(max-width: 1150px\) \{\s*\.discontinuation-insights \{\s*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  });
+  it('Discontinuador: la cabecera de la tarjeta de modelo envuelve (badge + contador justo al límite a 960 px)', () => {
+    expect(rule('.discontinuation-model-card-heading')).toMatch(/flex-wrap:\s*wrap/);
   });
 });
