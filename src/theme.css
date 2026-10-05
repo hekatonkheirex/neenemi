@@ -751,10 +751,15 @@ html[data-theme='light'] .legacy-fleet-source small {
   color: var(--ds-muted);
 }
 
-html[data-theme='light'] .summary-card.accent {
+/* El sombreado general de tarjetas (0,65 rem de desplazamiento, 1,6 rem de difuminado) hacía flotar las fichas de resumen sobre el fondo. */
+html[data-theme='light'] .app-shell .summary-card {
+  box-shadow: 0 1px 2px var(--ds-shadow);
+}
+
+html[data-theme='light'] .app-shell .summary-card.accent {
+  box-shadow: none;
   border-color: var(--ds-orange);
   background: linear-gradient(135deg, var(--ds-navy), #294d7b);
-  box-shadow: 0 0.8rem 1.8rem rgba(26, 44, 76, 0.2);
 }
 
 html[data-theme='light'] .summary-card.accent :where(.summary-value, .summary-label) {
