@@ -84,3 +84,13 @@ html[data-theme='dark'] .tracking-route-line { stroke: #00a3e0; }
 .tracking-module button:disabled { cursor: not-allowed; opacity: .55; }
 .tracking-module :focus-visible { outline: 3px solid var(--ds-sky); outline-offset: 3px; }
 @media (max-width: 1200px) { .tracking-map-layout { grid-template-columns: 1fr; } .tracking-site-editor { display: grid; grid-template-columns: 1fr 1fr; } .tracking-site-editor h2, .tracking-site-editor > p { grid-column: 1 / -1; } }
+
+.tracking-chart-legend { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; list-style: none; padding: 0; font-size: .85rem; }
+.tracking-chart-legend i { display: inline-block; width: .8rem; height: .8rem; border-radius: 2px; margin-right: .4rem; }
+.tracking-chart { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .25rem; }
+.tracking-chart-day { display: flex; flex-direction: column; align-items: center; min-width: 3.5rem; }
+.tracking-chart-bars { display: flex; align-items: flex-end; gap: 2px; height: 10rem; width: 100%; border-bottom: 1px solid var(--tracking-border); }
+.tracking-chart-bars span { flex: 1; min-height: 2px; border-radius: 2px 2px 0 0; }
+.bar-effective { background: #2e7d32; }
+.bar-total { background: #1d6fd1; }
+.bar-idle { background: #d32f2f; }

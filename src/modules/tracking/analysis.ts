@@ -173,7 +173,7 @@ export function summarizeDay(analysis: DayAnalysis) {
 export const WORK_START_HOUR = 7;
 export const WORK_END_HOUR = 18;
 export const WORK_MINUTES = (WORK_END_HOUR - WORK_START_HOUR) * 60;
-export type IdleDay = { day: string; serviceMinutes: number; idleMinutes: number; marked: boolean; excludedServices: number };
+export type IdleDay = { day: string; serviceMinutes: number; travelMinutes: number; idleMinutes: number; marked: boolean; excludedServices: number };
 
 /**
  * Non-effective time per weekday between the technician's first and last marked day: the working window minus merged service
@@ -197,7 +197,13 @@ export function idleByDay(visits: TrackingVisit[], technician: string, onsiteOnl
     const windowEnd = t + WORK_END_HOUR * 3_600_000;
     const intervals: [number, number][] = [];
     let excludedServices = 0;
-    for (const visit of analyzeDay(visits, technician, day, onsiteOnly).visits) {
+    const dayAnalysis = analyzeDay(visits, technician, day, onsiteOnly);
+    let travelMs = 0;
+    for (const leg of dayAnalysis.legs) {
+      if (leg.elapsedMinutes === null) continue;
+      travelMs += Math.max(0, Math.min(Date.parse(`${leg.to.checkIn}Z`), windowEnd) - Math.max(Date.parse(`${leg.from.checkOut}Z`), windowStart));
+    }
+    for (const visit of dayAnalysis.visits) {
       const start = visit.checkIn ? Date.parse(`${visit.checkIn}Z`) : NaN;
       const end = visit.checkOut ? Date.parse(`${visit.checkOut}Z`) : NaN;
       if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) { excludedServices += 1; continue; }
@@ -213,7 +219,7 @@ export function idleByDay(visits: TrackingVisit[], technician: string, onsiteOnl
       coveredUntil = Math.max(coveredUntil, end);
     }
     const serviceMinutes = ms / 60_000;
-    rows.push({ day, serviceMinutes, idleMinutes: WORK_MINUTES - serviceMinutes, marked: markedDays.has(day), excludedServices });
+    rows.push({ day, serviceMinutes, travelMinutes: travelMs / 60_000, idleMinutes: WORK_MINUTES - serviceMinutes, marked: markedDays.has(day), excludedServices });
   }
   return rows;
 }

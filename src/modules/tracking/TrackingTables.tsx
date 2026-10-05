@@ -1,4 +1,4 @@
-import { isSuspectLeg, legDistance, siteKey, summarizeDay, validateEvent, WORK_END_HOUR, WORK_START_HOUR } from './analysis';
+import { isSuspectLeg, legDistance, siteKey, summarizeDay, validateEvent, WORK_END_HOUR, WORK_MINUTES, WORK_START_HOUR } from './analysis';
 import type { IdleDay } from './analysis';
 import type { DayAnalysis, EventValidation, SiteReference, TrackingVisit } from './types';
 
@@ -53,6 +53,12 @@ export default function TrackingTables({ analysis, idleDays, roadStatus, sites, 
         {idleDays.map(row => <tr key={row.day}><td>{row.day}</td><td>{formatDuration(row.serviceMinutes)}</td><td><strong>{formatDuration(row.idleMinutes)}</strong>{!row.marked && <small>Sin marcaciones: puede ser feriado, licencia o falta de registro.</small>}{row.excludedServices > 0 && <small className="tracking-issue">{row.excludedServices} registro(s) excluidos por marcaciones incompletas o inconsistentes · Puede sobrestimar.</small>}</td></tr>)}
         <tr><td><strong>Total</strong></td><td><strong>{formatDuration(idleDays.reduce((sum, row) => sum + row.serviceMinutes, 0))}</strong></td><td><strong>{formatDuration(idleDays.reduce((sum, row) => sum + row.idleMinutes, 0))}</strong></td></tr>
       </tbody></table></div>{!idleDays.length && <p role="status">Sin días con marcaciones para este técnico.</p>}
+    </section>
+    <section className="tracking-card tracking-idle-chart"><h2>Gráfico de horas por día</h2><p>Horas efectivas trabajadas (servicios), tiempo total estimado de trabajo (servicios + traslados) y horas no efectivas (jornada menos servicios), sobre la jornada de {WORK_END_HOUR - WORK_START_HOUR} h.</p>
+      <ul className="tracking-chart-legend"><li><i className="bar-effective" />Horas efectivas</li><li><i className="bar-total" />Tiempo total estimado de trabajo</li><li><i className="bar-idle" />Horas no efectivas</li></ul>
+      <div className="tracking-chart" role="img" aria-label="Horas efectivas, tiempo total estimado de trabajo y horas no efectivas por día">
+        {idleDays.map(row => <div className="tracking-chart-day" key={row.day}><div className="tracking-chart-bars">{[['effective', row.serviceMinutes, 'Efectivas'], ['total', row.serviceMinutes + row.travelMinutes, 'Total estimado'], ['idle', row.idleMinutes, 'No efectivas']].map(([kind, minutes, label]) => <span key={kind as string} className={`bar-${kind}`} style={{ height: `${Math.min(100, (minutes as number) / WORK_MINUTES * 100)}%` }} title={`${label}: ${formatDuration(minutes as number)}`} />)}</div><small>{row.day.slice(5)}</small></div>)}
+      </div>
     </section>
   </>;
 }
