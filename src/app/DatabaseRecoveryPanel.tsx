@@ -17,15 +17,47 @@ type BackfillResult = {
   errors: string[];
 };
 
+type BackupHealth = {
+  lastBackupAt: string | null;
+  lastLoadAt: string | null;
+  loadsSinceBackup: number;
+  daysSinceBackup: number | null;
+  level: 'never' | 'pending' | 'stale' | 'ok';
+};
+
 type DatabaseRecoveryPanelProps = {
   refreshKey: number;
 };
 
 const byteFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1 });
+const dateTimeFormat = new Intl.DateTimeFormat('es-PY', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+
+const formatStamp = (value: string | null) => (value ? dateTimeFormat.format(new Date(value)) : 'Nunca');
+const plural = (n: number, one: string, many: string) => `${n.toLocaleString('es-PY')} ${n === 1 ? one : many}`;
+
+function describeAge(days: number | null): string {
+  if (days === null) return 'sin respaldo';
+  if (days === 0) return 'hoy';
+  return `hace ${plural(days, 'día', 'días')}`;
+}
+
+function describeReminder(health: BackupHealth): { title: string; text: string } {
+  switch (health.level) {
+    case 'never':
+      return { title: 'Todavía no hay ningún respaldo', text: 'Descarga uno ahora: si falla el disco o la base se daña, la información cargada no se puede recuperar.' };
+    case 'pending':
+      return { title: `${plural(health.loadsSinceBackup, 'carga sin respaldar', 'cargas sin respaldar')}`, text: `El último respaldo es del ${formatStamp(health.lastBackupAt)}. Genera uno nuevo para no perder esos datos.` };
+    case 'stale':
+      return { title: `Último respaldo ${describeAge(health.daysSinceBackup)}`, text: 'Pasó una semana o más. Genera uno nuevo: viajes, proformas y ajustes manuales también cuentan.' };
+    default:
+      return { title: 'Información respaldada', text: `Último respaldo ${describeAge(health.daysSinceBackup)}. Te recordaremos al pasar una semana o tras nuevas cargas.` };
+  }
+}
 
 export default function DatabaseRecoveryPanel({ refreshKey }: DatabaseRecoveryPanelProps) {
   const [status, setStatus] = useState<ImportFileContentStatus | null>(null);
   const [loadingStatus, setLoadingStatus] = useState(true);
+  const [health, setHealth] = useState<BackupHealth | null>(null);
   const [backfillJob, setBackfillJob] = useState<ImportJobSnapshot<BackfillResult> | null>(null);
   const [backfilling, setBackfilling] = useState(false);
   const [restoring, setRestoring] = useState(false);
@@ -50,10 +82,18 @@ export default function DatabaseRecoveryPanel({ refreshKey }: DatabaseRecoveryPa
         if (!cancelled) setLoadingStatus(false);
       });
 
+    void refreshHealth().catch(() => undefined);
+
     return () => {
       cancelled = true;
     };
   }, [refreshKey]);
+
+  async function refreshHealth() {
+    const response = await fetch('/api/system/backup/status', { cache: 'no-store' });
+    if (!response.ok) throw new Error('No se pudo consultar el estado del respaldo.');
+    setHealth(await response.json() as BackupHealth);
+  }
 
   async function backfillOriginals() {
     if (backfilling) return;
@@ -125,63 +165,101 @@ export default function DatabaseRecoveryPanel({ refreshKey }: DatabaseRecoveryPa
         ? `${status.embeddedFiles.toLocaleString('es-PY')} de ${status.totalFiles.toLocaleString('es-PY')} originales activos o archivados están dentro de SQLite.`
         : `${status.embeddedFiles.toLocaleString('es-PY')} de ${status.totalFiles.toLocaleString('es-PY')} originales activos o archivados están dentro de SQLite; faltan ${missingFiles.toLocaleString('es-PY')}.`;
 
+  const reminder = health ? describeReminder(health) : null;
+  const downloadButton = backupReady ? (
+    <a
+      className="database-backup-cta"
+      href="/api/system/backup"
+      download
+      onClick={() => { window.setTimeout(() => void refreshHealth().catch(() => undefined), 2500); }}
+    >
+      Descargar respaldo completo
+    </a>
+  ) : (
+    <button className="database-backup-cta" type="button" disabled>
+      Completa los originales para respaldar
+    </button>
+  );
+
   return (
-    <section className="database-recovery" aria-label="Respaldo y recuperación de la base">
-      <div className="database-recovery-copy">
-        <span className="detail-label">Respaldo y recuperación</span>
-        <h3>Una copia con datos y originales</h3>
-        <p>{statusText}</p>
-        {status ? (
-          <small>
-            {formatBytes(status.embeddedBytes)} guardados de {formatBytes(status.totalBytes)} de archivos originales activos o archivados.
-          </small>
-        ) : null}
+    <section className={`database-recovery level-${health?.level ?? 'loading'}`} aria-label="Respaldo y recuperación de la base">
+      <div className="backup-banner" role="status">
+        <span className="backup-banner-icon" aria-hidden="true">{health?.level === 'ok' ? '✓' : '!'}</span>
+        <div className="backup-banner-copy">
+          <span className="detail-label">Respaldo y recuperación</span>
+          <h3>{reminder?.title ?? 'Consultando el estado del respaldo…'}</h3>
+          {reminder ? <p>{reminder.text}</p> : null}
+        </div>
+        {downloadButton}
       </div>
 
-      <div className="database-recovery-controls">
-        <div className="database-recovery-actions">
-          {missingFiles > 0 ? (
-            <button
-              className="secondary-button"
-              type="button"
-              disabled={backfilling || loadingStatus}
-              onClick={() => void backfillOriginals()}
-            >
-              {backfilling ? `${backfillJob?.progress ?? 0}% · ${backfillJob?.stage ?? 'Preparando…'}` : 'Incluir originales en SQLite'}
-            </button>
-          ) : null}
-          {backupReady ? (
-            <a className="secondary-button database-recovery-button" href="/api/system/backup" download>
-              Descargar respaldo completo
-            </a>
-          ) : (
-            <button className="secondary-button" type="button" disabled>
-              Completa los originales para respaldar
-            </button>
-          )}
+      {health ? (
+        <dl className="backup-stats">
+          <div>
+            <dt>Último respaldo</dt>
+            <dd>{formatStamp(health.lastBackupAt)}</dd>
+            <small>{describeAge(health.daysSinceBackup)}</small>
+          </div>
+          <div>
+            <dt>Última carga aplicada</dt>
+            <dd>{health.lastLoadAt ? formatStamp(health.lastLoadAt) : 'Sin cargas'}</dd>
+            <small>importación más reciente</small>
+          </div>
+          <div className={health.loadsSinceBackup > 0 ? 'attention' : undefined}>
+            <dt>Cargas sin respaldar</dt>
+            <dd>{health.loadsSinceBackup.toLocaleString('es-PY')}</dd>
+            <small>aplicadas tras el último respaldo</small>
+          </div>
+          <div className={missingFiles > 0 ? 'attention' : undefined}>
+            <dt>Originales en SQLite</dt>
+            <dd>{status ? `${status.embeddedFiles.toLocaleString('es-PY')} / ${status.totalFiles.toLocaleString('es-PY')}` : '—'}</dd>
+            <small>{status ? `${formatBytes(status.embeddedBytes)} de ${formatBytes(status.totalBytes)}` : 'consultando…'}</small>
+          </div>
+        </dl>
+      ) : null}
+
+      <div className="database-recovery-body">
+        <div className="database-recovery-copy">
+          <h3>Una copia con datos y originales</h3>
+          <p>{statusText}</p>
+          <small>El respaldo no incluye la clave de IA.</small>
         </div>
 
-        <button
-          className="database-restore-picker"
-          type="button"
-          disabled={restoring || backfilling}
-          onClick={() => restoreInput.current?.click()}
-        >
-          {restoring ? 'Validando y restaurando…' : 'Restaurar respaldo SQLite'}
-        </button>
-        <input
-          ref={restoreInput}
-          className="database-restore-file"
-          type="file"
-          accept=".sqlite,.db,application/vnd.sqlite3,application/octet-stream"
-          disabled={restoring || backfilling}
-          onChange={(event) => {
-            const file = event.currentTarget.files?.[0];
-            event.currentTarget.value = '';
-            void restoreBackup(file);
-          }}
-        />
-        <small>Máximo 2 GB. La restauración sustituye toda la base y reinicia la Suite.</small>
+        <div className="database-recovery-controls">
+          <div className="database-recovery-actions">
+            {missingFiles > 0 ? (
+              <button
+                className="secondary-button"
+                type="button"
+                disabled={backfilling || loadingStatus}
+                onClick={() => void backfillOriginals()}
+              >
+                {backfilling ? `${backfillJob?.progress ?? 0}% · ${backfillJob?.stage ?? 'Preparando…'}` : 'Incluir originales en SQLite'}
+              </button>
+            ) : null}
+            <button
+              className="database-restore-picker"
+              type="button"
+              disabled={restoring || backfilling}
+              onClick={() => restoreInput.current?.click()}
+            >
+              {restoring ? 'Validando y restaurando…' : 'Restaurar respaldo SQLite'}
+            </button>
+          </div>
+          <input
+            ref={restoreInput}
+            className="database-restore-file"
+            type="file"
+            accept=".sqlite,.db,application/vnd.sqlite3,application/octet-stream"
+            disabled={restoring || backfilling}
+            onChange={(event) => {
+              const file = event.currentTarget.files?.[0];
+              event.currentTarget.value = '';
+              void restoreBackup(file);
+            }}
+          />
+          <small>Máximo 2 GB. La restauración sustituye toda la base y reinicia la Suite.</small>
+        </div>
       </div>
 
       {backfilling && backfillJob ? (

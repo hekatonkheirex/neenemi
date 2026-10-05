@@ -188,6 +188,10 @@ describe('system API', () => {
       expect(response.headers.get('content-disposition')).toMatch(/dcss-suite-backup-.*\.sqlite/);
       expect(backup.subarray(0, 16).toString()).toBe('SQLite format 3\u0000');
 
+      const health = await (await fetch(`http://127.0.0.1:${port}/api/system/backup/status`)).json() as { level: string; lastBackupAt: string | null };
+      expect(health.level).toBe('ok');
+      expect(health.lastBackupAt).not.toBeNull();
+
       const downloadedPath = path.join(dataDirectory, 'downloaded-backup-test.sqlite');
       fs.writeFileSync(downloadedPath, backup);
       const downloadedDatabase = new Database(downloadedPath, { readonly: true, fileMustExist: true });

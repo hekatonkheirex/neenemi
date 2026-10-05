@@ -13069,3 +13069,26 @@ html[data-theme='light'] .ai-key-status.ready,
 html[data-theme='light'] .ai-key-message.ok { color: var(--ds-success); }
 html[data-theme='light'] .ai-key-status.missing { color: var(--ds-warning); }
 html[data-theme='light'] .ai-key-message.error { color: var(--ds-danger); }
+
+/* Respaldo y recuperación: aviso con color según el nivel, cifras de seguridad y acciones. */
+.database-recovery { display: grid; grid-template-columns: 1fr; gap: 1rem; align-items: stretch; --backup-accent: #2f8f5b; --backup-wash: rgba(47, 143, 91, 0.1); }
+.database-recovery.level-never, .database-recovery.level-pending { --backup-accent: #d92d20; --backup-wash: rgba(217, 45, 32, 0.09); }
+.database-recovery.level-stale { --backup-accent: #e08a00; --backup-wash: rgba(224, 138, 0, 0.1); }
+.database-recovery.level-loading { --backup-accent: #6b7a90; --backup-wash: rgba(107, 122, 144, 0.08); }
+.database-recovery { border-color: var(--backup-accent); border-width: 1px 1px 1px 6px; }
+.backup-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.25rem; padding: 1rem 1.25rem; border-radius: 0.7rem; background: var(--backup-wash); }
+.backup-banner-icon { display: inline-grid; place-items: center; flex: 0 0 auto; width: 2.6rem; height: 2.6rem; border-radius: 50%; color: #fff; background: var(--backup-accent); font-size: 1.4rem; font-weight: 900; }
+.backup-banner-copy { flex: 1 1 18rem; min-width: 0; }
+.backup-banner-copy h3 { margin: 0.2rem 0; font-size: 1.35rem; }
+.backup-banner-copy p { margin: 0; max-width: 46rem; }
+.database-backup-cta { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; min-height: 2.9rem; padding: 0.7rem 1.35rem; border: 0; border-radius: 0.6rem; color: #fff; background: var(--backup-accent); font-size: 0.85rem; font-weight: 800; text-decoration: none; cursor: pointer; }
+.database-backup-cta:hover:not(:disabled) { filter: brightness(1.08); }
+.database-backup-cta:disabled { cursor: not-allowed; opacity: 0.55; }
+.backup-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.75rem; margin: 0; }
+.backup-stats > div { display: grid; gap: 0.2rem; padding: 0.85rem 1rem; border: 1px solid rgba(144, 174, 229, 0.23); border-radius: 0.65rem; }
+.backup-stats > div.attention { border-color: #d92d20; }
+.backup-stats dt { margin: 0; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.75; }
+.backup-stats dd { margin: 0; font-size: 1.15rem; font-weight: 800; }
+.backup-stats small { font-size: 0.7rem; opacity: 0.7; }
+.database-recovery-body { display: grid; grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.2fr); gap: 1rem 2rem; align-items: center; }
+.database-recovery-body .database-recovery-copy h3 { font-size: 1rem; }

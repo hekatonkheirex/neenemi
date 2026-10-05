@@ -339,7 +339,6 @@ export default function App() {
 
         <Suspense fallback={<ModuleSkeleton />}>
           {activeModule ? renderModule(activeModule) : <Dashboard
-            onSelect={(id) => void navigateTo(id)}
             overview={overview}
             overviewState={overviewState}
             onRetryOverview={() => setOverviewRetryKey((value) => value + 1)}
@@ -382,7 +381,6 @@ function renderModule(module: SuiteModule) {
 }
 
 function Dashboard({
-  onSelect,
   overview,
   overviewState,
   onRetryOverview,
@@ -392,7 +390,6 @@ function Dashboard({
   clearingImports,
   clearImportsMessage,
 }: {
-  onSelect: (moduleId: string) => void;
   overview: SuiteOverview | null;
   overviewState: 'loading' | 'ready' | 'error';
   onRetryOverview: () => void;
@@ -482,28 +479,6 @@ function Dashboard({
       </section>
 
       <ImportArchivePanel refreshKey={importsRefreshKey} onRemoveBatch={onRemoveImport} />
-
-      <section className="section-heading">
-        <div>
-          <div className="eyebrow">MAPA DE TRABAJO</div>
-          <h2>Módulos de la suite</h2>
-        </div>
-        <p>Catálogo, operaciones, consumibles, MPS, precios y proformas ya operan sobre la misma base. Las fuentes históricas se incorporan por etapas.</p>
-      </section>
-
-      <div className="module-grid">
-        {suiteModules.map((module) => (
-          <button className="module-card" key={module.id} type="button" onClick={() => onSelect(module.id)}>
-            <span className="module-card-top">
-              <span className="module-symbol" aria-hidden="true"><HugeiconsIcon icon={moduleIcons[module.id]} size={16} /></span>
-              <span className="module-section">{sectionLabels[module.section]}</span>
-            </span>
-            <strong>{module.label}</strong>
-            <span>{module.outputs[0]}</span>
-            <span className="module-arrow">↗</span>
-          </button>
-        ))}
-      </div>
 
       <p className="scope-note">Los proyectos actuales permanecen intactos mientras validamos esta nueva aplicación.</p>
     </div>

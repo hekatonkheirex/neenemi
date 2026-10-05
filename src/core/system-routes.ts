@@ -13,6 +13,7 @@ import { backfillStoredSourceMetadata } from './source-metadata-backfill';
 import { getSourceCoverage } from './source-catalog';
 import { isRecord } from './validation';
 import { stageDatabaseRestore } from './database-restore';
+import { readBackupHealth, recordBackup } from './backup-health';
 
 // Claves de API (p. ej. ai/openrouter_api_key): nunca salen de la instalación en respaldos ni lecturas.
 export const SECRET_SETTINGS_NAMESPACE = 'ai';
@@ -101,6 +102,7 @@ export function registerSystemRoutes(
       response.download(snapshotPath, makeBackupFileName(), (error) => {
         removeTemporaryDirectory(temporaryDirectory);
         temporaryDirectory = null;
+        if (!error) recordBackup(database);
         if (error && !response.headersSent) {
           response.status(500).json({ error: 'No se pudo descargar el respaldo SQLite.' });
         }
@@ -111,6 +113,11 @@ export function registerSystemRoutes(
         error: error instanceof Error ? `No se pudo generar el respaldo SQLite: ${error.message}` : 'No se pudo generar el respaldo SQLite.',
       });
     }
+  });
+
+  app.get('/api/system/backup/status', (_request, response) => {
+    response.setHeader('Cache-Control', 'no-store');
+    response.json(readBackupHealth(database));
   });
 
   app.get('/api/system/import-originals/status', (_request, response) => {

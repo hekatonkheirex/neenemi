@@ -4,6 +4,8 @@ Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigu
 
 ## 0.1.48 · 2026-10-05
 
+Respaldo y recuperación ahora es un panel de estado: aviso con color (rojo si nunca hubo respaldo o hay cargas sin respaldar, ámbar a los 7 días, verde si está al día), fecha del último respaldo y de la última carga, cargas sin respaldar y originales dentro de SQLite. La descarga registra la fecha del respaldo (`GET /api/system/backup/status`). Quita la sección "Módulos de la suite" de Inicio, redundante con la barra lateral.
+
 Renombra Resumen a Inicio (barra lateral, barra superior, paleta de comandos). Sube Respaldo y recuperación justo debajo de las fichas. Reemplaza las fichas "clientes en la base común" y "equipos instalados" por "contratos en cartera" y "última carga aplicada" (fecha de la última importación aplicada); se mantiene el conteo de módulos funcionales.
 
 ## 0.1.47 · 2026-10-05

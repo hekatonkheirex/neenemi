@@ -28,11 +28,10 @@ describe('Inicio de la suite', () => {
     expect(recovery).toBeLessThan(markup.indexOf('overview-panel'));
   });
 
-  it('muestra en cada ficha de módulo el icono de la barra lateral y no su inicial', () => {
+  it('no repite el mapa de módulos: la barra lateral ya los lista', () => {
     const markup = renderToStaticMarkup(<App />);
-    const symbols = [...markup.matchAll(/<span class="module-symbol"[^>]*>(.*?)<\/span>/g)].map(match => match[1]);
-    expect(symbols.length).toBeGreaterThanOrEqual(13);
-    expect(symbols.every(inner => inner.startsWith('<svg'))).toBe(true);
+    expect(markup).not.toContain('module-card');
+    expect(markup).not.toContain('MAPA DE TRABAJO');
   });
 
   it('mantiene en Consumibles solo la carga coordinada de sus fuentes', () => {
