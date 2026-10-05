@@ -172,12 +172,14 @@ export function summarizeDay(analysis: DayAnalysis) {
 /** Company working hours: Monday to Friday, 07:00 to 18:00. */
 export const WORK_START_HOUR = 7;
 export const WORK_END_HOUR = 18;
-export const WORK_MINUTES = (WORK_END_HOUR - WORK_START_HOUR) * 60;
+/** Unpaid lunch break, subtracted from the window (its position in the day is unknown). */
+export const LUNCH_MINUTES = 60;
+export const WORK_MINUTES = (WORK_END_HOUR - WORK_START_HOUR) * 60 - LUNCH_MINUTES;
 export type IdleDay = { day: string; serviceMinutes: number; travelMinutes: number; idleMinutes: number; marked: boolean; excludedServices: number };
 
 /**
- * Non-effective time per weekday between the technician's first and last marked day: the working window minus merged service
- * intervals inside it. Weekdays without marks count as fully non-effective (holidays and leave are unknown). Weekends are skipped.
+ * Non-effective time per weekday between the technician's first and last marked day: the working window minus lunch and merged service
+ * intervals inside it. Weekdays without marks count as fully non-effective (10 h) (holidays and leave are unknown). Weekends are skipped.
  */
 export function idleByDay(visits: TrackingVisit[], technician: string, onsiteOnly = true): IdleDay[] {
   const markedDays = new Set<string>();
@@ -219,7 +221,7 @@ export function idleByDay(visits: TrackingVisit[], technician: string, onsiteOnl
       coveredUntil = Math.max(coveredUntil, end);
     }
     const serviceMinutes = ms / 60_000;
-    rows.push({ day, serviceMinutes, travelMinutes: travelMs / 60_000, idleMinutes: WORK_MINUTES - serviceMinutes, marked: markedDays.has(day), excludedServices });
+    rows.push({ day, serviceMinutes, travelMinutes: travelMs / 60_000, idleMinutes: Math.max(0, WORK_MINUTES - serviceMinutes), marked: markedDays.has(day), excludedServices });
   }
   return rows;
 }
