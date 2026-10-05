@@ -2,9 +2,13 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.52 · 2026-10-05
+
+"Limpiar cargas" pasa al panel Respaldo y recuperación, junto a Restaurar respaldo (con su mensaje de resultado dentro del panel). El icono del aviso de respaldo se ve en blanco sobre el círculo de color.
+
 ## 0.1.51 · 2026-10-05
 
-Quita el panel "Base compartida" de Inicio (inventario, fuentes recientes y estado de la consulta; las importaciones ya están en el visor de originales). El botón "Limpiar cargas" pasa al panel Respaldo y recuperación, junto a Restaurar.
+Quita el panel "Base compartida" de Inicio (inventario, fuentes recientes y estado de la consulta; las importaciones ya están en el visor de originales). El botón "Limpiar cargas" pasa a la primera ficha.
 
 ## 0.1.50 · 2026-10-05
 
