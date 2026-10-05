@@ -3,7 +3,7 @@ import { suiteModules } from './modules';
 
 describe('suite module manifest', () => {
   it('contains every included legacy tool exactly once', () => {
-    expect(suiteModules).toHaveLength(13);
+    expect(suiteModules).toHaveLength(12);
     expect(suiteModules.map((module) => module.id)).not.toContain('servicios');
     expect(new Set(suiteModules.map((module) => module.id)).size).toBe(suiteModules.length);
     expect(new Set(suiteModules.map((module) => module.route)).size).toBe(suiteModules.length);
@@ -16,16 +16,19 @@ describe('suite module manifest', () => {
     }
   });
 
+  it('groups the sidebar into the four sections in the agreed order', () => {
+    const bySection: Record<string, string[]> = {};
+    for (const module of suiteModules) (bySection[module.section] ??= []).push(module.id);
+    expect(bySection).toEqual({
+      'servicio técnico': ['mantenimiento', 'consumibles', 'tracking'],
+      administrativo: ['viaticos', 'listado-precios', 'descontinuador', 'proformas'],
+      software: ['software-selector', 'uniflow'],
+      herramientas: ['cobertura', 'mps', 'sla'],
+    });
+  });
+
   it('keeps shared data ownership explicit', () => {
-    expect(suiteModules.find((module) => module.id === 'catalogo')?.dataOwner).toEqual([
-      'parts',
-      'part_prices',
-      'inventory_snapshots',
-      'catalog_model_families',
-      'catalog_model_notes',
-      'catalog_service_items',
-      'import_batches',
-    ]);
+    expect(suiteModules.map((module) => module.id)).not.toContain('catalogo');
     expect(suiteModules.find((module) => module.id === 'mantenimiento')?.dataOwner).toContain(
       'contract_equipment',
     );

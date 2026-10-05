@@ -32,7 +32,6 @@ import { guardUnload, hasUnsavedChanges } from '../core/unsavedChanges';
 import { installFieldErrors } from '../core/fieldErrors';
 import { buildPaletteEntries } from './commandPaletteModel';
 
-const CatalogModule = lazy(() => import('../modules/catalogo/CatalogModule'));
 const MantenimientoModule = lazy(() => import('../modules/operaciones/MantenimientoModule'));
 const DescontinuadorModule = lazy(() => import('../modules/operaciones/DescontinuadorModule'));
 const ListadoPreciosModule = lazy(() => import('../modules/ventas/ListadoPreciosModule'));
@@ -69,18 +68,16 @@ type ImportArchiveBatch = {
   sourceName: string;
 };
 
-const sectionOrder: SuiteModule['section'][] = ['catálogo', 'operaciones', 'ventas', 'análisis', 'soporte'];
+const sectionOrder: SuiteModule['section'][] = ['servicio técnico', 'administrativo', 'software', 'herramientas'];
 
 const sectionLabels: Record<SuiteModule['section'], string> = {
-  catálogo: 'Catálogo',
-  operaciones: 'Operaciones',
-  ventas: 'Ventas',
-  análisis: 'Análisis',
-  soporte: 'Soporte',
+  'servicio técnico': 'Servicio Técnico',
+  administrativo: 'Administrativo',
+  software: 'Software',
+  herramientas: 'Herramientas',
 };
 
 const moduleIcons = {
-  catalogo: PrinterIcon,
   mantenimiento: Wrench01Icon,
   descontinuador: Alert02Icon,
   consumibles: Analytics01Icon,
@@ -98,7 +95,7 @@ const moduleIcons = {
 const numberFormat = new Intl.NumberFormat('es-PY');
 const dateFormat = new Intl.DateTimeFormat('es-PY', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-const functionalModuleIds = new Set(['catalogo', 'mantenimiento', 'descontinuador', 'listado-precios', 'proformas', 'mps', 'consumibles', 'viaticos', 'tracking', 'uniflow', 'software-selector', 'sla', 'cobertura']);
+const functionalModuleIds = new Set(['mantenimiento', 'descontinuador', 'listado-precios', 'proformas', 'mps', 'consumibles', 'viaticos', 'tracking', 'uniflow', 'software-selector', 'sla', 'cobertura']);
 
 function getThemeStorage(): Storage | undefined {
   if (typeof window === 'undefined') {
@@ -369,7 +366,6 @@ export default function App() {
 }
 
 function renderModule(module: SuiteModule) {
-  if (module.id === 'catalogo') return <CatalogModule />;
   if (module.id === 'mantenimiento') return <MantenimientoModule />;
   if (module.id === 'descontinuador') return <DescontinuadorModule />;
   if (module.id === 'listado-precios') return <ListadoPreciosModule />;

@@ -5,7 +5,7 @@ import CommandPalette from './CommandPalette';
 import { buildPaletteEntries, filterPaletteEntries } from './commandPaletteModel';
 import { suiteModules } from './modules';
 
-const labels = { catálogo: 'Catálogo', operaciones: 'Operaciones', ventas: 'Ventas', análisis: 'Análisis', soporte: 'Soporte' } as const;
+const labels = { 'servicio técnico': 'Servicio Técnico', administrativo: 'Administrativo', software: 'Software', herramientas: 'Herramientas' } as const;
 const entries = buildPaletteEntries(suiteModules, labels);
 
 describe('filterPaletteEntries', () => {
@@ -26,7 +26,7 @@ describe('filterPaletteEntries', () => {
   });
 
   it('busca también por sección y devuelve vacío si no hay coincidencia', () => {
-    expect(filterPaletteEntries(entries, 'ventas').length).toBeGreaterThan(0);
+    expect(filterPaletteEntries(entries, 'administrativo').length).toBeGreaterThan(0);
     expect(filterPaletteEntries(entries, 'zzzz')).toEqual([]);
   });
 });
