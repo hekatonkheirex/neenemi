@@ -19,14 +19,23 @@ type Props<T extends string> = {
   ariaLabel: string;
 };
 
-/** Pestañas sin barra de fondo: la píldora con barra naranja se desliza (layoutId) hasta la pestaña activa. */
+/** Botones de navegación con feedback de pulsación e indicador activo compartido. */
 export default function AnimatedTabs<T extends string>({ tabs, active, onChange, ariaLabel }: Props<T>) {
   const layoutId = useId();
   const still = useReducedMotion();
   return (
     <nav className={tabs.some((tab) => tab.hint) ? 'anim-tabs has-hint' : 'anim-tabs'} aria-label={ariaLabel}>
       {tabs.map((tab) => (
-        <button className={active === tab.id ? 'is-active' : ''} key={tab.id} type="button" aria-current={active === tab.id ? 'page' : undefined} onClick={() => onChange(tab.id)}>
+        <motion.button
+          className={active === tab.id ? 'is-active' : ''}
+          key={tab.id}
+          type="button"
+          aria-current={active === tab.id ? 'page' : undefined}
+          onClick={() => onChange(tab.id)}
+          whileHover={still ? undefined : { y: -1 }}
+          whileTap={still ? undefined : { scale: 0.98, y: 0 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+        >
           {active === tab.id ? (
             <motion.span
               className="anim-tabs-indicator"
@@ -38,7 +47,7 @@ export default function AnimatedTabs<T extends string>({ tabs, active, onChange,
           {tab.step ? <span>{tab.step}</span> : null}
           {tab.hint ? <span className="anim-tabs-text"><em>{tab.label}</em><small>{tab.hint}</small></span> : <em>{tab.label}</em>}
           {tab.count !== undefined ? <strong>{tab.count}</strong> : null}
-        </button>
+        </motion.button>
       ))}
     </nav>
   );

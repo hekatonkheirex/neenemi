@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
 import { formatSourceLocation } from '../../core/source-location';
+import AnimatedTabs from '../../core/AnimatedTabs';
 import SourceDetails from '../../core/SourceDetails';
 import { sourceOperationalValues } from '../../core/source-details';
 import type { OperationalFilters } from '../../core/operational-filters';
@@ -204,10 +205,12 @@ export default function ServiciosModule() {
         <span>{error || message || (summary?.records ? `${integerFormat.format(summary.records)} servicios normalizados` : 'Importa Servicios LAM.xlsx para comenzar.')}</span>
       </section>
 
-      <nav className="consumables-tabs service-view-tabs" aria-label="Vistas de Servicios técnicos">
-        <button className={activeView === 'history' ? 'active' : ''} type="button" onClick={() => setActiveView('history')}>Historial LAM</button>
-        <button className={activeView === 'relation' ? 'active' : ''} type="button" onClick={() => setActiveView('relation')}>Servicios vs consumibles</button>
-      </nav>
+      <AnimatedTabs
+        ariaLabel="Vistas de Servicios técnicos"
+        active={activeView}
+        onChange={setActiveView}
+        tabs={[{ id: 'history', label: 'Historial LAM' }, { id: 'relation', label: 'Servicios vs consumibles' }]}
+      />
 
       <section className="consumables-filter-bar" aria-label="Filtros globales de servicios">
         <label className="compact-field"><span>Sector</span><select value={filters.sector ?? ''} onChange={(event) => updateFilter(setFilters, 'sector', event.target.value)}><option value="">Todos</option><option value="Publico">Público</option><option value="Privado">Privado</option></select></label>
