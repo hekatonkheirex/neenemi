@@ -84,11 +84,14 @@
 }
 
 .text-button {
+  display: inline-flex;
+  min-height: 1.75rem;
+  align-items: center;
   padding: 0;
   border: 0;
   color: #8eb9ff;
   background: transparent;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 800;
 }
 

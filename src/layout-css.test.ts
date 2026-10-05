@@ -112,3 +112,9 @@ describe('revisión visual 2026-10', () => {
     expect(indexCss).toMatch(/\.uniflow-term-options button\s*{\s*min-height:\s*1\.75rem[^}]*font-size:\s*0\.75rem/);
   });
 });
+
+describe('botones de texto', () => {
+  it('.text-button ofrece un objetivo de al menos 28px de alto y texto de 12px', () => {
+    expect(css).toMatch(/\.text-button\s*{[^}]*min-height:\s*1\.75rem[^}]*font-size:\s*0\.78rem/);
+  });
+});
