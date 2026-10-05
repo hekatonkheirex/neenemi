@@ -359,7 +359,14 @@ html[data-theme='light'] .app-shell :where(
   [class*='-record'],
   [class*='-draft'],
   [class*='-option']
-) {
+):where(:not(
+  [class*='-card-'],
+  [class*='-panel-'],
+  [class*='-table-wrap-'],
+  [class*='-record-'],
+  [class*='-draft-'],
+  [class*='-option-']
+)) {
   border-color: var(--ds-border);
   background: var(--ds-surface);
   box-shadow: 0 0.65rem 1.6rem var(--ds-shadow);
@@ -749,12 +756,6 @@ html[data-theme='light'] .discontinuation-breakdown-track {
 html[data-theme='light'] .legacy-fleet-source-heading span,
 html[data-theme='light'] .legacy-fleet-source small {
   color: var(--ds-muted);
-}
-
-/* `[class*='-card']` también alcanza a los hijos como `*-card-heading`: sombra y fondo blanco sobre el texto dentro de la ficha. */
-html[data-theme='light'] .app-shell .discontinuation-model-card-heading {
-  background: transparent;
-  box-shadow: none;
 }
 
 /* El sombreado general de tarjetas (0,65 rem de desplazamiento, 1,6 rem de difuminado) hacía flotar las fichas de resumen sobre el fondo. */
