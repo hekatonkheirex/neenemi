@@ -86,11 +86,11 @@ export function routePairs(analysis: DayAnalysis): { key: string; from: Coordina
     const key = pairKey(from, to);
     if (distanceMeters(from, to) > TRACKING_RADIUS_METERS && !pairs.has(key)) pairs.set(key, { key, from, to });
   };
-  for (const leg of analysis.legs) if (needsRoad(leg) && !isSuspectLeg(analysis, leg)) add(leg.from.gpsOut!, leg.to.gpsIn!);
+  for (const leg of analysis.legs) if (needsRoad(leg)) add(leg.from.gpsOut!, leg.to.gpsIn!);
   for (let index = 1; index < analysis.events.length; index += 1) {
     const from = analysis.events[index - 1].coordinate;
     const to = analysis.events[index].coordinate;
-    if (from && to && !isSuspectSegment(analysis, analysis.events[index - 1], analysis.events[index])) add(from, to);
+    if (from && to) add(from, to);
   }
   return [...pairs.values()];
 }
@@ -98,14 +98,14 @@ export function routePairs(analysis: DayAnalysis): { key: string; from: Coordina
 /** `roads` is keyed by `pairKey`; missing or null entries keep the straight-line fallback. */
 export function applyRoads(analysis: DayAnalysis, roads: Record<string, RoadRoute | null>): DayAnalysis {
   const legs = analysis.legs.map(leg => {
-    const road = needsRoad(leg) && !isSuspectLeg(analysis, leg) ? roads[pairKey(leg.from.gpsOut!, leg.to.gpsIn!)] : null;
+    const road = needsRoad(leg) ? roads[pairKey(leg.from.gpsOut!, leg.to.gpsIn!)] : null;
     return road ? { ...leg, road } : leg;
   });
   const roadSegments: Record<string, Coordinate[]> = {};
   for (let index = 1; index < analysis.events.length; index += 1) {
     const from = analysis.events[index - 1];
     const to = analysis.events[index];
-    const road = from.coordinate && to.coordinate && !isSuspectSegment(analysis, from, to) && distanceMeters(from.coordinate, to.coordinate) > TRACKING_RADIUS_METERS ? roads[pairKey(from.coordinate, to.coordinate)] : null;
+    const road = from.coordinate && to.coordinate && distanceMeters(from.coordinate, to.coordinate) > TRACKING_RADIUS_METERS ? roads[pairKey(from.coordinate, to.coordinate)] : null;
     if (road) roadSegments[segmentKey(from, to)] = road.geometry;
   }
   return { ...analysis, legs, roadSegments };

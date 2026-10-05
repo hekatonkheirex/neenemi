@@ -51,11 +51,12 @@ describe('RouteMap rendering', () => {
     expect(markup.match(/tracking-road-line/g)).toHaveLength(1);
     expect(markup.match(/tracking-route-line/g)).toHaveLength(1);
   });
-  it('draws segments touching a suspect visit in red without a road', () => {
+  it('draws segments touching a suspect visit in red, along the road when there is one', () => {
     const near = (d: number) => ({ latitude: -25.3 + d, longitude: -57.6 });
     const events = [event(1, near(0), 'in'), event(2, near(0.1), 'in'), event(2, near(0.2), 'out')];
-    const markup = render({ events, suspectVisitKeys: ['v2'], roadSegments: { 'e1>e2': [near(0), near(0.1)] } });
+    const markup = render({ events, suspectVisitKeys: ['v2'], roadSegments: { 'e1>e2': [near(0), near(0.05), near(0.1)] } });
     expect(markup.match(/tracking-suspect-line/g)).toHaveLength(2);
+    expect(markup).toContain(`points="${markup.match(/points="([^"]+)" class="tracking-suspect-line"/)![1]}"`);
     expect(markup).not.toContain('tracking-road-line');
   });
   it('marks the selected visit and renders confirmed sites and the candidate pin', () => {
