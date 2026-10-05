@@ -13,8 +13,18 @@ html[data-theme='dark'] .tracking-module {
   --tracking-ink: #edf3ff;
   --tracking-wash: #1a2c4c;
 }
-.tracking-module h1 { display: flex; align-items: center; gap: .75rem; }
-.tracking-card, .tracking-map-panel { padding: 1.25rem; margin-bottom: 1rem; border: 1px solid var(--tracking-border); border-radius: .75rem; background: var(--tracking-surface); min-width: 0; }
+.tracking-module h1 { max-width: none; margin: 0 0 .5rem; font-size: clamp(1.9rem, 3.5vw, 2.6rem); line-height: 1.05; letter-spacing: -.04em; }
+/* One vertical rhythm: every direct child is separated by the same gap, so global landing-page margins (summary-grid 4rem/5.2rem, h1 1.35rem) cannot stack with card margins. */
+.tracking-module { display: flex; flex-direction: column; gap: 1.25rem; padding-top: 3rem; }
+.tracking-module > * { margin-top: 0; margin-bottom: 0; }
+.tracking-module .hero-block { max-width: none; }
+.tracking-module .hero-block .lead { max-width: 60ch; font-size: 1rem; }
+.tracking-module > .summary-grid { margin: 0; }
+.tracking-module .summary-card { min-height: 6rem; gap: .75rem; }
+.tracking-module .summary-value { font-size: 2rem; }
+.tracking-map-layout { margin: 0; }
+.tracking-module .tracking-error, .tracking-module .tracking-notice { margin: 0; }
+.tracking-card, .tracking-map-panel { padding: 1.25rem; margin-bottom: 0; border: 1px solid var(--tracking-border); border-radius: .75rem; background: var(--tracking-surface); min-width: 0; }
 .tracking-card h2 { margin: 0 0 .75rem; font-size: 1.15rem; }
 .tracking-card p, .tracking-card small, .tracking-map-footer, .tracking-map-panel small { color: var(--tracking-muted); line-height: 1.5; }
 .tracking-card p { margin: .5rem 0 1rem; }
@@ -22,7 +32,7 @@ html[data-theme='dark'] .tracking-module {
 .tracking-card label { display: flex; flex-direction: column; gap: .5rem; font-size: .85rem; font-weight: 600; }
 .tracking-module input:not([type='checkbox']), .tracking-module select { background: var(--tracking-surface); color: var(--tracking-ink); border: 1px solid var(--tracking-border); border-radius: .5rem; padding: .65rem; width: 100%; min-width: 0; font: inherit; }
 .tracking-module input[type='file'] { font-size: .8rem; }
-.tracking-import-grid { display: grid; grid-template-columns: 1fr 1fr auto; align-items: end; gap: 1rem; margin: 1rem 0; }
+.tracking-import-grid { display: grid; grid-template-columns: 1fr 1fr auto; align-items: end; gap: 1rem; margin: 0 0 .75rem; }
 .tracking-filters { display: flex; gap: 1rem; flex-wrap: wrap; align-items: end; }
 .tracking-filters > label:first-child { min-width: 16rem; flex: 1; }
 .tracking-filters > label:nth-child(2) { min-width: 10rem; }
@@ -103,3 +113,5 @@ html[data-theme='dark'] .tracking-route-line { stroke: #00a3e0; }
 .tracking-storage span { min-width: 3px; }
 .tracking-storage .storage-free { background: var(--tracking-border); }
 .tracking-dot { display: inline-block; width: .7rem; height: .7rem; border-radius: 50%; margin-right: .45rem; }
+.tracking-source-summary ul { margin: .5rem 0 0; }
+.tracking-source-summary li { margin: 0; line-height: 1.7; }
