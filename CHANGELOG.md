@@ -2,9 +2,11 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
-## 0.1.48 · 2026-10-05
+## 0.1.49 · 2026-10-05
 
-Respaldo y recuperación ahora es un panel de estado: aviso con color (rojo si nunca hubo respaldo o hay cargas sin respaldar, ámbar a los 7 días, verde si está al día), fecha del último respaldo y de la última carga, cargas sin respaldar y originales dentro de SQLite. El aviso también cuenta el trabajo manual (modelos de la calculadora MPS, viajes de Viáticos, ajustes): cualquier alta, edición o baja exitosa posterior al último respaldo lo marca como pendiente (ficha "Último cambio de datos"; la clave de IA no cuenta). La descarga registra la fecha del respaldo (`GET /api/system/backup/status`). Un punto rojo animado (framer-motion; sin movimiento si el sistema pide reducirlo) junto a Inicio en la barra lateral avisa cuando el respaldo está pendiente o vencido. Quita la sección "Módulos de la suite" de Inicio, redundante con la barra lateral.
+Respaldo y recuperación ahora es un panel de estado: aviso con color (rojo si nunca hubo respaldo o hay cargas sin respaldar, ámbar a los 7 días, verde si está al día), fecha del último respaldo y de la última carga, cargas sin respaldar y originales dentro de SQLite. El aviso también cuenta el trabajo manual (modelos de la calculadora MPS, viajes de Viáticos, ajustes): cualquier alta, edición o baja exitosa posterior al último respaldo lo marca como pendiente (ficha "Último cambio de datos"; la clave de IA no cuenta). La descarga registra la fecha del respaldo (`GET /api/system/backup/status`). Un punto rojo animado (framer-motion; sin movimiento si el sistema pide reducirlo) junto a Inicio en la barra lateral avisa cuando el respaldo está pendiente o vencido. Quita la sección "Módulos de la suite" de Inicio, redundante con la barra lateral. Corrige la etiqueta "Instalada" del historial: vuelve a verse en blanco sobre verde.
+
+## 0.1.48 · 2026-10-05
 
 Renombra Resumen a Inicio (barra lateral, barra superior, paleta de comandos). Sube Respaldo y recuperación justo debajo de las fichas. Reemplaza las fichas "clientes en la base común" y "equipos instalados" por "contratos en cartera" y "última carga aplicada" (fecha de la última importación aplicada); se mantiene el conteo de módulos funcionales.
 
