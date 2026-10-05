@@ -682,7 +682,7 @@ function ClientHistoryAlert({ currentCustomerName, entries }: { currentCustomerN
 }
 
 function SummaryMetric({ value, label }: { value: string; label: string }) {
-  return <div className="summary-card"><span className="summary-value">{value}</span><span className="summary-label">{label}</span></div>;
+  return <div className="summary-card"><span className="summary-value" title={value}>{value}</span><span className="summary-label">{label}</span></div>;
 }
 
 function LegacySortableHeader({ label, active, direction, onClick, alignRight = false }: { label: string; active: boolean; direction: SortDirection; onClick: () => void; alignRight?: boolean }) {

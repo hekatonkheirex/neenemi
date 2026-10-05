@@ -14,6 +14,8 @@ export type LegacyChartSegment = {
 
 const chartNumber = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const CHART_WIDTH = 760;
+/** Ancho aproximado de un carácter del rótulo de valor (11 px, negrita). */
+const VALUE_LABEL_CHAR_WIDTH = 6.8;
 
 export function LegacyLineChart({
   labels,
@@ -122,6 +124,9 @@ export function LegacyHorizontalStackedBars({
   const plotHeight = height - margin.top - margin.bottom;
   const totals = labels.map((_, index) => series.reduce((sum, item) => sum + (item.values[index] ?? 0), 0));
   const maximum = Math.max(...totals, 1);
+  // La barra más larga deja sitio al texto de su total: sin esto el rótulo se salía del gráfico.
+  const labelRoom = Math.max(...totals.map((total) => valueFormatter(total).length)) * VALUE_LABEL_CHAR_WIDTH + 14;
+  const barWidth = Math.max(plotWidth - labelRoom, plotWidth / 2);
 
   return (
     <LegacyChartFigure ariaLabel={ariaLabel} series={series} valueFormatter={valueFormatter}>
@@ -134,14 +139,14 @@ export function LegacyHorizontalStackedBars({
             <rect className="legacy-chart-track" x={margin.left} y={y + 5} width={plotWidth} height="18" rx="5" />
             {series.map((item) => {
               const value = item.values[index] ?? 0;
-              const x = margin.left + (accumulated / maximum) * plotWidth;
-              const width = (value / maximum) * plotWidth;
+              const x = margin.left + (accumulated / maximum) * barWidth;
+              const width = (value / maximum) * barWidth;
               accumulated += value;
               return value > 0 ? <rect key={item.label} x={x} y={y + 5} width={Math.max(width, 2)} height="18" rx="5" fill={item.color}>
                 <title>{`${label} · ${item.label}: ${valueFormatter(value)}`}</title>
               </rect> : null;
             })}
-            <text className="legacy-chart-axis-label legacy-chart-axis-label-value" x={margin.left + Math.min((totals[index] / maximum) * plotWidth + 8, plotWidth - 4)} y={y + 18}>{valueFormatter(totals[index])}</text>
+            <text className="legacy-chart-axis-label legacy-chart-axis-label-value" x={margin.left + (totals[index] / maximum) * barWidth + 8} y={y + 18}>{valueFormatter(totals[index])}</text>
           </g>;
         })}
       </svg>

@@ -7622,6 +7622,8 @@ html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
 }
 
 .legacy-summary .summary-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
   font-size: clamp(1.1rem, 1.3vw, 1.9rem);
 }
