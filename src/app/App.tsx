@@ -419,12 +419,6 @@ function Dashboard({
         <div className="summary-card accent">
           <span className="summary-value">{functionalModuleCount}</span>
           <span className="summary-label">módulos funcionales</span>
-          <div className="summary-card-action">
-            {clearImportsMessage ? <span className={`global-clear-message ${clearImportsMessage.tone}`} role={clearImportsMessage.tone === 'error' ? 'alert' : 'status'}>{clearImportsMessage.text}</span> : null}
-            <button className="global-clear-button" type="button" onClick={onClearImports} disabled={clearingImports} aria-busy={clearingImports} title="Quitar todas las cargas importadas y sus datos derivados. Los originales quedan en el archivo recuperable.">
-              {clearingImports ? 'Limpiando…' : 'Limpiar cargas'}
-            </button>
-          </div>
         </div>
         <div className="summary-card">
           <span className="summary-value">{overview ? numberFormat.format(overview.counts.contracts) : '—'}</span>
@@ -436,7 +430,7 @@ function Dashboard({
         </div>
       </section>
 
-      <DatabaseRecoveryPanel refreshKey={importsRefreshKey} onHealthChange={onBackupLevel} />
+      <DatabaseRecoveryPanel refreshKey={importsRefreshKey} onHealthChange={onBackupLevel} onClearImports={onClearImports} clearingImports={clearingImports} clearMessage={clearImportsMessage} />
 
       <ImportArchivePanel refreshKey={importsRefreshKey} onRemoveBatch={onRemoveImport} />
 

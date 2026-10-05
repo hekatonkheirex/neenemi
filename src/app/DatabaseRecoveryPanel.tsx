@@ -30,6 +30,9 @@ export type BackupHealth = {
 type DatabaseRecoveryPanelProps = {
   refreshKey: number;
   onHealthChange?: (level: BackupHealth['level']) => void;
+  onClearImports?: () => void;
+  clearingImports?: boolean;
+  clearMessage?: { tone: 'success' | 'error'; text: string } | null;
 };
 
 const byteFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1 });
@@ -61,7 +64,7 @@ function describeReminder(health: BackupHealth): { title: string; text: string }
   }
 }
 
-export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange }: DatabaseRecoveryPanelProps) {
+export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onClearImports, clearingImports = false, clearMessage = null }: DatabaseRecoveryPanelProps) {
   const [status, setStatus] = useState<ImportFileContentStatus | null>(null);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [health, setHealth] = useState<BackupHealth | null>(null);
@@ -241,6 +244,18 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange }: Da
             >
               {restoring ? 'Validando y restaurando…' : 'Restaurar respaldo SQLite'}
             </button>
+            {onClearImports ? (
+              <button
+                className="global-clear-button"
+                type="button"
+                onClick={onClearImports}
+                disabled={clearingImports || restoring || backfilling}
+                aria-busy={clearingImports}
+                title="Quita todas las cargas importadas y sus datos derivados. Los originales quedan en el archivo recuperable."
+              >
+                {clearingImports ? 'Limpiando…' : 'Limpiar cargas'}
+              </button>
+            ) : null}
           </div>
           <input
             ref={restoreInput}
@@ -261,6 +276,7 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange }: Da
       {backfilling && backfillJob ? (
         <progress className="database-recovery-progress" max={100} value={backfillJob.progress} aria-label="Progreso de archivo" />
       ) : null}
+      {clearMessage ? <p className={`database-recovery-message ${clearMessage.tone}`} role={clearMessage.tone === 'error' ? 'alert' : 'status'}>{clearMessage.text}</p> : null}
       {message ? <p className={`database-recovery-message ${message.tone}`} role={message.tone === 'error' ? 'alert' : 'status'}>{message.text}</p> : null}
     </section>
   );

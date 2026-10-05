@@ -48,12 +48,12 @@ describe('Inicio', () => {
     expect(markup).toContain('palette-button');
   });
 
-  it('muestra Limpiar cargas una sola vez, en la primera ficha, sin el panel Base compartida', () => {
+  it('muestra Limpiar cargas una sola vez, dentro del panel de respaldo, sin el panel Base compartida', () => {
     expect(markup.match(/Limpiar cargas/g)).toHaveLength(1);
     expect(markup).not.toContain('Base compartida');
     const clear = markup.indexOf('Limpiar cargas');
-    expect(clear).toBeGreaterThan(markup.indexOf('summary-card accent'));
-    expect(clear).toBeLessThan(markup.indexOf('contratos en cartera'));
+    expect(clear).toBeGreaterThan(markup.indexOf('database-recovery'));
+    expect(clear).toBeLessThan(markup.indexOf('Archivos y filas de origen'));
     expect(markup.slice(0, markup.indexOf('</header>'))).not.toContain('Limpiar cargas');
   });
 });

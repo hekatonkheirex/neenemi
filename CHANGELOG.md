@@ -4,7 +4,7 @@ Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigu
 
 ## 0.1.51 · 2026-10-05
 
-Quita el panel "Base compartida" de Inicio (inventario, fuentes recientes y estado de la consulta; las importaciones ya están en el visor de originales). El botón "Limpiar cargas" pasa a la primera ficha.
+Quita el panel "Base compartida" de Inicio (inventario, fuentes recientes y estado de la consulta; las importaciones ya están en el visor de originales). El botón "Limpiar cargas" pasa al panel Respaldo y recuperación, junto a Restaurar.
 
 ## 0.1.50 · 2026-10-05
 
