@@ -24,4 +24,12 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
     expect(r).toMatch(/flex:\s*0 1 auto/);
     expect(r).toMatch(/min-width:\s*2\.5rem/);
   });
+  it('Viáticos: el input de mes lleva el mismo fondo oscuro y borde que los select vecinos', () => {
+    const block = css.match(/vecinos \(Estado, Medio\)[^\n]*\*\/\n\.travel-controls \.compact-field input \{([^}]*)\}/)?.[1] ?? '';
+    expect(block).toMatch(/background:\s*rgba\(18, 31, 54, 0\.7\)/);
+    expect(block).toMatch(/border:\s*1px solid rgba\(144, 174, 229, 0\.17\)/);
+  });
+  it('Viáticos: el contador de viajes pasa a otra línea en vez de cortar el nombre del medio', () => {
+    expect(rule('.travel-overview-row-heading')).toMatch(/flex-wrap:\s*wrap/);
+  });
 });
