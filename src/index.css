@@ -13090,5 +13090,7 @@ html[data-theme='light'] .ai-key-message.error { color: var(--ds-danger); }
 .backup-stats dt { margin: 0; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.75; }
 .backup-stats dd { margin: 0; font-size: 1.15rem; font-weight: 800; }
 .backup-stats small { font-size: 0.7rem; opacity: 0.7; }
-.database-recovery-body { display: grid; grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.2fr); gap: 1rem 2rem; align-items: center; }
+.database-recovery-body { display: grid; grid-template-columns: 1fr; gap: 1rem 2rem; align-items: center; }
 .database-recovery-body .database-recovery-copy h3 { font-size: 1rem; }
+
+.nav-alert { width: 0.6rem; height: 0.6rem; margin-left: auto; border-radius: 50%; background: #d92d20; box-shadow: 0 0 0 3px rgba(217, 45, 32, 0.22); }

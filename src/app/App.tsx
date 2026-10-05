@@ -18,7 +18,7 @@ import type { SuiteOverview } from '../db/overview';
 import { suiteModules, type SuiteModule } from './modules';
 import { persistTheme, readTheme, type Theme } from './theme';
 import ImportArchivePanel from './ImportArchivePanel';
-import DatabaseRecoveryPanel from './DatabaseRecoveryPanel';
+import DatabaseRecoveryPanel, { type BackupHealth } from './DatabaseRecoveryPanel';
 import { version as suiteVersion } from '../../package.json';
 import suiteLogoUrl from '../../build/icon.png';
 import { confirmAction } from '../core/confirm';
@@ -123,6 +123,7 @@ export default function App() {
   const [clearImportsMessage, setClearImportsMessage] = useState<ClearImportsMessage | null>(null);
   const [importsRefreshKey, setImportsRefreshKey] = useState(0);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [backupLevel, setBackupLevel] = useState<BackupHealth['level'] | null>(null);
 
   const activeModule = suiteModules.find((module) => module.id === activeModuleId);
 
@@ -212,6 +213,17 @@ export default function App() {
     return () => { cancelled = true; };
   }, [activeModuleId, importsRefreshKey, overviewRetryKey]);
 
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/system/backup/status', { cache: 'no-store' })
+      .then(async (response) => (response.ok ? (await response.json()) as BackupHealth : null))
+      .then((value) => { if (!cancelled && value) setBackupLevel(value.level); })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, [activeModuleId, importsRefreshKey]);
+
+  const backupDue = backupLevel !== null && backupLevel !== 'ok';
+
   async function clearImportedFiles() {
     if (clearingImports) return;
     const confirmed = await confirmAction({
@@ -279,6 +291,7 @@ export default function App() {
           >
             <span className="nav-icon" aria-hidden="true"><HugeiconsIcon icon={GridViewIcon} size={16} /></span>
             <span>Inicio</span>
+            {backupDue ? <span className="nav-alert" role="img" aria-label="Respaldo pendiente" title="Respaldo pendiente: abre Inicio para descargarlo" /> : null}
           </button>
 
           {sectionOrder.map((section) => {
@@ -339,6 +352,7 @@ export default function App() {
 
         <Suspense fallback={<ModuleSkeleton />}>
           {activeModule ? renderModule(activeModule) : <Dashboard
+            onBackupLevel={setBackupLevel}
             overview={overview}
             overviewState={overviewState}
             onRetryOverview={() => setOverviewRetryKey((value) => value + 1)}
@@ -381,6 +395,7 @@ function renderModule(module: SuiteModule) {
 }
 
 function Dashboard({
+  onBackupLevel,
   overview,
   overviewState,
   onRetryOverview,
@@ -390,6 +405,7 @@ function Dashboard({
   clearingImports,
   clearImportsMessage,
 }: {
+  onBackupLevel: (level: BackupHealth['level']) => void;
   overview: SuiteOverview | null;
   overviewState: 'loading' | 'ready' | 'error';
   onRetryOverview: () => void;
@@ -427,7 +443,7 @@ function Dashboard({
         </div>
       </section>
 
-      <DatabaseRecoveryPanel refreshKey={importsRefreshKey} />
+      <DatabaseRecoveryPanel refreshKey={importsRefreshKey} onHealthChange={onBackupLevel} />
 
       <section className="io-panel overview-panel" aria-label="Estado de la base compartida">
         <div>

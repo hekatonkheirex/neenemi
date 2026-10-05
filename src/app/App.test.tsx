@@ -10,7 +10,7 @@ describe('Inicio de la suite', () => {
 
     expect(markup).toContain('Importaciones y archivos originales');
     expect(markup).toContain('Archivos y filas de origen');
-    expect(markup).toContain('Una copia con datos y originales');
+    expect(markup).toContain('Respaldo y recuperación');
     expect(markup).toContain('Restaurar respaldo SQLite');
   });
 

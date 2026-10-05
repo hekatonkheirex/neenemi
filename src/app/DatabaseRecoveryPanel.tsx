@@ -17,7 +17,7 @@ type BackfillResult = {
   errors: string[];
 };
 
-type BackupHealth = {
+export type BackupHealth = {
   lastBackupAt: string | null;
   lastLoadAt: string | null;
   loadsSinceBackup: number;
@@ -27,6 +27,7 @@ type BackupHealth = {
 
 type DatabaseRecoveryPanelProps = {
   refreshKey: number;
+  onHealthChange?: (level: BackupHealth['level']) => void;
 };
 
 const byteFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1 });
@@ -54,7 +55,7 @@ function describeReminder(health: BackupHealth): { title: string; text: string }
   }
 }
 
-export default function DatabaseRecoveryPanel({ refreshKey }: DatabaseRecoveryPanelProps) {
+export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange }: DatabaseRecoveryPanelProps) {
   const [status, setStatus] = useState<ImportFileContentStatus | null>(null);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [health, setHealth] = useState<BackupHealth | null>(null);
@@ -92,7 +93,9 @@ export default function DatabaseRecoveryPanel({ refreshKey }: DatabaseRecoveryPa
   async function refreshHealth() {
     const response = await fetch('/api/system/backup/status', { cache: 'no-store' });
     if (!response.ok) throw new Error('No se pudo consultar el estado del respaldo.');
-    setHealth(await response.json() as BackupHealth);
+    const value = await response.json() as BackupHealth;
+    setHealth(value);
+    onHealthChange?.(value.level);
   }
 
   async function backfillOriginals() {
@@ -157,13 +160,6 @@ export default function DatabaseRecoveryPanel({ refreshKey }: DatabaseRecoveryPa
 
   const missingFiles = status?.missingFiles ?? 0;
   const backupReady = status !== null && missingFiles === 0;
-  const statusText = loadingStatus
-    ? 'Consultando archivos originales…'
-    : !status
-      ? 'No se pudo consultar el estado del archivo.'
-      : missingFiles === 0
-        ? `${status.embeddedFiles.toLocaleString('es-PY')} de ${status.totalFiles.toLocaleString('es-PY')} originales activos o archivados están dentro de SQLite.`
-        : `${status.embeddedFiles.toLocaleString('es-PY')} de ${status.totalFiles.toLocaleString('es-PY')} originales activos o archivados están dentro de SQLite; faltan ${missingFiles.toLocaleString('es-PY')}.`;
 
   const reminder = health ? describeReminder(health) : null;
   const downloadButton = backupReady ? (
@@ -219,12 +215,6 @@ export default function DatabaseRecoveryPanel({ refreshKey }: DatabaseRecoveryPa
       ) : null}
 
       <div className="database-recovery-body">
-        <div className="database-recovery-copy">
-          <h3>Una copia con datos y originales</h3>
-          <p>{statusText}</p>
-          <small>El respaldo no incluye la clave de IA.</small>
-        </div>
-
         <div className="database-recovery-controls">
           <div className="database-recovery-actions">
             {missingFiles > 0 ? (
