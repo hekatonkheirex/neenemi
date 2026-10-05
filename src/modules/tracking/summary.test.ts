@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeDay, applyRoads, summarizeDay } from './analysis';
+import { analyzeDay, applyRoads, pairKey, routePairs, summarizeDay } from './analysis';
 import type { TrackingVisit } from './types';
 
 function visit(key: string, checkIn: string | null, checkOut: string | null, overrides: Partial<TrackingVisit> = {}): TrackingVisit {
@@ -52,7 +52,7 @@ describe('tracking daily summary', () => {
       visit('3', at('12:00'), at('13:00'), { gpsIn: { latitude: -25.02, longitude: -57 } }),
     ], 'Ana', '2026-09-01');
     const road = { distanceMeters: 1800, geometry: [{ latitude: -25, longitude: -57 }, { latitude: -25.01, longitude: -57 }] };
-    const routed = applyRoads(analysis, [road, null]);
+    const routed = applyRoads(analysis, { [pairKey({ latitude: -25, longitude: -57 }, { latitude: -25.01, longitude: -57 })]: road });
     expect(routed.legs[0].road).toBe(road);
     expect(routed.legs[1].road).toBeUndefined();
     const summary = summarizeDay(routed);
@@ -67,6 +67,16 @@ describe('tracking daily summary', () => {
       visit('2', at('10:00'), at('11:00'), { gpsIn: { latitude: -25.0005, longitude: -57 } }),
     ], 'Ana', '2026-09-01');
     const road = { distanceMeters: 458, geometry: [{ latitude: -25, longitude: -57 }, { latitude: -25.0005, longitude: -57 }] };
-    expect(applyRoads(analysis, [road]).legs[0].road).toBeUndefined();
+    expect(applyRoads(analysis, { [pairKey({ latitude: -25, longitude: -57 }, { latitude: -25.0005, longitude: -57 })]: road }).legs[0].road).toBeUndefined();
+  });
+
+  it('requests a route for every consecutive located event pair over 100 m, once per distinct pair', () => {
+    const far = { latitude: -25.1, longitude: -57 };
+    const analysis = analyzeDay([
+      visit('1', at('08:00'), at('09:00'), { gpsIn: { latitude: -25.05, longitude: -57 }, gpsOut: far }),
+      visit('2', at('10:00'), at('11:00'), { gpsIn: far, gpsOut: far }),
+    ], 'Ana', '2026-09-01');
+    const pairs = routePairs(analysis);
+    expect(pairs.map(p => p.key)).toEqual([pairKey({ latitude: -25.05, longitude: -57 }, far)]);
   });
 });

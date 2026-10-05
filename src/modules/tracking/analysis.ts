@@ -68,9 +68,39 @@ export function needsRoad(leg: TravelLeg): boolean {
   return leg.distanceMeters !== null && leg.distanceMeters > TRACKING_RADIUS_METERS;
 }
 
-/** `roads` is aligned with `analysis.legs`; null or missing entries keep the straight-line fallback. */
-export function applyRoads(analysis: DayAnalysis, roads: (RoadRoute | null)[]): DayAnalysis {
-  return { ...analysis, legs: analysis.legs.map((leg, index) => roads[index] && needsRoad(leg) ? { ...leg, road: roads[index]! } : leg) };
+export const pairKey = (from: Coordinate, to: Coordinate) => `${from.latitude},${from.longitude};${to.latitude},${to.longitude}`;
+export const segmentKey = (from: RouteEvent, to: RouteEvent) => `${from.key}>${to.key}`;
+
+/** Every distinct from/to pair that deserves a road route: travel legs plus each consecutive pair of located map events. */
+export function routePairs(analysis: DayAnalysis): { key: string; from: Coordinate; to: Coordinate }[] {
+  const pairs = new Map<string, { key: string; from: Coordinate; to: Coordinate }>();
+  const add = (from: Coordinate, to: Coordinate) => {
+    const key = pairKey(from, to);
+    if (distanceMeters(from, to) > TRACKING_RADIUS_METERS && !pairs.has(key)) pairs.set(key, { key, from, to });
+  };
+  for (const leg of analysis.legs) if (needsRoad(leg)) add(leg.from.gpsOut!, leg.to.gpsIn!);
+  for (let index = 1; index < analysis.events.length; index += 1) {
+    const from = analysis.events[index - 1].coordinate;
+    const to = analysis.events[index].coordinate;
+    if (from && to) add(from, to);
+  }
+  return [...pairs.values()];
+}
+
+/** `roads` is keyed by `pairKey`; missing or null entries keep the straight-line fallback. */
+export function applyRoads(analysis: DayAnalysis, roads: Record<string, RoadRoute | null>): DayAnalysis {
+  const legs = analysis.legs.map(leg => {
+    const road = needsRoad(leg) ? roads[pairKey(leg.from.gpsOut!, leg.to.gpsIn!)] : null;
+    return road ? { ...leg, road } : leg;
+  });
+  const roadSegments: Record<string, Coordinate[]> = {};
+  for (let index = 1; index < analysis.events.length; index += 1) {
+    const from = analysis.events[index - 1];
+    const to = analysis.events[index];
+    const road = from.coordinate && to.coordinate && distanceMeters(from.coordinate, to.coordinate) > TRACKING_RADIUS_METERS ? roads[pairKey(from.coordinate, to.coordinate)] : null;
+    if (road) roadSegments[segmentKey(from, to)] = road.geometry;
+  }
+  return { ...analysis, legs, roadSegments };
 }
 
 export function summarizeDay(analysis: DayAnalysis) {

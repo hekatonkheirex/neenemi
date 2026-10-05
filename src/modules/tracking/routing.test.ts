@@ -16,12 +16,12 @@ describe('OSRM response parsing', () => {
       expect(parseOsrmRoute(body)).toBeNull();
     }
   });
-  it('rejects invalid legs and more than 100', () => {
+  it('rejects invalid legs and more than 200', () => {
     const point = { latitude: -25, longitude: -57 };
     expect(parseRouteLegs([{ from: point, to: point }])).toHaveLength(1);
     expect(() => parseRouteLegs([{ from: point, to: { latitude: 999, longitude: 0 } }])).toThrow();
     expect(() => parseRouteLegs('x')).toThrow();
-    expect(() => parseRouteLegs(Array.from({ length: 101 }, () => ({ from: point, to: point })))).toThrow();
+    expect(() => parseRouteLegs(Array.from({ length: 201 }, () => ({ from: point, to: point })))).toThrow();
   });
 });
 

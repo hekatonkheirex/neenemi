@@ -22,5 +22,5 @@ export type EventValidation = { status: 'inside' | 'outside' | 'missing-gps' | '
 export type RouteEvent = { key: string; visitKey: string; reportId: string; customer: string; kind: 'in' | 'out'; timestamp: string; coordinate: Coordinate | null };
 export type RoadRoute = { distanceMeters: number; geometry: Coordinate[] };
 export type TravelLeg = { from: TrackingVisit; to: TrackingVisit; distanceMeters: number | null; elapsedMinutes: number | null; issue: string | null; road?: RoadRoute };
-export type DayAnalysis = { visits: TrackingVisit[]; events: RouteEvent[]; legs: TravelLeg[] };
+export type DayAnalysis = { visits: TrackingVisit[]; events: RouteEvent[]; legs: TravelLeg[]; roadSegments?: Record<string, Coordinate[]> };
 export const TRACKING_RADIUS_METERS = 100;

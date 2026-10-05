@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { analyzeDay, applyRoads, needsRoad, siteKey } from './analysis';
+import { analyzeDay, applyRoads, needsRoad, routePairs, siteKey } from './analysis';
 import { normalizeIdentity, normalizeTrackingSerial } from './parser';
 import RouteMap from './RouteMap';
 import TrackingTables from './TrackingTables';
@@ -44,9 +44,9 @@ export default function TrackingModule() {
   const technicians = useMemo(() => [...new Set((visits ?? []).map(v => v.technician).filter(Boolean))].sort((a, b) => a.localeCompare(b)), [visits]);
   const days = useMemo(() => [...new Set((visits ?? []).filter(v => normalizeIdentity(v.technician) === normalizeIdentity(technician) && (!onsiteOnly || normalizeIdentity(v.serviceType) === 'en sitio')).flatMap(v => [v.checkIn?.slice(0, 10), v.checkOut?.slice(0, 10)]).filter((value): value is string => Boolean(value)))].sort().reverse(), [visits, technician, onsiteOnly]);
   const straightAnalysis = useMemo(() => analyzeDay(visits ?? [], technician, day, onsiteOnly), [visits, technician, day, onsiteOnly]);
-  const [roads, setRoads] = useState<{ source: DayAnalysis; routes: (RoadRoute | null)[] | 'failed' } | null>(null);
+  const [roads, setRoads] = useState<{ source: DayAnalysis; routes: Record<string, RoadRoute | null> | 'failed' } | null>(null);
   const analysis = useMemo(() => roads?.source === straightAnalysis && roads.routes !== 'failed' ? applyRoads(straightAnalysis, roads.routes) : straightAnalysis, [roads, straightAnalysis]);
-  const roadStatus = !straightAnalysis.legs.some(needsRoad) ? 'none' : roads?.source !== straightAnalysis ? 'loading' : roads.routes === 'failed' ? 'failed' : 'ready';
+  const roadStatus = !routePairs(straightAnalysis).length ? 'none' : roads?.source !== straightAnalysis ? 'loading' : roads.routes === 'failed' ? 'failed' : 'ready';
   const selected = visits?.find(v => v.key === selectedKey) ?? null;
   const selectedSite = selected ? state.sites.find(site => site.key === siteKey(selected)) : undefined;
   const serialSite = state.sites.find(site => site.serialNumber && site.serialNumber === normalizeTrackingSerial(serialNumber));
@@ -62,18 +62,16 @@ export default function TrackingModule() {
     return () => { cancelled = true; };
   }, []);
   useEffect(() => {
-    const indexes = straightAnalysis.legs.flatMap((leg, index) => needsRoad(leg) ? [index] : []);
-    if (!indexes.length) return;
+    const pairs = routePairs(straightAnalysis);
+    if (!pairs.length) return;
     const controller = new AbortController();
     fetch('/api/tracking/route', {
       method: 'POST', headers: { 'content-type': 'application/json' }, signal: controller.signal,
-      body: JSON.stringify({ legs: indexes.map(index => ({ from: straightAnalysis.legs[index].from.gpsOut, to: straightAnalysis.legs[index].to.gpsIn })) }),
+      body: JSON.stringify({ legs: pairs.map(({ from, to }) => ({ from, to })) }),
     }).then(async response => {
       const result = await response.json() as { routes?: (RoadRoute | null)[] };
       if (!response.ok || !result.routes) throw new Error('route');
-      const routes: (RoadRoute | null)[] = straightAnalysis.legs.map(() => null);
-      indexes.forEach((index, position) => { routes[index] = result.routes![position] ?? null; });
-      setRoads({ source: straightAnalysis, routes });
+      setRoads({ source: straightAnalysis, routes: Object.fromEntries(pairs.map((pair, position) => [pair.key, result.routes![position] ?? null])) });
     }).catch(() => { if (!controller.signal.aborted) setRoads({ source: straightAnalysis, routes: 'failed' }); });
     return () => controller.abort();
   }, [straightAnalysis]);
@@ -175,7 +173,7 @@ export default function TrackingModule() {
       <section className="tracking-card tracking-filters" aria-label="Filtros de recorrido"><label>Técnico<select value={technician} disabled={busy} onChange={e => setTechnician(e.target.value)}>{technicians.map(name => <option key={name} value={name}>{name}</option>)}</select></label><label>Día de marcación<select value={day} disabled={busy} onChange={e => setDay(e.target.value)}>{days.length ? days.map(date => <option key={date} value={date}>{date.split('-').reverse().join('/')}</option>) : <option value="">Sin fechas utilizables</option>}</select></label><label className="tracking-checkbox"><input type="checkbox" checked={onsiteOnly} disabled={busy} onChange={e => setOnsiteOnly(e.target.checked)} /> Sólo servicios en sitio</label><span>{analysis.visits.length} registros · {analysis.events.filter(e => e.coordinate).length}/{analysis.events.length} eventos con GPS</span></section>
       {!onsiteOnly && <p className="tracking-notice">Incluye servicios remotos, internos, de taller o sin tipo. Sus puntos no demuestran desplazamientos a clientes.</p>}
       <div className="tracking-map-layout">
-        <RouteMap events={analysis.events} legs={analysis.legs} sites={mapSites} selectedVisit={selectedKey} candidate={selected ? candidate : null} editing={editing && !busy} onPick={point => { setLatitude(point.latitude.toFixed(7)); setLongitude(point.longitude.toFixed(7)); }} onSelect={key => { const visit = visits?.find(v => v.key === key); if (visit) selectVisit(visit); }} />
+        <RouteMap events={analysis.events} roadSegments={analysis.roadSegments} sites={mapSites} selectedVisit={selectedKey} candidate={selected ? candidate : null} editing={editing && !busy} onPick={point => { setLatitude(point.latitude.toFixed(7)); setLongitude(point.longitude.toFixed(7)); }} onSelect={key => { const visit = visits?.find(v => v.key === key); if (visit) selectVisit(visit); }} />
         <section className="tracking-card tracking-site-editor" aria-label="Confirmación manual de sede"><h2>Sede de referencia</h2>
           {!selected ? <p>Selecciona un I.S. en la tabla o un punto del mapa. La ubicación debe confirmarse con una fuente independiente de las marcaciones del técnico.</p> : <><strong>{selected.customer}</strong><span>I.S. {selected.reportId} · {selected.branch || 'Sucursal no informada'}</span>
             <label>Número de serie del equipo<input value={serialNumber} maxLength={100} disabled={busy} onChange={event => {

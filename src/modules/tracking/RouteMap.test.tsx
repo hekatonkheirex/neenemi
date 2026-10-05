@@ -44,11 +44,10 @@ describe('RouteMap rendering', () => {
     const markup = render({ events: [event(1, near(0)), event(2, near(0.01)), event(3, null), event(4, near(0.02)), event(5, null), event(6, near(0.03)), event(7, near(0.04))] });
     expect(markup.match(/<polyline/g)).toHaveLength(2);
   });
-  it('replaces the straight travel segment with the road geometry', () => {
+  it('replaces any straight segment between consecutive events with its road geometry', () => {
     const near = (d: number) => ({ latitude: -25.3 + d, longitude: -57.6 });
-    const events = [event(1, near(0), 'in'), event(1, near(0.01), 'out'), event(2, near(0.02), 'in')];
-    const leg = { from: { key: 'v1' }, to: { key: 'v2' }, road: { distanceMeters: 3000, geometry: [near(0.01), near(0.015), near(0.02)] } } as TravelLeg;
-    const markup = render({ events, legs: [leg] });
+    const events = [event(1, near(0), 'in'), event(1, near(0.01), 'out'), event(2, near(0.02), 'out')];
+    const markup = render({ events, roadSegments: { 'e1>e1': [near(0), near(0.005), near(0.01)] } });
     expect(markup.match(/tracking-road-line/g)).toHaveLength(1);
     expect(markup.match(/tracking-route-line/g)).toHaveLength(1);
   });

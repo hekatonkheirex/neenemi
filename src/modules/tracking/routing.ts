@@ -5,7 +5,7 @@ const validCoordinate = (value: unknown): value is Coordinate => !!value && type
   && typeof (value as Coordinate).longitude === 'number' && Math.abs((value as Coordinate).longitude) <= 180;
 
 export function parseRouteLegs(value: unknown): { from: Coordinate; to: Coordinate }[] {
-  if (!Array.isArray(value) || value.length > 100) throw new Error('Envía hasta 100 tramos.');
+  if (!Array.isArray(value) || value.length > 200) throw new Error('Envía hasta 200 tramos.');
   return value.map(leg => {
     if (!leg || !validCoordinate(leg.from) || !validCoordinate(leg.to)) throw new Error('Tramo con coordenadas inválidas.');
     return { from: { latitude: leg.from.latitude, longitude: leg.from.longitude }, to: { latitude: leg.to.latitude, longitude: leg.to.longitude } };
