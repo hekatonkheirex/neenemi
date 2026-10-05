@@ -6,6 +6,7 @@ import { exportPriceList } from './export';
 import type { PricingSettings, SalesPricePart } from './types';
 import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
+import { readJson, toErrorMessage } from '../../core/http';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const decimalFormat = new Intl.NumberFormat('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
@@ -280,10 +281,7 @@ export default function ListadoPreciosModule() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(nextPricing),
       });
-      const body = (await response.json()) as PricingSettings | { error?: string };
-      if (!response.ok || !('exchangeRate' in body)) {
-        throw new Error('error' in body && body.error ? body.error : 'No se pudo guardar la configuración.');
-      }
+      const body = await readJson<PricingSettings>(response);
       setPricing(body);
       setDraftPricing(body);
       setMessage('Reglas comerciales guardadas en SQLite.');
@@ -734,10 +732,6 @@ export default function ListadoPreciosModule() {
       )}
     </div>
   );
-}
-
-function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudo completar la operación.';
 }
 
 function uniqueModelLabels(items: readonly SalesPricePart[], serviceItems: readonly CatalogServiceItem[] = []): string[] {

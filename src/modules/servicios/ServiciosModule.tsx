@@ -13,6 +13,7 @@ import { buildPaginatedUrl, type PaginatedResult } from '../../core/pagination';
 import type { ConsumablesOutputRecord } from '../consumibles/types';
 import { ConsumablesServicePanel } from '../consumibles/LegacyAnalysisPanels';
 import type { ServiceImportResult, ServiceRecord, ServiceSourceOperational, ServiceSummary } from './types';
+import { readJson, toErrorMessage } from '../../core/http';
 
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 
@@ -289,21 +290,6 @@ export default function ServiciosModule() {
       </section>}
     </div>
   );
-}
-
-async function readJson<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string'
-      ? body.error
-      : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
-}
-
-function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudo completar la operación.';
 }
 
 function formatCustomerClassification(customerType?: string, commercialArea?: string): string {

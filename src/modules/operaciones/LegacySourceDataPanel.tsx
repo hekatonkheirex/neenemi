@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { readJson, toErrorMessage as describeError } from '../../core/http';
 
 type ImportBatchStatus = 'staged' | 'applied' | 'failed';
 
@@ -313,17 +314,6 @@ function formatImportStatus(status: ImportBatchStatus): string {
   return 'Pendiente';
 }
 
-async function readJson<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string'
-      ? body.error
-      : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
-}
-
 function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudieron leer las filas originales.';
+  return describeError(value, 'No se pudieron leer las filas originales.');
 }

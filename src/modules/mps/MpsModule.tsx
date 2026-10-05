@@ -9,6 +9,7 @@ import { exportMpsConsumablesWorkbook, exportMpsWorkbook } from './export';
 import type { MpsAnalysis } from './analysis';
 import type { MpsImportSummary, MpsModel, MpsProjection, SaveMpsModelInput } from './repository';
 import { confirmAction } from '../../core/confirm';
+import { readJson, toErrorMessage } from '../../core/http';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1 });
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
@@ -372,21 +373,6 @@ function getVolumeStatus(volume: number, minimum: number, maximum: number): { la
   if (volume < minimum) return { label: 'Por debajo del rango recomendado', className: 'low' };
   if (volume > maximum) return { label: 'Por encima del rango recomendado', className: 'high' };
   return { label: 'Dentro del rango recomendado', className: 'good' };
-}
-
-async function readJson<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string'
-      ? body.error
-      : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
-}
-
-function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudo completar la operación.';
 }
 
 function bytesToBase64(bytes: Uint8Array): string {

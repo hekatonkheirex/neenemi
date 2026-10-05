@@ -17,6 +17,7 @@ import { SOFTWARE_CATEGORIES } from './types';
 import type { IconSvgElement } from '@hugeicons/react';
 import { ChartBarLineIcon, GridViewIcon, PrinterIcon, ServerStack01Icon, ShieldEnergyIcon, Wrench01Icon, WorkflowSquare01Icon } from '@hugeicons/core-free-icons';
 import AnimatedTabs from '../../core/AnimatedTabs';
+import { readJson, toErrorMessage } from '../../core/http';
 
 const MAX_TEXT_LENGTH = 250_000;
 const DEMO_TEXT = 'El pliego requiere liberación Follow-Me, autenticación con tarjeta, integración con Active Directory, escaneo a SharePoint y continuidad operativa mediante un servidor de impresión local.';
@@ -461,15 +462,3 @@ function RecommendationCard({ recommendation }: { recommendation: SoftwareRecomm
   );
 }
 
-async function readJson<T>(response: Response): Promise<T> {
-  const payload = await response.json() as T | { error?: unknown };
-  if (!response.ok) {
-    const error = payload && typeof payload === 'object' && 'error' in payload ? payload.error : undefined;
-    throw new Error(typeof error === 'string' ? error : `Solicitud fallida (${response.status}).`);
-  }
-  return payload as T;
-}
-
-function toErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : 'No se pudo completar la operación.';
-}

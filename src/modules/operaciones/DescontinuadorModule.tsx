@@ -25,6 +25,7 @@ import type {
   WaldbottStockRecord,
 } from './repository';
 import { confirmAction } from '../../core/confirm';
+import { readJson, toErrorMessage } from '../../core/http';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const customerTypes: readonly CustomerType[] = ['Publico', 'Privado'];
@@ -867,17 +868,6 @@ function formatDate(value: string): string {
   return Number.isNaN(date.getTime()) ? value.slice(0, 10) : new Intl.DateTimeFormat('es-PY', { dateStyle: 'medium' }).format(date);
 }
 
-async function readJson<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string'
-      ? body.error
-      : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
-}
-
 async function requestJson<T>(url: string): Promise<T> {
   const retryDelays = [150, 400] as const;
   let lastError: unknown = null;
@@ -898,10 +888,6 @@ async function requestJson<T>(url: string): Promise<T> {
   }
 
   throw lastError instanceof Error ? lastError : new Error('No se pudo consultar la API local.');
-}
-
-function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudo completar la operación.';
 }
 
 type LegacyPortfolioImportResponse = {

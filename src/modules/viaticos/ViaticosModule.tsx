@@ -31,6 +31,7 @@ import PaginationControls from '../../core/PaginationControls';
 import TravelDrawer from './TravelDrawer';
 import { pendingNotice } from './pendingNotice';
 import { paginateItems } from '../../core/pagination';
+import { readJson, toErrorMessage } from '../../core/http';
 
 function tripToForm(trip: TravelTrip): TravelTripInput {
   return {
@@ -568,19 +569,6 @@ function adjustStatusSummary(summary: TravelSummary, previous: TravelStatus, nex
   counts[previous] = Math.max(0, counts[previous] - 1);
   counts[next] += 1;
   return { ...summary, pending: counts.pending, review: counts.review, approved: counts.approved };
-}
-
-async function readJson<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string' ? body.error : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
-}
-
-function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudo completar la operación.';
 }
 
 function bytesToBase64(bytes: Uint8Array): string {

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { findSourceHeaderRow } from '../core/source-header-row';
 import { confirmAction } from '../core/confirm';
+import { readJson, toErrorMessage as describeError } from '../core/http';
 
 type ImportBatchSummary = {
   id: string;
@@ -425,17 +426,6 @@ function formatImportStatus(status: ImportBatchSummary['status']): string {
   return 'Pendiente';
 }
 
-async function readJson<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string'
-      ? body.error
-      : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
-}
-
 function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudieron leer los datos originales.';
+  return describeError(value, 'No se pudieron leer los datos originales.');
 }

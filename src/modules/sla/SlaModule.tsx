@@ -6,6 +6,7 @@ import { analyzeSlaRequirements } from './analysis';
 import { DEMO_SLA_TEXT, SLA_BASELINE_NOTE, SLA_REFERENCE_SECTIONS } from './constants';
 import { buildSlaHtmlReport } from './html-report';
 import type { SlaAnalysis, SlaComplianceItem, SlaReferenceSection, SlaStatus } from './types';
+import { readJson, toErrorMessage } from '../../core/http';
 
 const MAX_TEXT_LENGTH = 250_000;
 const numberFormat = new Intl.NumberFormat('es-PY');
@@ -279,15 +280,3 @@ function riskLabel(risk: SlaAnalysis['overallRisk']): string {
   return { low: 'Bajo', medium: 'Medio', high: 'Alto', critical: 'Crítico' }[risk];
 }
 
-async function readJson<T>(response: Response): Promise<T> {
-  const payload = await response.json() as T | { error?: unknown };
-  if (!response.ok) {
-    const error = payload && typeof payload === 'object' && 'error' in payload ? payload.error : undefined;
-    throw new Error(typeof error === 'string' ? error : `Solicitud fallida (${response.status}).`);
-  }
-  return payload as T;
-}
-
-function toErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : 'No se pudo completar la operación.';
-}

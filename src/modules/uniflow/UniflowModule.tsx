@@ -19,6 +19,7 @@ import type {
 import { UNIFLOW_PRICE_TABS } from './types';
 import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
+import { readJson, toErrorMessage } from '../../core/http';
 
 const INITIAL_DEVICE: UniflowAddedDevice = { id: 'row-1', modelName: '', quantity: 1, withCIP: false };
 const PRICE_TAB_LABELS: Record<UniflowPriceTabId, string> = {
@@ -424,15 +425,3 @@ function buildClipboardReport(results: UniflowConfigurationSummary, clientName: 
   return lines.join('\n');
 }
 
-async function readJson<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string' ? body.error : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
-}
-
-function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudo completar la operación.';
-}

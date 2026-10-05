@@ -20,6 +20,7 @@ import {
   File01Icon,
   Settings02Icon,
 } from '@hugeicons/core-free-icons';
+import { readJson, toErrorMessage } from '../../core/http';
 
 type CounterImportResponse = MaintenanceImportSummary & {
   duplicate: boolean;
@@ -642,21 +643,6 @@ function toFileSafeName(value: string): string {
     .replace(/[^a-zA-Z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 72) || 'equipo';
-}
-
-async function readJson<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string'
-      ? body.error
-      : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
-}
-
-function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudo completar la operación.';
 }
 
 function maintenanceStatusClass(status: MaintenanceAnalysis['status']): string {

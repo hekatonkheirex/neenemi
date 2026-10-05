@@ -1,3 +1,5 @@
+import { readJson } from './http';
+
 export type ImportJobStatus = 'queued' | 'running' | 'completed' | 'failed';
 
 export type ImportJobSnapshot<TResult = unknown> = {
@@ -47,15 +49,4 @@ async function waitForImportJob<T>(jobId: string, onProgress: (job: ImportJobSna
     await new Promise<void>((resolve) => setTimeout(resolve, 300));
   }
   throw new Error('La importación superó el tiempo máximo de espera de 30 minutos.');
-}
-
-async function readJson<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string'
-      ? body.error
-      : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
 }

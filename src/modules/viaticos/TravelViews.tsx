@@ -6,6 +6,7 @@ import { paginateItems } from '../../core/pagination';
 import { formatSourceLocation } from '../../core/source-location';
 import { travelSourceOperationalEntries } from './source-operational';
 import type { HistoricalSummary, TravelStatus, TravelTrip } from './types';
+import { readJson, toErrorMessage as describeError } from '../../core/http';
 
 export type TravelView = 'resumen' | 'viajes' | 'rendiciones' | 'historico';
 
@@ -642,15 +643,6 @@ function sourceValue(value: unknown): string {
   return String(value);
 }
 
-async function readJson<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string' ? body.error : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
-}
-
 function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudo consultar la fuente original.';
+  return describeError(value, 'No se pudo consultar la fuente original.');
 }

@@ -21,6 +21,7 @@ import type {
   SalesCatalogSnapshot,
   SalesCatalogs,
 } from './types';
+import { readJson, toErrorMessage } from '../../core/http';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const usdNumberFormat = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -542,10 +543,7 @@ export default function ProformasModule() {
           ],
         }),
       });
-      const body = (await response.json()) as Proforma | { error?: string };
-      if (!response.ok || !('id' in body)) {
-        throw new Error('error' in body && body.error ? body.error : 'No se pudo guardar la proforma.');
-      }
+      const body = await readJson<Proforma>(response);
       setSavedProforma(body);
       setHistory((current) => [toSummary(body), ...current.filter((item) => item.id !== body.id)]);
       setMessage(`Proforma guardada: ${body.id.slice(0, 8)}.`);
@@ -1165,18 +1163,6 @@ function toSummary(proforma: Proforma): ProformaSummary {
   };
 }
 
-async function readJson<T>(responseOrPromise: Response | Promise<Response>): Promise<T> {
-  const response = await responseOrPromise;
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string'
-      ? body.error
-      : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
-}
-
 function formatDate(value: string): string {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value.slice(0, 10) : dateFormat.format(date);
@@ -1217,6 +1203,3 @@ function bytesToBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudo completar la operación.';
-}

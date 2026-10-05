@@ -54,6 +54,7 @@ import {
   ConsumablesRankingPanel,
   ConsumablesServicePanel,
 } from './LegacyAnalysisPanels';
+import { readJson, toErrorMessage } from '../../core/http';
 
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 
@@ -1211,21 +1212,6 @@ function formatBundleImportResult(sourceLabel: string, result: BundleImportResul
     return `${sourceLabel}: ${result.contracts?.toLocaleString('es-PY') ?? 0} contratos y ${result.customers?.toLocaleString('es-PY') ?? 0} clientes relacionados.`;
   }
   return `${sourceLabel}: ${result.accepted?.toLocaleString('es-PY') ?? 0} registros aceptados${result.replaced ? ' y versión anterior reemplazada' : ''}.`;
-}
-
-async function readJson<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T | { error?: string };
-  if (!response.ok) {
-    const error = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string'
-      ? body.error
-      : 'La API local devolvió un error.';
-    throw new Error(error);
-  }
-  return body as T;
-}
-
-function toErrorMessage(value: unknown): string {
-  return value instanceof Error ? value.message : 'No se pudo completar la operación.';
 }
 
 function formatCustomerClassification(customerType?: string, commercialArea?: string): string {

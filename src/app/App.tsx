@@ -32,6 +32,7 @@ import { guardUnload, hasUnsavedChanges } from '../core/unsavedChanges';
 import { installFieldErrors } from '../core/fieldErrors';
 import { installEllipsisTitles } from '../core/ellipsisTitles';
 import { buildPaletteEntries } from './commandPaletteModel';
+import { readJson } from '../core/http';
 
 const MantenimientoModule = lazy(() => import('../modules/operaciones/MantenimientoModule'));
 const DescontinuadorModule = lazy(() => import('../modules/operaciones/DescontinuadorModule'));
@@ -229,8 +230,7 @@ export default function App() {
     setClearImportsMessage(null);
     try {
       const response = await fetch('/api/system/imports', { method: 'DELETE' });
-      const result = (await response.json()) as ClearImportedFilesResponse;
-      if (!response.ok) throw new Error(result.error ?? 'No se pudieron limpiar las cargas importadas.');
+      const result = await readJson<ClearImportedFilesResponse>(response);
 
       setOverview(null);
       setActiveModuleId(null);
@@ -251,8 +251,7 @@ export default function App() {
 
   async function removeImportBatch(batch: ImportArchiveBatch): Promise<void> {
     const response = await fetch(`/api/imports/${encodeURIComponent(batch.id)}`, { method: 'DELETE' });
-    const result = (await response.json()) as { error?: string };
-    if (!response.ok) throw new Error(result.error ?? `No se pudo quitar ${batch.sourceName}.`);
+    await readJson<unknown>(response);
 
     try {
       const overviewResponse = await fetch('/api/overview');

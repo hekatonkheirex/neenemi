@@ -5,6 +5,7 @@ import coveragePrintStyles from './coverage-print.css?inline';
 import { renderCoveragePrintReportMarkup } from './coverage-print-report';
 import type { PdfPageFailure, PdfProgressEvent } from './pdf-analysis';
 import type { CanonColorType, CanonModel, CanonModelDraft, CoverageAnalysis, PageCoverage, YieldEstimate } from './types';
+import { readJson, toErrorMessage } from '../../core/http';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1, minimumFractionDigits: 1 });
 const pageFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
@@ -521,15 +522,3 @@ function colorLabel(color: 'black' | 'cyan' | 'magenta' | 'yellow'): string {
   return { black: 'Negro', cyan: 'Cian', magenta: 'Magenta', yellow: 'Amarillo' }[color];
 }
 
-async function readJson<T>(response: Response): Promise<T> {
-  const payload = await response.json() as T | { error?: unknown };
-  if (!response.ok) {
-    const error = payload && typeof payload === 'object' && 'error' in payload ? payload.error : undefined;
-    throw new Error(typeof error === 'string' ? error : `Solicitud fallida (${response.status}).`);
-  }
-  return payload as T;
-}
-
-function toErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : 'No se pudo completar la operación.';
-}
