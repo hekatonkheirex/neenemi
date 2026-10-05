@@ -751,6 +751,12 @@ html[data-theme='light'] .legacy-fleet-source small {
   color: var(--ds-muted);
 }
 
+/* `[class*='-card']` también alcanza a los hijos como `*-card-heading`: sombra y fondo blanco sobre el texto dentro de la ficha. */
+html[data-theme='light'] .app-shell .discontinuation-model-card-heading {
+  background: transparent;
+  box-shadow: none;
+}
+
 /* El sombreado general de tarjetas (0,65 rem de desplazamiento, 1,6 rem de difuminado) hacía flotar las fichas de resumen sobre el fondo. */
 html[data-theme='light'] .app-shell .summary-card {
   box-shadow: 0 1px 2px var(--ds-shadow);
