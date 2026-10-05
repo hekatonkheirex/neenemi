@@ -3091,20 +3091,7 @@ html[data-theme='light'] .coverage-empty {
   color: var(--ds-muted);
 }
 
-/* Selector de software: pestañas de categoría y resumen de cada recomendación. */
-html[data-theme='light'] .software-category-tabs button {
-  border-color: var(--ds-border-strong);
-  color: var(--ds-muted);
-  background: var(--ds-surface);
-}
-
-html[data-theme='light'] .software-category-tabs button:hover,
-html[data-theme='light'] .software-category-tabs button.active {
-  border-color: var(--ds-sky);
-  color: var(--ds-navy);
-  background: var(--ds-blue-wash);
-}
-
+/* Selector de software: resumen de cada recomendación. */
 html[data-theme='light'] .software-recommendation summary {
   color: #00698f;
 }

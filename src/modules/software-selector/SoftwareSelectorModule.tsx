@@ -14,10 +14,27 @@ import type {
   SoftwareRecommendation,
 } from './types';
 import { SOFTWARE_CATEGORIES } from './types';
+import type { IconSvgElement } from '@hugeicons/react';
+import { ChartBarLineIcon, GridViewIcon, PrinterIcon, ServerStack01Icon, ShieldEnergyIcon, Wrench01Icon, WorkflowSquare01Icon } from '@hugeicons/core-free-icons';
+import AnimatedTabs from '../../core/AnimatedTabs';
 
 const MAX_TEXT_LENGTH = 250_000;
 const DEMO_TEXT = 'El pliego requiere liberación Follow-Me, autenticación con tarjeta, integración con Active Directory, escaneo a SharePoint y continuidad operativa mediante un servidor de impresión local.';
 const ALL_CATEGORIES = 'Todas' as const;
+
+const CATEGORY_ICONS: Record<SoftwareCategory, IconSvgElement> = {
+  'Gestión de Impresión': PrinterIcon,
+  'Escaneo y Flujos de Trabajo': WorkflowSquare01Icon,
+  'Costos e Informes': ChartBarLineIcon,
+  'Gestión de Dispositivos y Flotas': ServerStack01Icon,
+  'Supervisión y Servicio': Wrench01Icon,
+  'Seguridad e Identidad': ShieldEnergyIcon,
+};
+
+const categoryTabs: readonly { id: typeof ALL_CATEGORIES | SoftwareCategory; label: string; icon: IconSvgElement }[] = [
+  { id: ALL_CATEGORIES, label: 'Todas', icon: GridViewIcon },
+  ...SOFTWARE_CATEGORIES.map((category) => ({ id: category, label: category, icon: CATEGORY_ICONS[category] })),
+];
 const compactNumber = new Intl.NumberFormat('es-PY');
 const percentage = new Intl.NumberFormat('es-PY', { style: 'percent', maximumFractionDigits: 0 });
 const SOFTWARE_PRESETS = [
@@ -340,10 +357,7 @@ export default function SoftwareSelectorModule() {
                 {(selectedFeatureIds.length > 0 || text || analysis) && <button className="text-button" type="button" onClick={clearSelection}>Reiniciar</button>}
               </div>
             </div>
-            <div className="software-category-tabs" role="tablist" aria-label="Categorías de requisitos">
-              <button className={activeCategory === ALL_CATEGORIES ? 'active' : ''} type="button" onClick={() => setActiveCategory(ALL_CATEGORIES)}>Todas</button>
-              {SOFTWARE_CATEGORIES.map((category) => <button className={activeCategory === category ? 'active' : ''} key={category} type="button" onClick={() => setActiveCategory(category)}>{category}</button>)}
-            </div>
+            <AnimatedTabs ariaLabel="Categorías de requisitos" tabs={categoryTabs} active={activeCategory} onChange={setActiveCategory} />
             <div className="software-category-actions">
               <span>Vista de categorías</span>
               <div>

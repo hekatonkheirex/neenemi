@@ -36,7 +36,6 @@ describe('contraste del tema claro', () => {
     expect(theme).toMatch(/html\[data-theme='light'\] \.eyebrow\s*{\s*color:\s*#00698f/);
     expect(theme).toMatch(/--ds-subtle:\s*#58677d/);
     expect(theme).toMatch(/\.coverage-upload-dropzone\s*{[^}]*background:\s*var\(--ds-blue-wash\)/);
-    expect(theme).toMatch(/\.software-category-tabs button\.active\s*{[^}]*background:\s*var\(--ds-blue-wash\)/);
   });
 
   it('Mantenimiento: las reglas válidas en los dos temas llevan html[data-theme] (sin él pierden frente a las claras)', () => {

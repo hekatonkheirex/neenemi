@@ -11263,32 +11263,6 @@ html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
   margin-bottom: 0.75rem;
 }
 
-.software-category-tabs {
-  display: flex;
-  gap: 0.4rem;
-  margin-bottom: 1.1rem;
-  overflow-x: auto;
-  padding-bottom: 0.2rem;
-}
-
-.software-category-tabs button {
-  flex: 0 0 auto;
-  padding: 0.5rem 0.65rem;
-  border: 1px solid rgba(144, 174, 229, 0.16);
-  border-radius: 0.4rem;
-  color: #8ea4c8;
-  background: rgba(18, 31, 54, 0.58);
-  font-size: 0.68rem;
-  font-weight: 800;
-}
-
-.software-category-tabs button:hover,
-.software-category-tabs button.active {
-  border-color: rgba(117, 166, 255, 0.52);
-  color: #e8f1ff;
-  background: rgba(57, 101, 190, 0.24);
-}
-
 .software-category-actions {
   display: flex;
   justify-content: space-between;
