@@ -20,7 +20,9 @@ type BackfillResult = {
 export type BackupHealth = {
   lastBackupAt: string | null;
   lastLoadAt: string | null;
+  lastChangeAt: string | null;
   loadsSinceBackup: number;
+  changedSinceBackup: boolean;
   daysSinceBackup: number | null;
   level: 'never' | 'pending' | 'stale' | 'ok';
 };
@@ -46,8 +48,12 @@ function describeReminder(health: BackupHealth): { title: string; text: string }
   switch (health.level) {
     case 'never':
       return { title: 'Todavía no hay ningún respaldo', text: 'Descarga uno ahora: si falla el disco o la base se daña, la información cargada no se puede recuperar.' };
-    case 'pending':
-      return { title: `${plural(health.loadsSinceBackup, 'carga sin respaldar', 'cargas sin respaldar')}`, text: `El último respaldo es del ${formatStamp(health.lastBackupAt)}. Genera uno nuevo para no perder esos datos.` };
+    case 'pending': {
+      const when = `El último respaldo es del ${formatStamp(health.lastBackupAt)}.`;
+      return health.loadsSinceBackup > 0
+        ? { title: plural(health.loadsSinceBackup, 'carga sin respaldar', 'cargas sin respaldar'), text: `${when} Genera uno nuevo para no perder esos datos.` }
+        : { title: 'Cambios sin respaldar', text: `${when} Hay datos agregados o editados desde entonces (modelos, viajes, ajustes). Genera uno nuevo para no perderlos.` };
+    }
     case 'stale':
       return { title: `Último respaldo ${describeAge(health.daysSinceBackup)}`, text: 'Pasó una semana o más. Genera uno nuevo: viajes, proformas y ajustes manuales también cuentan.' };
     default:
@@ -201,10 +207,10 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange }: Da
             <dd>{health.lastLoadAt ? formatStamp(health.lastLoadAt) : 'Sin cargas'}</dd>
             <small>importación más reciente</small>
           </div>
-          <div className={health.loadsSinceBackup > 0 ? 'attention' : undefined}>
-            <dt>Cargas sin respaldar</dt>
-            <dd>{health.loadsSinceBackup.toLocaleString('es-PY')}</dd>
-            <small>aplicadas tras el último respaldo</small>
+          <div className={health.changedSinceBackup || health.loadsSinceBackup > 0 ? 'attention' : undefined}>
+            <dt>Último cambio de datos</dt>
+            <dd>{health.lastChangeAt ? formatStamp(health.lastChangeAt) : 'Sin cambios'}</dd>
+            <small>{health.changedSinceBackup || health.loadsSinceBackup > 0 ? 'posterior al último respaldo' : 'ya incluido en el respaldo'}</small>
           </div>
           <div className={missingFiles > 0 ? 'attention' : undefined}>
             <dt>Originales en SQLite</dt>

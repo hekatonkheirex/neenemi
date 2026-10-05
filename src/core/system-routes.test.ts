@@ -192,6 +192,15 @@ describe('system API', () => {
       expect(health.level).toBe('ok');
       expect(health.lastBackupAt).not.toBeNull();
 
+      // Un alta manual posterior al respaldo vuelve a pedir uno; un PUT de IA no.
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      await fetch(`http://127.0.0.1:${port}/api/ai/config`, { method: 'DELETE' });
+      const afterAi = await (await fetch(`http://127.0.0.1:${port}/api/system/backup/status`)).json() as { changedSinceBackup: boolean };
+      expect(afterAi.changedSinceBackup).toBe(false);
+      await fetch(`http://127.0.0.1:${port}/api/settings/keep/value`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ value: 'otro' }) });
+      const afterEdit = await (await fetch(`http://127.0.0.1:${port}/api/system/backup/status`)).json() as { changedSinceBackup: boolean; level: string };
+      expect(afterEdit).toMatchObject({ changedSinceBackup: true, level: 'pending' });
+
       const downloadedPath = path.join(dataDirectory, 'downloaded-backup-test.sqlite');
       fs.writeFileSync(downloadedPath, backup);
       const downloadedDatabase = new Database(downloadedPath, { readonly: true, fileMustExist: true });

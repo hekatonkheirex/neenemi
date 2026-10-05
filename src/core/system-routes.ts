@@ -13,7 +13,7 @@ import { backfillStoredSourceMetadata } from './source-metadata-backfill';
 import { getSourceCoverage } from './source-catalog';
 import { isRecord } from './validation';
 import { stageDatabaseRestore } from './database-restore';
-import { readBackupHealth, recordBackup } from './backup-health';
+import { isDataChange, readBackupHealth, recordBackup, recordChange } from './backup-health';
 
 // Claves de API (p. ej. ai/openrouter_api_key): nunca salen de la instalación en respaldos ni lecturas.
 export const SECRET_SETTINGS_NAMESPACE = 'ai';
@@ -54,6 +54,17 @@ export function registerSystemRoutes(
   const overview = new OverviewRepository(database);
   let archiveBackfillJobId: string | null = null;
 
+  // Toda modificación exitosa de datos (cargas y trabajo manual) deja marca para el aviso de respaldo.
+  app.use((request, response, next) => {
+    if (isDataChange(request.method, request.path)) {
+      response.on('finish', () => {
+        if (response.statusCode >= 400) return;
+        try { recordChange(database); } catch { /* base cerrada o en restauración */ }
+      });
+    }
+    next();
+  });
+
   app.get('/api/health', (_request, response) => {
     const result = database.prepare('SELECT 1 AS ok').get() as { ok: number };
     response.json({ ok: result.ok === 1, database: 'ready' });
@@ -82,6 +93,7 @@ export function registerSystemRoutes(
 
   app.get('/api/system/backup', async (_request, response) => {
     let temporaryDirectory: string | null = null;
+    const startedAt = new Date();
     try {
       const archiveStatus = getImportOriginalsStatus(dataDirectory, imports);
       if (archiveStatus.missingFiles > 0) {
@@ -102,7 +114,7 @@ export function registerSystemRoutes(
       response.download(snapshotPath, makeBackupFileName(), (error) => {
         removeTemporaryDirectory(temporaryDirectory);
         temporaryDirectory = null;
-        if (!error) recordBackup(database);
+        if (!error) recordBackup(database, startedAt);
         if (error && !response.headersSent) {
           response.status(500).json({ error: 'No se pudo descargar el respaldo SQLite.' });
         }
