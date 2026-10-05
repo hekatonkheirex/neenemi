@@ -27,4 +27,11 @@ describe('AnimatedTabs', () => {
     expect(html.match(/anim-tabs-icon/g)).toHaveLength(1);
     expect(html).toContain('<svg');
   });
+
+  it('scroll añade la clase de una sola fila; sin él no', () => {
+    const on = renderToStaticMarkup(<AnimatedTabs scroll tabs={[{ id: 'a', label: 'Uno' }]} active="a" onChange={() => {}} ariaLabel="V" />);
+    const off = renderToStaticMarkup(<AnimatedTabs tabs={[{ id: 'a', label: 'Uno' }]} active="a" onChange={() => {}} ariaLabel="V" />);
+    expect(on).toContain('anim-tabs is-scroll');
+    expect(off).not.toContain('is-scroll');
+  });
 });

@@ -5626,6 +5626,17 @@ html[data-theme='dark'] .anim-tabs {
   font-style: normal;
 }
 
+/* Variante de una sola fila (Canon Software): scroll horizontal; el relleno deja sitio a la sombra y al ascenso del hover. */
+.anim-tabs.is-scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 0.3rem 0.15rem 0.7rem;
+}
+
+.anim-tabs.is-scroll button {
+  flex: 0 0 auto;
+}
+
 /* Variante con subtítulo (Viáticos): pestañas del mismo ancho, texto en dos líneas. */
 .anim-tabs.has-hint {
 }

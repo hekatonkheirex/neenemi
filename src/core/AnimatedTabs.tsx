@@ -21,14 +21,16 @@ type Props<T extends string> = {
   active: T;
   onChange: (id: T) => void;
   ariaLabel: string;
+  /** Una sola fila con scroll horizontal en vez de envolver a varias filas. */
+  scroll?: boolean;
 };
 
 /** Botones de navegación con feedback de pulsación e indicador activo compartido. */
-export default function AnimatedTabs<T extends string>({ tabs, active, onChange, ariaLabel }: Props<T>) {
+export default function AnimatedTabs<T extends string>({ tabs, active, onChange, ariaLabel, scroll }: Props<T>) {
   const layoutId = useId();
   const still = useReducedMotion();
   return (
-    <nav className={tabs.some((tab) => tab.hint) ? 'anim-tabs has-hint' : 'anim-tabs'} aria-label={ariaLabel}>
+    <nav className={['anim-tabs', tabs.some((tab) => tab.hint) && 'has-hint', scroll && 'is-scroll'].filter(Boolean).join(' ')} aria-label={ariaLabel}>
       {tabs.map((tab) => (
         <motion.button
           className={active === tab.id ? 'is-active' : ''}

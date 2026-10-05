@@ -357,7 +357,7 @@ export default function SoftwareSelectorModule() {
                 {(selectedFeatureIds.length > 0 || text || analysis) && <button className="text-button" type="button" onClick={clearSelection}>Reiniciar</button>}
               </div>
             </div>
-            <AnimatedTabs ariaLabel="Categorías de requisitos" tabs={categoryTabs} active={activeCategory} onChange={setActiveCategory} />
+            <AnimatedTabs scroll ariaLabel="Categorías de requisitos" tabs={categoryTabs} active={activeCategory} onChange={setActiveCategory} />
             <div className="software-category-actions">
               <span>Vista de categorías</span>
               <div>
