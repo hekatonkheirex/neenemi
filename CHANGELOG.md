@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.57 · 2026-10-05
+
+Las pestañas de Mantenimiento, Analítica de consumibles, Control de viáticos, Discontinuador, Servicios y Selector de software pasan a tarjetas con icono, como las del mapa de módulos; la selección se desliza con Framer Motion. En el Selector de software las categorías van en una sola fila con scroll y la pestaña elegida se centra sola. Corrige desbordes entre 960 y 1580 px: los montos largos en guaraníes se ajustan al ancho de las tarjetas de resumen, el ranking y los gráficos de Consumibles ya no cortan rótulos ni marcas de los ejes, y los campos Mes, Desde y Hasta, las cabeceras de Viáticos, SLA y Discontinuador y las tarjetas de Mantenimiento caben en su celda. El detalle de fuente de un cliente con muchas series tiene altura máxima con scroll, y el texto recortado con puntos suspensivos muestra su valor completo al pasar el cursor.
+
 ## 0.1.56 · 2026-10-05
 
 Los textos de ejemplo dentro de los campos de Proformas se muestran al 65% de opacidad y con peso normal, para distinguirlos de los valores completados. El cambio alcanza entradas y áreas de texto en ambos temas; las etiquetas, los datos ingresados y los otros módulos conservan su apariencia.
