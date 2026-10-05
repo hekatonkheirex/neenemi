@@ -94,3 +94,4 @@ html[data-theme='dark'] .tracking-route-line { stroke: #00a3e0; }
 .bar-effective { background: #2e7d32; }
 .bar-total { background: #1d6fd1; }
 .bar-idle { background: #d32f2f; }
+.tracking-chart-day { min-width: 6rem; text-align: center; } .tracking-daily-summary h3 { margin-top: 1.25rem; }

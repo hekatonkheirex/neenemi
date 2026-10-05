@@ -22,9 +22,11 @@ function EventEvidence({ visit, kind, site }: { visit: TrackingVisit; kind: 'in'
     <small>{gps ? `${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}` : 'Sin coordenadas GPS'}</small></div>;
 }
 export type RoadStatus = 'none' | 'loading' | 'ready' | 'failed';
-export default function TrackingTables({ analysis, idleDays, roadStatus, sites, selectedKey, onSelect }: { analysis: DayAnalysis; idleDays: IdleDay[]; roadStatus: RoadStatus; sites: SiteReference[]; selectedKey: string | null; onSelect: (visit: TrackingVisit) => void }) {
+export default function TrackingTables({ analysis, idleDays, day, roadStatus, sites, selectedKey, onSelect }: { analysis: DayAnalysis; idleDays: IdleDay[]; day: string; roadStatus: RoadStatus; sites: SiteReference[]; selectedKey: string | null; onSelect: (visit: TrackingVisit) => void }) {
   const siteIndex = new Map(sites.map(site => [site.key, site]));
   const summary = summarizeDay(analysis);
+  const idle = idleDays.find(row => row.day === day);
+  const weekend = [0, 6].includes(new Date(`${day}T00:00:00Z`).getUTCDay());
   return <>
     <section className="tracking-card"><h2>Visitas y marcaciones</h2><p>La validación demuestra proximidad a una sede confirmada, no el ingreso físico al edificio. No es concluyente sobre la conducta del técnico.</p>
       <div className="tracking-table-scroll"><table><thead><tr><th>I.S. / cliente</th><th>Check-in</th><th>Check-out</th><th>Detalle y sede</th></tr></thead><tbody>
@@ -47,18 +49,15 @@ export default function TrackingTables({ analysis, idleDays, roadStatus, sites, 
         <td><strong>{formatDuration(summary.serviceMinutes)}</strong><small>Intervalos completos de check-in a check-out, sin sumar dos veces solapamientos o duplicados. Los servicios que cruzan medianoche se limitan a este día.</small>{summary.excludedServices > 0 && <small className="tracking-issue">{summary.excludedServices} registros excluidos por marcaciones incompletas o inconsistentes · Total parcial.</small>}</td>
       </tr></tbody></table></div>
       <p>El tiempo de servicios se basa en las marcaciones, no demuestra horas de trabajo real ni presencia dentro del cliente. La proximidad a la sede se verifica por separado en la tabla de visitas.</p>
-    </section>
-    <section className="tracking-card tracking-idle-days"><h2>Horas no efectivas por día</h2><p>Jornada de lunes a viernes, {String(WORK_START_HOUR).padStart(2, '0')}:00 a {WORK_END_HOUR}:00 ({WORK_END_HOUR - WORK_START_HOUR} h). No efectivo = jornada menos servicios registrados dentro de ese horario, sin sumar dos veces solapamientos. Incluye traslados, esperas y marcaciones faltantes. Respeta el filtro de servicios.</p>
-      <div className="tracking-table-scroll"><table><thead><tr><th>Día</th><th>Servicios en jornada</th><th>No efectivo</th></tr></thead><tbody>
-        {idleDays.map(row => <tr key={row.day}><td>{row.day}</td><td>{formatDuration(row.serviceMinutes)}</td><td><strong>{formatDuration(row.idleMinutes)}</strong>{!row.marked && <small>Sin marcaciones: puede ser feriado, licencia o falta de registro.</small>}{row.excludedServices > 0 && <small className="tracking-issue">{row.excludedServices} registro(s) excluidos por marcaciones incompletas o inconsistentes · Puede sobrestimar.</small>}</td></tr>)}
-        <tr><td><strong>Total</strong></td><td><strong>{formatDuration(idleDays.reduce((sum, row) => sum + row.serviceMinutes, 0))}</strong></td><td><strong>{formatDuration(idleDays.reduce((sum, row) => sum + row.idleMinutes, 0))}</strong></td></tr>
-      </tbody></table></div>{!idleDays.length && <p role="status">Sin días con marcaciones para este técnico.</p>}
-    </section>
-    <section className="tracking-card tracking-idle-chart"><h2>Gráfico de horas por día</h2><p>Horas efectivas trabajadas (servicios), tiempo total estimado de trabajo (servicios + traslados) y horas no efectivas (jornada menos servicios), sobre la jornada de {WORK_END_HOUR - WORK_START_HOUR} h.</p>
-      <ul className="tracking-chart-legend"><li><i className="bar-effective" />Horas efectivas</li><li><i className="bar-total" />Tiempo total estimado de trabajo</li><li><i className="bar-idle" />Horas no efectivas</li></ul>
-      <div className="tracking-chart" role="img" aria-label="Horas efectivas, tiempo total estimado de trabajo y horas no efectivas por día">
-        {idleDays.map(row => <div className="tracking-chart-day" key={row.day}><div className="tracking-chart-bars">{[['effective', row.serviceMinutes, 'Efectivas'], ['total', row.serviceMinutes + row.travelMinutes, 'Total estimado'], ['idle', row.idleMinutes, 'No efectivas']].map(([kind, minutes, label]) => <span key={kind as string} className={`bar-${kind}`} style={{ height: `${Math.min(100, (minutes as number) / WORK_MINUTES * 100)}%` }} title={`${label}: ${formatDuration(minutes as number)}`} />)}</div><small>{row.day.slice(5)}</small></div>)}
-      </div>
+      <h3>Horas no efectivas del día</h3>
+      {!idle ? <p role="status">{weekend ? 'Fin de semana: fuera de la jornada laboral, no se calculan horas no efectivas.' : 'Sin marcaciones para este día.'}</p> : <>
+        <p>Jornada de lunes a viernes, {String(WORK_START_HOUR).padStart(2, '0')}:00 a {WORK_END_HOUR}:00 ({WORK_END_HOUR - WORK_START_HOUR} h). No efectivo = jornada menos servicios registrados dentro de ese horario, sin sumar dos veces solapamientos. Incluye traslados, esperas y marcaciones faltantes. Respeta el filtro de servicios.</p>
+        <ul className="tracking-chart-legend"><li><i className="bar-effective" />Horas efectivas: <strong>{formatDuration(idle.serviceMinutes)}</strong></li><li><i className="bar-total" />Tiempo total estimado de trabajo: <strong>{formatDuration(idle.serviceMinutes + idle.travelMinutes)}</strong></li><li><i className="bar-idle" />Horas no efectivas: <strong>{formatDuration(idle.idleMinutes)}</strong></li></ul>
+        {idle.excludedServices > 0 && <small className="tracking-issue">{idle.excludedServices} registro(s) excluidos por marcaciones incompletas o inconsistentes · Puede sobrestimar.</small>}
+        <div className="tracking-chart" role="img" aria-label="Horas efectivas, tiempo total estimado de trabajo y horas no efectivas del día">
+          {([['effective', idle.serviceMinutes, 'Efectivas'], ['total', idle.serviceMinutes + idle.travelMinutes, 'Total estimado'], ['idle', idle.idleMinutes, 'No efectivas']] as const).map(([kind, minutes, label]) => <div className="tracking-chart-day" key={kind}><div className="tracking-chart-bars"><span className={`bar-${kind}`} style={{ height: `${Math.min(100, minutes / WORK_MINUTES * 100)}%` }} /></div><small>{label}<br />{formatDuration(minutes)}</small></div>)}
+        </div>
+      </>}
     </section>
   </>;
 }
