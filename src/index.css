@@ -297,7 +297,7 @@ h2 {
 }
 
 .summary-grid > .summary-card .summary-value {
-  font-size: clamp(1.5rem, 12cqi, 2.5rem);
+  font-size: clamp(1.1rem, 12cqi, 2.5rem);
   white-space: nowrap;
 }
 
