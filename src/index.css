@@ -1587,6 +1587,8 @@ li::before {
 
 .compact-field {
   display: grid;
+  /* La pista única no puede crecer más que la celda: un input type=month (172 px intrínsecos) pisaba al campo vecino. */
+  grid-template-columns: minmax(0, 1fr);
   min-width: 9.5rem;
   gap: 0.4rem;
   color: #7890b8;
@@ -4327,8 +4329,10 @@ li::before {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.45rem 0.7rem;
   min-width: 17rem;
+  max-height: 22rem;
   margin-top: 0.45rem;
   padding: 0.65rem;
+  overflow-y: auto;
   border: 1px solid rgba(144, 174, 229, 0.15);
   border-radius: 0.5rem;
   background: rgba(12, 23, 41, 0.72);
@@ -4672,6 +4676,7 @@ li::before {
 
 .maintenance-executive-kpi {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.22rem;
   min-width: 0;
   padding: 0.8rem;
@@ -4701,8 +4706,10 @@ li::before {
 
 .maintenance-critical-trend {
   width: 4rem;
+  min-width: 2.5rem;
   height: 1.5rem;
-  flex: 0 0 auto;
+  /* Puede encogerse: a 1280 px la tarjeta mide 138 px y "Críticos" + gráfico (64 px) se salía 3 px. */
+  flex: 0 1 auto;
   overflow: visible;
   color: #b52f3a;
 }
@@ -8209,6 +8216,12 @@ html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
   gap: 0.75rem;
   align-items: end;
   margin-bottom: 1rem;
+}
+
+.travel-controls > label,
+.travel-controls .compact-field input {
+  width: 100%;
+  min-width: 0;
 }
 
 .travel-table {

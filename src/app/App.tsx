@@ -30,6 +30,7 @@ import ChangelogDialog from './ChangelogDialog';
 import { persistLastModule, readLastModule } from './lastModule';
 import { guardUnload, hasUnsavedChanges } from '../core/unsavedChanges';
 import { installFieldErrors } from '../core/fieldErrors';
+import { installEllipsisTitles } from '../core/ellipsisTitles';
 import { buildPaletteEntries } from './commandPaletteModel';
 
 const MantenimientoModule = lazy(() => import('../modules/operaciones/MantenimientoModule'));
@@ -129,6 +130,7 @@ export default function App() {
   }, []);
 
   useEffect(() => installFieldErrors(), []);
+  useEffect(() => installEllipsisTitles(), []);
 
   useEffect(() => {
     persistLastModule(activeModuleId, getThemeStorage());
