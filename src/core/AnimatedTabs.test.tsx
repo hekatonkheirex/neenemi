@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { Airplane01Icon } from '@hugeicons/core-free-icons';
-import AnimatedTabs from './AnimatedTabs';
+import AnimatedTabs, { centeredScrollLeft } from './AnimatedTabs';
 
 describe('AnimatedTabs', () => {
   const tabs = [{ id: 'a', label: 'Uno', step: '01' }, { id: 'b', label: 'Dos', count: '5' }] as const;
@@ -33,5 +33,14 @@ describe('AnimatedTabs', () => {
     const off = renderToStaticMarkup(<AnimatedTabs tabs={[{ id: 'a', label: 'Uno' }]} active="a" onChange={() => {}} ariaLabel="V" />);
     expect(on).toContain('anim-tabs is-scroll');
     expect(off).not.toContain('is-scroll');
+  });
+
+  it('centeredScrollLeft centra el botón y respeta los extremos', () => {
+    const nav = { left: 100, width: 400, scrollLeft: 0, scrollWidth: 1500 };
+    expect(centeredScrollLeft(nav, { left: 700, width: 100 })).toBe(450); // 0 + 600 - 150
+    expect(centeredScrollLeft(nav, { left: 110, width: 100 })).toBe(0);   // cerca del inicio: no negativo
+    expect(centeredScrollLeft({ ...nav, scrollLeft: 1000 }, { left: 450, width: 100 })).toBe(1100); // tope: 1500 - 400
+    expect(centeredScrollLeft({ ...nav, scrollLeft: 300 }, { left: 300, width: 100 })).toBe(300 + 200 - 150);
+    expect(centeredScrollLeft({ left: 0, width: 800, scrollLeft: 0, scrollWidth: 800 }, { left: 500, width: 100 })).toBe(0); // sin desborde
   });
 });

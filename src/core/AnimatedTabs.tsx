@@ -1,4 +1,4 @@
-import { useId, type ReactNode } from 'react';
+import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { HugeiconsIcon } from '@hugeicons/react';
 import type { IconSvgElement } from '@hugeicons/react';
@@ -25,12 +25,33 @@ type Props<T extends string> = {
   scroll?: boolean;
 };
 
+type Box = { left: number; width: number };
+
+/** scrollLeft que deja el botón centrado en la barra, sin pasar de los extremos (el navegador ya recorta al asignar, pero así el valor es verificable). */
+export function centeredScrollLeft(nav: Box & { scrollLeft: number; scrollWidth: number }, button: Box): number {
+  const target = nav.scrollLeft + (button.left - nav.left) - (nav.width - button.width) / 2;
+  return Math.min(Math.max(target, 0), Math.max(nav.scrollWidth - nav.width, 0));
+}
+
 /** Botones de navegación con feedback de pulsación e indicador activo compartido. */
 export default function AnimatedTabs<T extends string>({ tabs, active, onChange, ariaLabel, scroll }: Props<T>) {
   const layoutId = useId();
   const still = useReducedMotion();
+  const navRef = useRef<HTMLElement>(null);
+  const mounted = useRef(false);
+  useEffect(() => {
+    const nav = navRef.current;
+    const button = nav?.querySelector<HTMLElement>('button.is-active');
+    // Solo con scroll y no en el primer render: la barra nace en su posición, no se desliza.
+    if (nav && button && scroll && mounted.current) {
+      const n = nav.getBoundingClientRect();
+      const b = button.getBoundingClientRect();
+      nav.scrollTo({ left: centeredScrollLeft({ left: n.left, width: n.width, scrollLeft: nav.scrollLeft, scrollWidth: nav.scrollWidth }, { left: b.left, width: b.width }), behavior: still ? 'auto' : 'smooth' });
+    }
+    mounted.current = true;
+  }, [active, scroll, still]);
   return (
-    <nav className={['anim-tabs', tabs.some((tab) => tab.hint) && 'has-hint', scroll && 'is-scroll'].filter(Boolean).join(' ')} aria-label={ariaLabel}>
+    <nav ref={navRef} className={['anim-tabs', tabs.some((tab) => tab.hint) && 'has-hint', scroll && 'is-scroll'].filter(Boolean).join(' ')} aria-label={ariaLabel}>
       {tabs.map((tab) => (
         <motion.button
           className={active === tab.id ? 'is-active' : ''}
