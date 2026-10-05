@@ -26,6 +26,7 @@
     "better-sqlite3": "^12.10.0",
     "exceljs": "^4.4.0",
     "express": "^4.21.2",
+    "npm": "^12.2.0",
     "pdfjs-dist": "^6.3.289",
     "react": "^19.0.1",
     "react-dom": "^19.0.1"
