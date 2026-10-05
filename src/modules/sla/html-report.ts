@@ -20,7 +20,7 @@ export function buildSlaHtmlReport(analysis: SlaAnalysis): string {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Reporte SLA · ${escapeHtml(analysis.fileName)}</title>
     <style>
-      :root { color-scheme: light; font-family: "Segoe UI", Arial, sans-serif; color: #18253d; background: #f3f6fa; }
+      :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-variant-numeric: tabular-nums; color: #18253d; background: #f3f6fa; }
       body { margin: 0; padding: 32px; line-height: 1.45; }
       main { max-width: 1180px; margin: 0 auto; padding: 32px; background: #fff; border: 1px solid #d3ddeb; border-radius: 18px; box-shadow: 0 12px 30px rgb(24 37 61 / 10%); }
       header { border-bottom: 3px solid #ff6b00; padding-bottom: 20px; margin-bottom: 24px; }

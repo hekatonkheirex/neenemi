@@ -47,7 +47,7 @@ export default function MantenimientoModule() {
   const [analysisPeriod, setAnalysisPeriod] = useState('');
   const [showNormalAnalyses, setShowNormalAnalyses] = useState(false);
   const [expandedAnalysisKey, setExpandedAnalysisKey] = useState<string | null>(null);
-  const [activeMaintenanceView, setActiveMaintenanceView] = useState<MaintenanceView>('equipos');
+  const [activeMaintenanceView, setActiveMaintenanceView] = useState<MaintenanceView>('dashboard');
   const analysisSearchRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(true);
   const [importingCounters, setImportingCounters] = useState(false);

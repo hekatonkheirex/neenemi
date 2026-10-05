@@ -625,7 +625,7 @@ export default function ProformasModule() {
   }
 
   return (
-    <div className="page-content sales-page">
+    <div className="page-content sales-page proforma-page">
       <section className="catalog-header">
         <div>
           <div className="eyebrow">VENTAS / DOCUMENTOS</div>

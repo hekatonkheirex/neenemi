@@ -3249,6 +3249,12 @@ html:not([data-theme='light']) :is(input, textarea)::placeholder {
   opacity: 1;
 }
 
+/* Ejemplos de Proformas: más tenues y livianos que los valores completados. */
+html[data-theme] .app-shell .proforma-page :is(input, textarea)::placeholder {
+  opacity: 0.65;
+  font-weight: 400;
+}
+
 /* El anillo de foco (3 px + 2 px de separación) se salía del contenedor y quedaba cortado: .module-nav, el grupo de cantidad de uniFLOW,
    la lista de modelos MPS y la barra de pestañas de Mantenimiento tienen overflow. Los ítems que llenan su contenedor lo llevan hacia dentro. */
 html[data-theme] :is(.module-nav .nav-item, .mps-model-list .mps-model-select, .anim-tabs button, .uniflow-quantity-control :is(button, input), .catalog-table th button):focus-visible {

@@ -2,6 +2,18 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.56 · 2026-10-05
+
+Los textos de ejemplo dentro de los campos de Proformas se muestran al 65% de opacidad y con peso normal, para distinguirlos de los valores completados. El cambio alcanza entradas y áreas de texto en ambos temas; las etiquetas, los datos ingresados y los otros módulos conservan su apariencia.
+
+## 0.1.55 · 2026-10-05
+
+Unifica la familia tipográfica de la interfaz mediante un token compartido: navegación, formularios, tablas, indicadores y gráficos usan la misma familia sans serif, conservando sus tamaños y pesos. Viáticos deja de mostrar los botones y subtítulos en monoespaciada. Los números usan cifras tabulares; solo el contenido de código conserva monoespaciada. Los selectores y áreas de texto heredan la tipografía de la suite, y los informes HTML e impresos de SLA, Cobertura, uniFLOW y MPS siguen la misma familia. No modifica las plantillas de Excel.
+
+## 0.1.54 · 2026-10-05
+
+Las barras de navegación de Mantenimiento, Consumibles, Viáticos y Discontinuador muestran botones con fondo, borde y sombra sutil. La selección conserva el acento naranja y se desliza con Framer Motion; hover y pulsación tienen feedback breve, desactivado cuando el sistema pide reducir movimiento. Mantiene los contadores, subtítulos, foco de teclado y los temas claro y oscuro. Mantenimiento abre en Tablero resumen en lugar de Expedientes técnicos.
+
 ## 0.1.53 · 2026-10-05
 
 Reorganiza la barra lateral en cuatro secciones: Servicio Técnico (Gestor de mantenimiento, Analítica de consumibles, Seguimiento de técnicos), Administrativo (Control de viáticos, Listado de precios, Discontinuador, Proformas), Software (Selector de software, Configurador uniFLOW Online) y Herramientas (Cobertura de tóner, Calculadora de insumos MPS, Analizador de cumplimiento de SLA). Quita el módulo Catálogo de repuestos: Listado de precios ya cubre su función y los datos del catálogo siguen en la base. Los respaldos existentes se restauran sin cambios.
