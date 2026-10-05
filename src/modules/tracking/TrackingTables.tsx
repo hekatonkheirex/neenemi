@@ -61,6 +61,7 @@ export default function TrackingTables({ analysis, idleDays, day, roadStatus, si
           {([['effective', idle.serviceMinutes], ['total', summary.travelMinutes ?? 0], ['idle', idle.idleMinutes]] as const).map(([kind, minutes]) => minutes > 0 && <span key={kind} className={`bar-${kind}`} style={{ flexGrow: minutes }} />)}
           {parts < WORK_MINUTES && <span className="storage-free" style={{ flexGrow: WORK_MINUTES - parts }} />}
         </div>
+        {idle.overtimeMinutes > 0 && <p className="tracking-error" role="alert">Excede la jornada efectiva en {formatDuration(idle.overtimeMinutes)}: servicios más traslado estimado superan las {WORK_MINUTES / 60} h. Horas no efectivas estimadas: 0. Revisa si hay esperas largas entre servicios contadas como traslado.</p>}
       </>}
     </section>
   </>;
