@@ -112,6 +112,18 @@ export function applyRoads(analysis: DayAnalysis, roads: Record<string, RoadRout
   return { ...analysis, legs, roadSegments };
 }
 
+/** Driving estimate from straight-line distance: detour factor over the line, urban average speed, plus a fixed allowance for parking and walking. Same input in the summary and the idle table, so both agree. */
+export const DETOUR_FACTOR = 1.4;
+export const URBAN_SPEED_KMH = 30;
+export const TRAVEL_ALLOWANCE_MINUTES = 15;
+export const maxPlausibleTravelMinutes = (meters: number) => meters * DETOUR_FACTOR / 1000 / URBAN_SPEED_KMH * 60 + TRAVEL_ALLOWANCE_MINUTES;
+
+/** Travel attributed to a leg: the gap, capped at a plausible drive when the distance is known. The rest is a wait or pause, not travel. */
+export function legTravelMinutes(leg: TravelLeg): number | null {
+  if (leg.elapsedMinutes === null) return null;
+  return leg.distanceMeters === null ? leg.elapsedMinutes : Math.min(leg.elapsedMinutes, maxPlausibleTravelMinutes(leg.distanceMeters));
+}
+
 export function summarizeDay(analysis: DayAnalysis) {
   const suspectLegs = analysis.legs.filter(leg => leg.distanceMeters !== null && isSuspectLeg(analysis, leg)).length;
   const day = analysis.events[0]?.timestamp.slice(0, 10);
@@ -150,8 +162,9 @@ export function summarizeDay(analysis: DayAnalysis) {
       measuredLegs += 1;
       if (leg.road) roadLegs += 1;
     }
-    if (leg.elapsedMinutes !== null) {
-      travelMinutes += leg.elapsedMinutes;
+    const legMinutes = legTravelMinutes(leg);
+    if (legMinutes !== null) {
+      travelMinutes += legMinutes;
       timedLegs += 1;
     }
   }

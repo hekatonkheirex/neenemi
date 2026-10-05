@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeDay, applyRoads, idleByDay, pairKey, routePairs, summarizeDay } from './analysis';
+import { analyzeDay, applyRoads, idleByDay, legTravelMinutes, pairKey, routePairs, summarizeDay } from './analysis';
 import type { TrackingVisit } from './types';
 
 function visit(key: string, checkIn: string | null, checkOut: string | null, overrides: Partial<TrackingVisit> = {}): TrackingVisit {
@@ -9,6 +9,23 @@ function visit(key: string, checkIn: string | null, checkOut: string | null, ove
 const at = (time: string) => `2026-09-01T${time}:00`;
 
 describe('tracking daily summary', () => {
+  it('caps travel at a plausible drive when the gap is much longer than the distance (Arcenio 2026-09-25: 2.3 km straight line, 3 h 41 min gap)', () => {
+    const analysis = analyzeDay([
+      visit('1', at('08:16'), at('09:41'), { gpsOut: { latitude: -25.499531, longitude: -54.65927 } }),
+      visit('2', at('13:22'), at('14:02'), { gpsIn: { latitude: -25.509964, longitude: -54.639977 } }),
+    ], 'Ana', '2026-09-01');
+    expect(analysis.legs[0].elapsedMinutes).toBe(221);
+    const { travelMinutes } = summarizeDay(analysis);
+    expect(travelMinutes).toBeGreaterThan(15);
+    expect(travelMinutes).toBeLessThan(35);
+    expect(legTravelMinutes(analysis.legs[0])).toBe(travelMinutes);
+  });
+
+  it('keeps the full gap when it is shorter than the plausible drive', () => {
+    const analysis = analyzeDay([visit('1', at('08:00'), at('09:00')), visit('2', at('09:10'), at('10:00'))], 'Ana', '2026-09-01');
+    expect(summarizeDay(analysis).travelMinutes).toBe(10);
+  });
+
   it('counts overlapping and duplicated service time only once, excluding gaps', () => {
     const analysis = analyzeDay([
       visit('1', at('08:00'), at('10:00')),
@@ -32,7 +49,7 @@ describe('tracking daily summary', () => {
     const invalid = analyzeDay([visit('1', at('09:00'), at('08:00'))], 'Ana', '2026-09-01');
     expect(summarizeDay(invalid)).toMatchObject({ serviceMinutes: null, excludedServices: 1 });
     const valid = analyzeDay([visit('1', at('08:00'), at('09:00')), visit('2', at('09:30'), at('10:00'))], 'Ana', '2026-09-01');
-    expect(summarizeDay(valid)).toMatchObject({ distanceMeters: 0, serviceMinutes: 90, travelMinutes: 30, missingLegs: 0 });
+    expect(summarizeDay(valid)).toMatchObject({ distanceMeters: 0, serviceMinutes: 90, travelMinutes: 15, missingLegs: 0 });
     expect(summarizeDay(analyzeDay([], 'Ana', '2026-09-01'))).toMatchObject({ distanceMeters: null, serviceMinutes: null, travelMinutes: null });
   });
   it('sums travel gaps independently of GPS and preserves measured zero intervals', () => {
@@ -42,7 +59,7 @@ describe('tracking daily summary', () => {
       visit('3', at('10:00'), at('11:00')),
       visit('4', at('11:45'), null),
     ], 'Ana', '2026-09-01');
-    expect(summarizeDay(analysis)).toMatchObject({ travelMinutes: 65, timedLegs: 3, missingTimedLegs: 0, measuredLegs: 2, missingLegs: 1, serviceMinutes: 160 });
+    expect(summarizeDay(analysis)).toMatchObject({ travelMinutes: 35, timedLegs: 3, missingTimedLegs: 0, measuredLegs: 2, missingLegs: 1, serviceMinutes: 160 });
   });
 
   it('uses road distance where a route exists and straight line elsewhere', () => {
@@ -107,7 +124,7 @@ describe('idle hours per day (07:00-18:00, Mon-Fri)', () => {
       on('07', '08:00', '09:00'),
     ], 'Ana');
     expect(rows.map(r => r.day)).toEqual(['2026-09-01', '2026-09-02', '2026-09-03', '2026-09-04', '2026-09-07']);
-    expect(rows[0]).toMatchObject({ serviceMinutes: 210, travelMinutes: 450, idleMinutes: 0, overtimeMinutes: 60, marked: true });
+    expect(rows[0]).toMatchObject({ serviceMinutes: 210, travelMinutes: 30, idleMinutes: 360, overtimeMinutes: 0, marked: true });
     expect(rows[1]).toMatchObject({ serviceMinutes: 0, idleMinutes: 600, marked: false });
     expect(rows[3]).toMatchObject({ serviceMinutes: 60, idleMinutes: 540 });
   });
@@ -115,7 +132,7 @@ describe('idle hours per day (07:00-18:00, Mon-Fri)', () => {
 
   it('subtracts estimated travel from the non-effective time', () => {
     const [row] = idleByDay([on('01', '08:00', '09:00'), on('01', '10:00', '11:30')], 'Ana');
-    expect(row).toMatchObject({ serviceMinutes: 150, travelMinutes: 60, idleMinutes: 390 });
+    expect(row).toMatchObject({ serviceMinutes: 150, travelMinutes: 15, idleMinutes: 435 });
   });
 
   it('flags incomplete services, honors the on-site filter and technician', () => {
@@ -125,7 +142,7 @@ describe('idle hours per day (07:00-18:00, Mon-Fri)', () => {
       visit('remote', '2026-09-01T11:00:00', '2026-09-01T12:00:00', { serviceType: 'Remoto' }),
       visit('other', '2026-09-01T13:00:00', '2026-09-01T14:00:00', { technician: 'Luis' }),
     ], 'Ana');
-    expect(rows).toEqual([{ day: '2026-09-01', serviceMinutes: 60, travelMinutes: 60, idleMinutes: 480, overtimeMinutes: 0, marked: true, excludedServices: 1 }]);
+    expect(rows).toEqual([{ day: '2026-09-01', serviceMinutes: 60, travelMinutes: 15, idleMinutes: 525, overtimeMinutes: 0, marked: true, excludedServices: 1 }]);
     expect(idleByDay([visit('remote', '2026-09-01T11:00:00', '2026-09-01T12:00:00', { serviceType: 'Remoto' })], 'Ana', false)[0].serviceMinutes).toBe(60);
     expect(idleByDay([], 'Ana')).toEqual([]);
   });
