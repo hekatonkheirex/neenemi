@@ -28,6 +28,7 @@ import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
 import PaginationControls from '../../core/PaginationControls';
 import TravelDrawer from './TravelDrawer';
+import { pendingNotice } from './pendingNotice';
 import { paginateItems } from '../../core/pagination';
 
 function tripToForm(trip: TravelTrip): TravelTripInput {
@@ -386,6 +387,9 @@ export default function ViaticosModule() {
     }));
   }
 
+  const notice = useMemo(() => pendingNotice(trips, new Date()), [trips]);
+  const statusText = error || message || (notice ? `${notice.pending ? `${integerFormat.format(notice.pending)} rendiciones pendientes por ₲ ${moneyFormat.format(Math.round(notice.pendingCost))}${notice.oldestPendingDays !== null ? `, la más antigua de hace ${integerFormat.format(notice.oldestPendingDays)} días` : ''}` : ''}${notice.pending && notice.review ? ' · ' : ''}${notice.review ? `${integerFormat.format(notice.review)} en revisión` : ''}` : summary?.records ? '' : 'Importa CONTROL DE VIATICO 2026.xlsx para comenzar.');
+
   return (
     <div className="page-content travel-page">
       <section className="catalog-header">
@@ -401,10 +405,10 @@ export default function ViaticosModule() {
         </div>
       </section>
 
-      <section className="sales-status" aria-live="polite">
+      {statusText && <section className="sales-status" aria-live="polite">
         <span className={`status-dot ${error ? 'error' : 'ready'}`} />
-        <span>{error ?? message ?? (summary?.records ? `${integerFormat.format(summary.records)} viajes en ${summary.operationalYear}` : 'Importa CONTROL DE VIATICO 2026.xlsx para comenzar.')}</span>
-      </section>
+        <span>{statusText}</span>
+      </section>}
 
       <nav className="travel-view-tabs" aria-label="Vistas de Viáticos">
         {TRAVEL_VIEW_OPTIONS.map((view) => (
