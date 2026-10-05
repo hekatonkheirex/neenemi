@@ -175,11 +175,11 @@ export const WORK_END_HOUR = 18;
 /** Unpaid lunch break, subtracted from the window (its position in the day is unknown). */
 export const LUNCH_MINUTES = 60;
 export const WORK_MINUTES = (WORK_END_HOUR - WORK_START_HOUR) * 60 - LUNCH_MINUTES;
-export type IdleDay = { day: string; serviceMinutes: number; idleMinutes: number; marked: boolean; excludedServices: number };
+export type IdleDay = { day: string; serviceMinutes: number; travelMinutes: number; idleMinutes: number; marked: boolean; excludedServices: number };
 
 /**
- * Non-effective time per weekday between the technician's first and last marked day: the working window minus lunch and merged service
- * intervals inside it. Weekdays without marks count as fully non-effective (10 h) (holidays and leave are unknown). Weekends are skipped.
+ * Non-effective time per weekday between the technician's first and last marked day: the working window minus lunch, merged service
+ * intervals inside it and the estimated travel time (same figure as the daily summary). Weekdays without marks count as fully non-effective (10 h) (holidays and leave are unknown). Weekends are skipped.
  */
 export function idleByDay(visits: TrackingVisit[], technician: string, onsiteOnly = true): IdleDay[] {
   const markedDays = new Set<string>();
@@ -199,7 +199,8 @@ export function idleByDay(visits: TrackingVisit[], technician: string, onsiteOnl
     const windowEnd = t + WORK_END_HOUR * 3_600_000;
     const intervals: [number, number][] = [];
     let excludedServices = 0;
-    for (const visit of analyzeDay(visits, technician, day, onsiteOnly).visits) {
+    const dayAnalysis = analyzeDay(visits, technician, day, onsiteOnly);
+    for (const visit of dayAnalysis.visits) {
       const start = visit.checkIn ? Date.parse(`${visit.checkIn}Z`) : NaN;
       const end = visit.checkOut ? Date.parse(`${visit.checkOut}Z`) : NaN;
       if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) { excludedServices += 1; continue; }
@@ -215,7 +216,8 @@ export function idleByDay(visits: TrackingVisit[], technician: string, onsiteOnl
       coveredUntil = Math.max(coveredUntil, end);
     }
     const serviceMinutes = ms / 60_000;
-    rows.push({ day, serviceMinutes, idleMinutes: Math.max(0, WORK_MINUTES - serviceMinutes), marked: markedDays.has(day), excludedServices });
+    const travelMinutes = summarizeDay(dayAnalysis).travelMinutes ?? 0;
+    rows.push({ day, serviceMinutes, travelMinutes, idleMinutes: Math.max(0, WORK_MINUTES - serviceMinutes - travelMinutes), marked: markedDays.has(day), excludedServices });
   }
   return rows;
 }

@@ -107,11 +107,16 @@ describe('idle hours per day (07:00-18:00, Mon-Fri)', () => {
       on('07', '08:00', '09:00'),
     ], 'Ana');
     expect(rows.map(r => r.day)).toEqual(['2026-09-01', '2026-09-02', '2026-09-03', '2026-09-04', '2026-09-07']);
-    expect(rows[0]).toMatchObject({ serviceMinutes: 210, idleMinutes: 390, marked: true });
+    expect(rows[0]).toMatchObject({ serviceMinutes: 210, travelMinutes: 450, idleMinutes: 0, marked: true });
     expect(rows[1]).toMatchObject({ serviceMinutes: 0, idleMinutes: 600, marked: false });
     expect(rows[3]).toMatchObject({ serviceMinutes: 60, idleMinutes: 540 });
   });
 
+
+  it('subtracts estimated travel from the non-effective time', () => {
+    const [row] = idleByDay([on('01', '08:00', '09:00'), on('01', '10:00', '11:30')], 'Ana');
+    expect(row).toMatchObject({ serviceMinutes: 150, travelMinutes: 60, idleMinutes: 390 });
+  });
 
   it('flags incomplete services, honors the on-site filter and technician', () => {
     const rows = idleByDay([
@@ -120,7 +125,7 @@ describe('idle hours per day (07:00-18:00, Mon-Fri)', () => {
       visit('remote', '2026-09-01T11:00:00', '2026-09-01T12:00:00', { serviceType: 'Remoto' }),
       visit('other', '2026-09-01T13:00:00', '2026-09-01T14:00:00', { technician: 'Luis' }),
     ], 'Ana');
-    expect(rows).toEqual([{ day: '2026-09-01', serviceMinutes: 60, idleMinutes: 540, marked: true, excludedServices: 1 }]);
+    expect(rows).toEqual([{ day: '2026-09-01', serviceMinutes: 60, travelMinutes: 60, idleMinutes: 480, marked: true, excludedServices: 1 }]);
     expect(idleByDay([visit('remote', '2026-09-01T11:00:00', '2026-09-01T12:00:00', { serviceType: 'Remoto' })], 'Ana', false)[0].serviceMinutes).toBe(60);
     expect(idleByDay([], 'Ana')).toEqual([]);
   });
