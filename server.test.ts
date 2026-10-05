@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { request as httpRequest } from 'node:http';
 import { describe, expect, it } from 'vitest';
 import { createServer } from './server';
@@ -69,6 +71,34 @@ describe('server middleware', () => {
     } finally {
       await new Promise<void>((resolve) => server.close(() => resolve()));
       database.close();
+    }
+  });
+});
+
+describe('Content-Security-Policy', () => {
+  async function serve(staticDirectory?: string) {
+    const { app } = createServer({ dataDirectory: makeTemporaryDataDirectory(), staticDirectory });
+    const server = app.listen(0, '127.0.0.1');
+    await new Promise<void>((resolve) => server.once('listening', () => resolve()));
+    const address = server.address();
+    return { server, baseUrl: `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}` };
+  }
+
+  it('la Suite empaquetada envía la política con el hash del script de tema; sin carpeta estática no (desarrollo)', async () => {
+    const directory = makeTemporaryDataDirectory();
+    fs.writeFileSync(path.join(directory, 'index.html'), '<html><script>window.t = 1;</script><div id="root"></div></html>');
+    const packaged = await serve(directory);
+    const development = await serve();
+    try {
+      const withPolicy = await fetch(`${packaged.baseUrl}/`);
+      expect(withPolicy.headers.get('content-security-policy')).toMatch(/script-src 'self' 'wasm-unsafe-eval' 'sha256-.+'; /);
+      const spaRoute = await fetch(`${packaged.baseUrl}/mantenimiento`);
+      expect(spaRoute.headers.get('content-security-policy')).toContain("frame-ancestors 'none'");
+      const withoutPolicy = await fetch(`${development.baseUrl}/api/health`);
+      expect(withoutPolicy.headers.get('content-security-policy')).toBeNull();
+    } finally {
+      packaged.server.close();
+      development.server.close();
     }
   });
 });

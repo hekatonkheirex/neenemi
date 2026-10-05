@@ -7,6 +7,7 @@ import { activateStagedDatabaseRestore } from './src/core/database-restore';
 import { ImportJobRegistry } from './src/core/import-jobs';
 import { backfillStoredSourceMetadata } from './src/core/source-metadata-backfill';
 import { storeAndRegisterImportFile } from './src/core/import-routes';
+import { buildContentSecurityPolicy } from './src/core/csp';
 import { registerSystemRoutes } from './src/core/system-routes';
 import { registerAiConfigRoutes } from './src/core/ai-config-routes';
 import { registerImportApiRoutes } from './src/core/import-api-routes';
@@ -99,6 +100,15 @@ export function createServer(options: ServerOptions): { app: express.Express; da
     storeAndRegisterImportFile(dataDirectory, imports, batchId, fileName, bytes, contentType));
 
   if (options.staticDirectory && fs.existsSync(options.staticDirectory)) {
+    // Solo en la Suite empaquetada: en desarrollo Vite inyecta scripts en línea para el HMR.
+    const indexPath = path.join(options.staticDirectory, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      const policy = buildContentSecurityPolicy(fs.readFileSync(indexPath, 'utf8'));
+      app.use((_request, response, next) => {
+        response.setHeader('Content-Security-Policy', policy);
+        next();
+      });
+    }
     app.use(express.static(options.staticDirectory));
     app.get('*', (request, response) => {
       if (request.path.startsWith('/api/')) {
