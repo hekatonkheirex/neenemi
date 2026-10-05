@@ -52,11 +52,10 @@ export default function TrackingTables({ analysis, idleDays, day, roadStatus, si
       <h3>Horas no efectivas del día</h3>
       {!idle ? <p role="status">{weekend ? 'Fin de semana: fuera de la jornada laboral, no se calculan horas no efectivas.' : 'Sin marcaciones para este día.'}</p> : <>
         <p>Jornada de lunes a viernes, {String(WORK_START_HOUR).padStart(2, '0')}:00 a {WORK_END_HOUR}:00 ({WORK_MINUTES / 60} h efectivas, descontada 1 h de almuerzo). No efectivo = jornada menos almuerzo, menos servicios registrados dentro de ese horario (sin sumar dos veces solapamientos) y menos el tiempo total estimado de traslado. Incluye esperas y marcaciones faltantes. Respeta el filtro de servicios.</p>
-        <ul className="tracking-chart-legend"><li><i className="bar-effective" />Horas efectivas: <strong>{formatDuration(idle.serviceMinutes)}</strong></li><li><i className="bar-total" />Tiempo total estimado de traslado: <strong>{formatDuration(summary.travelMinutes)}</strong></li><li><i className="bar-idle" />Horas no efectivas: <strong>{formatDuration(idle.idleMinutes)}</strong></li></ul>
         {idle.excludedServices > 0 && <small className="tracking-issue">{idle.excludedServices} registro(s) excluidos por marcaciones incompletas o inconsistentes · Puede sobrestimar.</small>}
-        <div className="tracking-chart" role="img" aria-label="Horas efectivas, tiempo total estimado de traslado y horas no efectivas del día">
-          {([['effective', idle.serviceMinutes, 'Efectivas'], ['total', summary.travelMinutes ?? 0, 'Traslado estimado'], ['idle', idle.idleMinutes, 'No efectivas']] as const).map(([kind, minutes, label]) => <div className="tracking-chart-day" key={kind}><div className="tracking-chart-bars"><span className={`bar-${kind}`} style={{ height: `${Math.min(100, minutes / WORK_MINUTES * 100)}%` }} /></div><small>{label}<br />{formatDuration(minutes)}</small></div>)}
-        </div>
+        <div className="tracking-table-scroll"><table><thead><tr><th>Horas efectivas trabajadas</th><th>Tiempo total estimado de traslado</th><th>Horas no efectivas</th></tr></thead><tbody><tr>
+          {([['effective', idle.serviceMinutes, 'Servicios registrados dentro de la jornada.'], ['total', summary.travelMinutes ?? 0, 'Mismo valor del resumen general.'], ['idle', idle.idleMinutes, 'Jornada efectiva menos servicios y traslado.']] as const).map(([kind, minutes, note]) => <td key={kind}><strong>{formatDuration(minutes)}</strong><small>{note} {Math.round(Math.min(100, minutes / WORK_MINUTES * 100))} % de las {WORK_MINUTES / 60} h.</small><div className="tracking-bar-track" role="img" aria-label={`${formatDuration(minutes)} de ${WORK_MINUTES / 60} h`}><span className={`bar-${kind}`} style={{ width: `${Math.min(100, minutes / WORK_MINUTES * 100)}%` }} /></div></td>)}
+        </tr></tbody></table></div>
       </>}
     </section>
   </>;
