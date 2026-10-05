@@ -36,7 +36,11 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
   it('960 px: cabecera y acciones envuelven, y la rejilla mensual cabe sus 12 columnas', () => {
     expect(rule('.catalog-header')).toMatch(/flex-wrap:\s*wrap/);
     expect(rule('.travel-actions')).toMatch(/flex-wrap:\s*wrap/);
-    expect(rule('.travel-bars-grid')).toMatch(/min-width:\s*calc\(12 \* 3\.2rem \+ 11 \* 0\.55rem\)/);
+    expect(rule('.travel-bars-grid')).toMatch(/min-width:\s*calc\(12 \* 2\.8rem \+ 11 \* 0\.3rem\)/);
+  });
+  it('960 px: la tabla de mano de obra de Proformas cabe en ~600 px y deja "Precio venta" a la vista', () => {
+    expect(rule('.labor-table')).toMatch(/min-width:\s*560px/);
+    expect(css).toMatch(/\.labor-table th:nth-child\(3\),\n\.labor-table th:nth-child\(4\) \{\s*width:\s*8\.5rem/);
   });
   it('tarjetas estrechas de Viáticos: fila de medio en dos líneas (la barra debajo)', () => {
     expect(css).toMatch(/@media \(max-width: 1150px\) \{\s*\.travel-overview-row \{\s*grid-template-columns:\s*minmax\(0, 1fr\) auto/);

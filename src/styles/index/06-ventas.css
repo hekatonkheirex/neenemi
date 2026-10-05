@@ -495,8 +495,9 @@
   margin-bottom: 0;
 }
 
+/* 560 px caben en los ~600 px de la ventana mínima (960 px): "Precio venta" ya no queda tras el scroll horizontal. */
 .labor-table {
-  min-width: 720px;
+  min-width: 560px;
 }
 
 .labor-table th:nth-child(1) {
@@ -505,7 +506,7 @@
 
 .labor-table th:nth-child(3),
 .labor-table th:nth-child(4) {
-  width: 10.5rem;
+  width: 8.5rem;
   text-align: right;
 }
 
