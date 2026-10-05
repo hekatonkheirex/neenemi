@@ -1,5 +1,5 @@
 import { normalizeIdentity, normalizeTrackingSerial } from './parser';
-import { TRACKING_RADIUS_METERS, type Coordinate, type DayAnalysis, type EventValidation, type RoadRoute, type RouteEvent, type SiteReference, type TrackingReport, type TrackingVisit, type TravelLeg } from './types';
+import { SUSPECT_VISIT_METERS, TRACKING_RADIUS_METERS, type Coordinate, type DayAnalysis, type EventValidation, type RoadRoute, type RouteEvent, type SiteReference, type TrackingReport, type TrackingVisit, type TravelLeg } from './types';
 
 export function siteKey(report: TrackingReport): string {
   const serial = normalizeTrackingSerial(report.serialNumber);
@@ -55,7 +55,8 @@ export function analyzeDay(allVisits: TrackingVisit[], technician: string, day: 
     }
     legs.push({ from, to, distanceMeters: distance, elapsedMinutes, issue });
   }
-  return { visits, events, legs };
+  const suspectVisitKeys = visits.filter(visit => visit.gpsIn && visit.gpsOut && distanceMeters(visit.gpsIn, visit.gpsOut) > SUSPECT_VISIT_METERS).map(visit => visit.key);
+  return { visits, events, legs, suspectVisitKeys };
 }
 
 /** Road distance when a route was found, straight-line otherwise. */
@@ -68,6 +69,13 @@ export function needsRoad(leg: TravelLeg): boolean {
   return leg.distanceMeters !== null && leg.distanceMeters > TRACKING_RADIUS_METERS;
 }
 
+export function isSuspectLeg(analysis: DayAnalysis, leg: TravelLeg): boolean {
+  return analysis.suspectVisitKeys.includes(leg.from.key) || analysis.suspectVisitKeys.includes(leg.to.key);
+}
+export function isSuspectSegment(analysis: Pick<DayAnalysis, 'suspectVisitKeys'>, from: RouteEvent, to: RouteEvent): boolean {
+  return analysis.suspectVisitKeys.includes(from.visitKey) || analysis.suspectVisitKeys.includes(to.visitKey);
+}
+
 export const pairKey = (from: Coordinate, to: Coordinate) => `${from.latitude},${from.longitude};${to.latitude},${to.longitude}`;
 export const segmentKey = (from: RouteEvent, to: RouteEvent) => `${from.key}>${to.key}`;
 
@@ -78,11 +86,11 @@ export function routePairs(analysis: DayAnalysis): { key: string; from: Coordina
     const key = pairKey(from, to);
     if (distanceMeters(from, to) > TRACKING_RADIUS_METERS && !pairs.has(key)) pairs.set(key, { key, from, to });
   };
-  for (const leg of analysis.legs) if (needsRoad(leg)) add(leg.from.gpsOut!, leg.to.gpsIn!);
+  for (const leg of analysis.legs) if (needsRoad(leg) && !isSuspectLeg(analysis, leg)) add(leg.from.gpsOut!, leg.to.gpsIn!);
   for (let index = 1; index < analysis.events.length; index += 1) {
     const from = analysis.events[index - 1].coordinate;
     const to = analysis.events[index].coordinate;
-    if (from && to) add(from, to);
+    if (from && to && !isSuspectSegment(analysis, analysis.events[index - 1], analysis.events[index])) add(from, to);
   }
   return [...pairs.values()];
 }
@@ -90,20 +98,21 @@ export function routePairs(analysis: DayAnalysis): { key: string; from: Coordina
 /** `roads` is keyed by `pairKey`; missing or null entries keep the straight-line fallback. */
 export function applyRoads(analysis: DayAnalysis, roads: Record<string, RoadRoute | null>): DayAnalysis {
   const legs = analysis.legs.map(leg => {
-    const road = needsRoad(leg) ? roads[pairKey(leg.from.gpsOut!, leg.to.gpsIn!)] : null;
+    const road = needsRoad(leg) && !isSuspectLeg(analysis, leg) ? roads[pairKey(leg.from.gpsOut!, leg.to.gpsIn!)] : null;
     return road ? { ...leg, road } : leg;
   });
   const roadSegments: Record<string, Coordinate[]> = {};
   for (let index = 1; index < analysis.events.length; index += 1) {
     const from = analysis.events[index - 1];
     const to = analysis.events[index];
-    const road = from.coordinate && to.coordinate && distanceMeters(from.coordinate, to.coordinate) > TRACKING_RADIUS_METERS ? roads[pairKey(from.coordinate, to.coordinate)] : null;
+    const road = from.coordinate && to.coordinate && !isSuspectSegment(analysis, from, to) && distanceMeters(from.coordinate, to.coordinate) > TRACKING_RADIUS_METERS ? roads[pairKey(from.coordinate, to.coordinate)] : null;
     if (road) roadSegments[segmentKey(from, to)] = road.geometry;
   }
   return { ...analysis, legs, roadSegments };
 }
 
 export function summarizeDay(analysis: DayAnalysis) {
+  const suspectLegs = analysis.legs.filter(leg => leg.distanceMeters !== null && isSuspectLeg(analysis, leg)).length;
   const day = analysis.events[0]?.timestamp.slice(0, 10);
   const dayStart = day ? Date.parse(`${day}T00:00:00Z`) : NaN;
   const dayEnd = dayStart + 86_400_000;
@@ -149,6 +158,7 @@ export function summarizeDay(analysis: DayAnalysis) {
     distanceMeters: measuredLegs ? distance : null,
     measuredLegs,
     roadLegs,
+    suspectLegs,
     missingLegs: analysis.legs.length - measuredLegs,
     travelMinutes: timedLegs ? travelMinutes : null,
     timedLegs,

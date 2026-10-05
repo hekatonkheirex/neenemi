@@ -71,12 +71,27 @@ describe('tracking daily summary', () => {
   });
 
   it('requests a route for every consecutive located event pair over 100 m, once per distinct pair', () => {
-    const far = { latitude: -25.1, longitude: -57 };
+    const far = { latitude: -25.005, longitude: -57 };
     const analysis = analyzeDay([
-      visit('1', at('08:00'), at('09:00'), { gpsIn: { latitude: -25.05, longitude: -57 }, gpsOut: far }),
+      visit('1', at('08:00'), at('09:00'), { gpsIn: { latitude: -25, longitude: -57 }, gpsOut: far }),
       visit('2', at('10:00'), at('11:00'), { gpsIn: far, gpsOut: far }),
     ], 'Ana', '2026-09-01');
     const pairs = routePairs(analysis);
-    expect(pairs.map(p => p.key)).toEqual([pairKey({ latitude: -25.05, longitude: -57 }, far)]);
+    expect(pairs.map(p => p.key)).toEqual([pairKey({ latitude: -25, longitude: -57 }, far)]);
+  });
+
+  it('flags services whose check-in and check-out are over 5 km apart and never routes legs touching them', () => {
+    const analysis = analyzeDay([
+      visit('1', at('08:00'), at('09:00'), { gpsIn: { latitude: -25, longitude: -57 }, gpsOut: { latitude: -25, longitude: -57 } }),
+      visit('2', at('10:00'), at('11:00'), { gpsIn: { latitude: -25.1, longitude: -57 }, gpsOut: { latitude: -25.2, longitude: -57 } }),
+      visit('3', at('12:00'), at('13:00'), { gpsIn: { latitude: -25.3, longitude: -57 }, gpsOut: { latitude: -25.3, longitude: -57 } }),
+    ], 'Ana', '2026-09-01');
+    expect(analysis.suspectVisitKeys).toEqual(['2']);
+    expect(routePairs(analysis)).toEqual([]);
+    const road = { distanceMeters: 5, geometry: [] };
+    const routed = applyRoads(analysis, new Proxy({}, { get: () => road }));
+    expect(routed.legs.every(leg => !leg.road)).toBe(true);
+    expect(routed.roadSegments).toEqual({});
+    expect(summarizeDay(routed)).toMatchObject({ suspectLegs: 2, measuredLegs: 2 });
   });
 });

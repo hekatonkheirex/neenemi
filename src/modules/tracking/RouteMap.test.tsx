@@ -51,6 +51,13 @@ describe('RouteMap rendering', () => {
     expect(markup.match(/tracking-road-line/g)).toHaveLength(1);
     expect(markup.match(/tracking-route-line/g)).toHaveLength(1);
   });
+  it('draws segments touching a suspect visit in red without a road', () => {
+    const near = (d: number) => ({ latitude: -25.3 + d, longitude: -57.6 });
+    const events = [event(1, near(0), 'in'), event(2, near(0.1), 'in'), event(2, near(0.2), 'out')];
+    const markup = render({ events, suspectVisitKeys: ['v2'], roadSegments: { 'e1>e2': [near(0), near(0.1)] } });
+    expect(markup.match(/tracking-suspect-line/g)).toHaveLength(2);
+    expect(markup).not.toContain('tracking-road-line');
+  });
   it('marks the selected visit and renders confirmed sites and the candidate pin', () => {
     const site: SiteReference = { ...asuncion, key: 's', customer: 'Acme', branch: 'Centro', address: '', confirmedAt: 'now' };
     const markup = render({ events: [event(1, asuncion), event(2, asuncion)], selectedVisit: 'v2', sites: [site], candidate: asuncion });

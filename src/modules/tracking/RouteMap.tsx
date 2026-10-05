@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { segmentKey } from './analysis';
+import { isSuspectSegment, segmentKey } from './analysis';
 import type { Coordinate, RouteEvent, SiteReference } from './types';
 
 const WIDTH = 900;
@@ -12,8 +12,8 @@ export function unproject(x: number, y: number): Coordinate {
   return { longitude: ((x * 360) % 360 + 360) % 360 - 180, latitude: Math.atan(Math.sinh(Math.PI * (1 - 2 * Math.max(0, Math.min(1, y))))) * 180 / Math.PI };
 }
 
-export default function RouteMap({ events, roadSegments = {}, sites, selectedVisit, candidate, editing, onPick, onSelect }: {
-  events: RouteEvent[]; roadSegments?: Record<string, Coordinate[]>; sites: SiteReference[]; selectedVisit: string | null;
+export default function RouteMap({ events, roadSegments = {}, suspectVisitKeys = [], sites, selectedVisit, candidate, editing, onPick, onSelect }: {
+  events: RouteEvent[]; roadSegments?: Record<string, Coordinate[]>; suspectVisitKeys?: string[]; sites: SiteReference[]; selectedVisit: string | null;
   candidate: Coordinate | null; editing: boolean; onPick: (point: Coordinate) => void; onSelect: (key: string) => void;
 }) {
   const [center, setCenter] = useState(() => project({ latitude: -25.3, longitude: -57.6 }));
@@ -48,11 +48,18 @@ export default function RouteMap({ events, roadSegments = {}, sites, selectedVis
   const toPoint = (c: Coordinate) => { const p = project(c); return `${p.x * world - left},${p.y * world - top}`; };
   const paths: string[] = [];
   const roadPaths: string[] = [];
+  const suspectPaths: string[] = [];
   let segment: string[] = [];
   let previous: RouteEvent | null = null;
   for (const event of events) {
     if (!event.coordinate) { if (segment.length > 1) paths.push(segment.join(' ')); segment = []; previous = null; continue; }
-    const road = previous ? roadSegments[segmentKey(previous, event)] : undefined;
+    const suspect = previous ? isSuspectSegment({ suspectVisitKeys }, previous, event) : false;
+    const road = previous && !suspect ? roadSegments[segmentKey(previous, event)] : undefined;
+    if (previous && suspect) {
+      if (segment.length > 1) paths.push(segment.join(' '));
+      suspectPaths.push(`${toPoint(previous.coordinate!)} ${toPoint(event.coordinate)}`);
+      segment = [];
+    }
     if (road) {
       if (segment.length > 1) paths.push(segment.join(' '));
       roadPaths.push(road.map(toPoint).join(' '));
@@ -106,6 +113,7 @@ export default function RouteMap({ events, roadSegments = {}, sites, selectedVis
         return <g key={index} className="tracking-map-grid"><path d={`M${x} 0 V${HEIGHT} M0 ${y} H${WIDTH}`} /><text x={x + 4} y={18}>{longitude.toFixed(4)}°</text><text x="4" y={y + 18}>{latitude.toFixed(4)}°</text></g>;
       })}
       {paths.map((path, index) => <polyline key={index} points={path} className="tracking-route-line" />)}
+      {suspectPaths.map((path, index) => <polyline key={`suspect-${index}`} points={path} className="tracking-suspect-line" />)}
       {roadPaths.map((path, index) => <polyline key={`road-${index}`} points={path} className="tracking-road-line" />)}
       {sites.map(site => {
         const p = project(site); const radius = 100 / (40_075_017 * Math.cos(site.latitude * Math.PI / 180)) * world;
@@ -120,7 +128,7 @@ export default function RouteMap({ events, roadSegments = {}, sites, selectedVis
       })}
       {candidate && (() => { const p = project(candidate); return <g transform={`translate(${p.x * world - left} ${p.y * world - top})`} className="tracking-candidate-pin"><circle r="12" /><path d="M-18 0 H18 M0 -18 V18" /><title>Ubicación propuesta, todavía no confirmada</title></g>; })()}
     </svg>
-    <div className="tracking-map-footer"><span>Azul: entrada · Naranja: salida · Rombo: sede confirmada (100 m). Línea continua: posible ruta tomada por carretera entre marcaciones consecutivas (estimada, no el GPS real). Punteada: línea recta (menos de 100 m o sin ruta).</span><span>Centro: {mapCenter.latitude.toFixed(6)}, {mapCenter.longitude.toFixed(6)}</span></div>
+    <div className="tracking-map-footer"><span>Azul: entrada · Naranja: salida · Rombo: sede confirmada (100 m). Línea continua: posible ruta tomada por carretera entre marcaciones consecutivas (estimada, no el GPS real). Punteada: línea recta (menos de 100 m o sin ruta). Roja: GPS dudoso, sin ruta.</span><span>Centro: {mapCenter.latitude.toFixed(6)}, {mapCenter.longitude.toFixed(6)}</span></div>
     {editing && <button type="button" className="secondary-button" onClick={() => onPick(mapCenter)}>Usar centro del mapa como sede propuesta</button>}
     <small>Fondo de calles activo automáticamente · requiere internet; envía la zona visible, no los archivos, nombres ni direcciones. © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a></small>
     {tilesFailed && <p role="status">No se pudo cargar parte del mapa base. Los puntos y cálculos locales siguen disponibles.</p>}
