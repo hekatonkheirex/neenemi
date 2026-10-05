@@ -121,8 +121,8 @@ en desarrollo se verificaron sin el error de ruta inyectada externalizada.
 1. Instalar la versión de Node soportada por el proyecto y ejecutar `npm ci`.
 2. Ejecutar `npm run desktop:check`.
 3. Abrir la aplicación sin Node ni Vite ejecutándose aparte.
-4. Importar una fuente pequeña de prueba y confirmar que aparece en Resumen.
-5. Descargar un respaldo desde Resumen y verificar que comienza con la firma SQLite.
+4. Importar una fuente pequeña de prueba y confirmar que aparece en Inicio.
+5. Descargar un respaldo desde Inicio y verificar que comienza con la firma SQLite.
 6. Cerrar y volver a abrir la aplicación; los datos deben permanecer en el directorio
    de usuario de Electron, fuera del directorio de instalación.
 7. En un perfil/directorio de datos desechable, restaurar una copia, confirmar que la Suite
@@ -130,7 +130,7 @@ en desarrollo se verificaron sin el error de ruta inyectada externalizada.
    restauración sobre la única copia de datos de una instalación real.
 
 Los originales importados y la SQLite no forman parte del instalador. La aplicación
-los conserva por instalación. Resumen permite descargar una SQLite autocontenida con datos
+los conserva por instalación. Inicio permite descargar una SQLite autocontenida con datos
 normalizados y archivos originales activos y archivados. Una restauración reemplaza toda la base
 activa solo después de validar el archivo y crear una copia de seguridad automática; luego reinicia
 el servicio local.

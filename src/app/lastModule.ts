@@ -6,7 +6,7 @@ export type ModuleStorage = {
   removeItem: (key: string) => void;
 };
 
-/** Devuelve el último módulo abierto si sigue existiendo; si no, null (Resumen). */
+/** Devuelve el último módulo abierto si sigue existiendo; si no, null (Inicio). */
 export function readLastModule(storage: ModuleStorage | undefined, validIds: readonly string[]): string | null {
   try {
     const id = storage?.getItem(LAST_MODULE_STORAGE_KEY);

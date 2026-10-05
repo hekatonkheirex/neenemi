@@ -9,9 +9,9 @@ const labels = { catálogo: 'Catálogo', operaciones: 'Operaciones', ventas: 'Ve
 const entries = buildPaletteEntries(suiteModules, labels);
 
 describe('filterPaletteEntries', () => {
-  it('sin consulta devuelve Resumen y todos los módulos', () => {
+  it('sin consulta devuelve Inicio y todos los módulos', () => {
     expect(filterPaletteEntries(entries, '')).toHaveLength(suiteModules.length + 1);
-    expect(entries[0]).toMatchObject({ id: null, label: 'Resumen' });
+    expect(entries[0]).toMatchObject({ id: null, label: 'Inicio' });
   });
 
   it('ignora acentos y mayúsculas', () => {
@@ -41,7 +41,7 @@ describe('CommandPalette', () => {
   });
 });
 
-describe('Resumen', () => {
+describe('Inicio', () => {
   const markup = renderToStaticMarkup(<App />);
 
   it('ofrece la paleta en la barra superior', () => {

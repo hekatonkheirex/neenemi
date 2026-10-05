@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.48 · 2026-10-05
+
+Renombra Resumen a Inicio (barra lateral, barra superior, paleta de comandos). Sube Respaldo y recuperación justo debajo de las fichas. Reemplaza las fichas "clientes en la base común" y "equipos instalados" por "contratos en cartera" y "última carga aplicada" (fecha de la última importación aplicada); se mantiene el conteo de módulos funcionales.
+
 ## 0.1.47 · 2026-10-05
 
 Las fichas de módulos de Resumen usan el icono de la barra lateral en lugar de la inicial. Corrige la regla general de tarjetas del tema claro: ya no pone sombra ni fondo blanco a las partes internas (encabezado de las fichas de modelos del Discontinuador, cabecera de las fichas de módulos de Resumen). Quita la sombra grande de las fichas de resumen (queda una línea sutil; la ficha destacada va sin sombra). Unifica el espaciado entre tarjetas en Resumen y Analítica de consumibles (margen global de `.summary-grid` de 4 rem a 1,25 rem; el monto de costo ya no se parte en varias líneas). Agrega este historial de cambios: la versión de la barra lateral es ahora un enlace que lo abre en un diálogo dentro de la aplicación. Quita "Solo en este equipo" de la barra superior y "SQLite local lista" de la barra lateral (el aviso de SQLite sigue apareciendo solo cuando requiere atención).

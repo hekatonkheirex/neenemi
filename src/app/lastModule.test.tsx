@@ -21,13 +21,13 @@ describe('último módulo', () => {
     expect(readLastModule(memoryStorage({ [LAST_MODULE_STORAGE_KEY]: 'mps' }), ids)).toBe('mps');
   });
 
-  it('cae al Resumen si el id guardado ya no existe, no hay valor o no hay storage', () => {
+  it('cae a Inicio si el id guardado ya no existe, no hay valor o no hay storage', () => {
     expect(readLastModule(memoryStorage({ [LAST_MODULE_STORAGE_KEY]: 'borrado' }), ids)).toBeNull();
     expect(readLastModule(memoryStorage(), ids)).toBeNull();
     expect(readLastModule(undefined, ids)).toBeNull();
   });
 
-  it('guarda el módulo y borra la clave al volver al Resumen', () => {
+  it('guarda el módulo y borra la clave al volver a Inicio', () => {
     const storage = memoryStorage();
     persistLastModule('catalogo', storage);
     expect(storage.data[LAST_MODULE_STORAGE_KEY]).toBe('catalogo');

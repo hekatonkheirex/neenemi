@@ -95,6 +95,7 @@ const moduleIcons = {
 } satisfies Record<(typeof suiteModules)[number]['id'], typeof PrinterIcon>;
 
 const numberFormat = new Intl.NumberFormat('es-PY');
+const dateFormat = new Intl.DateTimeFormat('es-PY', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
 const functionalModuleIds = new Set(['catalogo', 'mantenimiento', 'descontinuador', 'listado-precios', 'proformas', 'mps', 'consumibles', 'viaticos', 'tracking', 'uniflow', 'software-selector', 'sla', 'cobertura']);
 
@@ -254,7 +255,7 @@ export default function App() {
       if (!overviewResponse.ok) return;
       setOverview((await overviewResponse.json()) as SuiteOverview);
     } catch {
-      // The removal succeeded; a later visit to Resumen will refresh its counts.
+      // The removal succeeded; a later visit to Inicio will refresh its counts.
     }
   }
 
@@ -277,7 +278,7 @@ export default function App() {
             onClick={() => void navigateTo(null)}
           >
             <span className="nav-icon" aria-hidden="true"><HugeiconsIcon icon={GridViewIcon} size={16} /></span>
-            <span>Resumen</span>
+            <span>Inicio</span>
           </button>
 
           {sectionOrder.map((section) => {
@@ -315,7 +316,7 @@ export default function App() {
 
       <main className="content">
         <header className="topbar">
-          <span className="breadcrumb">DCSS Suite / {activeModule?.label ?? 'Resumen'}</span>
+          <span className="breadcrumb">DCSS Suite / {activeModule?.label ?? 'Inicio'}</span>
           <div className="topbar-actions">
             <button className="palette-button" type="button" onClick={() => setPaletteOpen(true)} aria-keyshortcuts="Control+K Meta+K" title="Ir a un módulo (Ctrl/⌘ K)">
               Ir a… <kbd>Ctrl K</kbd>
@@ -402,6 +403,7 @@ function Dashboard({
   clearImportsMessage: ClearImportsMessage | null;
 }) {
   const functionalModuleCount = suiteModules.filter((module) => functionalModuleIds.has(module.id)).length;
+  const lastApplied = overview?.recentImports.find((item) => item.appliedAt)?.appliedAt;
 
   return (
     <div className="page-content">
@@ -419,14 +421,16 @@ function Dashboard({
           <span className="summary-label">módulos funcionales</span>
         </div>
         <div className="summary-card">
-          <span className="summary-value">{overview ? numberFormat.format(overview.counts.customers) : '—'}</span>
-          <span className="summary-label">clientes en la base común</span>
+          <span className="summary-value">{overview ? numberFormat.format(overview.counts.contracts) : '—'}</span>
+          <span className="summary-label">contratos en cartera</span>
         </div>
         <div className="summary-card">
-          <span className="summary-value">{overview ? numberFormat.format(overview.counts.equipment) : '—'}</span>
-          <span className="summary-label">equipos instalados</span>
+          <span className="summary-value">{lastApplied ? dateFormat.format(new Date(lastApplied)) : '—'}</span>
+          <span className="summary-label">última carga aplicada</span>
         </div>
       </section>
+
+      <DatabaseRecoveryPanel refreshKey={importsRefreshKey} />
 
       <section className="io-panel overview-panel" aria-label="Estado de la base compartida">
         <div>
@@ -441,7 +445,7 @@ function Dashboard({
         </div>
         {overviewState === 'error' ? (
           <div role="alert">
-            <p>La consulta del Resumen falló. Comprueba la conexión con la API local e inténtalo de nuevo.</p>
+            <p>La consulta de Inicio falló. Comprueba la conexión con la API local e inténtalo de nuevo.</p>
             <button className="secondary-button" type="button" onClick={onRetryOverview}>Reintentar consulta</button>
           </div>
         ) : (
@@ -476,8 +480,6 @@ function Dashboard({
           </button>
         </div>
       </section>
-
-      <DatabaseRecoveryPanel refreshKey={importsRefreshKey} />
 
       <ImportArchivePanel refreshKey={importsRefreshKey} onRemoveBatch={onRemoveImport} />
 

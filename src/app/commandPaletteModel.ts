@@ -6,7 +6,7 @@ const fold = (text: string) => text.normalize('NFD').replace(/\p{M}/gu, '').toLo
 
 export function buildPaletteEntries(modules: readonly SuiteModule[], sectionLabels: Record<SuiteModule['section'], string>): PaletteEntry[] {
   return [
-    { id: null, label: 'Resumen', hint: 'Inicio' },
+    { id: null, label: 'Inicio', hint: 'Panel general' },
     ...modules.map((module) => ({ id: module.id, label: module.label, hint: sectionLabels[module.section] })),
   ];
 }
