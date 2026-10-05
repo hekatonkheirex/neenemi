@@ -241,9 +241,9 @@ h1 {
   max-width: 11ch;
   margin-bottom: 1.35rem;
   color: #f1f5ff;
-  font-size: clamp(2.8rem, 7vw, 5.8rem);
-  line-height: 0.94;
-  letter-spacing: -0.07em;
+  font-size: clamp(2.25rem, 3.6vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
 }
 
 h2 {
@@ -703,7 +703,7 @@ li::before {
 .catalog-header h1 {
   max-width: 12ch;
   margin-bottom: 1rem;
-  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  font-size: clamp(2.25rem, 3.6vw, 3.25rem);
 }
 
 .catalog-header-actions {
@@ -743,8 +743,9 @@ li::before {
 }
 
 .primary-button:disabled {
-  cursor: wait;
-  opacity: 0.55;
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
 }
 
 .catalog-status-row {
@@ -9700,7 +9701,7 @@ html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
 .uniflow-page > .catalog-header h1 {
   max-width: 24ch;
   margin-bottom: 0.8rem;
-  font-size: clamp(2.35rem, 5vw, 4.3rem);
+  font-size: clamp(2.25rem, 3.6vw, 3.25rem);
   line-height: 1;
 }
 
@@ -9978,12 +9979,13 @@ html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
 }
 
 .uniflow-term-options button {
-  padding: 0.25rem 0.48rem;
+  min-height: 1.75rem;
+  padding: 0.25rem 0.6rem;
   border: 1px solid rgba(144, 174, 229, 0.18);
   border-radius: 0.35rem;
   color: #8fa5c7;
   background: rgba(18, 31, 54, 0.52);
-  font-size: 0.64rem;
+  font-size: 0.75rem;
   font-weight: 800;
 }
 

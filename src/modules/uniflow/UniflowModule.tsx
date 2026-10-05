@@ -255,7 +255,7 @@ export default function UniflowModule() {
             </div>
             <form className="uniflow-form" onSubmit={calculate}>
               <div className="uniflow-settings-grid">
-                <label className="search-field"><span>Meses de contrato</span><input min={1} type="number" value={months || ''} onChange={(event) => { setMonths(Number(event.target.value) || 0); setCalculated(false); }} /><span className="uniflow-term-options" aria-label="Plazos habituales">{STANDARD_CONTRACT_TERMS.map((term) => <button className={months === term ? 'active' : ''} key={term} type="button" onClick={() => { setMonths(term); setCalculated(false); }}>{term} m</button>)}</span></label>
+                <label className="search-field"><span>Meses de contrato</span><input aria-label="Meses de contrato" min={1} type="number" value={months || ''} onChange={(event) => { setMonths(Number(event.target.value) || 0); setCalculated(false); }} /><span className="uniflow-term-options" aria-label="Plazos habituales">{STANDARD_CONTRACT_TERMS.map((term) => <button className={months === term ? 'active' : ''} key={term} type="button" onClick={() => { setMonths(term); setCalculated(false); }}>{term} m</button>)}</span></label>
                 <label className="search-field"><span>Cliente / proyecto</span><input value={clientName} onChange={(event) => setClientName(event.target.value)} placeholder="Opcional" /></label>
               </div>
 

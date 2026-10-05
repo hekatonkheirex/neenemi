@@ -927,6 +927,10 @@ html[data-theme='light'] .primary-button {
   box-shadow: 0 0.65rem 1.5rem rgba(255, 107, 0, 0.2);
 }
 
+html[data-theme='light'] .primary-button:disabled {
+  box-shadow: none;
+}
+
 html[data-theme='light'] .primary-button:hover:not(:disabled) {
   background: #e96000;
 }

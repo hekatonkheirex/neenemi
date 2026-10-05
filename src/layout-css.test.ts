@@ -93,3 +93,21 @@ describe('layout entre 960 y 1350 px', () => {
     expect(css).toMatch(/\.consumables-table td:first-child\s*{\s*min-width:\s*9rem/);
   });
 });
+
+describe('revisión visual 2026-10', () => {
+  const indexCss = css;
+  const themeCss = fs.readFileSync(new URL('./theme.css', import.meta.url), 'utf8');
+
+  it('h1 global de herramienta: tope de 3.25rem y sin tracking extremo', () => {
+    expect(indexCss).toMatch(/\nh1\s*{[^}]*font-size:\s*clamp\(2\.25rem,\s*3\.6vw,\s*3\.25rem\)[^}]*letter-spacing:\s*-0\.045em/);
+  });
+
+  it('primary-button deshabilitado no brilla ni muestra cursor de espera', () => {
+    expect(indexCss).toMatch(/\.primary-button:disabled\s*{[^}]*cursor:\s*not-allowed[^}]*box-shadow:\s*none/);
+    expect(themeCss).toMatch(/\[data-theme='light'\]\s+\.primary-button:disabled\s*{\s*box-shadow:\s*none/);
+  });
+
+  it('chips de plazo uniFLOW: objetivo táctil de 28px y texto de 12px', () => {
+    expect(indexCss).toMatch(/\.uniflow-term-options button\s*{\s*min-height:\s*1\.75rem[^}]*font-size:\s*0\.75rem/);
+  });
+});

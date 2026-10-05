@@ -4,6 +4,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { migrateLegacyDataDirectory, listLegacyDataSources } = require('./migrate-data.cjs');
 const { attachUnloadGuard } = require('./unload-guard.cjs');
+const { openExternalSafely } = require('./external-url.cjs');
 
 const WINDOW_BACKGROUND_COLOR = '#0b1220';
 let localApiProcess;
@@ -90,15 +91,14 @@ function createWindow(rendererUrl) {
   attachUnloadGuard(window, dialog);
 
   window.webContents.setWindowOpenHandler(({ url }) => {
-    if (isLocalUrl(url)) return { action: 'deny' };
-    void shell.openExternal(url);
+    if (!isLocalUrl(url)) openExternalSafely(shell, url);
     return { action: 'deny' };
   });
 
   window.webContents.on('will-navigate', (event, url) => {
     if (isLocalUrl(url)) return;
     event.preventDefault();
-    void shell.openExternal(url);
+    openExternalSafely(shell, url);
   });
 
   void window.loadURL(rendererUrl);
