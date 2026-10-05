@@ -96,6 +96,8 @@ v0.1.44 corrige el panel de IA en modo oscuro (aparecía como tarjeta blanca): h
 legibles en ambos temas.
 v0.1.45 retira el mecanismo de clave incluida en el instalador (`embedded-ai.json`, `extraResources`, `DS_EMBEDDED_AI_FILE`):
 el instalador no lleva ninguna clave y la IA se configura solo desde el panel o `OPENROUTER_API_KEY`.
+v0.1.46 limita el traslado de Tracking a un viaje plausible según la distancia (el exceso del intervalo cuenta como espera o pausa),
+unifica el espaciado y la cabecera del módulo, y en Viáticos oculta el indicador verde vacío y avisa de rendiciones pendientes (monto y antigüedad).
 
 ## Análisis con IA
 
