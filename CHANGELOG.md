@@ -4,7 +4,7 @@ Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigu
 
 ## 0.1.47 · 2026-10-05
 
-Agrega este historial de cambios: la versión de la barra lateral es ahora un enlace que lo abre en un diálogo dentro de la aplicación. Quita "Solo en este equipo" de la barra superior y "SQLite local lista" de la barra lateral (el aviso de SQLite sigue apareciendo solo cuando requiere atención).
+Unifica el espaciado entre tarjetas en Resumen y Analítica de consumibles (margen global de `.summary-grid` de 4 rem a 1,25 rem; el monto de costo ya no se parte en varias líneas). Agrega este historial de cambios: la versión de la barra lateral es ahora un enlace que lo abre en un diálogo dentro de la aplicación. Quita "Solo en este equipo" de la barra superior y "SQLite local lista" de la barra lateral (el aviso de SQLite sigue apareciendo solo cuando requiere atención).
 
 ## 0.1.46 · 2026-10-05
 

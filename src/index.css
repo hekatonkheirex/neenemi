@@ -209,6 +209,10 @@ button {
   max-width: 740px;
 }
 
+.hero-block + .summary-grid {
+  margin-top: 2rem;
+}
+
 .eyebrow {
   margin: 0 0 1rem;
   color: #79aaff;
@@ -251,7 +255,7 @@ h2 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
-  margin: 4rem 0 5.2rem;
+  margin: 1.25rem 0;
 }
 
 .summary-card {
@@ -3346,9 +3350,6 @@ li::before {
     padding: 0;
   }
 
-  .summary-grid {
-    margin: 3rem 0 4rem;
-  }
 
   .section-heading {
     display: block;
@@ -3509,7 +3510,7 @@ li::before {
 }
 
 .operations-summary {
-  margin: 2rem 0 1.25rem;
+  margin: 1.25rem 0;
 }
 
 .discontinuation-portfolio-card {
@@ -7542,7 +7543,7 @@ li::before {
 .consumables-detail-summary {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.85rem;
-  margin-bottom: 0;
+  margin: 0;
 }
 
 .consumables-detail-summary .summary-card {
@@ -7562,8 +7563,8 @@ li::before {
 }
 
 .legacy-summary {
-  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-  margin-bottom: 0;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  margin: 0 0 1.25rem;
 }
 
 .legacy-summary .summary-card {
@@ -7571,8 +7572,8 @@ li::before {
 }
 
 .legacy-summary .summary-value {
-  overflow-wrap: anywhere;
-  font-size: clamp(1.45rem, 2.5vw, 2.5rem);
+  white-space: nowrap;
+  font-size: clamp(1.1rem, 1.3vw, 1.9rem);
 }
 
 .legacy-analysis-note {
