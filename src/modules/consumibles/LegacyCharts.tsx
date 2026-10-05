@@ -16,6 +16,13 @@ const chartNumber = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 })
 const CHART_WIDTH = 760;
 /** Ancho aproximado de un carácter del rótulo de valor (11 px, negrita). */
 const VALUE_LABEL_CHAR_WIDTH = 6.8;
+/** Ancho aproximado de un carácter de las marcas del eje (11 px, seminegrita). */
+const AXIS_LABEL_CHAR_WIDTH = 6.6;
+
+/** Margen izquierdo que deja sitio a la marca más ancha del eje Y (con ₲ y miles el valor de 54 px la cortaba). */
+function axisMarginLeft(maximum: number, valueFormatter: (value: number) => string): number {
+  return Math.max(54, valueFormatter(maximum).length * AXIS_LABEL_CHAR_WIDTH + 16);
+}
 
 export function LegacyLineChart({
   labels,
@@ -31,10 +38,10 @@ export function LegacyLineChart({
   if (labels.length === 0 || series.length === 0) return <LegacyChartEmpty />;
 
   const height = 280;
-  const margin = { top: 20, right: 18, bottom: 48, left: 54 };
+  const maximum = Math.max(...series.flatMap((item) => item.values), 1);
+  const margin = { top: 20, right: 18, bottom: 48, left: axisMarginLeft(maximum, valueFormatter) };
   const plotWidth = CHART_WIDTH - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
-  const maximum = Math.max(...series.flatMap((item) => item.values), 1);
   const xAt = (index: number) => margin.left + (labels.length === 1 ? plotWidth / 2 : (index / (labels.length - 1)) * plotWidth);
   const yAt = (value: number) => margin.top + plotHeight - (value / maximum) * plotHeight;
 
@@ -71,11 +78,11 @@ export function LegacyStackedBarChart({
   if (labels.length === 0 || series.length === 0) return <LegacyChartEmpty />;
 
   const height = 290;
-  const margin = { top: 20, right: 18, bottom: 60, left: 54 };
-  const plotWidth = CHART_WIDTH - margin.left - margin.right;
-  const plotHeight = height - margin.top - margin.bottom;
   const totals = labels.map((_, index) => series.reduce((sum, item) => sum + (item.values[index] ?? 0), 0));
   const maximum = Math.max(...totals, 1);
+  const margin = { top: 20, right: 18, bottom: 60, left: axisMarginLeft(maximum, valueFormatter) };
+  const plotWidth = CHART_WIDTH - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
   const slotWidth = plotWidth / labels.length;
   const barWidth = Math.max(12, slotWidth * 0.68);
 
@@ -185,7 +192,7 @@ export function LegacyDonutChart({
             <title>{`${segment.label}: ${valueFormatter(segment.value)}`}</title>
           </circle>;
         })}
-        <text className="legacy-donut-total" x="120" y="116" textAnchor="middle">{valueFormatter(total)}</text>
+        <text className="legacy-donut-total" x="120" y="116" textAnchor="middle" style={{ fontSize: donutTotalFontSize(valueFormatter(total)) }}>{valueFormatter(total)}</text>
         <text className="legacy-donut-label" x="120" y="138" textAnchor="middle">{centerLabel ?? 'total'}</text>
       </svg>
       <div className="legacy-chart-legend">
@@ -218,6 +225,11 @@ function ChartGrid({ margin, plotHeight, maximum, valueFormatter }: { margin: { 
 
 function ChartXAxis({ labels, xAt, height, margin }: { labels: readonly string[]; xAt: (index: number) => number; height: number; margin: { bottom: number } }) {
   return <>{labels.map((label, index) => <text className="legacy-chart-axis-label" key={`${label}-${index}`} x={xAt(index)} y={height - margin.bottom + 22} textAnchor="middle">{truncate(label, 12)}</text>)}</>;
+}
+
+/** El total va dentro del anillo (unos 120 px libres): achica la letra en vez de dejarlo pisar el trazo. */
+export function donutTotalFontSize(text: string): number {
+  return Math.max(10, Math.min(17, Math.floor(120 / (text.length * 0.62))));
 }
 
 function LegacyChartEmpty() {
