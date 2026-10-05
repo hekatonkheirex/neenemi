@@ -14,6 +14,13 @@ describe('Resumen de la suite', () => {
     expect(markup).toContain('Restaurar respaldo SQLite');
   });
 
+  it('muestra en cada ficha de módulo el icono de la barra lateral y no su inicial', () => {
+    const markup = renderToStaticMarkup(<App />);
+    const symbols = [...markup.matchAll(/<span class="module-symbol"[^>]*>(.*?)<\/span>/g)].map(match => match[1]);
+    expect(symbols.length).toBeGreaterThanOrEqual(13);
+    expect(symbols.every(inner => inner.startsWith('<svg'))).toBe(true);
+  });
+
   it('mantiene en Consumibles solo la carga coordinada de sus fuentes', () => {
     const markup = renderToStaticMarkup(createElement(SourceDataPanel, {
       onImportBundle: async () => {},

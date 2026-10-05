@@ -493,7 +493,7 @@ function Dashboard({
         {suiteModules.map((module) => (
           <button className="module-card" key={module.id} type="button" onClick={() => onSelect(module.id)}>
             <span className="module-card-top">
-              <span className="module-symbol">{module.label.slice(0, 1)}</span>
+              <span className="module-symbol" aria-hidden="true"><HugeiconsIcon icon={moduleIcons[module.id]} size={16} /></span>
               <span className="module-section">{sectionLabels[module.section]}</span>
             </span>
             <strong>{module.label}</strong>
