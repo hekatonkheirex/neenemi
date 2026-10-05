@@ -155,7 +155,7 @@ export default function TrackingModule() {
   const unmatchedReports = snapshot?.reports.filter(report => !linkedIds.has(JSON.stringify([report.reportId, normalizeIdentity(report.customer), normalizeIdentity(report.technician)]))) ?? [];
   const undated = (visits ?? []).filter(v => !v.checkIn && !v.checkOut);
   return <div className="page-content tracking-module">
-    <section className="hero-block"><div className="eyebrow">OPERACIONES / TRAZABILIDAD</div><h1>Tracking de técnicos</h1><p className="lead">Marcaciones diarias, intervalos entre visitas y proximidad a la sede del cliente.</p></section>
+    <section className="catalog-header"><div><div className="eyebrow">OPERACIONES / TRAZABILIDAD</div><h1>Tracking de técnicos</h1><p className="lead">Marcaciones diarias, intervalos entre visitas y proximidad a la sede del cliente.</p></div></section>
     <section className="tracking-card"><h2>Cargar fuentes originales</h2><p>Selecciona el detalle de informes y las marcaciones de geolocalización. Se vinculan por Nº I.S., técnico y cliente; las filas sin coincidencia se conservan. Una nueva carga reemplaza el análisis vigente, no el archivo histórico ni las sedes confirmadas.</p>
       <div className="tracking-import-grid">
         <label>1. Informes de servicio<input type="file" accept=".csv,.xlsx" aria-describedby="tracking-reports-source" disabled={busy || loading} onChange={e => setReportsFile(e.target.files?.[0] ?? null)} /><small id="tracking-reports-source">Superset &gt; SGS - Tecnicos asignados &gt; Detalle de Servicios</small></label>

@@ -13,12 +13,9 @@ html[data-theme='dark'] .tracking-module {
   --tracking-ink: #edf3ff;
   --tracking-wash: #1a2c4c;
 }
-.tracking-module h1 { max-width: none; margin: 0 0 .5rem; font-size: clamp(1.9rem, 3.5vw, 2.6rem); line-height: 1.05; letter-spacing: -.04em; }
 /* One vertical rhythm: every direct child is separated by the same gap, so global landing-page margins (summary-grid 4rem/5.2rem, h1 1.35rem) cannot stack with card margins. */
-.tracking-module { display: flex; flex-direction: column; gap: 1.25rem; padding-top: 3rem; }
+.tracking-module { display: flex; flex-direction: column; gap: 1.25rem; }
 .tracking-module > * { margin-top: 0; margin-bottom: 0; }
-.tracking-module .hero-block { max-width: none; }
-.tracking-module .hero-block .lead { max-width: 60ch; font-size: 1rem; }
 .tracking-module > .summary-grid { margin: 0; }
 .tracking-module .summary-card { min-height: 6rem; gap: .75rem; }
 .tracking-module .summary-value { font-size: 2rem; }
