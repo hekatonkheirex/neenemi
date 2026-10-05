@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.51 · 2026-10-05
+
+Quita el panel "Base compartida" de Inicio (inventario, fuentes recientes y estado de la consulta; las importaciones ya están en el visor de originales). El botón "Limpiar cargas" pasa a la primera ficha.
+
 ## 0.1.50 · 2026-10-05
 
 Cada importación del visor de archivos originales muestra su fecha y hora (de aplicación, o de carga si aún no se aplicó). La lista de importaciones ocupa la misma altura que el panel Fuente seleccionada y desplaza por dentro.

@@ -13101,3 +13101,6 @@ html[data-theme='light'] .ai-key-message.error { color: var(--ds-danger); }
 .nav-alert-ring { opacity: 0.6; }
 
 .source-data-batch .source-data-batch-date { font-variant-numeric: tabular-nums; }
+
+.summary-card-action { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.75rem; }
+.summary-card.accent .global-clear-message { color: #fff; font-size: 0.7rem; }

@@ -116,8 +116,6 @@ export default function App() {
   const [health, setHealth] = useState<Health | null>(null);
   const [changelogOpen, setChangelogOpen] = useState(false);
   const [overview, setOverview] = useState<SuiteOverview | null>(null);
-  const [overviewState, setOverviewState] = useState<'loading' | 'ready' | 'error'>('loading');
-  const [overviewRetryKey, setOverviewRetryKey] = useState(0);
   const [activeModuleId, setActiveModuleId] = useState<string | null>(() => readLastModule(getThemeStorage(), suiteModules.map((module) => module.id)));
   const [theme, setTheme] = useState<Theme>(() => readTheme(getThemeStorage()));
   const [clearingImports, setClearingImports] = useState(false);
@@ -194,7 +192,6 @@ export default function App() {
   useEffect(() => {
     if (activeModuleId !== null) return undefined;
     let cancelled = false;
-    setOverviewState('loading');
     setOverview(null);
     fetch('/api/overview', { signal: AbortSignal.timeout(10000) })
       .then(async (response) => {
@@ -202,17 +199,12 @@ export default function App() {
         return (await response.json()) as SuiteOverview;
       })
       .then((value) => {
-        if (!cancelled) {
-          setOverview(value);
-          setOverviewState('ready');
-        }
+        if (!cancelled) setOverview(value);
       })
-      .catch(() => {
-        if (!cancelled) setOverviewState('error');
-      });
+      .catch(() => undefined);
 
     return () => { cancelled = true; };
-  }, [activeModuleId, importsRefreshKey, overviewRetryKey]);
+  }, [activeModuleId, importsRefreshKey]);
 
   useEffect(() => {
     let cancelled = false;
@@ -355,8 +347,6 @@ export default function App() {
           {activeModule ? renderModule(activeModule) : <Dashboard
             onBackupLevel={setBackupLevel}
             overview={overview}
-            overviewState={overviewState}
-            onRetryOverview={() => setOverviewRetryKey((value) => value + 1)}
             importsRefreshKey={importsRefreshKey}
             onRemoveImport={removeImportBatch}
             onClearImports={() => void clearImportedFiles()}
@@ -398,8 +388,6 @@ function renderModule(module: SuiteModule) {
 function Dashboard({
   onBackupLevel,
   overview,
-  overviewState,
-  onRetryOverview,
   importsRefreshKey,
   onRemoveImport,
   onClearImports,
@@ -408,8 +396,6 @@ function Dashboard({
 }: {
   onBackupLevel: (level: BackupHealth['level']) => void;
   overview: SuiteOverview | null;
-  overviewState: 'loading' | 'ready' | 'error';
-  onRetryOverview: () => void;
   importsRefreshKey: number;
   onRemoveImport: (batch: ImportArchiveBatch) => Promise<void>;
   onClearImports: () => void;
@@ -433,6 +419,12 @@ function Dashboard({
         <div className="summary-card accent">
           <span className="summary-value">{functionalModuleCount}</span>
           <span className="summary-label">módulos funcionales</span>
+          <div className="summary-card-action">
+            {clearImportsMessage ? <span className={`global-clear-message ${clearImportsMessage.tone}`} role={clearImportsMessage.tone === 'error' ? 'alert' : 'status'}>{clearImportsMessage.text}</span> : null}
+            <button className="global-clear-button" type="button" onClick={onClearImports} disabled={clearingImports} aria-busy={clearingImports} title="Quitar todas las cargas importadas y sus datos derivados. Los originales quedan en el archivo recuperable.">
+              {clearingImports ? 'Limpiando…' : 'Limpiar cargas'}
+            </button>
+          </div>
         </div>
         <div className="summary-card">
           <span className="summary-value">{overview ? numberFormat.format(overview.counts.contracts) : '—'}</span>
@@ -446,80 +438,11 @@ function Dashboard({
 
       <DatabaseRecoveryPanel refreshKey={importsRefreshKey} onHealthChange={onBackupLevel} />
 
-      <section className="io-panel overview-panel" aria-label="Estado de la base compartida">
-        <div>
-          <h2>Base compartida</h2>
-          <p>
-            {overview
-              ? `${numberFormat.format(overview.appliedImports)} importaciones aplicadas alimentan esta instalación local.`
-              : overviewState === 'error'
-                ? 'No se pudo consultar el estado de la base local.'
-                : 'Consultando el estado de la base local…'}
-          </p>
-        </div>
-        {overviewState === 'error' ? (
-          <div role="alert">
-            <p>La consulta de Inicio falló. Comprueba la conexión con la API local e inténtalo de nuevo.</p>
-            <button className="secondary-button" type="button" onClick={onRetryOverview}>Reintentar consulta</button>
-          </div>
-        ) : (
-        <div className="io-columns">
-          <div>
-            <span className="detail-label">Inventario y soporte</span>
-            <ul>
-              <li>{overview ? numberFormat.format(overview.counts.parts) : '—'} repuestos normalizados</li>
-              <li>{overview ? numberFormat.format(overview.counts.models) : '—'} modelos Canon conocidos</li>
-              <li>{overview ? numberFormat.format(overview.counts.modelSupportItems) : '—'} registros de soporte Canon</li>
-              <li>{overview ? numberFormat.format(overview.counts.waldbottStockItems) : '—'} filas del stock Waldbott vigente</li>
-            </ul>
-          </div>
-          <div>
-            <span className="detail-label">Fuentes recientes</span>
-            <ul>
-              {overview?.recentImports.length ? overview.recentImports.map((item) => (
-                <li key={item.id}>
-                  <span>{item.sourceName}</span>
-                  <small className="overview-import-meta">{formatImportDomain(item.domain)} · {formatImportStatus(item.status)} · {item.files} archivo{item.files === 1 ? '' : 's'}</small>
-                </li>
-              )) : <li>{overview ? 'Todavía no hay archivos importados.' : 'Cargando fuentes…'}</li>}
-            </ul>
-          </div>
-        </div>
-        )}
-        <div className="overview-clear">
-          <p>Quitar todas las cargas importadas y sus datos derivados. Los originales quedan en el archivo recuperable.</p>
-          {clearImportsMessage ? <span className={`global-clear-message ${clearImportsMessage.tone}`} role={clearImportsMessage.tone === 'error' ? 'alert' : 'status'}>{clearImportsMessage.text}</span> : null}
-          <button className="global-clear-button" type="button" onClick={onClearImports} disabled={clearingImports} aria-busy={clearingImports}>
-            {clearingImports ? 'Limpiando…' : 'Limpiar cargas'}
-          </button>
-        </div>
-      </section>
-
       <ImportArchivePanel refreshKey={importsRefreshKey} onRemoveBatch={onRemoveImport} />
 
       <p className="scope-note">Los proyectos actuales permanecen intactos mientras validamos esta nueva aplicación.</p>
     </div>
   );
-}
-
-function formatImportDomain(domain: string): string {
-  const labels: Record<string, string> = {
-    catalog: 'Catálogo',
-    operations: 'Cartera',
-    'operations-canon': 'Soporte Canon',
-    maintenance: 'Mantenimiento',
-    consumibles: 'Consumibles',
-    services: 'Servicios',
-    viaticos: 'Viáticos',
-    mps: 'MPS',
-  };
-  return labels[domain] ?? domain;
-}
-
-function formatImportStatus(status: SuiteOverview['recentImports'][number]['status']): string {
-  if (status === 'applied') return 'Aplicada';
-  if (status === 'failed') return 'Fallida';
-  return 'Pendiente';
 }
 
 function ModuleOverview({ module }: { module: SuiteModule }) {

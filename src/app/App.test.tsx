@@ -25,7 +25,7 @@ describe('Inicio de la suite', () => {
     const cards = markup.indexOf('summary-grid');
     const recovery = markup.indexOf('Restaurar respaldo SQLite');
     expect(recovery).toBeGreaterThan(cards);
-    expect(recovery).toBeLessThan(markup.indexOf('overview-panel'));
+    expect(recovery).toBeLessThan(markup.indexOf('Archivos y filas de origen'));
   });
 
   it('no repite el mapa de módulos: la barra lateral ya los lista', () => {
