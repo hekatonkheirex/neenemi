@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import type { ChangeEvent } from 'react';
+import AnimatedTabs from '../../core/AnimatedTabs';
 import { exportCustomerPortfolio, exportOperationsWorkbook } from './export';
 import { submitImportJob, type ImportJobSnapshot } from '../../core/import-job-client';
 import { SOURCE_CATALOG, sourceMatchesDefinition } from '../../core/source-catalog';
@@ -663,11 +664,16 @@ export default function DescontinuadorModule() {
         {activeView === 'uploads' && <div className="discontinuation-header-metric is-neutral"><strong>{loadedSourceCount}</strong><span>cargas activas</span></div>}
       </section>
 
-      <nav className="discontinuation-view-tabs" aria-label="Vistas del Discontinuador">
-        <button className={activeView === 'discontinued' ? 'active' : ''} type="button" aria-current={activeView === 'discontinued' ? 'page' : undefined} onClick={() => setActiveView('discontinued')}><span>Discontinuados</span><b>{numberFormat.format(portfolioStats.discontinued)}</b></button>
-        <button className={activeView === 'stock' ? 'active' : ''} type="button" aria-current={activeView === 'stock' ? 'page' : undefined} onClick={() => setActiveView('stock')}><span>Stock Waldbott</span><b>{numberFormat.format(stockItems.length)}</b></button>
-        <button className={activeView === 'uploads' ? 'active' : ''} type="button" aria-current={activeView === 'uploads' ? 'page' : undefined} onClick={() => setActiveView('uploads')}><span>Carga</span><b>{loadedSourceCount}</b></button>
-      </nav>
+      <AnimatedTabs
+        ariaLabel="Vistas del Discontinuador"
+        active={activeView}
+        onChange={setActiveView}
+        tabs={[
+          { id: 'discontinued', label: 'Discontinuados', count: numberFormat.format(portfolioStats.discontinued) },
+          { id: 'stock', label: 'Stock Waldbott', count: numberFormat.format(stockItems.length) },
+          { id: 'uploads', label: 'Carga', count: loadedSourceCount },
+        ]}
+      />
 
       {(activeView === 'uploads' || error || message || loading || importProgress) && <section className="sales-status" aria-live="polite">
         <span className={`status-dot ${error ? 'error' : loading || importProgress ? 'pending' : 'ready'}`} />

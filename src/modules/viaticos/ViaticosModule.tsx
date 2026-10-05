@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { compactSourceLocation } from '../../core/source-location';
+import AnimatedTabs from '../../core/AnimatedTabs';
 import SourceLocationLabel from '../../core/SourceLocationLabel';
 import { estimateTravelCosts } from './catalog';
 import { DestinationCombobox } from './DestinationCombobox';
@@ -410,20 +411,7 @@ export default function ViaticosModule() {
         <span>{statusText}</span>
       </section>}
 
-      <nav className="travel-view-tabs" aria-label="Vistas de Viáticos">
-        {TRAVEL_VIEW_OPTIONS.map((view) => (
-          <button
-            className={`travel-view-tab ${activeView === view.id ? 'active' : ''}`}
-            key={view.id}
-            type="button"
-            aria-current={activeView === view.id ? 'page' : undefined}
-            onClick={() => setActiveView(view.id)}
-          >
-            <span>{view.label}</span>
-            <small>{view.hint}</small>
-          </button>
-        ))}
-      </nav>
+      <AnimatedTabs ariaLabel="Vistas de Viáticos" tabs={TRAVEL_VIEW_OPTIONS} active={activeView} onChange={setActiveView} />
 
       <section className="summary-grid operations-summary" aria-label="Resumen de viáticos">
         <div className="summary-card accent"><span className="summary-value">₲ {compactMoneyFormat.format(Math.round(summary?.totalCost ?? 0))}</span><span className="summary-label">gasto del período {summary?.operationalYear ?? ''}</span></div>

@@ -3280,11 +3280,6 @@ li::before {
     grid-template-columns: 1fr;
   }
 
-  .discontinuation-view-tabs {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .discontinuation-models-heading {
     display: block;
   }
@@ -3515,52 +3510,6 @@ li::before {
 
 .discontinuation-portfolio-card {
   margin-bottom: 1.25rem;
-}
-
-.discontinuation-view-tabs {
-  display: flex;
-  gap: 0.35rem;
-  margin-bottom: 1rem;
-  padding: 0.3rem;
-  border: 1px solid rgba(144, 174, 229, 0.14);
-  border-radius: 0.65rem;
-  background: rgba(12, 23, 41, 0.42);
-}
-
-.discontinuation-view-tabs button {
-  display: flex;
-  min-width: 0;
-  flex: 1 1 0;
-  gap: 0.65rem;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 2.35rem;
-  padding: 0.55rem 0.75rem;
-  border: 1px solid transparent;
-  border-radius: 0.45rem;
-  color: #9fb3d1;
-  background: transparent;
-  font-size: 0.72rem;
-  font-weight: 750;
-  text-align: left;
-}
-
-.discontinuation-view-tabs button:hover {
-  border-color: rgba(117, 166, 255, 0.35);
-  color: #dce8fc;
-  background: rgba(55, 101, 197, 0.14);
-}
-
-.discontinuation-view-tabs button.active {
-  border-color: rgba(255, 107, 0, 0.65);
-  color: #ffffff;
-  background: rgba(255, 107, 0, 0.16);
-}
-
-.discontinuation-view-tabs button b {
-  color: inherit;
-  font-size: 0.68rem;
-  font-variant-numeric: tabular-nums;
 }
 
 .discontinuation-filter-bar {
@@ -5589,58 +5538,119 @@ li::before {
   flex: 1 1 10rem;
 }
 
-.maintenance-view-tabs {
+/* Pestañas sin barra de fondo: el indicador (píldora + barra naranja) se desliza entre pestañas con framer-motion. */
+.anim-tabs {
+  --tab-fg: #4a5568;
+  --tab-active: #b84d00;
+  --tab-wash: #fff0e6;
+  --tab-count-bg: #e9eef3;
+  --tab-count-fg: #3d4a5e;
   display: flex;
   gap: 0.25rem;
   align-items: center;
   margin-bottom: 1rem;
-  padding: 0.25rem;
   overflow-x: auto;
-  border-radius: 0.7rem;
-  background: #182b4a;
+  border-bottom: 1px solid var(--ds-border, #d6deea);
 }
 
-.maintenance-view-tabs button {
+html[data-theme='dark'] .anim-tabs {
+  --tab-fg: #a9bee0;
+  --tab-active: #ffb27a;
+  --tab-wash: rgba(255, 107, 0, 0.16);
+  --tab-count-bg: rgba(144, 174, 229, 0.16);
+  --tab-count-fg: #dce8fc;
+  border-bottom-color: rgba(144, 174, 229, 0.22);
+}
+
+.anim-tabs button {
+  position: relative;
   display: inline-flex;
   gap: 0.5rem;
   align-items: center;
-  min-height: 2.35rem;
-  padding: 0.55rem 0.85rem;
+  min-height: 2.6rem;
+  padding: 0.55rem 0.95rem;
   border: 0;
-  border-radius: 0.48rem;
-  color: #a9bee0;
+  border-radius: 0.5rem 0.5rem 0 0;
+  color: var(--tab-fg);
   background: transparent;
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   white-space: nowrap;
+  transition: color 0.15s ease;
 }
 
-.maintenance-view-tabs button > span {
-  color: #7187aa;
+.anim-tabs button > span,
+.anim-tabs button > em,
+.anim-tabs button > strong {
+  position: relative;
+  z-index: 1;
+}
+
+.anim-tabs button > span {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.62rem;
+  opacity: 0.75;
 }
 
-.maintenance-view-tabs button strong {
+.anim-tabs button strong {
   padding: 0.16rem 0.38rem;
   border-radius: 999px;
-  color: #dce8fc;
-  background: rgba(144, 174, 229, 0.14);
+  color: var(--tab-count-fg);
+  background: var(--tab-count-bg);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.6rem;
 }
 
-.maintenance-view-tabs button:hover,
-.maintenance-view-tabs button.is-active {
-  color: #ff6b00;
-  background: #ffffff;
+.anim-tabs button > em,
+.anim-tabs-text em {
+  font-style: normal;
 }
 
-.maintenance-view-tabs button.is-active > span,
-.maintenance-view-tabs button.is-active strong {
-  color: #ff6b00;
+/* Variante con subtítulo (Viáticos): pestañas del mismo ancho, texto en dos líneas. */
+.anim-tabs.has-hint {
+  overflow-x: visible;
+  flex-wrap: wrap;
+}
+
+.anim-tabs.has-hint button {
+  flex: 1 1 8.8rem;
+  min-width: 8.8rem;
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.anim-tabs-text {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.anim-tabs-text em {
+  font-size: 0.78rem;
+}
+
+.anim-tabs-text small {
+  color: var(--tab-fg);
+  font-size: 0.64rem;
+  font-weight: 600;
+}
+
+.anim-tabs button:hover,
+.anim-tabs button.is-active {
+  color: var(--tab-active);
+}
+
+.anim-tabs-indicator {
+  position: absolute;
+  inset: 0;
+  border-bottom: 3px solid var(--ds-orange, #ff6b00);
+  border-radius: inherit;
+  background: var(--tab-wash);
 }
 
 .maintenance-search-shortcut {
@@ -8604,59 +8614,6 @@ li::before {
   gap: 0.45rem;
 }
 
-.travel-view-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 1.25rem;
-  padding: 0.35rem;
-  border: 1px solid rgba(144, 174, 229, 0.15);
-  border-radius: 0.75rem;
-  background: rgba(15, 27, 48, 0.5);
-}
-
-.travel-view-tab {
-  display: grid;
-  min-width: 8.8rem;
-  flex: 1 1 8.8rem;
-  gap: 0.2rem;
-  padding: 0.65rem 0.75rem;
-  border: 1px solid transparent;
-  border-radius: 0.5rem;
-  color: #9dafcc;
-  background: transparent;
-  text-align: left;
-  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
-}
-
-.travel-view-tab span {
-  color: inherit;
-  font-size: 0.78rem;
-  font-weight: 800;
-}
-
-.travel-view-tab small {
-  color: #7187aa;
-  font-size: 0.64rem;
-}
-
-.travel-view-tab:hover {
-  border-color: rgba(117, 166, 255, 0.3);
-  color: #e7efff;
-  background: rgba(57, 101, 190, 0.13);
-}
-
-.travel-view-tab.active {
-  border-color: rgba(255, 107, 0, 0.45);
-  color: #f2f7ff;
-  background: linear-gradient(135deg, rgba(45, 83, 150, 0.62), rgba(22, 39, 68, 0.82));
-  box-shadow: inset 0 2px var(--ds-orange, #ff6b00);
-}
-
-.travel-view-tab.active small {
-  color: #b8c9e4;
-}
-
 .travel-subpage {
   display: grid;
   gap: 1.25rem;
@@ -9537,15 +9494,6 @@ li::before {
 }
 
 @media (max-width: 720px) {
-  .travel-view-tabs {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .travel-view-tab {
-    min-width: 0;
-  }
-
   .travel-subpage-header {
     display: grid;
     align-items: start;

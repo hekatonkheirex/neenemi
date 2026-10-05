@@ -13,6 +13,7 @@ const ratio = (a: string, b: string) => {
 };
 
 const theme = fs.readFileSync(new URL('./theme.css', import.meta.url), 'utf8');
+const indexCss = fs.readFileSync(new URL('./index.css', import.meta.url), 'utf8');
 const white = '#ffffff';
 const page = '#f4f6f9';
 const blueWash = '#e9f5fb';
@@ -39,14 +40,17 @@ describe('contraste del tema claro', () => {
   });
 
   it('Mantenimiento: las reglas válidas en los dos temas llevan html[data-theme] (sin él pierden frente a las claras)', () => {
-    expect(theme).toMatch(/html\[data-theme\] \.maintenance-view-tabs button\.is-active,/);
     expect(theme).toMatch(/html\[data-theme\] \.maintenance-source-upload-primary,/);
-    expect(theme).toMatch(/html\[data-theme\] \.page-content \.maintenance-view-tabs button:not\(\.is-active\) span:first-child\s*{\s*color:\s*#93a8ca/);
   });
 
-  it('la barra azul marino de pestañas: los números claros cumplen 4,5:1', () => {
-    expect(ratio('#93a8ca', '#182b4a')).toBeGreaterThanOrEqual(4.5);
-    expect(ratio('#b84d00', white)).toBeGreaterThanOrEqual(4.5); // pestaña activa: píldora blanca con texto naranja oscuro
+  it('pestañas animadas (.anim-tabs): texto y activo cumplen 4,5:1 sobre página, píldora y fondo oscuro', () => {
+    expect(ratio('#4a5568', '#f4f6f9')).toBeGreaterThanOrEqual(4.5);   // claro: texto inactivo
+    expect(ratio('#b84d00', '#fff0e6')).toBeGreaterThanOrEqual(4.5);   // claro: activo sobre la píldora
+    expect(ratio('#b84d00', '#f4f6f9')).toBeGreaterThanOrEqual(4.5);   // claro: hover sobre la página
+    expect(ratio('#a9bee0', '#0f1b30')).toBeGreaterThanOrEqual(4.5);   // oscuro: texto inactivo
+    expect(ratio('#ffb27a', '#3a2a2e')).toBeGreaterThanOrEqual(4.5);   // oscuro: activo sobre la píldora (naranja 16 % sobre #0f1b30)
+    expect(indexCss).toMatch(/\.anim-tabs\s*{[^}]*--tab-active:\s*#b84d00/);
+    expect(indexCss).toMatch(/html\[data-theme='dark'\] \.anim-tabs\s*{[^}]*--tab-active:\s*#ffb27a/);
   });
 
   it('Editor MPS: el texto pálido es solo el de la cabecera navy; la ayuda del cuerpo usa el gris del tema', () => {
@@ -105,7 +109,6 @@ describe('contraste del tema claro', () => {
     it('el CSS fija bordes de campo, un anillo de foco único y el anillo claro de la barra marino', () => {
       expect(theme).toMatch(/html\[data-theme='light'\] :is\(input[\s\S]*?, select, textarea\)\s*{\s*border-color:\s*#73869f/);
       expect(theme).toMatch(/html\[data-theme\] :is\(a, button, input, select, textarea, summary, \[tabindex\]\):focus-visible\s*{\s*outline:\s*3px solid var\(--focus-ring\)/);
-      expect(theme).toMatch(/\.maintenance-view-tabs button:focus-visible\s*{\s*outline-color:\s*#7cc4ff/);
       expect(theme).toMatch(/\.mps-editor-close:focus-visible\s*{\s*outline-color:\s*#7cc4ff/);
       expect(theme).toMatch(/\.uniflow-quantity-control\s*{\s*border-color:\s*#73869f/);
     });
@@ -121,7 +124,6 @@ describe('contraste del tema claro', () => {
     expect(ratio('#182b4a', '#ffffff')).toBeGreaterThanOrEqual(4.5);
     expect(ratio('#182b4a', '#ff8533')).toBeGreaterThanOrEqual(4.5);
     expect(ratio('#9fb3d4', '#1b335e')).toBeGreaterThanOrEqual(4.5);
-    expect(theme).toMatch(/\.maintenance-view-tabs button:is\(:hover, \.is-active\)\s*,?[\s\S]*?color:\s*#b84d00/);
     expect(theme).toMatch(/\.maintenance-inspector-button:hover:not\(:disabled\),[\s\S]*?color:\s*var\(--ds-navy\)/);
     expect(theme).toMatch(/\.primary-button:hover:not\(:disabled\)\s*{\s*background:\s*#ff8533/);
     expect(theme).toMatch(/\.module-nav \.nav-item[\s\S]*?\):focus-visible\s*{\s*outline-offset:\s*-3px/);

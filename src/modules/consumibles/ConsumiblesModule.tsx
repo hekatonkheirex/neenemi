@@ -26,6 +26,7 @@ import { sourceOperationalValues } from '../../core/source-details';
 import type { SourceMetadataBackfillSummary } from '../../core/source-metadata-backfill';
 import type { LegacyFleetMetadataType } from '../operaciones/legacy';
 import type { ServiceRecord } from '../servicios/types';
+import AnimatedTabs from '../../core/AnimatedTabs';
 import SourceDataPanel from './SourceDataPanel';
 import { outputOperationalDetail } from './output-display';
 import {
@@ -495,13 +496,7 @@ export default function ConsumiblesModule() {
         <div className="summary-card"><span className="summary-value">{integerFormat.format(summary?.equipment ?? 0)}</span><span className="summary-label">equipos con consumo</span></div>
       </section>
 
-      <nav className="consumables-tabs" aria-label="Vistas de Consumibles">
-        {consumablesTabs.map((tab) => (
-          <button className={activeTab === tab.id ? 'active' : ''} key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}>
-            {tab.label}
-          </button>
-        ))}
-      </nav>
+      <AnimatedTabs ariaLabel="Vistas de Consumibles" tabs={consumablesTabs} active={activeTab} onChange={setActiveTab} />
 
       {activeTab === 'data' ? <SourceDataPanel
         importing={importing !== null}

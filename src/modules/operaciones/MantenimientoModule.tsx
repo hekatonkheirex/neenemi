@@ -14,6 +14,7 @@ import MaintenanceExecutiveSummary, { type MaintenanceExportKind } from '../mant
 import MaintenanceExecutivePrintReport from '../mantenimiento/MaintenanceExecutivePrintReport';
 import { maintenanceAnalysisMatchesSearch } from '../mantenimiento/search';
 import { confirmAction } from '../../core/confirm';
+import AnimatedTabs from '../../core/AnimatedTabs';
 
 type CounterImportResponse = MaintenanceImportSummary & {
   duplicate: boolean;
@@ -400,17 +401,16 @@ export default function MantenimientoModule() {
         </div>
       </section>
 
-      <nav className="maintenance-view-tabs" aria-label="Vistas de mantenimiento">
-        <button className={activeMaintenanceView === 'dashboard' ? 'is-active' : ''} type="button" onClick={() => setActiveMaintenanceView('dashboard')}>
-          <span>01</span>Tablero resumen
-        </button>
-        <button className={activeMaintenanceView === 'equipos' ? 'is-active' : ''} type="button" onClick={() => setActiveMaintenanceView('equipos')}>
-          <span>02</span>Expedientes técnicos<strong>{visibleAnalyses.length.toLocaleString('es-PY')}</strong>
-        </button>
-        <button className={activeMaintenanceView === 'modelos' ? 'is-active' : ''} type="button" onClick={() => setActiveMaintenanceView('modelos')}>
-          <span>03</span>Límites por modelo<strong>{maintenanceRules.length.toLocaleString('es-PY')}</strong>
-        </button>
-      </nav>
+      <AnimatedTabs
+        ariaLabel="Vistas de mantenimiento"
+        active={activeMaintenanceView}
+        onChange={setActiveMaintenanceView}
+        tabs={[
+          { id: 'dashboard', label: 'Tablero resumen', step: '01' },
+          { id: 'equipos', label: 'Expedientes técnicos', step: '02', count: visibleAnalyses.length.toLocaleString('es-PY') },
+          { id: 'modelos', label: 'Límites por modelo', step: '03', count: maintenanceRules.length.toLocaleString('es-PY') },
+        ]}
+      />
 
       <section className="sales-status" aria-live="polite">
         <span className={`status-dot ${error ? 'error' : loading ? 'pending' : 'ready'}`} />
