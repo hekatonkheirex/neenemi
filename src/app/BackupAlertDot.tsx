@@ -1,5 +1,8 @@
 import { motion, useReducedMotion } from 'framer-motion';
 
+/** Un latido: el núcleo crece, el anillo se expande hasta desvanecerse y queda un reposo antes del siguiente. Ambos comparten el período para no desfasarse. */
+const PERIOD = 2.4;
+
 /** Punto rojo de la barra lateral: entra con un resorte y emite un anillo que se expande. */
 export default function BackupAlertDot() {
   const still = useReducedMotion();
@@ -17,15 +20,15 @@ export default function BackupAlertDot() {
         <motion.span
           className="nav-alert-ring"
           aria-hidden="true"
-          animate={{ scale: [1, 2.8], opacity: [0.6, 0] }}
-          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
+          animate={{ scale: [1, 2.8, 2.8], opacity: [0.55, 0, 0] }}
+          transition={{ duration: PERIOD, times: [0, 0.65, 1], ease: 'easeOut', repeat: Infinity }}
         />
       )}
       <motion.span
         className="nav-alert-core"
         aria-hidden="true"
-        animate={still ? undefined : { scale: [1, 1.18, 1] }}
-        transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+        animate={still ? undefined : { scale: [1, 1.2, 1, 1] }}
+        transition={{ duration: PERIOD, times: [0, 0.2, 0.5, 1], ease: 'easeInOut', repeat: Infinity }}
       />
     </motion.span>
   );
