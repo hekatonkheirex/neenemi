@@ -26,7 +26,19 @@ import { sourceOperationalValues } from '../../core/source-details';
 import type { SourceMetadataBackfillSummary } from '../../core/source-metadata-backfill';
 import type { LegacyFleetMetadataType } from '../operaciones/legacy';
 import type { ServiceRecord } from '../servicios/types';
+import type { IconSvgElement } from '@hugeicons/react';
 import AnimatedTabs from '../../core/AnimatedTabs';
+import {
+  DashboardSquare01Icon,
+  Tag01Icon,
+  File01Icon,
+  Settings02Icon,
+  Package01Icon,
+  Wrench01Icon,
+  Medal01Icon,
+  PrinterIcon,
+  Database01Icon,
+} from '@hugeicons/core-free-icons';
 import SourceDataPanel from './SourceDataPanel';
 import { outputOperationalDetail } from './output-display';
 import {
@@ -90,18 +102,18 @@ type ConsumablesQuantitySummary = {
 
 type ConsumablesTabId = 'overview' | 'T03' | 'T06' | 'GPR53' | 'contracts' | 'parts' | 'fichas' | 'servicios' | 'ranking' | 'equipment' | 'data';
 
-const consumablesTabs: readonly { id: ConsumablesTabId; label: string }[] = [
-  { id: 'overview', label: 'Resumen General' },
-  { id: 'T03', label: 'T03' },
-  { id: 'T06', label: 'T06' },
-  { id: 'GPR53', label: 'GPR-53' },
-  { id: 'contracts', label: 'Impacto en Contratos' },
-  { id: 'parts', label: 'Repuestos' },
-  { id: 'fichas', label: 'Consumibles vs Repuestos' },
-  { id: 'servicios', label: 'Servicios vs Consumibles' },
-  { id: 'ranking', label: 'Ranking' },
-  { id: 'equipment', label: 'Equipos' },
-  { id: 'data', label: 'Datos' },
+const consumablesTabs: readonly { id: ConsumablesTabId; label: string; icon: IconSvgElement }[] = [
+  { id: 'overview', label: 'Resumen General', icon: DashboardSquare01Icon },
+  { id: 'T03', label: 'T03', icon: Tag01Icon },
+  { id: 'T06', label: 'T06', icon: Tag01Icon },
+  { id: 'GPR53', label: 'GPR-53', icon: Tag01Icon },
+  { id: 'contracts', label: 'Impacto en Contratos', icon: File01Icon },
+  { id: 'parts', label: 'Repuestos', icon: Settings02Icon },
+  { id: 'fichas', label: 'Consumibles vs Repuestos', icon: Package01Icon },
+  { id: 'servicios', label: 'Servicios vs Consumibles', icon: Wrench01Icon },
+  { id: 'ranking', label: 'Ranking', icon: Medal01Icon },
+  { id: 'equipment', label: 'Equipos', icon: PrinterIcon },
+  { id: 'data', label: 'Datos', icon: Database01Icon },
 ];
 
 const legacyConsumablesSources: readonly { type: LegacyConsumablesSourceType; sourceId: string; title: string }[] = [

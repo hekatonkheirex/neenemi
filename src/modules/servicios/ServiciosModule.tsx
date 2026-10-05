@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
 import { formatSourceLocation } from '../../core/source-location';
 import AnimatedTabs from '../../core/AnimatedTabs';
+import {
+  Clock01Icon,
+  Wrench01Icon,
+} from '@hugeicons/core-free-icons';
 import SourceDetails from '../../core/SourceDetails';
 import { sourceOperationalValues } from '../../core/source-details';
 import type { OperationalFilters } from '../../core/operational-filters';
@@ -209,7 +213,7 @@ export default function ServiciosModule() {
         ariaLabel="Vistas de Servicios técnicos"
         active={activeView}
         onChange={setActiveView}
-        tabs={[{ id: 'history', label: 'Historial LAM' }, { id: 'relation', label: 'Servicios vs consumibles' }]}
+        tabs={[{ id: 'history', label: 'Historial LAM', icon: Clock01Icon }, { id: 'relation', label: 'Servicios vs consumibles', icon: Wrench01Icon }]}
       />
 
       <section className="consumables-filter-bar" aria-label="Filtros globales de servicios">

@@ -1,5 +1,7 @@
 import { useId, type ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { HugeiconsIcon } from '@hugeicons/react';
+import type { IconSvgElement } from '@hugeicons/react';
 
 export type AnimatedTab<T extends string> = {
   id: T;
@@ -8,6 +10,8 @@ export type AnimatedTab<T extends string> = {
   step?: string;
   /** Contador en píldora. */
   count?: ReactNode;
+  /** Icono en recuadro, como el de las tarjetas de módulos. */
+  icon?: IconSvgElement;
   /** Segunda línea bajo la etiqueta. */
   hint?: string;
 };
@@ -44,6 +48,7 @@ export default function AnimatedTabs<T extends string>({ tabs, active, onChange,
               transition={still ? { duration: 0 } : { type: 'spring', stiffness: 500, damping: 38 }}
             />
           ) : null}
+          {tab.icon ? <span className="anim-tabs-icon" aria-hidden="true"><HugeiconsIcon icon={tab.icon} size={15} /></span> : null}
           {tab.step ? <span>{tab.step}</span> : null}
           {tab.hint ? <span className="anim-tabs-text"><em>{tab.label}</em><small>{tab.hint}</small></span> : <em>{tab.label}</em>}
           {tab.count !== undefined ? <strong>{tab.count}</strong> : null}

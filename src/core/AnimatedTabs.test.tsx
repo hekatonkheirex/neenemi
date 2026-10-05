@@ -1,5 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+import { Airplane01Icon } from '@hugeicons/core-free-icons';
 import AnimatedTabs from './AnimatedTabs';
 
 describe('AnimatedTabs', () => {
@@ -19,5 +20,11 @@ describe('AnimatedTabs', () => {
     const html = renderToStaticMarkup(<AnimatedTabs tabs={[{ id: 'a', label: 'Uno', hint: 'Sub' }]} active="a" onChange={() => {}} ariaLabel="V" />);
     expect(html).toContain('anim-tabs has-hint');
     expect(html).toContain('<em>Uno</em><small>Sub</small>');
+  });
+
+  it('dibuja el icono solo en las pestañas que lo traen', () => {
+    const html = renderToStaticMarkup(<AnimatedTabs tabs={[{ id: 'a', label: 'Uno', icon: Airplane01Icon }, { id: 'b', label: 'Dos' }]} active="a" onChange={() => {}} ariaLabel="V" />);
+    expect(html.match(/anim-tabs-icon/g)).toHaveLength(1);
+    expect(html).toContain('<svg');
   });
 });

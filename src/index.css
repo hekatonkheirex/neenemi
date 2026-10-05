@@ -5674,6 +5674,25 @@ html[data-theme] .anim-tabs button strong {
   color: var(--tab-count-fg);
 }
 
+.anim-tabs button > .anim-tabs-icon {
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: none;
+  place-items: center;
+  border: 1px solid var(--ds-sky, #00a3e0);
+  border-radius: 0.5rem;
+  color: var(--ds-navy, #1a2c4c);
+  background: var(--ds-blue-wash, #e9f5fb);
+  opacity: 1;
+}
+
+html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
+  border-color: rgba(114, 161, 255, 0.3);
+  color: #96bcff;
+  background: rgba(68, 119, 231, 0.14);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anim-tabs button {
     transition: none;

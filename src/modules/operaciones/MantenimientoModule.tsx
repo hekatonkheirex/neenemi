@@ -15,6 +15,11 @@ import MaintenanceExecutivePrintReport from '../mantenimiento/MaintenanceExecuti
 import { maintenanceAnalysisMatchesSearch } from '../mantenimiento/search';
 import { confirmAction } from '../../core/confirm';
 import AnimatedTabs from '../../core/AnimatedTabs';
+import {
+  DashboardSquare01Icon,
+  File01Icon,
+  Settings02Icon,
+} from '@hugeicons/core-free-icons';
 
 type CounterImportResponse = MaintenanceImportSummary & {
   duplicate: boolean;
@@ -406,9 +411,9 @@ export default function MantenimientoModule() {
         active={activeMaintenanceView}
         onChange={setActiveMaintenanceView}
         tabs={[
-          { id: 'dashboard', label: 'Tablero resumen', step: '01' },
-          { id: 'equipos', label: 'Expedientes técnicos', step: '02', count: visibleAnalyses.length.toLocaleString('es-PY') },
-          { id: 'modelos', label: 'Límites por modelo', step: '03', count: maintenanceRules.length.toLocaleString('es-PY') },
+          { id: 'dashboard', label: 'Tablero resumen', icon: DashboardSquare01Icon },
+          { id: 'equipos', label: 'Expedientes técnicos', icon: File01Icon, count: visibleAnalyses.length.toLocaleString('es-PY') },
+          { id: 'modelos', label: 'Límites por modelo', icon: Settings02Icon, count: maintenanceRules.length.toLocaleString('es-PY') },
         ]}
       />
 

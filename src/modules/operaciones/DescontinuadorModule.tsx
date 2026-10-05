@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import type { ChangeEvent } from 'react';
 import AnimatedTabs from '../../core/AnimatedTabs';
+import {
+  Alert02Icon,
+  Package01Icon,
+  Upload01Icon,
+} from '@hugeicons/core-free-icons';
 import { exportCustomerPortfolio, exportOperationsWorkbook } from './export';
 import { submitImportJob, type ImportJobSnapshot } from '../../core/import-job-client';
 import { SOURCE_CATALOG, sourceMatchesDefinition } from '../../core/source-catalog';
@@ -669,9 +674,9 @@ export default function DescontinuadorModule() {
         active={activeView}
         onChange={setActiveView}
         tabs={[
-          { id: 'discontinued', label: 'Discontinuados', count: numberFormat.format(portfolioStats.discontinued) },
-          { id: 'stock', label: 'Stock Waldbott', count: numberFormat.format(stockItems.length) },
-          { id: 'uploads', label: 'Carga', count: loadedSourceCount },
+          { id: 'discontinued', label: 'Discontinuados', icon: Alert02Icon, count: numberFormat.format(portfolioStats.discontinued) },
+          { id: 'stock', label: 'Stock Waldbott', icon: Package01Icon, count: numberFormat.format(stockItems.length) },
+          { id: 'uploads', label: 'Carga', icon: Upload01Icon, count: loadedSourceCount },
         ]}
       />
 

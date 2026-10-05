@@ -1,3 +1,5 @@
+import type { IconSvgElement } from '@hugeicons/react';
+import { Analytics01Icon, Airplane01Icon, Invoice01Icon, Clock01Icon } from '@hugeicons/core-free-icons';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import PaginationControls from '../../core/PaginationControls';
 import { paginateItems } from '../../core/pagination';
@@ -7,11 +9,11 @@ import type { HistoricalSummary, TravelStatus, TravelTrip } from './types';
 
 export type TravelView = 'resumen' | 'viajes' | 'rendiciones' | 'historico';
 
-export const TRAVEL_VIEW_OPTIONS: Array<{ id: TravelView; label: string; hint: string }> = [
-  { id: 'resumen', label: 'Resumen', hint: 'Indicadores del período' },
-  { id: 'viajes', label: 'Viajes', hint: 'Detalle y alta de registros' },
-  { id: 'rendiciones', label: 'Rendiciones', hint: 'Seguimiento documental' },
-  { id: 'historico', label: 'Histórico', hint: 'Comparativas y fuente' },
+export const TRAVEL_VIEW_OPTIONS: Array<{ id: TravelView; label: string; hint: string; icon: IconSvgElement }> = [
+  { id: 'resumen', label: 'Resumen', hint: 'Indicadores del período', icon: Analytics01Icon },
+  { id: 'viajes', label: 'Viajes', hint: 'Detalle y alta de registros', icon: Airplane01Icon },
+  { id: 'rendiciones', label: 'Rendiciones', hint: 'Seguimiento documental', icon: Invoice01Icon },
+  { id: 'historico', label: 'Histórico', hint: 'Comparativas y fuente', icon: Clock01Icon },
 ];
 
 const STATUS_LABELS: Record<TravelStatus, string> = {
