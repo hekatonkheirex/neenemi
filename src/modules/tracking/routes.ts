@@ -6,6 +6,8 @@ import { siteKey } from './analysis';
 import { combineTracking, normalizeIdentity, normalizeTrackingSerial, parseTrackingFile } from './parser';
 import type { SiteReference, TrackingReport, TrackingSnapshot, TrackingState } from './types';
 import { parseGeocodingResults } from './geocoding';
+import { parseOsrmRoute, parseRouteLegs } from './routing';
+import type { RoadRoute } from './types';
 
 function uploadedFile(value: unknown): { fileName: string; bytes: Uint8Array } {
   if (!value || typeof value !== 'object') throw new Error('Selecciona ambos archivos.');
@@ -57,6 +59,27 @@ export function registerTrackingRoutes(app: Express, database: SuiteDatabase, st
     } catch {
       response.status(502).json({ error: 'No se pudo consultar Photon/Komoot. Verifica la conexión o ubica la sede manualmente.' });
     } finally { geocodingBusy = false; }
+  });
+  // Public OSRM demo server (driving profile). Only coordinates leave the machine; null means "use the straight line".
+  const roadCache = new Map<string, RoadRoute | null>();
+  app.post('/api/tracking/route', async (request, response) => {
+    let legs;
+    try { legs = parseRouteLegs(request.body?.legs); } catch (error) { response.status(400).json({ error: (error as Error).message }); return; }
+    const routes: (RoadRoute | null)[] = [];
+    for (const { from, to } of legs) {
+      const path = `${from.longitude.toFixed(5)},${from.latitude.toFixed(5)};${to.longitude.toFixed(5)},${to.latitude.toFixed(5)}`;
+      if (!roadCache.has(path)) {
+        try {
+          const url = new URL(`https://router.project-osrm.org/route/v1/driving/${path}`);
+          url.searchParams.set('overview', 'full'); url.searchParams.set('geometries', 'geojson');
+          const result = await fetch(url, { redirect: 'error', signal: AbortSignal.timeout(10_000), headers: { 'User-Agent': 'DCSS-Suite Tracking road distance', Accept: 'application/json' } });
+          if (!result.ok) throw new Error('Proveedor no disponible');
+          roadCache.set(path, parseOsrmRoute(await result.json()));
+        } catch { routes.push(null); continue; } // not cached: retry on the next request
+      }
+      routes.push(roadCache.get(path) ?? null);
+    }
+    response.json({ routes });
   });
   app.post('/api/tracking/import', async (request, response) => {
     let batchId: string | null = null;

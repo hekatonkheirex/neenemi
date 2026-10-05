@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeDay, summarizeDay } from './analysis';
+import { analyzeDay, applyRoads, summarizeDay } from './analysis';
 import type { TrackingVisit } from './types';
 
 function visit(key: string, checkIn: string | null, checkOut: string | null, overrides: Partial<TrackingVisit> = {}): TrackingVisit {
@@ -43,5 +43,21 @@ describe('tracking daily summary', () => {
       visit('4', at('11:45'), null),
     ], 'Ana', '2026-09-01');
     expect(summarizeDay(analysis)).toMatchObject({ travelMinutes: 65, timedLegs: 3, missingTimedLegs: 0, measuredLegs: 2, missingLegs: 1, serviceMinutes: 160 });
+  });
+
+  it('uses road distance where a route exists and straight line elsewhere', () => {
+    const analysis = analyzeDay([
+      visit('1', at('08:00'), at('09:00'), { gpsOut: { latitude: -25, longitude: -57 } }),
+      visit('2', at('10:00'), at('11:00'), { gpsIn: { latitude: -25.01, longitude: -57 }, gpsOut: { latitude: -25.01, longitude: -57 } }),
+      visit('3', at('12:00'), at('13:00'), { gpsIn: { latitude: -25.02, longitude: -57 } }),
+    ], 'Ana', '2026-09-01');
+    const road = { distanceMeters: 1800, geometry: [{ latitude: -25, longitude: -57 }, { latitude: -25.01, longitude: -57 }] };
+    const routed = applyRoads(analysis, [road, null]);
+    expect(routed.legs[0].road).toBe(road);
+    expect(routed.legs[1].road).toBeUndefined();
+    const summary = summarizeDay(routed);
+    expect(summary).toMatchObject({ measuredLegs: 2, roadLegs: 1 });
+    expect(summary.distanceMeters).toBeCloseTo(1800 + 1111.95, 0);
+    expect(summarizeDay(analysis).roadLegs).toBe(0);
   });
 });

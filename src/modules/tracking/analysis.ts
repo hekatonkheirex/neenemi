@@ -1,5 +1,5 @@
 import { normalizeIdentity, normalizeTrackingSerial } from './parser';
-import { TRACKING_RADIUS_METERS, type Coordinate, type DayAnalysis, type EventValidation, type RouteEvent, type SiteReference, type TrackingReport, type TrackingVisit, type TravelLeg } from './types';
+import { TRACKING_RADIUS_METERS, type Coordinate, type DayAnalysis, type EventValidation, type RoadRoute, type RouteEvent, type SiteReference, type TrackingReport, type TrackingVisit, type TravelLeg } from './types';
 
 export function siteKey(report: TrackingReport): string {
   const serial = normalizeTrackingSerial(report.serialNumber);
@@ -58,6 +58,16 @@ export function analyzeDay(allVisits: TrackingVisit[], technician: string, day: 
   return { visits, events, legs };
 }
 
+/** Road distance when a route was found, straight-line otherwise. */
+export function legDistance(leg: TravelLeg): number | null {
+  return leg.road?.distanceMeters ?? leg.distanceMeters;
+}
+
+/** `roads` is aligned with `analysis.legs`; null or missing entries keep the straight-line fallback. */
+export function applyRoads(analysis: DayAnalysis, roads: (RoadRoute | null)[]): DayAnalysis {
+  return { ...analysis, legs: analysis.legs.map((leg, index) => roads[index] && leg.distanceMeters !== null ? { ...leg, road: roads[index]! } : leg) };
+}
+
 export function summarizeDay(analysis: DayAnalysis) {
   const day = analysis.events[0]?.timestamp.slice(0, 10);
   const dayStart = day ? Date.parse(`${day}T00:00:00Z`) : NaN;
@@ -85,12 +95,15 @@ export function summarizeDay(analysis: DayAnalysis) {
   }
   let distance = 0;
   let measuredLegs = 0;
+  let roadLegs = 0;
   let travelMinutes = 0;
   let timedLegs = 0;
   for (const leg of analysis.legs) {
-    if (leg.distanceMeters !== null) {
-      distance += leg.distanceMeters;
+    const legMeters = legDistance(leg);
+    if (legMeters !== null) {
+      distance += legMeters;
       measuredLegs += 1;
+      if (leg.road) roadLegs += 1;
     }
     if (leg.elapsedMinutes !== null) {
       travelMinutes += leg.elapsedMinutes;
@@ -100,6 +113,7 @@ export function summarizeDay(analysis: DayAnalysis) {
   return {
     distanceMeters: measuredLegs ? distance : null,
     measuredLegs,
+    roadLegs,
     missingLegs: analysis.legs.length - measuredLegs,
     travelMinutes: timedLegs ? travelMinutes : null,
     timedLegs,

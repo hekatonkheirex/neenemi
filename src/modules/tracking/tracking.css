@@ -38,6 +38,8 @@ html[data-theme='dark'] .tracking-module {
 .tracking-map-background { fill: var(--tracking-wash); }
 .tracking-map-grid path { stroke: var(--tracking-border); stroke-width: 1; }
 .tracking-map-grid text { fill: var(--tracking-muted); font-size: 12px; }
+.tracking-road-line { fill: none; stroke: #1a2c4c; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+html[data-theme='dark'] .tracking-road-line { stroke: #00a3e0; }
 .tracking-route-line { fill: none; stroke: #1a2c4c; stroke-width: 3; stroke-dasharray: 8 5; }
 html[data-theme='dark'] .tracking-route-line { stroke: #00a3e0; }
 .tracking-event-pin { cursor: pointer; }

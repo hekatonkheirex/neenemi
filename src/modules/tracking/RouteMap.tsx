@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { Coordinate, RouteEvent, SiteReference } from './types';
+import type { Coordinate, RouteEvent, SiteReference, TravelLeg } from './types';
 
 const WIDTH = 900;
 const HEIGHT = 500;
@@ -11,8 +11,8 @@ export function unproject(x: number, y: number): Coordinate {
   return { longitude: ((x * 360) % 360 + 360) % 360 - 180, latitude: Math.atan(Math.sinh(Math.PI * (1 - 2 * Math.max(0, Math.min(1, y))))) * 180 / Math.PI };
 }
 
-export default function RouteMap({ events, sites, selectedVisit, candidate, editing, onPick, onSelect }: {
-  events: RouteEvent[]; sites: SiteReference[]; selectedVisit: string | null;
+export default function RouteMap({ events, legs = [], sites, selectedVisit, candidate, editing, onPick, onSelect }: {
+  events: RouteEvent[]; legs?: TravelLeg[]; sites: SiteReference[]; selectedVisit: string | null;
   candidate: Coordinate | null; editing: boolean; onPick: (point: Coordinate) => void; onSelect: (key: string) => void;
 }) {
   const [center, setCenter] = useState(() => project({ latitude: -25.3, longitude: -57.6 }));
@@ -44,11 +44,21 @@ export default function RouteMap({ events, sites, selectedVisit, candidate, edit
       tiles.push({ x: x * 256 - left, y: y * 256 - top, url: `https://tile.openstreetmap.org/${zoom}/${tileX}/${y}.png` });
     }
   }
+  const roadByLeg = new Map(legs.flatMap(leg => leg.road ? [[`${leg.from.key}>${leg.to.key}`, leg.road.geometry] as const] : []));
+  const toPoint = (c: Coordinate) => { const p = project(c); return `${p.x * world - left},${p.y * world - top}`; };
   const paths: string[] = [];
+  const roadPaths: string[] = [];
   let segment: string[] = [];
+  let previous: RouteEvent | null = null;
   for (const event of events) {
-    if (!event.coordinate) { if (segment.length > 1) paths.push(segment.join(' ')); segment = []; continue; }
-    const p = project(event.coordinate); segment.push(`${p.x * world - left},${p.y * world - top}`);
+    if (!event.coordinate) { if (segment.length > 1) paths.push(segment.join(' ')); segment = []; previous = null; continue; }
+    const road: Coordinate[] | undefined = previous?.kind === 'out' && event.kind === 'in' ? roadByLeg.get(`${previous.visitKey}>${event.visitKey}`) : undefined;
+    if (road) {
+      if (segment.length > 1) paths.push(segment.join(' '));
+      roadPaths.push(road.map(toPoint).join(' '));
+      segment = [];
+    }
+    segment.push(toPoint(event.coordinate)); previous = event;
   }
   if (segment.length > 1) paths.push(segment.join(' '));
   const mapCenter = unproject(center.x, center.y);
@@ -96,6 +106,7 @@ export default function RouteMap({ events, sites, selectedVisit, candidate, edit
         return <g key={index} className="tracking-map-grid"><path d={`M${x} 0 V${HEIGHT} M0 ${y} H${WIDTH}`} /><text x={x + 4} y={18}>{longitude.toFixed(4)}°</text><text x="4" y={y + 18}>{latitude.toFixed(4)}°</text></g>;
       })}
       {paths.map((path, index) => <polyline key={index} points={path} className="tracking-route-line" />)}
+      {roadPaths.map((path, index) => <polyline key={`road-${index}`} points={path} className="tracking-road-line" />)}
       {sites.map(site => {
         const p = project(site); const radius = 100 / (40_075_017 * Math.cos(site.latitude * Math.PI / 180)) * world;
         return <g key={site.key}><circle cx={p.x * world - left} cy={p.y * world - top} r={radius} className="tracking-site-radius" /><path transform={`translate(${p.x * world - left} ${p.y * world - top})`} d="M0 -10 L10 0 L0 10 L-10 0 Z" className="tracking-site-pin"><title>{`Sede confirmada: ${site.customer} ${site.branch}`}</title></path></g>;
@@ -109,7 +120,7 @@ export default function RouteMap({ events, sites, selectedVisit, candidate, edit
       })}
       {candidate && (() => { const p = project(candidate); return <g transform={`translate(${p.x * world - left} ${p.y * world - top})`} className="tracking-candidate-pin"><circle r="12" /><path d="M-18 0 H18 M0 -18 V18" /><title>Ubicación propuesta, todavía no confirmada</title></g>; })()}
     </svg>
-    <div className="tracking-map-footer"><span>Azul: entrada · Naranja: salida · Rombo: sede confirmada (100 m). Líneas directas, no calles recorridas.</span><span>Centro: {mapCenter.latitude.toFixed(6)}, {mapCenter.longitude.toFixed(6)}</span></div>
+    <div className="tracking-map-footer"><span>Azul: entrada · Naranja: salida · Rombo: sede confirmada (100 m). Línea continua: ruta recomendada por carretera entre visitas. Punteada: línea recta (dentro de la visita o sin ruta).</span><span>Centro: {mapCenter.latitude.toFixed(6)}, {mapCenter.longitude.toFixed(6)}</span></div>
     {editing && <button type="button" className="secondary-button" onClick={() => onPick(mapCenter)}>Usar centro del mapa como sede propuesta</button>}
     <small>Fondo de calles activo automáticamente · requiere internet; envía la zona visible, no los archivos, nombres ni direcciones. © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a></small>
     {tilesFailed && <p role="status">No se pudo cargar parte del mapa base. Los puntos y cálculos locales siguen disponibles.</p>}

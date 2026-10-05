@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { analyzeDay, siteKey } from './analysis';
+import { analyzeDay, applyRoads, siteKey } from './analysis';
 import { normalizeIdentity, normalizeTrackingSerial } from './parser';
 import RouteMap from './RouteMap';
 import TrackingTables from './TrackingTables';
-import type { Coordinate, GeocodingCandidate, TrackingState, TrackingVisit } from './types';
+import type { Coordinate, DayAnalysis, GeocodingCandidate, RoadRoute, TrackingState, TrackingVisit } from './types';
 import './tracking.css';
 
 async function fetchState(path: string, method = 'GET', body?: unknown): Promise<TrackingState> {
@@ -43,7 +43,10 @@ export default function TrackingModule() {
   const visits = snapshot?.visits;
   const technicians = useMemo(() => [...new Set((visits ?? []).map(v => v.technician).filter(Boolean))].sort((a, b) => a.localeCompare(b)), [visits]);
   const days = useMemo(() => [...new Set((visits ?? []).filter(v => normalizeIdentity(v.technician) === normalizeIdentity(technician) && (!onsiteOnly || normalizeIdentity(v.serviceType) === 'en sitio')).flatMap(v => [v.checkIn?.slice(0, 10), v.checkOut?.slice(0, 10)]).filter((value): value is string => Boolean(value)))].sort().reverse(), [visits, technician, onsiteOnly]);
-  const analysis = useMemo(() => analyzeDay(visits ?? [], technician, day, onsiteOnly), [visits, technician, day, onsiteOnly]);
+  const straightAnalysis = useMemo(() => analyzeDay(visits ?? [], technician, day, onsiteOnly), [visits, technician, day, onsiteOnly]);
+  const [roads, setRoads] = useState<{ source: DayAnalysis; routes: (RoadRoute | null)[] | 'failed' } | null>(null);
+  const analysis = useMemo(() => roads?.source === straightAnalysis && roads.routes !== 'failed' ? applyRoads(straightAnalysis, roads.routes) : straightAnalysis, [roads, straightAnalysis]);
+  const roadStatus = !straightAnalysis.legs.some(leg => leg.distanceMeters !== null) ? 'none' : roads?.source !== straightAnalysis ? 'loading' : roads.routes === 'failed' ? 'failed' : 'ready';
   const selected = visits?.find(v => v.key === selectedKey) ?? null;
   const selectedSite = selected ? state.sites.find(site => site.key === siteKey(selected)) : undefined;
   const serialSite = state.sites.find(site => site.serialNumber && site.serialNumber === normalizeTrackingSerial(serialNumber));
@@ -58,6 +61,22 @@ export default function TrackingModule() {
     fetchState('/api/tracking').then(value => { if (!cancelled) setState(value); }).catch(err => { if (!cancelled) setError(err.message); }).finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, []);
+  useEffect(() => {
+    const indexes = straightAnalysis.legs.flatMap((leg, index) => leg.distanceMeters !== null ? [index] : []);
+    if (!indexes.length) return;
+    const controller = new AbortController();
+    fetch('/api/tracking/route', {
+      method: 'POST', headers: { 'content-type': 'application/json' }, signal: controller.signal,
+      body: JSON.stringify({ legs: indexes.map(index => ({ from: straightAnalysis.legs[index].from.gpsOut, to: straightAnalysis.legs[index].to.gpsIn })) }),
+    }).then(async response => {
+      const result = await response.json() as { routes?: (RoadRoute | null)[] };
+      if (!response.ok || !result.routes) throw new Error('route');
+      const routes: (RoadRoute | null)[] = straightAnalysis.legs.map(() => null);
+      indexes.forEach((index, position) => { routes[index] = result.routes![position] ?? null; });
+      setRoads({ source: straightAnalysis, routes });
+    }).catch(() => { if (!controller.signal.aborted) setRoads({ source: straightAnalysis, routes: 'failed' }); });
+    return () => controller.abort();
+  }, [straightAnalysis]);
   useEffect(() => { if (!technicians.includes(technician)) setTechnician(technicians[0] ?? ''); }, [technicians, technician]);
   useEffect(() => { if (!days.includes(day)) setDay(days[0] ?? ''); }, [days, day]);
   useEffect(() => { setSelectedKey(null); setEditing(false); setLatitude(''); setLongitude(''); setSerialNumber(''); }, [technician, day, onsiteOnly]);
@@ -156,7 +175,7 @@ export default function TrackingModule() {
       <section className="tracking-card tracking-filters" aria-label="Filtros de recorrido"><label>Técnico<select value={technician} disabled={busy} onChange={e => setTechnician(e.target.value)}>{technicians.map(name => <option key={name} value={name}>{name}</option>)}</select></label><label>Día de marcación<select value={day} disabled={busy} onChange={e => setDay(e.target.value)}>{days.length ? days.map(date => <option key={date} value={date}>{date.split('-').reverse().join('/')}</option>) : <option value="">Sin fechas utilizables</option>}</select></label><label className="tracking-checkbox"><input type="checkbox" checked={onsiteOnly} disabled={busy} onChange={e => setOnsiteOnly(e.target.checked)} /> Sólo servicios en sitio</label><span>{analysis.visits.length} registros · {analysis.events.filter(e => e.coordinate).length}/{analysis.events.length} eventos con GPS</span></section>
       {!onsiteOnly && <p className="tracking-notice">Incluye servicios remotos, internos, de taller o sin tipo. Sus puntos no demuestran desplazamientos a clientes.</p>}
       <div className="tracking-map-layout">
-        <RouteMap events={analysis.events} sites={mapSites} selectedVisit={selectedKey} candidate={selected ? candidate : null} editing={editing && !busy} onPick={point => { setLatitude(point.latitude.toFixed(7)); setLongitude(point.longitude.toFixed(7)); }} onSelect={key => { const visit = visits?.find(v => v.key === key); if (visit) selectVisit(visit); }} />
+        <RouteMap events={analysis.events} legs={analysis.legs} sites={mapSites} selectedVisit={selectedKey} candidate={selected ? candidate : null} editing={editing && !busy} onPick={point => { setLatitude(point.latitude.toFixed(7)); setLongitude(point.longitude.toFixed(7)); }} onSelect={key => { const visit = visits?.find(v => v.key === key); if (visit) selectVisit(visit); }} />
         <section className="tracking-card tracking-site-editor" aria-label="Confirmación manual de sede"><h2>Sede de referencia</h2>
           {!selected ? <p>Selecciona un I.S. en la tabla o un punto del mapa. La ubicación debe confirmarse con una fuente independiente de las marcaciones del técnico.</p> : <><strong>{selected.customer}</strong><span>I.S. {selected.reportId} · {selected.branch || 'Sucursal no informada'}</span>
             <label>Número de serie del equipo<input value={serialNumber} maxLength={100} disabled={busy} onChange={event => {
@@ -192,7 +211,7 @@ export default function TrackingModule() {
         </section>
       </div>
       <details className="tracking-card"><summary>Cronología de eventos ({analysis.events.length})</summary><ol className="tracking-timeline">{analysis.events.map((event, index) => <li key={event.key}><button type="button" onClick={() => { const visit = visits?.find(v => v.key === event.visitKey); if (visit) selectVisit(visit); }}>{index + 1}. {event.timestamp.slice(11, 19)} · {event.kind === 'in' ? 'Entrada' : 'Salida'} · I.S. {event.reportId} · {event.customer}{!event.coordinate ? ' · Sin GPS' : ''}</button></li>)}</ol></details>
-      <TrackingTables analysis={analysis} sites={state.sites} selectedKey={selectedKey} onSelect={selectVisit} />
+      <TrackingTables analysis={analysis} roadStatus={roadStatus} sites={state.sites} selectedKey={selectedKey} onSelect={selectVisit} />
       <details className="tracking-card"><summary>Informes sin marcaciones vinculadas ({unmatchedReports.length})</summary><div className="tracking-table-scroll"><table><thead><tr><th>I.S.</th><th>Cliente / sede</th><th>Técnico</th><th>Estado / servicio</th></tr></thead><tbody>{unmatchedReports.map(report => <tr key={`${report.sourceSheet}:${report.sourceRow}`}><td>{report.reportId}</td><td>{report.customer}<small>{report.branch || 'Sucursal no informada'} · {report.address || 'Dirección no informada'}</small></td><td>{report.technician || 'Sin técnico'}</td><td>{report.status}<small>{report.requestedService}</small></td></tr>)}</tbody></table></div></details>
       {undated.length > 0 && <details className="tracking-card"><summary>Registros sin fecha de marcación utilizable ({undated.length})</summary><ul>{undated.map(visit => <li key={visit.key}>I.S. {visit.reportId} · {visit.customer} · {visit.technician} · {visit.issues.join(', ') || 'Sin check-in ni check-out'}</li>)}</ul></details>}
     </>}

@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import RouteMap, { project, unproject } from './RouteMap';
-import type { Coordinate, RouteEvent, SiteReference } from './types';
+import type { Coordinate, RouteEvent, SiteReference, TravelLeg } from './types';
 
 const event = (n: number, coordinate: Coordinate | null, kind: 'in' | 'out' = 'in'): RouteEvent => ({ key: `e${n}`, visitKey: `v${n}`, reportId: String(n), customer: 'Cliente', kind, timestamp: '2026-09-01T08:30:00', coordinate });
 const asuncion = { latitude: -25.3, longitude: -57.6 };
@@ -43,6 +43,14 @@ describe('RouteMap rendering', () => {
     const near = (d: number) => ({ latitude: -25.3 + d, longitude: -57.6 });
     const markup = render({ events: [event(1, near(0)), event(2, near(0.01)), event(3, null), event(4, near(0.02)), event(5, null), event(6, near(0.03)), event(7, near(0.04))] });
     expect(markup.match(/<polyline/g)).toHaveLength(2);
+  });
+  it('replaces the straight travel segment with the road geometry', () => {
+    const near = (d: number) => ({ latitude: -25.3 + d, longitude: -57.6 });
+    const events = [event(1, near(0), 'in'), event(1, near(0.01), 'out'), event(2, near(0.02), 'in')];
+    const leg = { from: { key: 'v1' }, to: { key: 'v2' }, road: { distanceMeters: 3000, geometry: [near(0.01), near(0.015), near(0.02)] } } as TravelLeg;
+    const markup = render({ events, legs: [leg] });
+    expect(markup.match(/tracking-road-line/g)).toHaveLength(1);
+    expect(markup.match(/tracking-route-line/g)).toHaveLength(1);
   });
   it('marks the selected visit and renders confirmed sites and the candidate pin', () => {
     const site: SiteReference = { ...asuncion, key: 's', customer: 'Acme', branch: 'Centro', address: '', confirmedAt: 'now' };
