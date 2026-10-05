@@ -1,0 +1,126 @@
+
+
+html[data-theme='light'] .uniflow-term-options button {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-muted);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .uniflow-term-options button:hover,
+html[data-theme='light'] .uniflow-term-options button.active {
+  border-color: var(--ds-sky);
+  color: var(--ds-navy);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .uniflow-term-options {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+html[data-theme='light'] .uniflow-quantity-control {
+  border-color: var(--ds-border-strong);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .uniflow-quantity-control button {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .uniflow-quantity-control button:hover:not(:disabled) {
+  color: var(--ds-navy);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .uniflow-quantity-control input {
+  border-color: var(--ds-border);
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .uniflow-model-trigger {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .uniflow-model-trigger-copy strong {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .uniflow-model-trigger-copy small,
+html[data-theme='light'] .uniflow-model-placeholder,
+html[data-theme='light'] .uniflow-model-trigger-arrow,
+html[data-theme='light'] .uniflow-model-option small,
+html[data-theme='light'] .uniflow-model-empty {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .uniflow-model-menu {
+  border-color: var(--ds-border-strong);
+  background: var(--ds-surface);
+  box-shadow: 0 1rem 2rem var(--ds-shadow);
+}
+
+html[data-theme='light'] .uniflow-model-search {
+  border-bottom-color: var(--ds-border);
+  color: var(--ds-ink);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .uniflow-model-option {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .uniflow-model-option:hover:not(:disabled),
+html[data-theme='light'] .uniflow-model-option.selected {
+  color: var(--ds-navy);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .uniflow-licensing-guide > p,
+html[data-theme='light'] .uniflow-licensing-grid p,
+html[data-theme='light'] .uniflow-licensing-guide > small {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .uniflow-licensing-grid article {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .uniflow-licensing-grid strong {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .uniflow-device-row {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+  box-shadow: none;
+}
+
+html[data-theme='light'] .uniflow-price-manager .catalog-table-wrap {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+  box-shadow: none;
+}
+
+html[data-theme='light'] .uniflow-price-manager .uniflow-price-tabs button {
+  border-color: var(--ds-border);
+  color: var(--ds-muted);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .uniflow-price-manager .uniflow-price-tabs button:hover,
+html[data-theme='light'] .uniflow-price-manager .uniflow-price-tabs button.active {
+  border-color: var(--ds-sky);
+  color: var(--ds-navy);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .uniflow-price-manager .uniflow-inline-input {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+}

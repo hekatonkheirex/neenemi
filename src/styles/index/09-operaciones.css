@@ -1,0 +1,374 @@
+
+
+.discontinuation-portfolio-heading-actions {
+  display: flex;
+  gap: 0.65rem;
+  align-items: end;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.discontinuation-portfolio-heading-actions .secondary-button {
+  min-width: auto;
+  white-space: nowrap;
+}
+
+.impact-label {
+  min-width: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.table-secondary-text,
+.impact-label small {
+  color: #7890b8;
+  font-size: 0.68rem;
+}
+
+.table-secondary-text {
+  display: block;
+  margin-top: 0.22rem;
+}
+
+.source-details {
+  max-width: 24rem;
+  margin-top: 0.45rem;
+  white-space: normal;
+}
+
+.source-details summary {
+  width: fit-content;
+  max-width: 100%;
+  cursor: pointer;
+  color: #82b9ff;
+  font-size: 0.66rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.source-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem 0.7rem;
+  min-width: 17rem;
+  max-height: 22rem;
+  margin-top: 0.45rem;
+  padding: 0.65rem;
+  overflow-y: auto;
+  border: 1px solid rgba(144, 174, 229, 0.15);
+  border-radius: 0.5rem;
+  background: rgba(12, 23, 41, 0.72);
+}
+
+.source-detail-item {
+  display: grid;
+  min-width: 0;
+  gap: 0.12rem;
+}
+
+.source-detail-item span {
+  color: #7890b8;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.source-detail-item strong {
+  overflow-wrap: anywhere;
+  color: #dce8fc;
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: pre-wrap;
+}
+
+.text-button {
+  padding: 0;
+  border: 0;
+  color: #8eb9ff;
+  background: transparent;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.text-button:hover {
+  color: #c1d8ff;
+}
+
+.operations-table {
+  min-width: 0;
+}
+
+.operations-table td:first-child {
+  color: #d4e1f8;
+  font-weight: 700;
+}
+
+.operations-table td small {
+  display: block;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+.discontinuation-table {
+  min-width: 0;
+}
+
+.stock-table {
+  min-width: 1040px;
+}
+
+.stock-table .code-cell {
+  display: block;
+  max-width: 250px;
+  white-space: normal;
+}
+
+.source-cell {
+  display: block;
+  max-width: 230px;
+  color: #7187aa;
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.maintenance-table {
+  min-width: 0;
+}
+
+.maintenance-table .action-cell {
+  max-width: 330px;
+  color: #91a7c9;
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.maintenance-analysis-actions {
+  display: flex;
+  align-items: end;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.maintenance-analysis-actions > .muted-note {
+  align-self: center;
+  white-space: nowrap;
+}
+
+.maintenance-analysis-actions .compact-field {
+  min-width: 10rem;
+}
+
+.maintenance-analysis-row td {
+  vertical-align: middle;
+}
+
+.maintenance-analysis-row.is-expanded td {
+  border-bottom-color: transparent;
+}
+
+.inline-muted {
+  display: inline;
+  margin-left: 0.15rem;
+}
+
+.maintenance-inspector-button {
+  min-width: 5.5rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(144, 174, 229, 0.28);
+  border-radius: 0.5rem;
+  color: #c6d7f2;
+  background: rgba(25, 43, 73, 0.7);
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.maintenance-inspector-button:hover:not(:disabled) {
+  border-color: #ff6b00;
+  color: #ffffff;
+  background: #ff6b00;
+}
+
+.maintenance-inspector-button.is-open {
+  border-color: #ff6b00;
+  color: #ffffff;
+  background: #ff6b00;
+}
+
+.maintenance-inspection-row td {
+  padding: 0;
+  border-top: 2px solid #18243a;
+  background: rgba(12, 23, 41, 0.16);
+}
+
+.maintenance-inspection-grid {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.2fr);
+  gap: 1.25rem;
+  padding: 1.1rem 1.25rem;
+}
+
+.maintenance-inspection-overview,
+.maintenance-inspection-readings {
+  min-width: 0;
+}
+
+.maintenance-wear-summary {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.maintenance-wear-gauge {
+  position: relative;
+  flex: 0 0 auto;
+  width: 4.25rem;
+  height: 4.25rem;
+}
+
+.maintenance-wear-gauge svg {
+  display: block;
+  transform: rotate(0deg);
+}
+
+.maintenance-wear-gauge span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.maintenance-wear-gauge.normal { color: #00a3e0; }
+.maintenance-wear-gauge.attention { color: #d18a00; }
+.maintenance-wear-gauge.critical { color: #d13b48; }
+.maintenance-wear-gauge.unrecognized { color: #7468c8; }
+
+.maintenance-inspection-label,
+.maintenance-inspection-readings h4,
+.maintenance-inspection-overview h4 {
+  margin: 0;
+  color: #dce8fc;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.maintenance-inspection-overview h4,
+.maintenance-inspection-readings h4 {
+  margin-top: 0.85rem;
+  margin-bottom: 0.55rem;
+}
+
+.maintenance-inspection-copy,
+.maintenance-inspection-note,
+.maintenance-inspection-source {
+  color: #7890b8;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.maintenance-inspection-note,
+.maintenance-inspection-source {
+  margin: 0.5rem 0 0;
+}
+
+.maintenance-history-chart {
+  display: block;
+  width: min(100%, 22rem);
+  height: auto;
+  border: 1px solid rgba(144, 174, 229, 0.16);
+  border-radius: 0.45rem;
+  background: rgba(12, 23, 41, 0.5);
+}
+
+.maintenance-history-chart line {
+  stroke: #ff6b00;
+  stroke-dasharray: 3 3;
+  stroke-width: 1;
+}
+
+.maintenance-history-chart polyline {
+  fill: none;
+  stroke: #6558e8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
+}
+
+.maintenance-history-chart circle {
+  fill: #6558e8;
+}
+
+.maintenance-history-chart text {
+  fill: #ff6b00;
+  font-size: 0.42rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.maintenance-history-chart-empty {
+  padding: 1.2rem;
+  border: 1px solid rgba(144, 174, 229, 0.16);
+  border-radius: 0.45rem;
+  color: #7890b8;
+  font-size: 0.68rem;
+}
+
+.maintenance-readings-table-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(144, 174, 229, 0.16);
+  border-radius: 0.55rem;
+  background: rgba(12, 23, 41, 0.5);
+}
+
+.maintenance-readings-table {
+  width: 100%;
+  min-width: 35rem;
+  border-collapse: collapse;
+  color: #dce8fc;
+  font-size: 0.65rem;
+}
+
+.maintenance-readings-table th,
+.maintenance-readings-table td {
+  padding: 0.48rem 0.6rem;
+  border-bottom: 1px solid rgba(144, 174, 229, 0.1);
+  white-space: nowrap;
+}
+
+.maintenance-readings-table th {
+  color: #7890b8;
+  font-size: 0.56rem;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.maintenance-readings-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.maintenance-readings-table .is-over {
+  color: #ef626d;
+  font-weight: 900;
+}
+
+.maintenance-inspection-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.maintenance-inspection-actions .primary-button {
+  min-width: auto;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+}

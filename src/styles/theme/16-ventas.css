@@ -1,0 +1,39 @@
+
+
+html[data-theme='light'] .catalog-model-notes,
+html[data-theme='light'] .catalog-service-items {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+  box-shadow: 0 0.65rem 1.6rem var(--ds-shadow);
+}
+
+html[data-theme='light'] .catalog-model-notes h2,
+html[data-theme='light'] .catalog-service-items h2,
+html[data-theme='light'] .catalog-model-notes-list strong {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .catalog-model-notes-list article {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .catalog-model-notes-list span,
+html[data-theme='light'] .catalog-service-items-heading p,
+html[data-theme='light'] .catalog-source-cell {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .catalog-service-items-heading > strong {
+  color: var(--ds-success);
+}
+
+html[data-theme='light'] .catalog-service-kind.labor {
+  color: var(--ds-sky);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .catalog-service-kind.fixed {
+  color: var(--ds-orange);
+  background: var(--ds-orange-wash);
+}

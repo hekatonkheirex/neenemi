@@ -1,3 +1,4 @@
+import { readCssBundle } from '../test-support/css';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -26,7 +27,7 @@ describe('regla de sombra de tarjetas', () => {
     expect(offenders).toEqual([]);
   });
   it('theme.css excluye las partes internas de la regla general', () => {
-    const css = readFileSync('src/theme.css', 'utf8');
+    const css = readCssBundle('src/theme.css');
     expect(css).toContain("[class*='-card-']");
   });
 });

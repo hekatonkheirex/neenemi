@@ -1,0 +1,214 @@
+
+
+.maintenance-executive-print-report {
+  display: none;
+}
+
+.maintenance-executive-print-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 0 0.9rem;
+  border-bottom: 2px solid #ff6b00;
+}
+
+.maintenance-executive-print-title-row h1 {
+  margin: 0;
+  color: #18243a;
+  font-size: 1.65rem;
+  line-height: 1.05;
+}
+
+.maintenance-executive-print-title-row p {
+  margin: 0.45rem 0 0;
+  color: #5c6d86;
+  font-size: 0.78rem;
+}
+
+.maintenance-executive-print-brand {
+  color: #1a2c4c;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.maintenance-executive-print-meta,
+.maintenance-executive-print-kpis {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.9rem 0;
+}
+
+.maintenance-executive-print-meta {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.maintenance-executive-print-meta > div,
+.maintenance-executive-print-kpi {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.6rem;
+  border: 1px solid #d6deea;
+  border-radius: 0.25rem;
+  background: #f8fafc;
+}
+
+.maintenance-executive-print-meta span,
+.maintenance-executive-print-kpi span,
+.maintenance-executive-print-kpi small {
+  color: #5c6d86;
+  font-size: 0.62rem;
+}
+
+.maintenance-executive-print-meta span,
+.maintenance-executive-print-kpi span {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.maintenance-executive-print-meta strong {
+  overflow-wrap: anywhere;
+  color: #18243a;
+  font-size: 0.72rem;
+}
+
+.maintenance-executive-print-kpis {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.maintenance-executive-print-kpi strong {
+  color: #18243a;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.maintenance-executive-print-kpi.critical { border-color: #e8b4b4; background: #fff5f4; }
+.maintenance-executive-print-kpi.critical strong { color: #b52f3a; }
+.maintenance-executive-print-kpi.attention { border-color: #ead3a2; background: #fffaf0; }
+.maintenance-executive-print-kpi.attention strong { color: #a76b00; }
+.maintenance-executive-print-kpi.unrecognized { border-color: #c9c4ee; background: #f7f5ff; }
+.maintenance-executive-print-kpi.unrecognized strong { color: #5e54a9; }
+
+.maintenance-executive-print-section {
+  margin-top: 1.25rem;
+}
+
+.maintenance-executive-print-section h2 {
+  margin: 0 0 0.55rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid #b7c8da;
+  color: #18243a;
+  font-size: 0.98rem;
+}
+
+.maintenance-executive-print-definitions,
+.maintenance-executive-print-insights {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #334b6c;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.maintenance-executive-print-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+}
+
+.maintenance-executive-print-list {
+  break-inside: avoid;
+  border: 1px solid #d6deea;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.maintenance-executive-print-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.65rem;
+  background: #edf2f8;
+}
+
+.maintenance-executive-print-list-heading h3 {
+  margin: 0;
+  color: #18243a;
+  font-size: 0.78rem;
+}
+
+.maintenance-executive-print-list-heading span {
+  color: #006e95;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.maintenance-executive-print-list > p {
+  margin: 0;
+  padding: 0.7rem;
+  color: #5c6d86;
+  font-size: 0.72rem;
+}
+
+.maintenance-executive-print-list table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #18243a;
+  font-size: 0.68rem;
+}
+
+.maintenance-executive-print-list th,
+.maintenance-executive-print-list td {
+  padding: 0.42rem 0.45rem;
+  border-top: 1px solid #e1e7ef;
+  text-align: left;
+  vertical-align: top;
+}
+
+.maintenance-executive-print-list th {
+  color: #5c6d86;
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.maintenance-executive-print-list td:first-child {
+  color: #008abf;
+  font-weight: 800;
+}
+
+.maintenance-executive-print-list td strong,
+.maintenance-executive-print-list td small {
+  display: block;
+}
+
+.maintenance-executive-print-list td small {
+  margin-top: 0.12rem;
+  color: #5c6d86;
+  font-size: 0.64rem;
+}
+
+.maintenance-executive-print-list .align-right {
+  text-align: right;
+}
+
+.maintenance-executive-print-methodology p {
+  margin: 0;
+  color: #5c6d86;
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.maintenance-executive-print-footer {
+  margin-top: 1.4rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #d6deea;
+  color: #718096;
+  font-size: 0.64rem;
+}

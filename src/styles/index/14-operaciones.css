@@ -1,0 +1,107 @@
+
+
+@media (max-width: 1100px) {
+  .maintenance-source-card {
+    grid-template-columns: 1fr;
+  }
+
+  .maintenance-analysis-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.analysis-meta {
+  margin: -0.45rem 0 1rem;
+  color: #7187aa;
+  font-size: 0.72rem;
+}
+
+.analysis-meta strong {
+  color: #b5c9e8;
+  font-weight: 700;
+}
+
+.badge.neutral {
+  color: #aabbd7;
+  background: rgba(144, 174, 229, 0.14);
+}
+
+.import-description {
+  margin: -0.55rem 0 0.85rem;
+  line-height: 1.55;
+}
+
+.import-description code {
+  color: #b9d2ff;
+  font-family: var(--ds-font-code);
+  font-size: 0.68rem;
+}
+
+.file-input-button {
+  display: flex;
+  min-height: 2.7rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 0.8rem;
+  border: 1px dashed rgba(117, 166, 255, 0.42);
+  border-radius: 0.5rem;
+  color: #b5d0ff;
+  background: rgba(55, 101, 197, 0.13);
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.file-input-button:hover {
+  border-color: rgba(117, 166, 255, 0.72);
+  background: rgba(55, 101, 197, 0.23);
+}
+
+.file-input-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.operations-page .sales-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.operations-page .sales-actions .file-input-button {
+  flex: 1 1 10rem;
+}
+
+.import-summary {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.85rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(144, 174, 229, 0.11);
+  color: #7187aa;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.import-summary strong {
+  color: #8fe5b5;
+  font-size: 0.75rem;
+}
+
+.maintenance-clear-import-button {
+  width: 100%;
+  margin-top: 0.35rem;
+}
+
+.impact-label {
+  color: #f2c279;
+  font-size: 0.73rem;
+  font-weight: 800;
+}
+
+.impact-label small {
+  color: #a98b63;
+  font-weight: 500;
+}

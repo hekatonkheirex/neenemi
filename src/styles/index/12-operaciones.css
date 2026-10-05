@@ -1,0 +1,561 @@
+
+
+.maintenance-print-facts,
+.maintenance-print-kpis {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.2rem 0;
+}
+
+.maintenance-print-facts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.maintenance-print-kpis {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.maintenance-print-facts > div,
+.maintenance-print-kpis > div {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.7rem;
+  border: 1px solid #d6deea;
+  border-radius: 0.35rem;
+}
+
+.maintenance-print-facts span,
+.maintenance-print-kpis span {
+  color: #5c6d86;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.maintenance-print-facts strong,
+.maintenance-print-kpis strong {
+  color: #18243a;
+  font-size: 0.86rem;
+}
+
+.maintenance-print-report h2 {
+  margin: 1.2rem 0 0.65rem;
+  color: #18243a;
+  font-size: 1rem;
+}
+
+.maintenance-print-report-meta,
+.maintenance-print-source-details p {
+  color: #5c6d86;
+  font-size: 0.76rem;
+}
+
+.maintenance-print-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #18243a;
+  font-size: 0.72rem;
+}
+
+.maintenance-print-table th,
+.maintenance-print-table td {
+  padding: 0.5rem 0.4rem;
+  border: 1px solid #d6deea;
+  text-align: left;
+  vertical-align: top;
+}
+
+.maintenance-print-table th {
+  background: #edf2f8;
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.maintenance-print-table .align-right {
+  text-align: right;
+}
+
+@media print {
+  .maintenance-page > .catalog-header,
+  .maintenance-page > .sales-status,
+  .maintenance-page > .operations-summary,
+  .maintenance-page > .maintenance-executive-card,
+  .maintenance-page .operations-main > .sales-card:not(.maintenance-analysis-card),
+  .maintenance-page .operations-sidebar,
+  .maintenance-page .maintenance-analysis-actions,
+  .maintenance-page .maintenance-analysis-filters {
+    display: none !important;
+  }
+
+  .maintenance-page,
+  .maintenance-page .operations-layout,
+  .maintenance-page .operations-main,
+  .maintenance-page .maintenance-analysis-card {
+    display: block;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+  }
+
+  .maintenance-page .maintenance-table {
+    min-width: 0;
+    font-size: 0.68rem;
+  }
+
+  .maintenance-page .maintenance-table .action-cell {
+    max-width: none;
+    color: #18243a;
+  }
+
+  @page maintenance-analysis-report {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  @page maintenance-executive-report {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  body[data-print-mode='maintenance-analysis'] {
+    background: #ffffff;
+  }
+
+  body[data-print-mode='maintenance-analysis'] .app-shell {
+    display: block;
+    min-height: auto;
+  }
+
+  body[data-print-mode='maintenance-analysis'] .app-shell > .sidebar,
+  body[data-print-mode='maintenance-analysis'] .content > .topbar,
+  body[data-print-mode='maintenance-analysis'] .maintenance-page > :not(.maintenance-print-report) {
+    display: none !important;
+  }
+
+  body[data-print-mode='maintenance-analysis'] .content,
+  body[data-print-mode='maintenance-analysis'] .maintenance-page {
+    display: block;
+    width: 100%;
+    max-width: none;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  body[data-print-mode='maintenance-analysis'] .maintenance-print-report {
+    display: block !important;
+    page: maintenance-analysis-report;
+    padding: 0;
+    color: #18243a;
+  }
+
+  body[data-print-mode='maintenance-executive'] {
+    background: #ffffff;
+  }
+
+  body[data-print-mode='maintenance-executive'] .app-shell {
+    display: block;
+    min-height: auto;
+  }
+
+  body[data-print-mode='maintenance-executive'] .app-shell > .sidebar,
+  body[data-print-mode='maintenance-executive'] .content > .topbar,
+  body[data-print-mode='maintenance-executive'] .maintenance-page > :not(.maintenance-executive-print-report) {
+    display: none !important;
+  }
+
+  body[data-print-mode='maintenance-executive'] .content,
+  body[data-print-mode='maintenance-executive'] .maintenance-page {
+    display: block;
+    width: 100%;
+    max-width: none;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  body[data-print-mode='maintenance-executive'] .maintenance-executive-print-report {
+    display: block !important;
+    page: maintenance-executive-report;
+    padding: 0;
+    color: #18243a;
+  }
+
+  body[data-print-mode='maintenance-executive'] .maintenance-executive-print-list thead {
+    display: table-header-group;
+  }
+
+  body[data-print-mode='maintenance-executive'] .maintenance-executive-print-list tr {
+    break-inside: avoid;
+  }
+}
+
+.maintenance-analysis-filters {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1.5fr) repeat(3, minmax(9rem, 1fr)) minmax(0, auto);
+  gap: 0.7rem;
+  align-items: end;
+  margin: 1rem 0;
+}
+
+.maintenance-source-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(22rem, 1fr);
+  gap: 1.25rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.maintenance-source-identity {
+  display: grid;
+  min-width: 0;
+  gap: 0.7rem;
+}
+
+.maintenance-source-title {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.maintenance-source-title h2 {
+  margin: 0 0 0.28rem;
+  font-size: 1.35rem;
+}
+
+.maintenance-source-title strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #dce8fc;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.maintenance-source-title p,
+.maintenance-source-origin {
+  margin: 0.25rem 0 0;
+  color: #7890b8;
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.maintenance-source-origin code {
+  color: #b9d2ff;
+  font-family: var(--ds-font-code);
+  font-size: 0.67rem;
+}
+
+.maintenance-source-status {
+  flex: 0 0 auto;
+  width: 0.72rem;
+  height: 0.72rem;
+  margin-top: 0.35rem;
+  border-radius: 999px;
+  background: #ffb04a;
+  box-shadow: 0 0 0 0.25rem rgba(255, 176, 74, 0.14);
+}
+
+.maintenance-source-status.is-loaded {
+  background: #42c58a;
+  box-shadow: 0 0 0 0.25rem rgba(66, 197, 138, 0.14);
+}
+
+.maintenance-source-dropzone {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px dashed rgba(117, 166, 255, 0.42);
+  border-radius: 0.7rem;
+  background: rgba(55, 101, 197, 0.07);
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.maintenance-source-dropzone.is-dragging {
+  border-color: var(--ds-orange);
+  background: var(--ds-orange-wash);
+  box-shadow: 0 0 0 0.2rem rgba(255, 107, 0, 0.12);
+}
+
+.maintenance-source-dropzone-copy {
+  display: grid;
+  gap: 0.15rem;
+  color: #b5d0ff;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.maintenance-source-dropzone-copy strong {
+  color: #dbe7fb;
+  font-size: 0.74rem;
+}
+
+.maintenance-source-dropzone-copy span {
+  color: #7187aa;
+}
+
+.maintenance-source-upload-actions,
+.maintenance-source-file-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.maintenance-source-upload {
+  position: relative;
+  display: flex;
+  min-height: 2.65rem;
+  flex: 1 1 11rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+}
+
+.maintenance-source-upload input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.maintenance-source-upload-primary {
+  color: #ffffff;
+  background: var(--ds-orange);
+  box-shadow: 0 0.55rem 1.3rem rgba(255, 107, 0, 0.2);
+}
+
+.maintenance-source-upload-primary:hover {
+  background: #e85e00;
+}
+
+.maintenance-source-file-actions {
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(144, 174, 229, 0.14);
+}
+
+.maintenance-source-file-actions .secondary-button,
+.maintenance-source-file-actions .maintenance-clear-import-button {
+  width: auto;
+  min-width: 0;
+  margin-top: 0;
+  flex: 1 1 10rem;
+}
+
+/* Botones de navegación: superficie propia y selección deslizante con Framer Motion. */
+.anim-tabs {
+  --tab-fg: #4a5568;
+  --tab-active: #b84d00;
+  --tab-wash: var(--ds-orange-wash, #fff0e6);
+  --tab-surface: var(--ds-surface, #fff);
+  --tab-border: var(--ds-border, #d6deea);
+  --tab-shadow: var(--ds-shadow, rgba(26, 44, 76, 0.1));
+  --tab-count-bg: #e9eef3;
+  --tab-count-fg: #3d4a5e;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: stretch;
+  margin-bottom: 1.25rem;
+}
+
+html[data-theme='dark'] .anim-tabs {
+  --tab-fg: #a9bee0;
+  --tab-active: #ffb27a;
+  --tab-wash: #34271f;
+  --tab-surface: #142238;
+  --tab-border: #405574;
+  --tab-shadow: rgba(0, 0, 0, 0.2);
+  --tab-count-bg: rgba(144, 174, 229, 0.16);
+  --tab-count-fg: #dce8fc;
+}
+
+.anim-tabs button {
+  position: relative;
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--tab-border);
+  border-radius: 0.8rem;
+  color: var(--tab-fg);
+  background: var(--tab-surface);
+  box-shadow: 0 1px 2px var(--tab-shadow);
+  cursor: pointer;
+  isolation: isolate;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.anim-tabs button > span,
+.anim-tabs button > em,
+.anim-tabs button > strong {
+  position: relative;
+  z-index: 1;
+}
+
+.anim-tabs button > span:not(.anim-tabs-text):not(.anim-tabs-indicator) {
+  font-size: 0.62rem;
+  opacity: 0.75;
+}
+
+.anim-tabs button strong {
+  padding: 0.16rem 0.38rem;
+  border-radius: 999px;
+  color: var(--tab-count-fg);
+  background: var(--tab-count-bg);
+  font-size: 0.6rem;
+}
+
+.anim-tabs button > em,
+.anim-tabs-text em {
+  font-style: normal;
+}
+
+/* Variante de una sola fila (Canon Software): scroll horizontal; el relleno deja sitio a la sombra y al ascenso del hover. */
+.anim-tabs.is-scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 0.3rem 0.15rem 0.7rem;
+}
+
+.anim-tabs.is-scroll button {
+  flex: 0 0 auto;
+}
+
+/* Variante con subtítulo (Viáticos): pestañas del mismo ancho, texto en dos líneas. */
+.anim-tabs.has-hint {
+}
+
+.anim-tabs.has-hint button {
+  flex: 1 1 8.8rem;
+  min-width: 8.8rem;
+  /* A 960 px cada pestaña mide ~155 px y el subtítulo (~165 px) se cortaba: que baje a otra línea. */
+  white-space: normal;
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.anim-tabs-text {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.anim-tabs-text em {
+  font-size: 0.78rem;
+}
+
+.anim-tabs-text small {
+  color: var(--tab-fg);
+  font-size: 0.64rem;
+  font-weight: 600;
+}
+
+.anim-tabs button:hover,
+.anim-tabs button.is-active {
+  border-color: var(--ds-orange, #ff6b00);
+  color: var(--tab-active);
+}
+
+.anim-tabs button:hover {
+  box-shadow: 0 0.6rem 1.4rem var(--tab-shadow);
+}
+
+.anim-tabs button:focus-visible {
+  outline: 2px solid var(--ds-sky, #00a3e0);
+  outline-offset: -3px;
+}
+
+.anim-tabs button > .anim-tabs-indicator {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border: 1px solid var(--ds-orange, #ff6b00);
+  border-radius: inherit;
+  background: var(--tab-wash);
+  opacity: 1;
+  pointer-events: none;
+}
+
+html[data-theme] .anim-tabs button :is(em, .anim-tabs-text, .anim-tabs-text small),
+html[data-theme] .anim-tabs button > span:not(.anim-tabs-indicator) {
+  color: inherit;
+}
+
+html[data-theme] .anim-tabs button strong {
+  color: var(--tab-count-fg);
+}
+
+.anim-tabs button > .anim-tabs-icon {
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: none;
+  place-items: center;
+  border: 1px solid var(--ds-sky, #00a3e0);
+  border-radius: 0.5rem;
+  color: var(--ds-navy, #1a2c4c);
+  background: var(--ds-blue-wash, #e9f5fb);
+  opacity: 1;
+}
+
+html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
+  border-color: rgba(114, 161, 255, 0.3);
+  color: #96bcff;
+  background: rgba(68, 119, 231, 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-tabs button {
+    transition: none;
+  }
+}
+
+.maintenance-search-shortcut {
+  margin-left: 0.35rem;
+  padding: 0.12rem 0.28rem;
+  border: 1px solid rgba(144, 174, 229, 0.22);
+  border-radius: 0.25rem;
+  color: #7890b8;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.maintenance-normal-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.45rem;
+  color: #a9bee0;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.maintenance-normal-toggle input {
+  accent-color: #ff6b00;
+}
+
+.maintenance-rules-card .card-heading {
+  align-items: start;
+}

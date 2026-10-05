@@ -1,0 +1,336 @@
+
+
+.maintenance-executive-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.maintenance-executive-card .card-heading {
+  margin-bottom: 0;
+}
+
+.maintenance-executive-heading-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.maintenance-executive-kpis {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.maintenance-executive-kpi {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.22rem;
+  min-width: 0;
+  padding: 0.8rem;
+  border: 1px solid rgba(144, 174, 229, 0.22);
+  border-radius: 0.7rem;
+  background: rgba(246, 249, 253, 0.85);
+}
+
+.maintenance-executive-kpi span,
+.maintenance-executive-kpi small {
+  color: #7187aa;
+  font-size: 0.66rem;
+}
+
+.maintenance-executive-kpi span {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.maintenance-executive-kpi-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+}
+
+.maintenance-critical-trend {
+  width: 4rem;
+  min-width: 2.5rem;
+  height: 1.5rem;
+  /* Puede encogerse: a 1280 px la tarjeta mide 138 px y "Críticos" + gráfico (64 px) se salía 3 px. */
+  flex: 0 1 auto;
+  overflow: visible;
+  color: #b52f3a;
+}
+
+.maintenance-critical-trend polyline {
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.maintenance-executive-kpi strong {
+  color: #18243a;
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+.maintenance-executive-kpi.critical { border-color: rgba(214, 69, 69, 0.35); background: rgba(255, 242, 241, 0.92); }
+.maintenance-executive-kpi.critical strong { color: #b52f3a; }
+.maintenance-executive-kpi.attention { border-color: rgba(214, 154, 55, 0.38); background: rgba(255, 249, 235, 0.92); }
+.maintenance-executive-kpi.attention strong { color: #a76b00; }
+.maintenance-executive-kpi.unrecognized { border-color: rgba(103, 93, 184, 0.32); background: rgba(244, 242, 255, 0.92); }
+.maintenance-executive-kpi.unrecognized strong { color: #5e54a9; }
+.maintenance-executive-kpi.idle strong { color: #718096; }
+.maintenance-executive-kpi.overworked strong { color: #b34d22; }
+
+.maintenance-executive-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.maintenance-priority-panel {
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid rgba(144, 174, 229, 0.22);
+  border-radius: 0.7rem;
+  background: rgba(250, 252, 255, 0.76);
+}
+
+.maintenance-priority-panel.critical { border-color: rgba(214, 69, 69, 0.3); }
+.maintenance-priority-panel.attention { border-color: rgba(214, 154, 55, 0.3); }
+
+.maintenance-priority-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid rgba(144, 174, 229, 0.18);
+}
+
+.maintenance-priority-heading > div:first-child {
+  min-width: min(100%, 12rem);
+}
+
+.maintenance-priority-heading h3,
+.maintenance-insight-panel h3 {
+  margin: 0;
+  color: #18243a;
+  font-size: 0.92rem;
+}
+
+.maintenance-priority-heading p {
+  margin: 0.22rem 0 0;
+  color: #7187aa;
+  font-size: 0.68rem;
+}
+
+.maintenance-priority-heading > span {
+  display: grid;
+  min-width: 1.7rem;
+  height: 1.7rem;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(24, 36, 58, 0.08);
+  color: #18243a;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.maintenance-panel-heading-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: flex-end;
+  white-space: nowrap;
+}
+
+.maintenance-panel-heading-actions > span {
+  display: grid;
+  min-width: 1.7rem;
+  height: 1.7rem;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(24, 36, 58, 0.08);
+  color: #18243a;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.maintenance-panel-heading-actions .text-button {
+  padding: 0.25rem 0;
+  font-size: 0.66rem;
+  white-space: nowrap;
+}
+
+.maintenance-panel-heading-actions .maintenance-download-button {
+  min-width: auto;
+  padding: 0.42rem 0.68rem;
+  border-color: rgba(0, 163, 224, 0.42);
+  color: #006e95;
+  background: rgba(233, 245, 251, 0.9);
+  box-shadow: none;
+  font-size: 0.68rem;
+}
+
+.maintenance-panel-heading-actions .maintenance-download-button:hover:not(:disabled) {
+  border-color: rgba(0, 163, 224, 0.7);
+  background: #d9f0f8;
+}
+
+.maintenance-priority-list {
+  display: grid;
+  max-height: 18rem;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+
+.maintenance-priority-row {
+  display: grid;
+  grid-template-columns: 1.8rem minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(144, 174, 229, 0.14);
+}
+
+.maintenance-priority-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.maintenance-priority-index { color: #008abf; font-size: 0.68rem; font-weight: 800; }
+.maintenance-priority-row strong,
+.maintenance-priority-row small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.maintenance-priority-row strong { color: #18243a; font-size: 0.73rem; }
+.maintenance-priority-row small { margin-top: 0.16rem; color: #7187aa; font-size: 0.65rem; }
+.maintenance-priority-row b { color: #b52f3a; font-size: 0.78rem; }
+.maintenance-priority-panel.attention .maintenance-priority-row b { color: #a76b00; }
+
+.maintenance-secondary-panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.maintenance-subset-panel {
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid rgba(144, 174, 229, 0.22);
+  border-radius: 0.7rem;
+  background: rgba(250, 252, 255, 0.76);
+}
+
+.maintenance-subset-panel.unrecognized {
+  border-color: rgba(103, 93, 184, 0.32);
+  background: rgba(244, 242, 255, 0.72);
+}
+
+.maintenance-subset-panel.idle {
+  border-color: rgba(113, 128, 150, 0.3);
+  background: rgba(247, 249, 252, 0.85);
+}
+
+.maintenance-subset-panel.recommended {
+  border-color: rgba(255, 107, 0, 0.3);
+  background: rgba(255, 248, 242, 0.82);
+}
+
+.maintenance-subset-list {
+  display: grid;
+  max-height: 14rem;
+  overflow-y: auto;
+}
+
+.maintenance-subset-row {
+  display: grid;
+  grid-template-columns: 1.8rem minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(144, 174, 229, 0.14);
+}
+
+.maintenance-subset-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.maintenance-subset-row strong,
+.maintenance-subset-row small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.maintenance-subset-row strong { color: #18243a; font-size: 0.73rem; }
+.maintenance-subset-row small { margin-top: 0.16rem; color: #7187aa; font-size: 0.65rem; }
+.maintenance-subset-row b { color: #5e54a9; font-size: 0.68rem; text-align: right; }
+.maintenance-subset-panel.idle .maintenance-subset-row b { color: #718096; }
+.maintenance-subset-panel.recommended .maintenance-subset-row b { color: #b34d22; }
+
+.maintenance-priority-empty {
+  margin: 0;
+  padding: 1.25rem 0.2rem 0.3rem;
+  color: #7187aa;
+  font-size: 0.72rem;
+}
+
+.maintenance-insight-panel {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.3fr);
+  gap: 1rem;
+  margin-top: 0.05rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(144, 174, 229, 0.22);
+  border-radius: 0.7rem;
+  background: rgba(246, 249, 253, 0.85);
+}
+
+.maintenance-page > .operations-layout {
+  margin-top: 1.25rem;
+}
+
+.maintenance-insight-panel ul {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.maintenance-insight-panel li {
+  position: relative;
+  padding-left: 0.9rem;
+  color: #4a5e7e;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.maintenance-insight-panel li::before {
+  position: absolute;
+  left: 0;
+  color: #ff6b00;
+  content: '•';
+  font-weight: 800;
+}
+
+@media (max-width: 1100px) {
+  .maintenance-executive-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .maintenance-executive-kpis,
+  .maintenance-executive-grid,
+  .maintenance-secondary-panels,
+  .maintenance-insight-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .maintenance-inspection-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .maintenance-analysis-actions > .muted-note {
+    width: 100%;
+  }
+}
+
+.maintenance-print-report {
+  display: none;
+}

@@ -1,0 +1,70 @@
+
+
+.maintenance-rules-list {
+  display: grid;
+  max-height: 24rem;
+  overflow: auto;
+  margin-top: 0.9rem;
+  border: 1px solid rgba(144, 174, 229, 0.12);
+  border-radius: 0.55rem;
+}
+
+.maintenance-rule-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.7rem;
+  border-bottom: 1px solid rgba(144, 174, 229, 0.1);
+}
+
+.maintenance-rule-row:last-child {
+  border-bottom: 0;
+}
+
+.maintenance-rule-row strong,
+.maintenance-rule-row small {
+  display: block;
+  color: #d4e1f8;
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.maintenance-rule-row small {
+  margin-top: 0.2rem;
+  color: #7890b8;
+  font-size: 0.64rem;
+}
+
+.maintenance-rule-actions,
+.maintenance-rules-footer,
+.maintenance-rule-editor-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.maintenance-rules-footer {
+  margin-top: 0.9rem;
+}
+
+.maintenance-rule-editor {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+  padding: 0.8rem;
+  border: 1px solid rgba(144, 174, 229, 0.16);
+  border-radius: 0.55rem;
+  background: rgba(10, 19, 34, 0.44);
+}
+
+.maintenance-rule-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.danger-text-button {
+  color: #f39a9a;
+}

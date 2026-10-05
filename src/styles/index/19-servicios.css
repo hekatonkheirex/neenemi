@@ -1,0 +1,78 @@
+
+
+.service-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 210px;
+  gap: 0.75rem;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+
+.pagination-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem 1rem;
+  margin-top: 0.9rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(144, 174, 229, 0.2);
+  color: #8fa5c7;
+  font-size: 0.75rem;
+}
+
+.pagination-count {
+  color: #c6d7f2;
+  font-weight: 750;
+}
+
+.pagination-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.pagination-size select {
+  min-height: 2.2rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(144, 174, 229, 0.3);
+  border-radius: 0.45rem;
+  color: #d7e4f7;
+  background: #142542;
+  font: inherit;
+}
+
+.pagination-actions {
+  display: inline-flex;
+  gap: 0.45rem;
+}
+
+.pagination-controls .secondary-button {
+  min-width: auto;
+  min-height: 2.2rem;
+  padding: 0.4rem 0.7rem;
+}
+
+.pagination-loading {
+  padding: 1rem 1.2rem;
+  color: #8fa5c7;
+}
+
+.service-table {
+  min-width: 1180px;
+}
+
+.service-table td:nth-child(3),
+.service-table td:nth-child(6),
+.service-table td:nth-child(7) {
+  min-width: 175px;
+}
+
+.service-table td:nth-child(4) {
+  min-width: 145px;
+}
+
+.service-method-card .mps-facts strong {
+  font-size: 0.75rem;
+  line-height: 1.35;
+}

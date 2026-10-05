@@ -1,0 +1,69 @@
+
+
+html[data-theme='light'] .discontinuation-import-progress {
+  border-color: rgba(27, 151, 218, 0.26);
+  color: var(--ds-muted);
+  background: rgba(27, 151, 218, 0.07);
+}
+
+html[data-theme='light'] .discontinuation-import-progress-heading strong {
+  color: #087ead;
+}
+
+html[data-theme='light'] .discontinuation-import-progress-track {
+  background: rgba(39, 89, 135, 0.12);
+}
+
+html[data-theme='light'] .discontinuation-import-progress small {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .status-dot.ready {
+  background: #2a9b68;
+  box-shadow: 0 0 0 0.25rem rgba(42, 155, 104, 0.14);
+}
+
+html[data-theme='light'] .status-dot.error {
+  background: #d64545;
+  box-shadow: 0 0 0 0.25rem rgba(214, 69, 69, 0.14);
+}
+
+html[data-theme='light'] .error-message,
+html[data-theme='light'] .danger-text,
+html[data-theme='light'] .icon-button {
+  color: var(--ds-danger);
+}
+
+html[data-theme='light'] .icon-button {
+  border-color: #efb3b0;
+  background: #fff1f0;
+}
+
+html[data-theme='light'] .icon-button:hover {
+  background: #ffe2df;
+}
+
+html[data-theme='light'] .price-cell,
+html[data-theme='light'] .suggestion-price,
+html[data-theme='light'] .import-summary strong,
+html[data-theme='light'] .analytics-equipment-value strong,
+html[data-theme='light'] .uniflow-device-summary-row b {
+  color: var(--ds-success);
+}
+
+html[data-theme='light'] .software-recommendation {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+  box-shadow: 0 0.65rem 1.6rem var(--ds-shadow);
+}
+
+html[data-theme='light'] .suggestion-row,
+html[data-theme='light'] .history-item,
+html[data-theme='light'] .mps-model-option,
+html[data-theme='light'] .software-feature-row,
+html[data-theme='light'] .analytics-equipment-row,
+html[data-theme='light'] .uniflow-device-summary-row {
+  color: var(--ds-ink);
+  background: transparent;
+  box-shadow: none;
+}

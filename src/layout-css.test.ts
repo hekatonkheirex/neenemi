@@ -1,8 +1,9 @@
+import { readCssBundle } from './test-support/css';
 import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 // Regresiones de layout encontradas medidas en 960-1350 px (el mínimo de la ventana Electron es 960).
-const css = fs.readFileSync(new URL('./index.css', import.meta.url), 'utf8');
+const css = readCssBundle('src/index.css');
 
 describe('layout entre 960 y 1350 px', () => {
   it('las acciones de la cabecera pueden pasar a otra línea', () => {
@@ -37,7 +38,7 @@ describe('layout entre 960 y 1350 px', () => {
 
   it('Proformas: la barra tiene fondo opaco y los importes se leen en tema claro', () => {
     expect(css).toMatch(/\.proforma-sidebar > \.total-card\s*{[^}]*,\s*#0b1220/);
-    const theme = fs.readFileSync(new URL('./theme.css', import.meta.url), 'utf8');
+    const theme = readCssBundle('src/theme.css');
     expect(theme).toMatch(/html\[data-theme='light'\] \.total-breakdown b\s*{\s*color:\s*var\(--ds-navy\)/);
   });
 
@@ -96,7 +97,7 @@ describe('layout entre 960 y 1350 px', () => {
 
 describe('revisión visual 2026-10', () => {
   const indexCss = css;
-  const themeCss = fs.readFileSync(new URL('./theme.css', import.meta.url), 'utf8');
+  const themeCss = readCssBundle('src/theme.css');
 
   it('h1 global de herramienta: tope de 3.25rem y sin tracking extremo', () => {
     expect(indexCss).toMatch(/\nh1\s*{[^}]*font-size:\s*clamp\(2\.25rem,\s*3\.6vw,\s*3\.25rem\)[^}]*letter-spacing:\s*-0\.045em/);

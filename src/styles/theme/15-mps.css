@@ -1,0 +1,96 @@
+
+
+html[data-theme='light'] .mps-card-subtitle,
+html[data-theme='light'] .mps-profile-facts span,
+html[data-theme='light'] .mps-profile-consumable-name small,
+html[data-theme='light'] .mps-profile-consumable-value small,
+html[data-theme='light'] .mps-profile-section-heading p,
+html[data-theme='light'] .mps-profile-section-heading > span,
+html[data-theme='light'] .mps-analysis-kpi span,
+html[data-theme='light'] .mps-analysis-kpi small,
+html[data-theme='light'] .mps-analysis-note-list span {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .mps-profile-source {
+  border-color: var(--ds-border-strong);
+  color: #006e95;
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .mps-profile-source.manual {
+  border-color: #f2b27f;
+  color: #b84f00;
+  background: #fff1e7;
+}
+
+html[data-theme='light'] .mps-profile-facts > div,
+html[data-theme='light'] .mps-profile-consumable,
+html[data-theme='light'] .mps-analysis-kpi,
+html[data-theme='light'] .mps-ranking-panel,
+html[data-theme='light'] .mps-analysis-note-panel {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .mps-profile-facts strong,
+html[data-theme='light'] .mps-profile-consumable-name strong,
+html[data-theme='light'] .mps-profile-consumable-value strong,
+html[data-theme='light'] .mps-profile-section-heading h3,
+html[data-theme='light'] .mps-analysis-kpi strong,
+html[data-theme='light'] .mps-ranking-label strong,
+html[data-theme='light'] .mps-analysis-note-list strong {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .mps-profile-consumables {
+  border-color: var(--ds-border);
+}
+
+html[data-theme='light'] .mps-analysis-kpi.accent {
+  border-color: #f2b27f;
+  background: #fff1e7;
+}
+
+html[data-theme='light'] .mps-analysis-kpi.accent strong {
+  color: #b84f00;
+}
+
+html[data-theme='light'] .mps-ranking-index {
+  color: #007ea8;
+}
+
+html[data-theme='light'] .mps-ranking-label span {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .mps-ranking-track {
+  background: #e5edf3;
+}
+
+html[data-theme='light'] .mps-volume-insight {
+  border-color: #9bd5b9;
+  color: var(--ds-success);
+  background: #edf9f2;
+}
+
+html[data-theme='light'] .mps-volume-insight strong {
+  color: var(--ds-success);
+}
+
+html[data-theme='light'] .mps-volume-insight.low,
+html[data-theme='light'] .mps-volume-insight.high {
+  border-color: #e7c68b;
+  color: var(--ds-warning);
+  background: #fff8e8;
+}
+
+html[data-theme='light'] .mps-volume-insight.low strong,
+html[data-theme='light'] .mps-volume-insight.high strong {
+  color: var(--ds-warning);
+}
+
+html[data-theme='light'] .mps-analysis-empty {
+  border-color: #a8cde1;
+  color: var(--ds-muted);
+}

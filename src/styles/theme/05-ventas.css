@@ -1,0 +1,141 @@
+
+
+html[data-theme='light'] .family-pricing-choice {
+  border-top-color: var(--ds-border);
+}
+
+html[data-theme='light'] .family-pricing-choice strong {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .family-pricing-choice span {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .overview-backup,
+html[data-theme='light'] .database-recovery,
+html[data-theme='light'] .total-breakdown,
+html[data-theme='light'] .mps-presets,
+html[data-theme='light'] .travel-total,
+html[data-theme='light'] .uniflow-device-summary,
+html[data-theme='light'] .software-recommendation details,
+html[data-theme='light'] .software-group-heading {
+  border-color: var(--ds-border);
+}
+
+html[data-theme='light'] .database-recovery {
+  background: linear-gradient(135deg, #f7fbfd, #ffffff);
+}
+
+html[data-theme='light'] .database-recovery-copy p,
+html[data-theme='light'] .database-recovery-controls small {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .database-recovery-copy small {
+  color: var(--ds-subtle);
+}
+
+html[data-theme='light'] .database-recovery-message {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .database-recovery-message.success {
+  color: var(--ds-success);
+}
+
+html[data-theme='light'] .database-recovery-message.error {
+  color: var(--ds-danger);
+}
+
+html[data-theme='light'] .database-restore-picker {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .database-restore-picker:hover {
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .app-shell :where(input, textarea, select) {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .app-shell :where(input, textarea, select)::placeholder {
+  color: var(--ds-subtle);
+}
+
+html[data-theme='light'] .app-shell :where(input, textarea, select):focus {
+  border-color: var(--ds-sky);
+  box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.16);
+}
+
+html[data-theme='light'] .app-shell :where(button) {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .primary-button {
+  border-color: #d95700;
+  color: var(--ds-navy);
+  background: var(--ds-orange);
+  box-shadow: 0 0.65rem 1.5rem rgba(255, 107, 0, 0.2);
+}
+
+html[data-theme='light'] .primary-button:disabled {
+  box-shadow: none;
+}
+
+html[data-theme='light'] .primary-button:hover:not(:disabled) {
+  background: #e96000;
+}
+
+html[data-theme='light'] .secondary-button {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-navy);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .secondary-button:hover:not(:disabled) {
+  border-color: var(--ds-sky);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .pagination-controls {
+  border-color: var(--ds-border);
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .pagination-count {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .pagination-size select {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .pagination-loading {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .maintenance-panel-heading-actions .maintenance-download-button {
+  border-color: #7cc8e3;
+  color: #006e95;
+  background: var(--ds-blue-wash);
+  box-shadow: none;
+}
+
+html[data-theme='light'] .maintenance-panel-heading-actions .maintenance-download-button:hover:not(:disabled) {
+  border-color: var(--ds-sky);
+  background: #d9f0f8;
+}
+
+html[data-theme='light'] .maintenance-insight-panel {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+  box-shadow: 0 0.45rem 1rem var(--ds-shadow);
+}

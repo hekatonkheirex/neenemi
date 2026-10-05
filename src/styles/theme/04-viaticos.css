@@ -1,0 +1,111 @@
+
+
+html[data-theme='light'] .travel-overview-row-heading strong,
+html[data-theme='light'] .travel-overview-destination-content strong {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .travel-overview-row-heading small,
+html[data-theme='light'] .travel-overview-destination-content small {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .travel-overview-row > b,
+html[data-theme='light'] .travel-overview-destination > b {
+  color: var(--ds-success);
+}
+
+html[data-theme='light'] .travel-overview-card {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+  box-shadow: none;
+}
+
+html[data-theme='light'] .travel-overview-track {
+  background: var(--ds-chart-track);
+}
+
+html[data-theme='light'] .travel-overview-rank {
+  border-color: var(--ds-border);
+  color: var(--ds-navy);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .summary-label,
+html[data-theme='light'] .detail-label,
+html[data-theme='light'] .module-section,
+html[data-theme='light'] .muted-note,
+html[data-theme='light'] .form-hint,
+html[data-theme='light'] .source-cell,
+html[data-theme='light'] .empty-inline,
+html[data-theme='light'] .empty-cell,
+html[data-theme='light'] .analysis-meta,
+html[data-theme='light'] .overview-import-meta,
+html[data-theme='light'] .software-note,
+html[data-theme='light'] .sla-note,
+html[data-theme='light'] .coverage-note,
+html[data-theme='light'] .coverage-catalog-hint,
+html[data-theme='light'] .coverage-catalog-empty {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .source-details summary {
+  color: #00698f;
+}
+
+html[data-theme='light'] .source-details-grid {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .source-detail-item span {
+  color: var(--ds-subtle);
+}
+
+html[data-theme='light'] .source-detail-item strong {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .module-card {
+  border-color: var(--ds-border);
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .module-card:hover {
+  border-color: var(--ds-sky);
+  background: var(--ds-blue-wash);
+  box-shadow: 0 0.8rem 1.8rem rgba(0, 163, 224, 0.12);
+}
+
+html[data-theme='light'] .module-symbol {
+  border-color: var(--ds-sky);
+  color: var(--ds-navy);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .module-card strong {
+  color: var(--ds-navy);
+}
+
+html[data-theme='light'] .module-card > span:not(.module-card-top):not(.module-arrow) {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .module-arrow {
+  color: var(--ds-orange);
+}
+
+html[data-theme='light'] .data-tag,
+html[data-theme='light'] .software-tier {
+  border-color: #a8d8e9;
+  color: #006e95;
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .io-panel,
+html[data-theme='light'] .pricing-panel,
+html[data-theme='light'] .total-card {
+  border-color: #b9d5e5;
+  background: linear-gradient(135deg, #f7fbfd, #ffffff);
+}

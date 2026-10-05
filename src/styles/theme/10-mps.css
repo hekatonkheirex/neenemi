@@ -1,0 +1,122 @@
+
+
+html[data-theme='light'] .mps-model-select {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .mps-model-select strong,
+html[data-theme='light'] .mps-model-actions .text-button,
+html[data-theme='light'] .mps-consumables-heading h3,
+html[data-theme='light'] .mps-copy-row strong {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .mps-editor-header h2 {
+  color: #ffffff;
+}
+
+html[data-theme='light'] .mps-model-select small,
+html[data-theme='light'] .mps-model-volume,
+html[data-theme='light'] .mps-model-meta {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .mps-source-badge {
+  border-color: var(--ds-border-strong);
+  color: #006e95;
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .mps-editor-overlay {
+  background: rgba(26, 44, 76, 0.42);
+}
+
+html[data-theme='light'] .mps-editor {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+  box-shadow: 0 1.5rem 4rem rgba(26, 44, 76, 0.22);
+}
+
+html[data-theme='light'] .mps-editor-header {
+  border-color: var(--ds-border);
+  background: linear-gradient(135deg, var(--ds-navy), #28466f);
+}
+
+html[data-theme='light'] .mps-editor-header p {
+  color: #d9e8f4;
+}
+
+/* Estos dos estaban agrupados con el p de la cabecera navy: texto pálido sobre blanco (1,1:1). */
+html[data-theme='light'] .mps-copy-row small,
+html[data-theme='light'] .mps-consumables-heading p {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .mps-editor-close {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme='light'] .mps-editor-banner,
+html[data-theme='light'] .mps-copy-row {
+  border-color: #b9d8e5;
+  color: var(--ds-muted);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .mps-editor-error {
+  border-color: #efb3b0;
+  color: var(--ds-danger);
+  background: #fff1f0;
+}
+
+html[data-theme='light'] .mps-copy-controls select,
+html[data-theme='light'] .mps-consumable-editor-row select,
+html[data-theme='light'] .mps-consumable-editor-row input {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .mps-consumable-editor-row {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .mps-consumable-index {
+  color: #00698f;
+}
+
+html[data-theme='light'] .mps-editor-empty {
+  border-color: #a8cde1;
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .mps-editor-footer {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .mps-volume-status {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .mps-volume-status.good {
+  border-color: #9bd5b9;
+  color: var(--ds-success);
+  background: #edf9f2;
+}
+
+html[data-theme='light'] .mps-volume-status.low,
+html[data-theme='light'] .mps-volume-status.high,
+html[data-theme='light'] .impact-label {
+  border-color: #e7c68b;
+  color: var(--ds-warning);
+  background: #fff8e8;
+}
+
+html[data-theme='light'] .impact-label {
+  background: transparent;
+}

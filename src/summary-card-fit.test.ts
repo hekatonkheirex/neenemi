@@ -1,7 +1,8 @@
+import { readCssBundle } from './test-support/css';
 import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const css = fs.readFileSync(new URL('./index.css', import.meta.url), 'utf8');
+const css = readCssBundle('src/index.css');
 
 describe('tarjetas de resumen', () => {
   it('el valor escala con el ancho de la tarjeta para que un monto largo no se desborde', () => {

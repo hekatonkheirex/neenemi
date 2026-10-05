@@ -1,0 +1,307 @@
+
+
+/* The overview panels share a gap; card shadows made that gap look like a second surface. */
+html[data-theme='light'] .travel-overview-panels {
+  background: transparent;
+  box-shadow: none !important;
+}
+
+html[data-theme='light'] .travel-overview-panels > .travel-overview-card {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+  box-shadow: none !important;
+}
+
+html[data-theme='light'] .travel-page :where(.summary-card, .sales-card, .total-card) {
+  box-shadow: none !important;
+}
+
+/* Diálogo de confirmación (src/core/ConfirmDialog.tsx) */
+.confirm-dialog {
+  width: min(28rem, calc(100vw - 2rem));
+  padding: 1.4rem 1.5rem 1.25rem;
+  border: 1px solid rgba(144, 174, 229, 0.28);
+  border-radius: 0.8rem;
+  color: #edf3ff;
+  background: #0f1b30;
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.5);
+}
+
+.confirm-dialog::backdrop {
+  background: rgba(4, 9, 18, 0.62);
+}
+
+.confirm-dialog h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
+}
+
+.confirm-dialog p {
+  margin: 0;
+  color: #b9c9e6;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+}
+
+.confirm-dialog-actions button:focus-visible {
+  outline: 3px solid rgba(0, 163, 224, 0.5);
+  outline-offset: 2px;
+}
+
+.confirm-dialog-danger {
+  border-color: rgba(255, 107, 0, 0.7);
+  color: #fff4ec;
+  background: linear-gradient(135deg, #e86400, #b84d00);
+  box-shadow: none;
+}
+
+.confirm-dialog-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff7a1a, #cc5700);
+}
+
+html[data-theme='light'] .confirm-dialog {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-navy);
+  background: var(--ds-surface);
+  box-shadow: 0 1.5rem 4rem rgba(9, 16, 28, 0.25);
+}
+
+html[data-theme='light'] .confirm-dialog::backdrop {
+  background: rgba(9, 16, 28, 0.4);
+}
+
+html[data-theme='light'] .confirm-dialog p {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .confirm-dialog-danger {
+  border-color: #b84d00;
+  color: #fff;
+  background: #c75300;
+}
+
+html[data-theme='light'] .confirm-dialog-danger:hover:not(:disabled) {
+  background: #a84500;
+}
+
+/* Respeta la preferencia del sistema: sin animaciones ni transiciones largas. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Limpieza de cargas en el Resumen */
+.overview-clear {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.75rem 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(150, 175, 218, 0.14);
+}
+
+.overview-clear p {
+  flex: 1 1 18rem;
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.overview-clear .global-clear-message {
+  max-width: none;
+  white-space: normal;
+}
+
+html[data-theme='light'] .overview-clear {
+  border-top-color: var(--ds-border);
+}
+
+/* Paleta de módulos (src/app/CommandPalette.tsx) */
+.palette-button {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.38rem 0.7rem;
+  border: 1px solid rgba(144, 174, 229, 0.23);
+  border-radius: 0.55rem;
+  color: #c6d7f2;
+  background: rgba(25, 43, 73, 0.7);
+  font-size: 0.68rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.palette-button kbd {
+  padding: 0.05rem 0.35rem;
+  border: 1px solid rgba(144, 174, 229, 0.3);
+  border-radius: 0.3rem;
+  font: inherit;
+  font-size: 0.6rem;
+  opacity: 0.8;
+}
+
+.palette-button:hover {
+  border-color: rgba(117, 166, 255, 0.55);
+}
+
+.palette-button:focus-visible,
+.command-palette-input:focus-visible {
+  outline: 3px solid rgba(0, 163, 224, 0.4);
+  outline-offset: 2px;
+}
+
+.command-palette {
+  width: min(32rem, calc(100vw - 2rem));
+  margin: 12vh auto auto;
+  padding: 0.6rem;
+  border: 1px solid rgba(144, 174, 229, 0.28);
+  border-radius: 0.8rem;
+  color: #edf3ff;
+  background: #0f1b30;
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.5);
+}
+
+.command-palette::backdrop {
+  background: rgba(4, 9, 18, 0.62);
+}
+
+.command-palette-input {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(144, 174, 229, 0.25);
+  border-radius: 0.55rem;
+  color: inherit;
+  background: rgba(25, 43, 73, 0.5);
+  font-size: 0.9rem;
+}
+
+.command-palette-list {
+  max-height: 20rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.command-palette-list li {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.55rem 0.8rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.command-palette-list li::before {
+  content: none;
+}
+
+.command-palette-list li small {
+  color: #8fa5c7;
+  font-size: 0.68rem;
+}
+
+.command-palette-list li.active {
+  background: rgba(61, 119, 228, 0.3);
+}
+
+.command-palette-list li.command-palette-empty {
+  color: #8fa5c7;
+  cursor: default;
+}
+
+html[data-theme='light'] .palette-button {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-navy);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .command-palette {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-navy);
+  background: var(--ds-surface);
+  box-shadow: 0 1.5rem 4rem rgba(9, 16, 28, 0.25);
+}
+
+html[data-theme='light'] .command-palette::backdrop {
+  background: rgba(9, 16, 28, 0.4);
+}
+
+html[data-theme='light'] .command-palette-input {
+  border-color: var(--ds-border-strong);
+  background: var(--ds-bg, #f4f6f9);
+}
+
+html[data-theme='light'] .command-palette-list li small,
+html[data-theme='light'] .command-palette-list li.command-palette-empty {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .command-palette-list li.active {
+  background: var(--ds-blue-wash);
+}
+
+/* Skeleton de carga de módulo (src/app/ModuleSkeleton.tsx) */
+.module-skeleton {
+  /* Aparece tras 150 ms: si el módulo carga más rápido, no hay parpadeo. */
+  opacity: 0;
+  animation: skeleton-appear 0.01ms linear 150ms forwards;
+}
+
+@keyframes skeleton-appear {
+  to { opacity: 1; }
+}
+
+@keyframes skeleton-pulse {
+  50% { opacity: 0.55; }
+}
+
+.skeleton-block {
+  border-radius: 0.6rem;
+  background: rgba(144, 174, 229, 0.16);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-eyebrow { width: 9rem; height: 0.8rem; margin-bottom: 1rem; }
+.skeleton-title { width: min(26rem, 80%); height: 2.6rem; margin-bottom: 1.6rem; }
+.skeleton-table { height: 14rem; }
+
+.skeleton-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+
+.skeleton-cards .skeleton-block { height: 6rem; }
+
+html[data-theme='light'] .skeleton-block {
+  background: var(--ds-border);
+}
+
+@media (max-width: 720px) {
+  .skeleton-cards { grid-template-columns: 1fr; }
+}
+
+/* Los importes del Resumen de Proformas usaban #d8e6fb (pensado para el fondo oscuro). */
+html[data-theme='light'] .total-breakdown b {
+  color: var(--ds-navy);
+}

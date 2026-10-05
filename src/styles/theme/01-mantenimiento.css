@@ -1,0 +1,437 @@
+/* Datasys light mode is the default for bright office environments. */
+:root {
+  --ds-navy: #1a2c4c;
+  --ds-orange: #ff6b00;
+  --ds-sky: #00a3e0;
+  --ds-page: #f4f6f9;
+  --ds-surface: #ffffff;
+  --ds-surface-alt: #eef3f8;
+  --ds-ink: #18243a;
+  --ds-muted: #4a5568;
+  --ds-subtle: #58677d;
+  --ds-border: #d6deea;
+  --ds-border-strong: #b7c8da;
+  --ds-blue-wash: #e9f5fb;
+  --ds-orange-wash: #fff0e6;
+  --ds-success: #176b45;
+  --ds-warning: #925a00;
+  --ds-danger: #b42318;
+  --ds-shadow: rgba(26, 44, 76, 0.1);
+  --ds-chart-surface: #ffffff;
+  --ds-chart-track: #e9eef3;
+  --ds-chart-danger: #e14c3d;
+  --ds-chart-warning: #ff9d3d;
+  --ds-chart-success: #42a46f;
+}
+
+html[data-theme='light'] {
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --ds-chart-surface: #0f1b30;
+  --ds-chart-track: #203750;
+}
+
+html[data-theme='dark'] .maintenance-executive-kpi,
+html[data-theme='dark'] .maintenance-priority-panel,
+html[data-theme='dark'] .maintenance-subset-panel {
+  border-color: rgba(144, 174, 229, 0.2);
+  background: rgba(18, 31, 54, 0.72);
+}
+
+html[data-theme='dark'] .maintenance-executive-kpi.critical,
+html[data-theme='dark'] .maintenance-priority-panel.critical {
+  border-color: rgba(255, 130, 130, 0.35);
+  background: rgba(89, 31, 43, 0.28);
+}
+
+html[data-theme='dark'] .maintenance-executive-kpi.attention,
+html[data-theme='dark'] .maintenance-priority-panel.attention {
+  border-color: rgba(255, 193, 94, 0.34);
+  background: rgba(92, 63, 25, 0.24);
+}
+
+html[data-theme='dark'] .maintenance-executive-kpi.unrecognized {
+  border-color: rgba(160, 151, 255, 0.35);
+  background: rgba(57, 48, 111, 0.24);
+}
+
+html[data-theme='dark'] .maintenance-subset-panel.unrecognized {
+  border-color: rgba(160, 151, 255, 0.35);
+  background: rgba(57, 48, 111, 0.24);
+}
+
+html[data-theme='dark'] .maintenance-subset-panel.idle {
+  border-color: rgba(144, 174, 229, 0.2);
+  background: rgba(18, 31, 54, 0.62);
+}
+
+html[data-theme='dark'] .maintenance-subset-panel.recommended {
+  border-color: rgba(255, 130, 75, 0.35);
+  background: rgba(89, 45, 25, 0.24);
+}
+
+html[data-theme='dark'] .maintenance-executive-kpi strong,
+html[data-theme='dark'] .maintenance-priority-heading h3,
+html[data-theme='dark'] .maintenance-insight-panel h3,
+html[data-theme='dark'] .maintenance-priority-row strong {
+  color: #dce8fc;
+}
+
+html[data-theme='dark'] .maintenance-executive-kpi span,
+html[data-theme='dark'] .maintenance-executive-kpi small,
+html[data-theme='dark'] .maintenance-priority-heading p,
+html[data-theme='dark'] .maintenance-priority-row small,
+html[data-theme='dark'] .maintenance-priority-empty,
+html[data-theme='dark'] .maintenance-insight-panel li {
+  color: #8fa5c7;
+}
+
+html[data-theme='dark'] .maintenance-critical-trend {
+  color: #ff8585;
+}
+
+html[data-theme='dark'] .maintenance-priority-heading > span {
+  background: rgba(144, 174, 229, 0.14);
+  color: #dce8fc;
+}
+
+html[data-theme='dark'] .maintenance-panel-heading-actions > span {
+  background: rgba(144, 174, 229, 0.14);
+  color: #dce8fc;
+}
+
+html[data-theme='dark'] .maintenance-panel-heading-actions .maintenance-download-button {
+  border-color: rgba(0, 163, 224, 0.5);
+  color: #c4efff;
+  background: rgba(0, 163, 224, 0.14);
+}
+
+html[data-theme='dark'] .maintenance-panel-heading-actions .maintenance-download-button:hover:not(:disabled) {
+  border-color: rgba(0, 163, 224, 0.82);
+  background: rgba(0, 163, 224, 0.24);
+}
+
+html[data-theme='dark'] .maintenance-insight-panel {
+  border-color: rgba(144, 174, 229, 0.2);
+  background: rgba(18, 31, 54, 0.58);
+}
+
+html[data-theme='dark'] .maintenance-subset-row strong {
+  color: #dce8fc;
+}
+
+html[data-theme='dark'] .maintenance-subset-row small {
+  color: #8fa5c7;
+}
+
+html[data-theme='light'] body {
+  color: var(--ds-ink);
+  background: var(--ds-page);
+}
+
+html[data-theme='light'] .app-shell {
+  color: var(--ds-ink);
+  background: var(--ds-page);
+}
+
+html[data-theme='light'] .app-shell :where(h1, h2, h3, h4, h5, strong) {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .app-shell :where(p, li, td, th, label, span, small) {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .sidebar {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+  box-shadow: 0.75rem 0 2rem rgba(26, 44, 76, 0.06);
+}
+
+html[data-theme='light'] .brand-block strong {
+  color: var(--ds-navy);
+}
+
+html[data-theme='light'] .brand-block span {
+  color: var(--ds-muted);
+}
+
+
+html[data-theme='light'] .nav-label {
+  color: var(--ds-subtle);
+}
+
+html[data-theme='light'] .nav-item {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .nav-item:hover {
+  color: var(--ds-navy);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .nav-item.active {
+  color: var(--ds-navy);
+  background: var(--ds-orange-wash);
+  box-shadow: inset 3px 0 var(--ds-orange);
+}
+
+html[data-theme='light'] .nav-icon {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-navy);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .sidebar-footer {
+  border-color: var(--ds-border);
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .topbar {
+  border-color: var(--ds-border);
+  background: rgba(255, 255, 255, 0.94);
+}
+
+html[data-theme='light'] .breadcrumb {
+  color: var(--ds-muted);
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.global-clear-button {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  padding: 0.38rem 0.7rem;
+  border: 1px solid rgba(255, 107, 0, 0.58);
+  border-radius: 0.55rem;
+  color: #ffd1b2;
+  background: rgba(255, 107, 0, 0.14);
+  font-size: 0.68rem;
+  font-weight: 850;
+  white-space: nowrap;
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+}
+
+.global-clear-button:hover:not(:disabled) {
+  border-color: #ff6b00;
+  color: #fff4ec;
+  background: rgba(255, 107, 0, 0.28);
+}
+
+.global-clear-button:focus-visible {
+  outline: 3px solid rgba(0, 163, 224, 0.28);
+  outline-offset: 2px;
+}
+
+.global-clear-button:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.global-clear-message {
+  max-width: 18rem;
+  overflow: hidden;
+  color: #8fe5b5;
+  font-size: 0.64rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.global-clear-message.error {
+  color: #ff9fa8;
+}
+
+html[data-theme='light'] .global-clear-message {
+  color: var(--ds-success);
+}
+
+html[data-theme='light'] .global-clear-message.error {
+  color: var(--ds-danger);
+}
+
+html[data-theme='light'] .global-clear-button {
+  border-color: rgba(255, 107, 0, 0.48);
+  color: #b84d00;
+  background: var(--ds-orange-wash);
+}
+
+html[data-theme='light'] .global-clear-button:hover:not(:disabled) {
+  border-color: var(--ds-orange);
+  color: #8f3b00;
+  background: #ffe4d2;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(144, 174, 229, 0.25);
+  border-radius: 999px;
+  color: #c6d7f2;
+  background: rgba(18, 31, 54, 0.72);
+  font-size: 0.7rem;
+  font-weight: 800;
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+}
+
+.theme-toggle:hover {
+  border-color: rgba(117, 166, 255, 0.58);
+  background: rgba(39, 67, 112, 0.86);
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid rgba(0, 163, 224, 0.28);
+  outline-offset: 2px;
+}
+
+.theme-toggle-track {
+  position: relative;
+  display: block;
+  width: 2rem;
+  height: 1.1rem;
+  border-radius: 999px;
+  background: rgba(144, 174, 229, 0.3);
+}
+
+.theme-toggle-thumb {
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--ds-orange);
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+html[data-theme='dark'] .theme-toggle-thumb {
+  transform: translateX(0.9rem);
+  background: var(--ds-sky);
+}
+
+html[data-theme='light'] .theme-toggle {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-navy);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .theme-toggle:hover {
+  border-color: var(--ds-sky);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .theme-toggle-track {
+  background: #d7e3ee;
+}
+
+/* #007ea8 daba 4,26:1 sobre blanco a 11 px; #00698f llega a 6:1. */
+html[data-theme='light'] .eyebrow {
+  color: #00698f;
+}
+
+html[data-theme='light'] h1,
+html[data-theme='light'] h2 {
+  color: var(--ds-navy);
+}
+
+html[data-theme='light'] .lead,
+html[data-theme='light'] .section-heading p,
+html[data-theme='light'] .scope-note {
+  color: var(--ds-muted);
+}
+
+/* Keep the existing module structure, but turn its dark surfaces into clean office cards. */
+html[data-theme='light'] .app-shell :where(
+  [class*='-card'],
+  [class*='-panel'],
+  [class*='-table-wrap'],
+  [class*='-record'],
+  [class*='-draft'],
+  [class*='-option']
+):where(:not(
+  [class*='-card-'],
+  [class*='-panel-'],
+  [class*='-table-wrap-'],
+  [class*='-record-'],
+  [class*='-draft-'],
+  [class*='-option-']
+)) {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+  box-shadow: 0 0.65rem 1.6rem var(--ds-shadow);
+}
+
+html[data-theme='light'] .app-shell :where(
+  .history-item,
+  .output-summary-grid > div,
+  .travel-estimate,
+  .travel-bar-track,
+  .uniflow-device-row,
+  .uniflow-tier-hint,
+  .software-feature-row,
+  .coverage-model-row,
+  .coverage-bottleneck,
+  .mps-volume-status
+) {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+  box-shadow: 0 0.65rem 1.6rem var(--ds-shadow);
+}
+
+html[data-theme='light'] .app-shell :where(
+    .suggestion-list,
+    .mps-model-list,
+    .history-list,
+    .coverage-color-list
+  ) {
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .summary-card,
+html[data-theme='light'] .detail-card,
+html[data-theme='light'] .sales-card,
+html[data-theme='light'] .total-card,
+html[data-theme='light'] .form-card {
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .legacy-fleet-source {
+  border-color: var(--ds-border);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .maintenance-normal-toggle,
+html[data-theme='light'] .maintenance-rule-row strong,
+html[data-theme='light'] .maintenance-period strong,
+html[data-theme='light'] .maintenance-period span,
+html[data-theme='light'] .maintenance-period small {
+  color: var(--ds-ink);
+}
+
+html[data-theme='light'] .maintenance-period-list,
+html[data-theme='light'] .maintenance-rule-editor {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .maintenance-rule-row,
+html[data-theme='light'] .maintenance-period {
+  border-color: var(--ds-border);
+}
+
+html[data-theme='light'] .maintenance-rule-row small,
+html[data-theme='light'] .maintenance-period small,
+html[data-theme='light'] .maintenance-period .table-secondary-text {
+  color: var(--ds-muted);
+}

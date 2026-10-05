@@ -1,0 +1,210 @@
+
+
+.catalog-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.8fr) auto;
+  gap: 0.75rem;
+  align-items: end;
+  margin-bottom: 1.25rem;
+}
+
+.catalog-empty-state {
+  display: grid;
+  gap: 0.7rem;
+  min-height: 15rem;
+  align-content: center;
+  padding: 2rem;
+  border: 1px dashed rgba(144, 174, 229, 0.28);
+  border-radius: 0.85rem;
+  color: #9fb2d1;
+  background: rgba(15, 27, 48, 0.58);
+  text-align: center;
+}
+
+.catalog-empty-state .eyebrow {
+  margin-bottom: 0;
+}
+
+.catalog-empty-state h2 {
+  margin: 0;
+  color: #e5eeff;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+}
+
+.catalog-empty-state p,
+.catalog-empty-state small {
+  max-width: 48rem;
+  margin: 0 auto;
+  line-height: 1.55;
+}
+
+.catalog-empty-state small {
+  color: #8298ba;
+  font-size: 0.72rem;
+}
+
+.price-list-controls {
+  grid-template-columns: minmax(0, 1.35fr) minmax(180px, 0.8fr) minmax(210px, 0.9fr) auto;
+}
+
+.catalog-header-actions .secondary-button {
+  cursor: pointer;
+}
+
+.price-list-model-selection {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid rgba(144, 174, 229, 0.15);
+  border-radius: 0.85rem;
+  background: rgba(15, 27, 48, 0.68);
+}
+
+.price-list-model-selection-heading {
+  display: flex;
+  gap: 1rem;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.price-list-model-selection-heading .eyebrow {
+  margin-bottom: 0.5rem;
+}
+
+.price-list-model-selection-heading h2 {
+  margin-bottom: 0.45rem;
+  font-size: 1.35rem;
+}
+
+.price-list-model-selection-heading p {
+  max-width: 48rem;
+  margin: 0;
+  color: #8fa5c7;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.price-list-model-selection-heading > strong {
+  flex: 0 0 auto;
+  padding-top: 1.15rem;
+  color: #8fe5b5;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.price-list-model-selection-toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(0, 1.25fr);
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.price-list-model-selection-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: end;
+}
+
+.price-list-model-selection-actions .secondary-button {
+  min-width: 0;
+  padding: 0.68rem 0.8rem;
+}
+
+.price-list-model-selection-actions .checkbox-field {
+  min-height: 2.75rem;
+  margin-left: auto;
+}
+
+.price-list-model-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  max-height: 18rem;
+  padding-right: 0.2rem;
+  overflow-y: auto;
+}
+
+.price-list-model-option {
+  display: flex;
+  min-width: 0;
+  gap: 0.65rem;
+  align-items: flex-start;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid rgba(144, 174, 229, 0.13);
+  border-radius: 0.6rem;
+  color: #c8d6ed;
+  background: rgba(18, 31, 54, 0.55);
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.price-list-model-option:hover,
+.price-list-model-option.selected {
+  border-color: rgba(0, 163, 224, 0.55);
+  background: rgba(0, 163, 224, 0.1);
+}
+
+.price-list-model-option input {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  margin-top: 0.12rem;
+  accent-color: #ff6b00;
+}
+
+.price-list-model-option span {
+  display: grid;
+  min-width: 0;
+  gap: 0.2rem;
+}
+
+.price-list-model-option strong,
+.price-list-model-option small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.price-list-model-option strong {
+  color: #dce8fc;
+  font-size: 0.74rem;
+}
+
+.price-list-model-option small {
+  color: #7187aa;
+  font-size: 0.66rem;
+}
+
+.search-field {
+  display: grid;
+  gap: 0.45rem;
+  color: #7890b8;
+  font-size: 0.67rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.search-field input {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(144, 174, 229, 0.17);
+  border-radius: 0.5rem;
+  outline: 0;
+  color: #e7efff;
+  background: rgba(18, 31, 54, 0.7);
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.search-field input:focus {
+  border-color: rgba(116, 166, 255, 0.7);
+  box-shadow: 0 0 0 3px rgba(66, 119, 233, 0.13);
+}
+
+.search-field input::placeholder {
+  color: #536887;
+}

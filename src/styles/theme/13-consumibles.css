@@ -1,0 +1,213 @@
+
+
+html[data-theme='light'] .legacy-detail-row > td,
+html[data-theme='light'] .legacy-timeline-event {
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .legacy-expandable-row:hover,
+html[data-theme='light'] .legacy-expandable-row.expanded {
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .legacy-detail-panel,
+html[data-theme='light'] .legacy-timeline,
+html[data-theme='light'] .legacy-trend {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .legacy-timeline-event.service-event {
+  background: #fff4ed;
+}
+
+html[data-theme='light'] .legacy-detail-heading span,
+html[data-theme='light'] .legacy-timeline-event small,
+html[data-theme='light'] .legacy-trend-label span,
+html[data-theme='light'] .legacy-trend-legend {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .legacy-analysis-note {
+  border-color: #a8d8e9;
+  color: var(--ds-muted);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .legacy-analysis-note strong,
+html[data-theme='light'] .legacy-chart-inset-heading strong {
+  color: var(--ds-navy);
+}
+
+html[data-theme='light'] .legacy-analysis-note.warning {
+  border-color: #e7c68b;
+  background: #fff8e8;
+}
+
+html[data-theme='light'] .legacy-chart-inset {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .legacy-chart-svg {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .legacy-chart-legend-item strong,
+html[data-theme='light'] .legacy-donut-total {
+  color: var(--ds-navy);
+}
+
+html[data-theme='light'] .legacy-donut-track,
+html[data-theme='light'] .legacy-chart-track {
+  fill: var(--ds-surface);
+  stroke: var(--ds-border);
+}
+
+html[data-theme='light'] .legacy-donut-label {
+  fill: var(--ds-muted);
+}
+
+html[data-theme='light'] .source-data-heading p {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .source-data-batches,
+html[data-theme='light'] .source-data-viewer {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-alt);
+}
+
+html[data-theme='light'] .source-data-panel {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .source-data-batch {
+  border-color: var(--ds-border);
+  color: var(--ds-ink);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .source-data-batch:hover,
+html[data-theme='light'] .source-data-batch.active {
+  border-color: var(--ds-sky);
+  background: var(--ds-blue-wash);
+}
+
+html[data-theme='light'] .source-data-batch strong,
+html[data-theme='light'] .source-data-viewer-heading h3 {
+  color: var(--ds-navy);
+}
+
+html[data-theme='light'] .source-data-batch span,
+html[data-theme='light'] .source-data-batch small,
+html[data-theme='light'] .source-data-heading p,
+html[data-theme='light'] .source-data-meta,
+html[data-theme='light'] .source-data-pagination,
+html[data-theme='light'] .source-data-sheet-select {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .source-data-remove-button {
+  border-color: #efb3b0;
+  color: var(--ds-danger);
+}
+
+html[data-theme='light'] .source-data-remove-button:hover:not(:disabled) {
+  border-color: var(--ds-danger);
+  background: #fff1f0;
+}
+
+html[data-theme='light'] .source-data-note strong {
+  color: var(--ds-success);
+}
+
+html[data-theme='light'] .source-data-error {
+  border-color: #efb3b0;
+  color: var(--ds-danger);
+  background: #fff1f0;
+}
+
+html[data-theme='light'] .source-data-bundle {
+  border-color: #acd9e8;
+  background: linear-gradient(135deg, #f0fbfe, var(--ds-surface-alt));
+}
+
+html[data-theme='light'] .source-data-bundle-heading p,
+html[data-theme='light'] .source-data-bundle-count,
+html[data-theme='light'] .source-data-bundle-actions,
+html[data-theme='light'] .source-data-bundle-copy span,
+html[data-theme='light'] .source-data-bundle-copy small {
+  color: var(--ds-muted);
+}
+
+html[data-theme='light'] .source-data-bundle-count strong,
+html[data-theme='light'] .source-data-bundle-copy em {
+  color: var(--ds-success);
+}
+
+html[data-theme='light'] .source-data-bundle-row {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .source-data-bundle-row.selected {
+  border-color: #a8d8bc;
+  background: #f4fcf7;
+}
+
+html[data-theme='light'] .source-data-bundle-index {
+  color: var(--ds-sky-dark);
+}
+
+html[data-theme='light'] .source-data-bundle-copy strong {
+  color: var(--ds-navy);
+}
+
+html[data-theme='light'] .source-data-table th {
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .source-data-table .source-row-number {
+  color: var(--ds-success);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .source-data-table .source-header-row td {
+  color: var(--ds-navy);
+  background: var(--ds-blue-wash);
+}
+
+@media (max-width: 720px) {
+  html[data-theme='light'] .topbar {
+    flex-wrap: wrap;
+    align-content: center;
+    min-height: 4.8rem;
+    padding: 0.7rem 1rem;
+  }
+
+  html[data-theme='light'] .topbar-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .topbar-actions {
+    flex-wrap: wrap;
+  }
+
+}
+
+@media print {
+  /* The report uses a white sheet; page margins must not inherit the app theme. */
+  html,
+  body,
+  .app-shell {
+    background: #ffffff !important;
+  }
+
+  .theme-toggle {
+    display: none;
+  }
+}

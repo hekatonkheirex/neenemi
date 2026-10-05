@@ -1,7 +1,8 @@
+import { readCssBundle } from './test-support/css';
 import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const css = fs.readFileSync(new URL('./index.css', import.meta.url), 'utf8');
+const css = readCssBundle('src/index.css');
 const rule = (selector: string) => css.match(new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*{([^}]*)}`))?.[1] ?? '';
 
 describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {

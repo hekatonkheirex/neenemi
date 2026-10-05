@@ -1,3 +1,4 @@
+import { readCssBundle } from './test-support/css';
 import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
@@ -12,8 +13,8 @@ const ratio = (a: string, b: string) => {
   return (hi + 0.05) / (lo + 0.05);
 };
 
-const theme = fs.readFileSync(new URL('./theme.css', import.meta.url), 'utf8');
-const indexCss = fs.readFileSync(new URL('./index.css', import.meta.url), 'utf8');
+const theme = readCssBundle('src/theme.css');
+const indexCss = readCssBundle('src/index.css');
 const white = '#ffffff';
 const page = '#f4f6f9';
 const blueWash = '#e9f5fb';
@@ -60,7 +61,7 @@ describe('contraste del tema claro', () => {
   });
 
   describe('tema oscuro (medido contra degradados)', () => {
-    const css = fs.readFileSync(new URL('./index.css', import.meta.url), 'utf8');
+    const css = readCssBundle('src/index.css');
 
     it.each([
       ['botón primario: texto sobre el extremo claro del degradado', '#eff5ff', '#3466cf'],
