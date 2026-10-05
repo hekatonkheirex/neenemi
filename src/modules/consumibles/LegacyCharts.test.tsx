@@ -41,4 +41,11 @@ describe('donutTotalFontSize', () => {
     expect(donutTotalFontSize('₲ 2.723.113.406') * '₲ 2.723.113.406'.length * 0.62).toBeLessThanOrEqual(120);
     expect(donutTotalFontSize('x'.repeat(60))).toBe(10);
   });
+
+  it('Línea: la última marca del eje X (2026-07) cabe en el lienzo', () => {
+    const labels = ['2026-01', '2026-02', '2026-07'];
+    const html = renderToStaticMarkup(<LegacyLineChart ariaLabel="t" labels={labels} series={[{ label: 's', color: '#000', values: [1, 2, 3] }]} />);
+    const x = Number([...html.matchAll(/legacy-chart-axis-label" x="([\d.]+)" y="[\d.]+" text-anchor="middle">2026-07/g)][0][1]);
+    expect(x + (7 * 6.6) / 2).toBeLessThanOrEqual(760);
+  });
 });

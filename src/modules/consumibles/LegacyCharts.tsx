@@ -39,7 +39,8 @@ export function LegacyLineChart({
 
   const height = 280;
   const maximum = Math.max(...series.flatMap((item) => item.values), 1);
-  const margin = { top: 20, right: 18, bottom: 48, left: axisMarginLeft(maximum, valueFormatter) };
+  // Derecha ancha: la última marca del eje X va centrada en el borde del área y su mitad sale hacia fuera.
+  const margin = { top: 20, right: 32, bottom: 48, left: axisMarginLeft(maximum, valueFormatter) };
   const plotWidth = CHART_WIDTH - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   const xAt = (index: number) => margin.left + (labels.length === 1 ? plotWidth / 2 : (index / (labels.length - 1)) * plotWidth);
@@ -211,12 +212,12 @@ function LegacyChartFigure({ children, ariaLabel, series, valueFormatter }: { ch
   </figure>;
 }
 
-function ChartGrid({ margin, plotHeight, maximum, valueFormatter }: { margin: { top: number; left: number }; plotHeight: number; maximum: number; valueFormatter: (value: number) => string }) {
+function ChartGrid({ margin, plotHeight, maximum, valueFormatter }: { margin: { top: number; left: number; right: number }; plotHeight: number; maximum: number; valueFormatter: (value: number) => string }) {
   return <>
     {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
       const y = margin.top + plotHeight - ratio * plotHeight;
       return <g key={ratio}>
-        <line className="legacy-chart-gridline" x1={margin.left} x2={CHART_WIDTH - 18} y1={y} y2={y} />
+        <line className="legacy-chart-gridline" x1={margin.left} x2={CHART_WIDTH - margin.right} y1={y} y2={y} />
         <text className="legacy-chart-axis-label" x={margin.left - 10} y={y + 4} textAnchor="end">{valueFormatter(maximum * ratio)}</text>
       </g>;
     })}
