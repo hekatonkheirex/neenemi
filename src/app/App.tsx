@@ -3,14 +3,15 @@ import { motion, MotionConfig } from 'framer-motion';
 import type { SuiteOverview } from '../db/overview';
 import { suiteModules, type SuiteModule } from './modules';
 import { persistTheme, readTheme, type Theme } from './theme';
-import ImportArchivePanel from './ImportArchivePanel';
-import DatabaseRecoveryPanel, { type BackupHealth } from './DatabaseRecoveryPanel';
+import { type BackupHealth } from './DatabaseRecoveryPanel';
 import { version as suiteVersion } from '../../package.json';
 import suiteLogoUrl from '../../build/icon.png';
 import { confirmAction } from '../core/confirm';
 import ConfirmDialogHost from '../core/ConfirmDialog';
 import CommandPalette from './CommandPalette';
 import Sidebar from './Sidebar';
+import Topbar from './Topbar';
+import Dashboard, { type ClearImportsMessage, type ImportArchiveBatch } from './Dashboard';
 import ModuleSkeleton from './ModuleSkeleton';
 import ChangelogDialog from './ChangelogDialog';
 import { persistLastModule, readLastModule } from './lastModule';
@@ -49,16 +50,6 @@ type ClearImportedFilesResponse = {
   error?: string;
 };
 
-type ClearImportsMessage = {
-  tone: 'success' | 'error';
-  text: string;
-};
-
-type ImportArchiveBatch = {
-  id: string;
-  sourceName: string;
-};
-
 const sectionOrder: SuiteModule['section'][] = ['servicio técnico', 'administrativo', 'software', 'herramientas'];
 
 const sectionLabels: Record<SuiteModule['section'], string> = {
@@ -68,8 +59,6 @@ const sectionLabels: Record<SuiteModule['section'], string> = {
   herramientas: 'Herramientas',
 };
 
-const numberFormat = new Intl.NumberFormat('es-PY');
-const dateFormat = new Intl.DateTimeFormat('es-PY', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
 const functionalModuleIds = new Set(['mantenimiento', 'descontinuador', 'listado-precios', 'proformas', 'mps', 'consumibles', 'viaticos', 'tracking', 'uniflow', 'software-selector', 'sla', 'cobertura']);
 
@@ -266,32 +255,18 @@ export default function App() {
       />
 
       <main className="content">
-        <header className="topbar">
-          <span className="breadcrumb">DCSS Suite / {activeModule?.label ?? 'Inicio'}</span>
-          <div className="topbar-actions">
-            <button className="palette-button" type="button" onClick={() => setPaletteOpen(true)} aria-keyshortcuts="Control+K Meta+K" title="Ir a un módulo (Ctrl/⌘ K)">
-              Ir a… <kbd>Ctrl K</kbd>
-            </button>
-            <button
-              className="theme-toggle"
-              type="button"
-              aria-pressed={theme === 'dark'}
-              aria-label={`Cambiar a modo ${theme === 'light' ? 'oscuro' : 'claro'}`}
-              title={`Cambiar a modo ${theme === 'light' ? 'oscuro' : 'claro'}`}
-              onClick={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
-            >
-              <span className="theme-toggle-track" aria-hidden="true">
-                <span className="theme-toggle-thumb" />
-              </span>
-              <span>{theme === 'light' ? 'Claro' : 'Oscuro'}</span>
-            </button>
-          </div>
-        </header>
+        <Topbar
+          label={activeModule?.label ?? 'Inicio'}
+          theme={theme}
+          onOpenPalette={() => setPaletteOpen(true)}
+          onToggleTheme={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
+        />
 
         <MotionConfig reducedMotion="user">
         <motion.div key={activeModuleId ?? 'inicio'} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, ease: 'easeOut' }}>
         <Suspense fallback={<ModuleSkeleton />}>
           {activeModule ? renderModule(activeModule) : <Dashboard
+            moduleCount={suiteModules.filter((module) => functionalModuleIds.has(module.id)).length}
             onBackupLevel={setBackupLevel}
             overview={overview}
             importsRefreshKey={importsRefreshKey}
@@ -331,60 +306,6 @@ function renderModule(module: SuiteModule) {
   if (module.id === 'sla') return <SlaModule />;
   if (module.id === 'cobertura') return <CoberturaModule />;
   return <ModuleOverview module={module} />;
-}
-
-function Dashboard({
-  onBackupLevel,
-  overview,
-  importsRefreshKey,
-  onRemoveImport,
-  onClearImports,
-  clearingImports,
-  clearImportsMessage,
-}: {
-  onBackupLevel: (level: BackupHealth['level']) => void;
-  overview: SuiteOverview | null;
-  importsRefreshKey: number;
-  onRemoveImport: (batch: ImportArchiveBatch) => Promise<void>;
-  onClearImports: () => void;
-  clearingImports: boolean;
-  clearImportsMessage: ClearImportsMessage | null;
-}) {
-  const functionalModuleCount = suiteModules.filter((module) => functionalModuleIds.has(module.id)).length;
-  const lastApplied = overview?.recentImports.find((item) => item.appliedAt)?.appliedAt;
-
-  return (
-    <div className="page-content">
-      <section className="hero-block">
-        <div className="eyebrow">DCSS SUITE / DATA SYSTEMS</div>
-        <h1>DCSS Suite</h1>
-        <p className="lead">
-          Un solo Electron, una base local y todos los módulos de trabajo en el mismo lugar.
-        </p>
-      </section>
-
-      <section className="summary-grid" aria-label="Resumen de la suite">
-        <div className="summary-card accent">
-          <span className="summary-value">{functionalModuleCount}</span>
-          <span className="summary-label">módulos funcionales</span>
-        </div>
-        <div className="summary-card">
-          <span className="summary-value">{overview ? numberFormat.format(overview.counts.contracts) : '—'}</span>
-          <span className="summary-label">contratos en cartera</span>
-        </div>
-        <div className="summary-card">
-          <span className="summary-value">{lastApplied ? dateFormat.format(new Date(lastApplied)) : '—'}</span>
-          <span className="summary-label">última carga aplicada</span>
-        </div>
-      </section>
-
-      <DatabaseRecoveryPanel refreshKey={importsRefreshKey} onHealthChange={onBackupLevel} onClearImports={onClearImports} clearingImports={clearingImports} clearMessage={clearImportsMessage} />
-
-      <ImportArchivePanel refreshKey={importsRefreshKey} onRemoveBatch={onRemoveImport} />
-
-      <p className="scope-note">Los proyectos actuales permanecen intactos mientras validamos esta nueva aplicación.</p>
-    </div>
-  );
 }
 
 function ModuleOverview({ module }: { module: SuiteModule }) {

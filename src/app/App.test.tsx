@@ -22,7 +22,7 @@ describe('Inicio de la suite', () => {
     expect(markup).toContain('contratos en cartera');
     expect(markup).toContain('última carga aplicada');
     expect(markup).not.toContain('clientes en la base común');
-    const cards = markup.indexOf('summary-grid');
+    const cards = markup.indexOf('aria-label="Resumen de la suite"');
     const recovery = markup.indexOf('Restaurar respaldo SQLite');
     expect(recovery).toBeGreaterThan(cards);
     expect(recovery).toBeLessThan(markup.indexOf('Archivos y filas de origen'));

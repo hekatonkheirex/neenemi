@@ -45,7 +45,7 @@ describe('Inicio', () => {
   const markup = renderToStaticMarkup(<App />);
 
   it('ofrece la paleta en la barra superior', () => {
-    expect(markup).toContain('palette-button');
+    expect(markup).toContain('aria-keyshortcuts="Control+K Meta+K"');
   });
 
   it('muestra Limpiar cargas una sola vez, dentro del panel de respaldo, sin el panel Base compartida', () => {
