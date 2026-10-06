@@ -132,4 +132,9 @@ describe('barra de paginación', () => {
     expect(css).toMatch(/\.pagination-count \{[^}]*margin-right:\s*auto/);
     expect(css).toMatch(/\.pagination-page \{[^}]*white-space:\s*nowrap/);
   });
+
+  it('dentro de la tarjeta del contrato (Discontinuador) es un pie plano: sin fondo ni caja propia', () => {
+    expect(css).toMatch(/\.discontinuation-contract-detail \.pagination-controls \{[^}]*border:\s*0[^}]*border-top:\s*1px solid[^}]*border-radius:\s*0[^}]*background:\s*transparent/);
+    expect(readCssBundle('src/theme.css')).toMatch(/\[data-theme='light'\] \.discontinuation-contract-detail \.pagination-controls \{[^}]*background:\s*transparent/);
+  });
 });

@@ -704,6 +704,16 @@
   background: rgba(18, 31, 54, 0.38);
 }
 
+/* La tarjeta del contrato ya tiene fondo y borde: la paginación va como pie plano (solo una línea divisoria), sin otra caja encima. */
+.discontinuation-contract-detail .pagination-controls {
+  margin: 0;
+  padding: 0.6rem 0.9rem;
+  border: 0;
+  border-top: 1px solid rgba(144, 174, 229, 0.13);
+  border-radius: 0;
+  background: transparent;
+}
+
 .discontinuation-contract-detail summary {
   display: flex;
   gap: 1rem;

@@ -101,6 +101,11 @@ html[data-theme='light'] .discontinuation-customer-meta,
 html[data-theme='light'] .discontinuation-contract-meta,
 html[data-theme='light'] .discontinuation-customer small,
 html[data-theme='light'] .discontinuation-customer > b,
+html[data-theme='light'] .discontinuation-contract-detail .pagination-controls {
+  border-color: var(--ds-border);
+  background: transparent;
+}
+
 html[data-theme='light'] .discontinuation-contract-detail summary small,
 html[data-theme='light'] .discontinuation-contract-detail summary em {
   color: var(--ds-muted);
