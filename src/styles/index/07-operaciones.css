@@ -134,6 +134,10 @@
   font-size: 0.65rem;
 }
 
+.discontinuation-source-loaded-list li::before {
+  content: none;
+}
+
 .discontinuation-source-loaded-list li > span {
   flex: 0 0 auto;
   font-weight: 900;
