@@ -704,6 +704,16 @@
   background: rgba(18, 31, 54, 0.38);
 }
 
+/* Dentro de la tarjeta del contrato la tabla no lleva su propia caja redondeada (cortaba el borde antes del pie): el borde es el de la tarjeta. */
+.discontinuation-contract-detail .catalog-table-wrap {
+  margin-bottom: 0;
+  border: 0;
+  border-top: 1px solid rgba(144, 174, 229, 0.13);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 /* La tarjeta del contrato ya tiene fondo y borde: la paginación va como pie plano (solo una línea divisoria), sin otra caja encima. */
 .discontinuation-contract-detail .pagination-controls {
   margin: 0;

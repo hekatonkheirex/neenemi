@@ -137,4 +137,9 @@ describe('barra de paginación', () => {
     expect(css).toMatch(/\.discontinuation-contract-detail \.pagination-controls \{[^}]*border:\s*0[^}]*border-top:\s*1px solid[^}]*border-radius:\s*0[^}]*background:\s*transparent/);
     expect(readCssBundle('src/theme.css')).toMatch(/\[data-theme='light'\] \.discontinuation-contract-detail \.pagination-controls \{[^}]*background:\s*transparent/);
   });
+
+  it('la tabla dentro de la tarjeta del contrato no lleva caja redondeada propia (el borde es el de la tarjeta)', () => {
+    expect(css).toMatch(/\.discontinuation-contract-detail \.catalog-table-wrap \{[^}]*border:\s*0[^}]*border-radius:\s*0[^}]*background:\s*transparent[^}]*box-shadow:\s*none/);
+    expect(readCssBundle('src/theme.css')).toMatch(/\[data-theme='light'\] \.discontinuation-contract-detail \.catalog-table-wrap \{[^}]*box-shadow:\s*none/);
+  });
 });
