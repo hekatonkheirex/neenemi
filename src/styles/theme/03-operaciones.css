@@ -28,6 +28,16 @@ html[data-theme='light'] .discontinuation-source-loaded-empty {
   color: var(--ds-muted);
 }
 
+html[data-theme='light'] .source-data-source-card {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+}
+
+html[data-theme='light'] .discontinuation-source-card > p,
+html[data-theme='light'] .discontinuation-source-card > small {
+  color: var(--ds-muted);
+}
+
 html[data-theme='light'] .discontinuation-header-metric {
   border-color: #f2b4a5;
   background: #fff5f1;
