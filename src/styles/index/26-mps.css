@@ -490,9 +490,19 @@ html[data-theme='light'] .ai-key-message.error { color: var(--ds-danger); }
 .database-recovery-body { display: grid; grid-template-columns: 1fr; gap: 1rem 2rem; align-items: center; }
 .database-recovery-body .database-recovery-copy h3 { font-size: 1rem; }
 
-.nav-alert { position: relative; display: inline-block; flex: 0 0 auto; width: 0.6rem; height: 0.6rem; margin-left: auto; }
+.nav-alert { position: relative; display: inline-block; flex: 0 0 auto; width: 0.6rem; height: 0.6rem; margin-left: auto; animation: nav-alert-enter 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 .nav-alert-core, .nav-alert-ring { position: absolute; inset: 0; border-radius: 50%; background: #d92d20; }
-.nav-alert-ring { opacity: 0.6; }
+.nav-alert-ring { opacity: 0.55; will-change: transform, opacity; animation: nav-alert-ring 2.4s ease-out infinite; }
+.nav-alert-core { will-change: transform; animation: nav-alert-core 2.4s ease-in-out infinite; }
+
+@keyframes nav-alert-enter { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes nav-alert-ring { 0% { transform: scale(1); opacity: 0.55; } 65%, 100% { transform: scale(2.8); opacity: 0; } }
+@keyframes nav-alert-core { 0%, 50%, 100% { transform: scale(1); } 20% { transform: scale(1.2); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-alert, .nav-alert-core { animation: none; }
+  .nav-alert-ring { display: none; }
+}
 
 .source-data-batch .source-data-batch-date { font-variant-numeric: tabular-nums; }
 html[data-theme] .backup-banner .backup-banner-icon { color: #fff; }

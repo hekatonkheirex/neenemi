@@ -33,7 +33,7 @@ import { installFieldErrors } from '../core/fieldErrors';
 import { installEllipsisTitles } from '../core/ellipsisTitles';
 import { buildPaletteEntries } from './commandPaletteModel';
 import { readJson } from '../core/http';
-import { HEALTH_TIMEOUT_MS, nextFailureCount, shouldAlert, type HealthCheckResult } from './health-monitor';
+import { HEALTH_TIMEOUT_MS, nextFailureCount, sameHealth, shouldAlert, type HealthCheckResult } from './health-monitor';
 
 const MantenimientoModule = lazy(() => import('../modules/operaciones/MantenimientoModule'));
 const DescontinuadorModule = lazy(() => import('../modules/operaciones/DescontinuadorModule'));
@@ -52,6 +52,8 @@ type Health = {
   ok: boolean;
   database: 'ready' | 'error';
 };
+
+const HEALTH_DOWN: Health = { ok: false, database: 'error' };
 
 type ClearImportedFilesResponse = {
   ok: boolean;
@@ -192,8 +194,10 @@ export default function App() {
       }
       failures = nextFailureCount(failures, result);
       if (cancelled) return;
-      if (value && result.kind !== 'unreachable') setHealth(value);
-      else if (shouldAlert(failures, result)) setHealth({ ok: false, database: 'error' });
+      // Se guarda solo si cambió: un objeto nuevo cada 5 s re-renderizaba App y, con él, el módulo abierto entero
+      // (miles de filas en Listado de precios y Discontinuador: ~2,7 s de ventana congelada cada 5 s).
+      if (value && result.kind !== 'unreachable') setHealth((previous) => (sameHealth(previous, value) ? previous : value));
+      else if (shouldAlert(failures, result)) setHealth((previous) => (sameHealth(previous, HEALTH_DOWN) ? previous : HEALTH_DOWN));
     }
     void checkHealth();
     const interval = window.setInterval(() => void checkHealth(), 5000);

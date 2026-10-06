@@ -172,7 +172,8 @@ export type OperationsPortfolioSnapshot = {
   equipment: EquipmentRecord[];
 };
 
-export type DiscontinuationOverviewSnapshot = OperationsPortfolioSnapshot & {
+/** Sin `equipment` plano: la pantalla lee los equipos anidados en cada contrato y repetirlos sumaba ~13 MB a la respuesta. */
+export type DiscontinuationOverviewSnapshot = Omit<OperationsPortfolioSnapshot, 'equipment'> & {
   modelItems: ModelDiscontinuationRecord[];
   stockItems: WaldbottStockRecord[];
 };
@@ -204,10 +205,8 @@ type CustomerJoinRow = {
   equipment_branch: string | null;
   equipment_address: string | null;
   equipment_is_active: number | null;
-  customer_source_details_json: string;
   customer_source_sheet_name: string;
   customer_source_row_number: number;
-  contract_source_details_json: string;
   contract_source_sheet_name: string;
   contract_source_row_number: number;
   equipment_source_details_json: string;
@@ -374,7 +373,6 @@ export class OperationsRepository {
           customer.name AS customer_name,
           customer.customer_type,
           customer.commercial_area,
-          customer.source_details_json AS customer_source_details_json,
           customer.source_sheet_name AS customer_source_sheet_name,
           customer.source_row_number AS customer_source_row_number,
           contract.id AS contract_id,
@@ -387,7 +385,6 @@ export class OperationsRepository {
           contract.division AS contract_division,
           contract.is_active AS contract_is_active,
           contract.requires_closure AS contract_requires_closure,
-          contract.source_details_json AS contract_source_details_json,
           contract.source_sheet_name AS contract_source_sheet_name,
           contract.source_row_number AS contract_source_row_number,
           equipment.id AS equipment_id,
@@ -423,7 +420,7 @@ export class OperationsRepository {
           name: row.customer_name,
           customerType: row.customer_type,
           commercialArea: row.commercial_area,
-          sourceDetails: parseSourceDetails(row.customer_source_details_json),
+          sourceDetails: [],
           sourceSheetName: row.customer_source_sheet_name,
           sourceRowNumber: row.customer_source_row_number,
           contracts: [],
@@ -446,7 +443,7 @@ export class OperationsRepository {
           division: row.contract_division,
           isActive: toBoolean(row.contract_is_active),
           requiresClosure: toBoolean(row.contract_requires_closure),
-          sourceDetails: parseSourceDetails(row.contract_source_details_json),
+          sourceDetails: [],
           sourceSheetName: row.contract_source_sheet_name,
           sourceRowNumber: row.contract_source_row_number,
           equipment: [],
@@ -476,7 +473,23 @@ export class OperationsRepository {
       }
     }
 
+    // El JOIN repetía el JSON de origen del cliente y del contrato en cada fila de equipo (~130 MB de texto para
+    // 10.7 mil equipos). Se lee una sola vez por cliente y por contrato.
+    this.attachSourceDetails('customers', customers);
+    this.attachSourceDetails('contracts', contracts);
+
     return [...customers.values()];
+  }
+
+  private attachSourceDetails(table: 'customers' | 'contracts', records: Map<string, { sourceDetails: SourceDetail[] }>): void {
+    if (records.size === 0) return;
+    const rows = this.database
+      .prepare(`SELECT id, source_details_json FROM ${table} WHERE id IN (SELECT value FROM json_each(?))`)
+      .all(JSON.stringify([...records.keys()])) as Array<{ id: string; source_details_json: string | null }>;
+    for (const row of rows) {
+      const record = records.get(row.id);
+      if (record) record.sourceDetails = parseSourceDetails(row.source_details_json);
+    }
   }
 
   getPortfolioSnapshot(query?: string): OperationsPortfolioSnapshot {
@@ -1305,7 +1318,7 @@ export class OperationsRepository {
     const portfolio = this.getPortfolioSnapshot();
     const modelItems = this.listModelDiscontinuationForEquipment(portfolio.equipment);
     const stockItems = this.listWaldbottStockForPortfolio(portfolio.equipment, modelItems);
-    return { ...portfolio, modelItems, stockItems };
+    return { customers: portfolio.customers, modelItems, stockItems };
   }
 
   private listModelDiscontinuationForEquipment(equipment: readonly EquipmentRecord[]): ModelDiscontinuationRecord[] {

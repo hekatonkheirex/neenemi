@@ -15,3 +15,9 @@ export function nextFailureCount(previous: number, result: HealthCheckResult): n
 export function shouldAlert(failures: number, result: HealthCheckResult): boolean {
   return result.kind === 'reported-down' || failures >= HEALTH_FAILURES_BEFORE_ALERT;
 }
+
+export type HealthSnapshot = { ok: boolean; database: string };
+
+export function sameHealth(left: HealthSnapshot | null, right: HealthSnapshot): boolean {
+  return left !== null && left.ok === right.ok && left.database === right.database;
+}

@@ -8,6 +8,7 @@ import type { PricingSettings, SalesPricePart } from './types';
 import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
 import { readJson, toErrorMessage } from '../../core/http';
+import { memoizeString } from '../../core/memoize';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const decimalFormat = new Intl.NumberFormat('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
@@ -754,9 +755,8 @@ function uniqueModelLabels(items: readonly SalesPricePart[], serviceItems: reado
   return [...models.values()].sort((left, right) => left.localeCompare(right));
 }
 
-function normalizeModelText(value: string): string {
-  return value.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').trim().replace(/\s+/g, ' ').toUpperCase();
-}
+// Se llama por cada ítem del catálogo (decenas de miles) en cada filtrado: sin memoria era ~50 % del bloqueo al abrir el módulo.
+const normalizeModelText = memoizeString((value) => value.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').trim().replace(/\s+/g, ' ').toUpperCase());
 
 function SalesPartDetails({ item }: { item: SalesPricePart }) {
   const details = [

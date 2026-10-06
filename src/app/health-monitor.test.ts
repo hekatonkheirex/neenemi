@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { HEALTH_FAILURES_BEFORE_ALERT, nextFailureCount, shouldAlert, type HealthCheckResult } from './health-monitor';
+import { HEALTH_FAILURES_BEFORE_ALERT, nextFailureCount, sameHealth, shouldAlert, type HealthCheckResult } from './health-monitor';
 
 const unreachable: HealthCheckResult = { kind: 'unreachable' };
 
@@ -30,5 +30,15 @@ describe('monitor de salud', () => {
   it('si el servidor responde expresamente que está caído, avisa de inmediato', () => {
     const down: HealthCheckResult = { kind: 'reported-down' };
     expect(shouldAlert(nextFailureCount(0, down), down)).toBe(true);
+  });
+});
+
+describe('sameHealth', () => {
+  it('un estado igual no genera objeto nuevo (evita re-renderizar toda la app cada 5 s)', () => {
+    const current = { ok: true, database: 'ready' };
+    expect(sameHealth(current, { ok: true, database: 'ready' })).toBe(true);
+    expect(sameHealth(null, current)).toBe(false);
+    expect(sameHealth(current, { ok: false, database: 'error' })).toBe(false);
+    expect(sameHealth(current, { ok: true, database: 'error' })).toBe(false);
   });
 });

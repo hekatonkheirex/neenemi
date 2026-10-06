@@ -403,4 +403,30 @@ describe('OperationsRepository', () => {
 
     database.close();
   });
+  it('el resumen del Discontinuador no repite los equipos en una lista plana y conserva el detalle de origen de cada nivel', () => {
+    const database = makeDatabase();
+    const imports = new ImportRepository(database);
+    const operations = new OperationsRepository(database);
+    const row = (serial: string, extra: Record<string, unknown> = {}) => ({
+      customerName: 'Cliente Detalle', customerType: 'Publico', commercialArea: 'Strategic', contractReference: 'OV-D-1',
+      orderReference: null, contractType: 'Alquiler', startsAt: '2026-01-01', endsAt: '2026-12-31', division: null, active: null,
+      modelLabel: 'iR ADV C3325i', brand: null, description: null, serialNumber: serial, interior: null, city: null, branch: null,
+      address: null, location: null, sourceDetails: [{ label: 'Serie', value: serial }], sourceSheetName: 'Cartera',
+      sourceRowNumber: 2, ...extra,
+    });
+    operations.importLegacyPortfolio(imports.createBatch({ domain: 'operations', sourceName: 'cartera.xlsx' }), [row('A-1'), row('A-2'), row('A-3')] as never);
+
+    const overview = operations.getDiscontinuationOverview();
+    expect(overview).not.toHaveProperty('equipment');
+    const [customer] = overview.customers;
+    expect(customer?.contracts).toHaveLength(1);
+    expect(customer?.contracts[0]?.equipment.map((item) => item.serialNumber).sort()).toEqual(['A-1', 'A-2', 'A-3']);
+    // Cada equipo conserva su propio detalle; cliente y contrato, el suyo (se leen una vez, no por fila de equipo).
+    expect(customer?.contracts[0]?.equipment.every((item) => item.sourceDetails[0]?.value === item.serialNumber)).toBe(true);
+    expect(Array.isArray(customer?.sourceDetails)).toBe(true);
+    expect(Array.isArray(customer?.contracts[0]?.sourceDetails)).toBe(true);
+    expect(operations.listCustomers('A-2')[0]?.contracts[0]?.equipment).toHaveLength(1);
+
+    database.close();
+  });
 });

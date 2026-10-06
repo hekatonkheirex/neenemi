@@ -1,3 +1,4 @@
+import { memoizeString } from '../../core/memoize';
 import type { ModelDiscontinuationRecord } from './repository';
 
 const modelVoltageAnnotationPattern = /\s*\(\s*\d{2,6}(?:-\d{2,6})?\s*V\s*\)\s*$/i;
@@ -45,14 +46,18 @@ export function modelMatchScore(left: string, right: string): number {
       } else if (leftKey.includes(rightKey) || rightKey.includes(leftKey)) {
         bestScore = Math.max(bestScore, 2);
       } else {
-        const leftCode = leftKey.match(modelCodePattern)?.[0];
-        const rightCode = rightKey.match(modelCodePattern)?.[0];
+        const leftCode = modelCode(leftKey);
+        const rightCode = modelCode(rightKey);
         if (leftCode && rightCode && leftCode === rightCode) bestScore = Math.max(bestScore, 1);
       }
     }
   }
   return bestScore;
 }
+
+// findModelSupport compara cada modelo de la cartera con todo el catálogo (~1 M de pares): sin memoria repetía la
+// normalización por regex de ambos lados en cada par (~10 s de ventana congelada en Discontinuador).
+const modelCode = memoizeString((key) => key.match(modelCodePattern)?.[0]);
 
 export function comparableModelKey(value: string): string {
   return value
@@ -72,11 +77,11 @@ export function comparableModelKey(value: string): string {
     .replace(/[^A-Z0-9]+/g, '');
 }
 
-function modelAliases(value: string): string[] {
+const modelAliases = memoizeString((value) => {
   const key = comparableModelKey(value);
   return [...new Set([
     key,
     key.replace(/^IRADVC(?=\d)/, 'IRADV'),
     key.replace(/^IRADV(?=\d)/, 'IRADVC'),
   ])];
-}
+});
