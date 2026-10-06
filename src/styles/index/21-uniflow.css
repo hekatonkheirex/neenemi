@@ -102,10 +102,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
     grid-template-columns: 1fr;
   }
 
-  .travel-layout {
-    grid-template-columns: 1fr;
-  }
-
   .operations-sidebar {
     position: static;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -272,33 +268,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
 
   .service-controls {
     grid-template-columns: 1fr;
-  }
-
-  .travel-controls,
-  .travel-overview-panels,
-  .form-grid-2,
-  .travel-estimate-inputs {
-    grid-template-columns: 1fr;
-  }
-
-  .travel-overview-row {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .travel-overview-row .travel-overview-track {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-
-  .travel-actions {
-    width: 100%;
-    margin-top: 1.5rem;
-  }
-
-  .travel-actions .primary-button,
-  .travel-actions .secondary-button {
-    flex: 1;
-    min-width: 0;
   }
 
   .form-actions {

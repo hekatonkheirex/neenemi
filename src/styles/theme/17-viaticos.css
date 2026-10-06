@@ -1,20 +1,6 @@
 
 
 /* The overview panels share a gap; card shadows made that gap look like a second surface. */
-html[data-theme='light'] .travel-overview-panels {
-  background: transparent;
-  box-shadow: none !important;
-}
-
-html[data-theme='light'] .travel-overview-panels > .travel-overview-card {
-  border-color: var(--ds-border);
-  background: var(--ds-surface);
-  box-shadow: none !important;
-}
-
-html[data-theme='light'] .travel-page :where(.summary-card, .sales-card, .total-card) {
-  box-shadow: none !important;
-}
 
 /* Respeta la preferencia del sistema: sin animaciones ni transiciones largas. */
 @media (prefers-reduced-motion: reduce) {

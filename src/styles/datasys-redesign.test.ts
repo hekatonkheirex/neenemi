@@ -48,11 +48,10 @@ describe('rediseño Datasys', () => {
     expect(block).toMatch(/background:\s*none/);
   });
 
-  it('todos los modales llevan blur y no quedan azules fuera de paleta ni glifos de texto como iconos', () => {
-    for (const sel of ['.travel-drawer::backdrop']) {
-      expect(theme, sel).toMatch(new RegExp(`${sel.replace(/[.:]/g, '\\$&')}[^{]*{[^}]*backdrop-filter:\\s*blur`));
-    }
+  it('no quedan azules fuera de paleta ni modales con CSS heredado: el panel de Viáticos usa dialogPanel', () => {
     expect(theme).not.toMatch(/#4277e9|#77a7ff|rgba\(66, ?119, ?233/);
+    expect(theme).not.toMatch(/::backdrop/);
+    expect(fs.readFileSync(path.join(root, 'src/modules/viaticos/TravelDrawer.tsx'), 'utf8')).toContain('dialogPanel');
   });
 
   it('los diálogos de la suite comparten dialogPanel: blur, radio 2xl y sombra md, sin CSS heredado', () => {

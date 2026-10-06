@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.71 · 2026-10-06
+
+Control de viáticos adopta el encabezado, las tarjetas, los campos, los botones, las tablas y los estados compartidos del rediseño. Resumen, Viajes, Rendiciones e Histórico mantienen sus datos, filtros, paginación y exportación XLSX. Los gráficos de gasto, las comparativas anuales y la tendencia mensual se adaptan al ancho de su tarjeta; las tablas desplazan dentro de ella y el detalle de cada rendición ocupa el ancho visible. El panel «Registrar viaje» y la previsualización de importación son diálogos nativos con el mismo fondo difuminado y foco atrapado; el panel conserva la estimación orientativa, el catálogo de peajes y pasajes y la confirmación antes de descartar cambios. Se retira el CSS anterior de pantalla del módulo.
+
 ## 0.1.70 · 2026-10-06
 
 Mantenimiento adopta el encabezado, las tarjetas, los campos, los botones, las tablas y los estados compartidos del rediseño. La fuente de contadores conserva la carga por arrastre, la descarga del original y «Limpiar datos». El tablero muestra los seis indicadores en una fila cuando caben y las listas de prioridad se apilan según el ancho de su tarjeta. En Expedientes técnicos el inspector ocupa el ancho visible de la tarjeta aunque la tabla desplace; conserva el medidor de desgaste, el historial, las lecturas y el informe técnico PDF. Límites por modelo abre el editor como diálogo nativo (foco en Modelo, Esc, foco atrapado) y muestra los errores de validación dentro del diálogo. Conserva los cálculos, los filtros, las exportaciones XLSX, los informes PDF y el atajo «/» de búsqueda. Se retira el CSS anterior de pantalla del módulo, manteniendo los estilos de los informes impresos.

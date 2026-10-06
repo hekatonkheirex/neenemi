@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Tick02Icon } from '@hugeicons/core-free-icons';
+import { Input } from '../../core/ui/input';
+import { Muted } from '../../core/ui/card';
 import { canonicalMunicipality, searchParaguayMunicipalities } from './paraguay-municipalities';
 
 type DestinationComboboxProps = {
@@ -67,8 +69,8 @@ export function DestinationCombobox({ id = 'travel-destination', value, onChange
   };
 
   return (
-    <div ref={rootRef} className="destination-combobox">
-      <input
+    <div ref={rootRef} className="relative grid min-w-0 gap-1.5">
+      <Input
         id={id}
         name="destination"
         required={required}
@@ -86,9 +88,9 @@ export function DestinationCombobox({ id = 'travel-destination', value, onChange
         aria-activedescendant={isOpen && highlightedIndex >= 0 ? `${listboxId}-${highlightedIndex}` : undefined}
       />
       {isOpen && (
-        <div className="destination-combobox-menu">
+        <div className="absolute inset-x-0 top-10 z-20 grid gap-1 rounded-xl border border-navy/15 bg-white p-1.5 shadow-md dark:border-sky/25 dark:bg-panel">
           {suggestions.length > 0 ? (
-            <ul id={listboxId} role="listbox">
+            <ul id={listboxId} role="listbox" className="m-0 grid max-h-56 list-none gap-0.5 overflow-y-auto p-0">
               {suggestions.map((municipality, index) => {
                 const isHighlighted = index === highlightedIndex;
                 const isSelected = canonicalMunicipality(value) === municipality;
@@ -100,7 +102,7 @@ export function DestinationCombobox({ id = 'travel-destination', value, onChange
                     aria-selected={isSelected}
                     onMouseEnter={() => setHighlightedIndex(index)}
                     onMouseDown={(event) => { event.preventDefault(); chooseMunicipality(municipality); }}
-                    className={isHighlighted ? 'highlighted' : undefined}
+                    className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-sm text-navy before:content-none dark:text-white ${isHighlighted ? 'bg-sky/15' : ''}`}
                   >
                     <span>{municipality}</span>
                     {isSelected && <HugeiconsIcon icon={Tick02Icon} size={14} strokeWidth={2.5} aria-hidden="true" />}
@@ -109,12 +111,12 @@ export function DestinationCombobox({ id = 'travel-destination', value, onChange
               })}
             </ul>
           ) : (
-            <p role="status">No encontré ese municipio. Podés mantener el destino escrito manualmente.</p>
+            <p role="status" className="m-0 px-2.5 py-1.5 text-sm text-ink-2 dark:text-[#d6e2f5]">No encontré ese municipio. Podés mantener el destino escrito manualmente.</p>
           )}
-          <small>{suggestions.length} {suggestions.length === 1 ? 'coincidencia' : 'municipios'} · búsqueda sin acentos</small>
+          <Muted className="px-2.5 pb-1">{suggestions.length} {suggestions.length === 1 ? 'coincidencia' : 'municipios'} · búsqueda sin acentos</Muted>
         </div>
       )}
-      <small className="destination-combobox-hint">Seleccioná un municipio o escribí un destino personalizado.</small>
+      <Muted>Seleccioná un municipio o escribí un destino personalizado.</Muted>
     </div>
   );
 }

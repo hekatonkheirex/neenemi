@@ -28,7 +28,7 @@ describe('Rendiciones: la bandeja se pagina', () => {
   const markup = renderToStaticMarkup(<TravelRenditionsView trips={trips} onEdit={() => {}} onStatusChange={() => {}} />);
 
   it('renderiza solo 50 filas de 120 y no las 120', () => {
-    expect(markup.match(/<tr>/g)?.length).toBe(50 + 1); // 50 viajes + la fila de encabezado
+    expect(markup.match(/<tr[ >]/g)?.length).toBe(50 + 1); // 50 viajes + la fila de encabezado
     expect(markup).toContain('Página 1 de 3');
     expect(markup).toContain('1–50 de 120');
     expect(markup).toContain('aria-label="Paginación de rendiciones"');
@@ -36,7 +36,7 @@ describe('Rendiciones: la bandeja se pagina', () => {
 
   it('con pocos registros muestra todo y la página 1 de 1', () => {
     const few = renderToStaticMarkup(<TravelRenditionsView trips={trips.slice(0, 7)} onEdit={() => {}} onStatusChange={() => {}} />);
-    expect(few.match(/<tr>/g)?.length).toBe(7 + 1);
+    expect(few.match(/<tr[ >]/g)?.length).toBe(7 + 1);
     expect(few).toContain('Página 1 de 1');
   });
 

@@ -280,17 +280,6 @@ html[data-theme='light'] .app-shell :where(
 }
 
 html[data-theme='light'] .app-shell :where(
-  .history-item,
-  .output-summary-grid > div,
-  .travel-estimate,
-  .travel-bar-track
-) {
-  border-color: var(--ds-border);
-  background: var(--ds-surface);
-  box-shadow: 0 0.65rem 1.6rem var(--ds-shadow);
-}
-
-html[data-theme='light'] .app-shell :where(
     .suggestion-list,
     .history-list
   ) {

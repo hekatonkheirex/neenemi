@@ -33,6 +33,15 @@ import { pendingNotice } from './pendingNotice';
 import { paginateItems } from '../../core/pagination';
 import { readJson, toErrorMessage } from '../../core/http';
 import { UploadButton, ExportButton } from '../../core/ActionButtons';
+import { cn } from '../../core/cn';
+import { PageHeader } from '../../core/ui/page-header';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Button } from '../../core/ui/button';
+import { Input } from '../../core/ui/input';
+import { Textarea } from '../../core/ui/textarea';
+import { Badge } from '../../core/ui/badge';
+import { StatusLine } from '../../core/ui/status-line';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
 
 function tripToForm(trip: TravelTrip): TravelTripInput {
   return {
@@ -81,6 +90,11 @@ const STATUS_LABELS: Record<TravelStatus, string> = {
   review: 'En revisión',
   approved: 'Aprobada',
 };
+
+const cardClass = 'min-w-0 grid-cols-1 [overflow-wrap:anywhere]';
+const fieldClass = 'grid min-w-0 gap-1.5 text-xs font-semibold text-navy dark:text-white';
+const selectClass = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky disabled:opacity-50 dark:border-sky/30 dark:bg-navy/50 dark:text-white';
+const subCardClass = 'min-w-0 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30';
 
 const moneyFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const compactMoneyFormat = new Intl.NumberFormat('es-PY', { notation: 'compact', maximumFractionDigits: 1 });
@@ -394,90 +408,85 @@ export default function ViaticosModule() {
   const statusText = error || message || (notice ? `${notice.pending ? `${integerFormat.format(notice.pending)} rendiciones pendientes por ₲ ${moneyFormat.format(Math.round(notice.pendingCost))}${notice.oldestPendingDays !== null ? `, la más antigua de hace ${integerFormat.format(notice.oldestPendingDays)} días` : ''}` : ''}${notice.pending && notice.review ? ' · ' : ''}${notice.review ? `${integerFormat.format(notice.review)} en revisión` : ''}` : summary?.records ? '' : 'Importa CONTROL DE VIATICO 2026.xlsx para comenzar.');
 
   return (
-    <div className="page-content travel-page">
-      <section className="catalog-header">
-        <div>
-          <div className="eyebrow">OPERACIONES / VIÁTICOS</div>
-          <h1>Control de viáticos</h1>
-          <p className="lead">Registra viajes técnicos, conserva el histórico de la planilla y sigue las rendiciones desde la misma SQLite local.</p>
-        </div>
-        <div className="travel-actions">
+    <div className="page-content travel-page grid min-w-0 grid-cols-1 gap-6 [overflow-wrap:anywhere]">
+      <PageHeader
+        eyebrow="ADMINISTRATIVO / VIÁTICOS"
+        title="Control de viáticos"
+        lead="Registra viajes técnicos, conserva el histórico de la planilla y sigue las rendiciones desde la misma SQLite local."
+        actions={<>
           <UploadButton busy={importing} label="Importar planilla" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(event) => void importFile(event)} />
           <ExportButton busy={exporting} onClick={() => void exportTrips()} disabled={trips.length === 0}>Exportar XLSX</ExportButton>
-          <button className="primary-button" type="button" onClick={openNewTrip}>Nuevo viaje</button>
-        </div>
-      </section>
+          <Button onClick={openNewTrip}>Nuevo viaje</Button>
+        </>}
+      />
 
-      {statusText && <section className="sales-status" aria-live="polite">
-        <span className={`status-dot ${error ? 'error' : 'ready'}`} />
-        <span>{statusText}</span>
-      </section>}
+      {statusText && <StatusLine state={error ? 'error' : 'ready'}>{statusText}</StatusLine>}
 
       <AnimatedTabs ariaLabel="Vistas de Viáticos" tabs={TRAVEL_VIEW_OPTIONS} active={activeView} onChange={setActiveView} />
 
-      <section className="summary-grid operations-summary" aria-label="Resumen de viáticos">
-        <div className="summary-card accent"><span className="summary-value">₲ {compactMoneyFormat.format(Math.round(summary?.totalCost ?? 0))}</span><span className="summary-label">gasto del período {summary?.operationalYear ?? ''}</span></div>
-        <div className="summary-card"><span className="summary-value">{integerFormat.format(summary?.records ?? 0)}</span><span className="summary-label">viajes registrados</span></div>
-        <div className="summary-card"><span className="summary-value">{integerFormat.format(summary?.pending ?? 0)}</span><span className="summary-label">rendiciones pendientes</span></div>
+      <section className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-3" aria-label="Resumen de viáticos">
+        <SummaryStat value={`₲ ${compactMoneyFormat.format(Math.round(summary?.totalCost ?? 0))}`} label={`gasto del período ${summary?.operationalYear ?? ''}`} accent />
+        <SummaryStat value={integerFormat.format(summary?.records ?? 0)} label="viajes registrados" />
+        <SummaryStat value={integerFormat.format(summary?.pending ?? 0)} label="rendiciones pendientes" />
       </section>
 
       {activeView === 'resumen' && summary && <TravelOverviewPanels summary={summary} />}
 
-      <section className="travel-layout travel-layout-single">
-        <div className="travel-main">
-          {(activeView === 'resumen' || activeView === 'viajes') && <section className="sales-card" ref={tripListRef}>
-            <div className="card-heading">
-              <div><div className="eyebrow">REGISTRO OPERATIVO</div><h2>Viajes del período</h2></div>
-              <span className="muted-note">{summary?.firstDate && summary.lastDate ? `${summary.firstDate} → ${summary.lastDate}` : 'Sin período'}</span>
-            </div>
-            <div className="travel-controls">
-              <label className="search-field"><span>Buscar</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cliente, destino, técnico…" /></label>
-              <label className="compact-field"><span>Estado</span><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}><option value="">Todos</option>{TRAVEL_STATUSES.map((item) => <option key={item} value={item}>{STATUS_LABELS[item]}</option>)}</select></label>
-              <label className="compact-field"><span>Medio</span><select value={transportFilter} onChange={(event) => setTransportFilter(event.target.value)}><option value="">Todos</option>{TRAVEL_TRANSPORTS.map((item) => <option key={item} value={item}>{item.replace('MOVIL ', 'MÓVIL ')}</option>)}</select></label>
-              <label className="compact-field"><span>Mes</span><input type="month" value={monthFilter} onChange={(event) => setMonthFilter(event.target.value)} /></label>
-            </div>
-            <div className="catalog-table-wrap">
-              <table className="catalog-table travel-table">
-                <thead><tr><th>Fecha</th><th>Cliente / destino</th><th>Responsable</th><th>Medio</th><th className="align-right">Total</th><th>Rendición</th><th className="align-right">Acción</th></tr></thead>
-                <tbody>
-                  {tripPageData.items.map((trip) => <tr key={trip.id}>
-                    <td><span className="code-cell">{trip.recordedAt}</span><small className="table-secondary-text">{trip.serviceNumber || 'Sin I.S.'}</small><TripSourceLabel trip={trip} /></td>
-                    <td><span className="code-cell">{trip.customerName}</span><small className="table-secondary-text">{trip.destination}</small></td>
-                    <td><span>{trip.technician || 'Sin técnico'}</span><small className="table-secondary-text">{trip.driver || 'Sin chofer'}</small></td>
-                    <td><span className="badge ok">{trip.transport.replace('MOVIL ', 'MÓVIL ')}</span></td>
-                    <td className="align-right"><span className="code-cell">₲ {moneyFormat.format(Math.round(trip.totalCost))}</span><small className="table-secondary-text">{trip.distanceKm ? `${integerFormat.format(trip.distanceKm)} km` : 'Sin km'}</small></td>
-                    <td><select className="status-select" aria-label={`Estado de rendición de ${trip.customerName}`} value={trip.status} onChange={(event) => void updateStatus(trip, event.target.value as TravelStatus)}>{TRAVEL_STATUSES.map((item) => <option key={item} value={item}>{STATUS_LABELS[item]}</option>)}</select></td>
-                    <td className="align-right"><div className="travel-row-actions"><button className="text-button" type="button" onClick={() => beginEdit(trip)}>Editar</button><button className="text-button danger-text-button" type="button" onClick={() => void deleteTrip(trip)} disabled={saving}>Eliminar</button></div></td>
-                  </tr>)}
-                  {visibleTrips.length === 0 && <tr><td colSpan={7} className="empty-cell">{loading ? 'Cargando viajes…' : summary?.records ? 'No hay viajes para los filtros seleccionados.' : 'Importa la planilla o registra un viaje nuevo.'}</td></tr>}
-                </tbody>
-              </table>
-            </div>
-            <PaginationControls
-              label="Paginación de viajes"
-              page={tripPageData.page}
-              pageSize={tripPageData.pageSize}
-              total={tripPageData.total}
-              onPageChange={changeTripPage}
-              onPageSizeChange={(size) => { setTripPageSize(size); setTripPage(1); }}
-            />
-          </section>}
-
-          {activeView === 'resumen' && <section className="sales-card">
-            <div className="card-heading"><div><div className="eyebrow">EVOLUCIÓN</div><h2>Gasto por mes</h2></div><span className="muted-note">{summary?.operationalYear ?? 'Sin año'}</span></div>
-            <MonthlyBars values={summary?.monthlyTotals ?? []} />
-          </section>}
-
-          {activeView === 'resumen' && <section className="sales-card">
-            <div className="card-heading"><div><div className="eyebrow">HISTÓRICO</div><h2>Comparativa anual</h2></div><span className="muted-note">Fuente importada</span></div>
-            {historical.length === 0 ? <p className="empty-inline">Importa la planilla para recuperar los resúmenes históricos.</p> : <div className="catalog-table-wrap"><table className="catalog-table historical-travel-table"><thead><tr><th>Año</th><th>Viajes</th><th>Servicios</th><th>Distancia</th><th className="align-right">Costo general</th><th className="align-right">Promedio / servicio</th></tr></thead><tbody>{historical.map((item) => <tr key={item.year}><td><span className="code-cell">{item.year}</span>{item.partial && <small className="table-secondary-text">En curso</small>}</td><td>{integerFormat.format(item.trips)}</td><td>{integerFormat.format(item.services)}</td><td>{integerFormat.format(item.distanceKm)} km</td><td className="align-right">₲ {moneyFormat.format(Math.round(item.generalCost))}</td><td className="align-right">₲ {moneyFormat.format(Math.round(item.averageCostPerService))}</td></tr>)}</tbody></table></div>}
-          </section>}
-
-          {activeView === 'rendiciones' && <TravelRenditionsView trips={trips} onEdit={beginEdit} onStatusChange={(trip, status) => void updateStatus(trip, status)} />}
-          {activeView === 'historico' && <TravelHistoricalView summaries={historical} sourceName={summary?.sourceName ?? null} sourceBatchId={sourceBatchId} />}
+      {(activeView === 'resumen' || activeView === 'viajes') && <Card className={cardClass} ref={tripListRef}>
+        <CardHeader eyebrow="Registro operativo" title="Viajes del período" aside={<Badge>{summary?.firstDate && summary.lastDate ? `${summary.firstDate} → ${summary.lastDate}` : 'Sin período'}</Badge>} />
+        <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,11rem),1fr))] items-end gap-4">
+          <label className={fieldClass}>Buscar<Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cliente, destino, técnico…" /></label>
+          <label className={fieldClass}>Estado<select className={selectClass} value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}><option value="">Todos</option>{TRAVEL_STATUSES.map((item) => <option key={item} value={item}>{STATUS_LABELS[item]}</option>)}</select></label>
+          <label className={fieldClass}>Medio<select className={selectClass} value={transportFilter} onChange={(event) => setTransportFilter(event.target.value)}><option value="">Todos</option>{TRAVEL_TRANSPORTS.map((item) => <option key={item} value={item}>{item.replace('MOVIL ', 'MÓVIL ')}</option>)}</select></label>
+          <label className={fieldClass}>Mes<Input type="month" value={monthFilter} onChange={(event) => setMonthFilter(event.target.value)} /></label>
         </div>
+        <Table className="min-w-[48rem] [overflow-wrap:normal]">
+          <TableHeader><TableRow><TableHead>Fecha</TableHead><TableHead>Cliente / destino</TableHead><TableHead>Responsable</TableHead><TableHead>Medio</TableHead><TableHead className="text-right">Total</TableHead><TableHead>Rendición</TableHead><TableHead className="text-right">Acción</TableHead></TableRow></TableHeader>
+          <TableBody>
+            {tripPageData.items.map((trip) => <TableRow key={trip.id}>
+              <TableCell><div className="whitespace-nowrap font-mono text-xs">{trip.recordedAt}</div><Muted className="mt-1">{trip.serviceNumber || 'Sin I.S.'}</Muted><TripSourceLabel trip={trip} /></TableCell>
+              <TableCell className="min-w-[8rem]"><div className="font-semibold text-navy dark:text-white">{trip.customerName}</div><Muted className="mt-1">{trip.destination}</Muted></TableCell>
+              <TableCell><div>{trip.technician || 'Sin técnico'}</div><Muted className="mt-1">{trip.driver || 'Sin chofer'}</Muted></TableCell>
+              <TableCell><Badge className="whitespace-nowrap" tone="success">{trip.transport.replace('MOVIL ', 'MÓVIL ')}</Badge></TableCell>
+              <TableCell className="text-right"><div className="whitespace-nowrap font-semibold tabular-nums">₲ {moneyFormat.format(Math.round(trip.totalCost))}</div><Muted className="mt-1 whitespace-nowrap">{trip.distanceKm ? `${integerFormat.format(trip.distanceKm)} km` : 'Sin km'}</Muted></TableCell>
+              <TableCell><select className={cn(selectClass, 'h-8 w-auto text-xs')} aria-label={`Estado de rendición de ${trip.customerName}`} value={trip.status} onChange={(event) => void updateStatus(trip, event.target.value as TravelStatus)}>{TRAVEL_STATUSES.map((item) => <option key={item} value={item}>{STATUS_LABELS[item]}</option>)}</select></TableCell>
+              <TableCell className="text-right"><div className="flex justify-end gap-1"><Button variant="outline" size="sm" onClick={() => beginEdit(trip)}>Editar</Button><Button variant="ghost" size="sm" onClick={() => void deleteTrip(trip)} disabled={saving}>Eliminar</Button></div></TableCell>
+            </TableRow>)}
+            {visibleTrips.length === 0 && <TableRow><TableCell colSpan={7} className="py-8 text-center">{loading ? 'Cargando viajes…' : summary?.records ? 'No hay viajes para los filtros seleccionados.' : 'Importa la planilla o registra un viaje nuevo.'}</TableCell></TableRow>}
+          </TableBody>
+        </Table>
+        <PaginationControls
+          label="Paginación de viajes"
+          page={tripPageData.page}
+          pageSize={tripPageData.pageSize}
+          total={tripPageData.total}
+          onPageChange={changeTripPage}
+          onPageSizeChange={(size) => { setTripPageSize(size); setTripPage(1); }}
+        />
+      </Card>}
 
-      </section>
+      {activeView === 'resumen' && <Card className={cardClass}>
+        <CardHeader eyebrow="Evolución" title="Gasto por mes" aside={<Badge>{summary?.operationalYear ?? 'Sin año'}</Badge>} />
+        <MonthlyBars values={summary?.monthlyTotals ?? []} />
+      </Card>}
+
+      {activeView === 'resumen' && <Card className={cardClass}>
+        <CardHeader eyebrow="Histórico" title="Comparativa anual" aside={<Badge>Fuente importada</Badge>} />
+        {historical.length === 0 ? <Muted className="text-sm">Importa la planilla para recuperar los resúmenes históricos.</Muted> : <Table className="min-w-[40rem]">
+          <TableHeader><TableRow><TableHead>Año</TableHead><TableHead>Viajes</TableHead><TableHead>Servicios</TableHead><TableHead>Distancia</TableHead><TableHead className="text-right">Costo general</TableHead><TableHead className="text-right">Promedio / servicio</TableHead></TableRow></TableHeader>
+          <TableBody>{historical.map((item) => <TableRow key={item.year}>
+            <TableCell><div className="font-semibold text-navy dark:text-white">{item.year}</div>{item.partial && <Muted>En curso</Muted>}</TableCell>
+            <TableCell className="tabular-nums">{integerFormat.format(item.trips)}</TableCell>
+            <TableCell className="tabular-nums">{integerFormat.format(item.services)}</TableCell>
+            <TableCell className="whitespace-nowrap tabular-nums">{integerFormat.format(item.distanceKm)} km</TableCell>
+            <TableCell className="whitespace-nowrap text-right tabular-nums">₲ {moneyFormat.format(Math.round(item.generalCost))}</TableCell>
+            <TableCell className="whitespace-nowrap text-right tabular-nums">₲ {moneyFormat.format(Math.round(item.averageCostPerService))}</TableCell>
+          </TableRow>)}</TableBody>
+        </Table>}
+      </Card>}
+
+      {activeView === 'rendiciones' && <TravelRenditionsView trips={trips} onEdit={beginEdit} onStatusChange={(trip, status) => void updateStatus(trip, status)} />}
+      {activeView === 'historico' && <TravelHistoricalView summaries={historical} sourceName={summary?.sourceName ?? null} sourceBatchId={sourceBatchId} />}
 
       {formOpen ? (
         <TravelDrawer
@@ -485,54 +494,53 @@ export default function ViaticosModule() {
           title={editingId ? 'Actualizar viaje' : 'Registrar viaje'}
           onRequestClose={() => void requestCloseForm()}
         >
-          <section className="sales-card form-card">
-            <form className="travel-form" onSubmit={(event) => void saveTrip(event)}>
-              <label className="search-field"><span>Fecha</span><input required type="date" value={form.recordedAt} onChange={(event) => updateText('recordedAt', event.target.value)} /></label>
-              <div className="form-grid-2"><label className="search-field"><span>I.S.</span><input value={form.serviceNumber} onChange={(event) => updateText('serviceNumber', event.target.value)} placeholder="Opcional" /></label><label className="search-field"><span>Medio</span><select value={form.transport} onChange={(event) => setForm((current) => ({ ...current, transport: event.target.value as TravelTransport }))}>{TRAVEL_TRANSPORTS.map((item) => <option key={item} value={item}>{item.replace('MOVIL ', 'MÓVIL ')}</option>)}</select></label></div>
-              <label className="search-field"><span>Cliente</span><input required value={form.customerName} onChange={(event) => updateText('customerName', event.target.value)} placeholder="Nombre del cliente" /></label>
-              <label className="search-field"><span>Destino</span><DestinationCombobox required value={form.destination} onChange={(destination) => updateText('destination', destination)} /></label>
-              <div className="form-grid-2"><label className="search-field"><span>Técnico</span><input value={form.technician} onChange={(event) => updateText('technician', event.target.value)} /></label><label className="search-field"><span>Chofer</span><input value={form.driver} onChange={(event) => updateText('driver', event.target.value)} /></label></div>
-              <div className="form-grid-2"><MoneyField label="Monto / anticipo" value={form.advance} allowNegative onChange={(value) => updateNumber('advance', value)} /><MoneyField label="Viático" value={form.allowance} onChange={(value) => updateNumber('allowance', value)} /><MoneyField label="Hospedaje" value={form.lodging} onChange={(value) => updateNumber('lodging', value)} /><MoneyField label="Peajes" value={form.tolls} onChange={(value) => updateNumber('tolls', value)} /><MoneyField label="Varios" value={form.otherCost} onChange={(value) => updateNumber('otherCost', value)} /><MoneyField label="Uso de vehículo" value={form.vehiclePayment} onChange={(value) => updateNumber('vehiclePayment', value)} /><MoneyField label="Técnico / chofer" value={form.technicianPayment} onChange={(value) => updateNumber('technicianPayment', value)} /><MoneyField label="Combustible" value={form.fuelCost} onChange={(value) => updateNumber('fuelCost', value)} /><MoneyField label="Kilómetros" value={form.distanceKm} onChange={(value) => updateNumber('distanceKm', value)} /></div>
-              {estimate && <div className="travel-estimate">
-                <div><span>Estimación disponible</span><strong>₲ {moneyFormat.format(Math.round(estimate.dailyAllowance + estimate.lodging + (estimate.tolls ?? 0) + (estimate.busFare ?? 0)))}</strong></div>
-                <div className="travel-estimate-breakdown">
-                  <span>Viático <b>₲ {moneyFormat.format(Math.round(estimate.dailyAllowance))}</b></span>
-                  <span>Hotel <b>₲ {moneyFormat.format(Math.round(estimate.lodging))}</b></span>
-                  <span>Peajes <b>{form.transport === 'BUS' ? 'No aplica' : estimate.tolls === null ? 'Sin referencia' : `₲ ${moneyFormat.format(Math.round(estimate.tolls))}`}</b></span>
-                  <span>Bus <b>{estimate.busFare === null ? 'Sin referencia' : `₲ ${moneyFormat.format(Math.round(estimate.busFare))}`}</b></span>
+          <Card className="min-w-0 grid-cols-1 shadow-none">
+            <form className="grid min-w-0 gap-4" onSubmit={(event) => void saveTrip(event)}>
+              <label className={fieldClass}>Fecha<Input required type="date" value={form.recordedAt} onChange={(event) => updateText('recordedAt', event.target.value)} /></label>
+              <div className="grid gap-4 sm:grid-cols-2"><label className={fieldClass}>I.S.<Input value={form.serviceNumber} onChange={(event) => updateText('serviceNumber', event.target.value)} placeholder="Opcional" /></label><label className={fieldClass}>Medio<select className={selectClass} value={form.transport} onChange={(event) => setForm((current) => ({ ...current, transport: event.target.value as TravelTransport }))}>{TRAVEL_TRANSPORTS.map((item) => <option key={item} value={item}>{item.replace('MOVIL ', 'MÓVIL ')}</option>)}</select></label></div>
+              <label className={fieldClass}>Cliente<Input required value={form.customerName} onChange={(event) => updateText('customerName', event.target.value)} placeholder="Nombre del cliente" /></label>
+              <label className={fieldClass}>Destino<DestinationCombobox required value={form.destination} onChange={(destination) => updateText('destination', destination)} /></label>
+              <div className="grid gap-4 sm:grid-cols-2"><label className={fieldClass}>Técnico<Input value={form.technician} onChange={(event) => updateText('technician', event.target.value)} /></label><label className={fieldClass}>Chofer<Input value={form.driver} onChange={(event) => updateText('driver', event.target.value)} /></label></div>
+              <div className="grid gap-4 sm:grid-cols-2"><MoneyField label="Monto / anticipo" value={form.advance} allowNegative onChange={(value) => updateNumber('advance', value)} /><MoneyField label="Viático" value={form.allowance} onChange={(value) => updateNumber('allowance', value)} /><MoneyField label="Hospedaje" value={form.lodging} onChange={(value) => updateNumber('lodging', value)} /><MoneyField label="Peajes" value={form.tolls} onChange={(value) => updateNumber('tolls', value)} /><MoneyField label="Varios" value={form.otherCost} onChange={(value) => updateNumber('otherCost', value)} /><MoneyField label="Uso de vehículo" value={form.vehiclePayment} onChange={(value) => updateNumber('vehiclePayment', value)} /><MoneyField label="Técnico / chofer" value={form.technicianPayment} onChange={(value) => updateNumber('technicianPayment', value)} /><MoneyField label="Combustible" value={form.fuelCost} onChange={(value) => updateNumber('fuelCost', value)} /><MoneyField label="Kilómetros" value={form.distanceKm} onChange={(value) => updateNumber('distanceKm', value)} /></div>
+              {estimate && <div className={cn(subCardClass, 'grid gap-2 border-sky/40')}>
+                <div className="flex flex-wrap items-baseline justify-between gap-2"><Muted>Estimación disponible</Muted><div className="text-lg font-bold tabular-nums text-navy dark:text-white">₲ {moneyFormat.format(Math.round(estimate.dailyAllowance + estimate.lodging + (estimate.tolls ?? 0) + (estimate.busFare ?? 0)))}</div></div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-ink-2 dark:text-[#d6e2f5]">
+                  <div>Viático <b className="text-navy dark:text-white">₲ {moneyFormat.format(Math.round(estimate.dailyAllowance))}</b></div>
+                  <div>Hotel <b className="text-navy dark:text-white">₲ {moneyFormat.format(Math.round(estimate.lodging))}</b></div>
+                  <div>Peajes <b className="text-navy dark:text-white">{form.transport === 'BUS' ? 'No aplica' : estimate.tolls === null ? 'Sin referencia' : `₲ ${moneyFormat.format(Math.round(estimate.tolls))}`}</b></div>
+                  <div>Bus <b className="text-navy dark:text-white">{estimate.busFare === null ? 'Sin referencia' : `₲ ${moneyFormat.format(Math.round(estimate.busFare))}`}</b></div>
                 </div>
-                <p>
+                <Muted>
                   {estimate.tollRoute
                     ? `Peajes: ${estimate.tollRoute.route} · ${estimate.tollRoute.checkpoints.join(' · ')}`
                     : estimate.busReference
                       ? `Bus: ${estimate.busReference.destination}${estimate.busReference.company ? ` · ${estimate.busReference.company}` : ''}`
                       : 'No hay ruta o pasaje coincidente.'}
-                </p>
-                {estimate.busReference && <p>Ida ₲ {moneyFormat.format(Math.round(estimate.busOutbound ?? 0))} · vuelta ₲ {moneyFormat.format(Math.round(estimate.busReturn ?? 0))}</p>}
-                <button className="text-button" type="button" onClick={applyEstimate}>Aplicar campos vacíos</button>
+                </Muted>
+                {estimate.busReference && <Muted>Ida ₲ {moneyFormat.format(Math.round(estimate.busOutbound ?? 0))} · vuelta ₲ {moneyFormat.format(Math.round(estimate.busReturn ?? 0))}</Muted>}
+                <div><Button variant="outline" size="sm" onClick={applyEstimate}>Aplicar campos vacíos</Button></div>
               </div>}
-              <label className="search-field"><span>Notas</span><textarea rows={3} value={form.notes} onChange={(event) => updateText('notes', event.target.value)} placeholder="Comprobantes u observaciones" /></label>
-              <div className="travel-total"><span>Total calculado</span><strong>₲ {moneyFormat.format(Math.round(calculateTotal(form)))}</strong></div>
-              <div className="form-actions"><button className="secondary-button" type="button" onClick={beginNewTrip}>Limpiar</button><button className="primary-button" type="submit" disabled={saving}>{saving ? 'Guardando…' : editingId ? 'Guardar cambios' : 'Registrar viaje'}</button></div>
+              <label className={fieldClass}>Notas<Textarea rows={3} value={form.notes} onChange={(event) => updateText('notes', event.target.value)} placeholder="Comprobantes u observaciones" /></label>
+              <div className="flex items-baseline justify-between gap-3 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30"><div className="text-sm font-semibold text-navy dark:text-white">Total calculado</div><div className="text-xl font-bold tabular-nums text-navy dark:text-white">₲ {moneyFormat.format(Math.round(calculateTotal(form)))}</div></div>
+              <div className="flex flex-wrap justify-end gap-3"><Button variant="outline" onClick={beginNewTrip}>Limpiar</Button><Button type="submit" disabled={saving}>{saving ? 'Guardando…' : editingId ? 'Guardar cambios' : 'Registrar viaje'}</Button></div>
             </form>
-          </section>
+          </Card>
 
-          <section className="sales-card form-card">
-            <div className="eyebrow">REFERENCIA DE COSTOS</div>
-            <h2>Estimación orientativa</h2>
-            <p className="form-hint">{catalog?.source ?? 'Catálogo base de costos'}</p>
-            <div className="travel-estimate-inputs"><label className="compact-field"><span>Días</span><input min={1} type="number" value={days} onChange={(event) => setDays(Number(event.target.value) || 1)} /></label><label className="compact-field"><span>Noches</span><input min={0} type="number" value={nights} onChange={(event) => setNights(Number(event.target.value) || 0)} /></label><label className="compact-field"><span>Técnicos</span><input min={1} type="number" value={technicians} onChange={(event) => setTechnicians(Number(event.target.value) || 1)} /></label></div>
-            <div className="mps-facts"><div><span>Viático diario</span><strong>₲ {moneyFormat.format(catalog?.dailyAllowance ?? 0)}</strong></div><div><span>Hotel por noche</span><strong>₲ {moneyFormat.format(catalog?.hotelPerNight ?? 0)}</strong></div></div>
-            {catalog && <details className="travel-catalog-details">
-              <summary>Ver rutas de peaje y pasajes cargados</summary>
-              <div className="travel-catalog-list">
-                <div className="travel-catalog-list-heading"><strong>Rutas de peaje</strong><span>{catalog.tollRoutes.length}</span></div>
-                {catalog.tollRoutes.map((route) => <div className="travel-catalog-row" key={`${route.route}-${route.total}`}><div><strong>{route.route}</strong><small>{route.checkpoints.join(' · ')}</small></div><b>₲ {moneyFormat.format(Math.round(route.total))}</b></div>)}
-                <div className="travel-catalog-list-heading"><strong>Pasajes en bus</strong><span>{catalog.busFares.length}</span></div>
-                {catalog.busFares.map((fare) => <div className="travel-catalog-row" key={fare.destination}><div><strong>{fare.destination}</strong><small>{fare.company || 'Empresa no indicada'}</small></div><b>{fare.outbound === null || fare.returnFare === null ? 'Incompleto' : `₲ ${moneyFormat.format(Math.round(fare.outbound + fare.returnFare))}`}</b></div>)}
+          <Card className="min-w-0 grid-cols-1 shadow-none">
+            <CardHeader eyebrow="Referencia de costos" title="Estimación orientativa" />
+            <Muted className="text-sm">{catalog?.source ?? 'Catálogo base de costos'}</Muted>
+            <div className="grid grid-cols-3 gap-3"><label className={fieldClass}>Días<Input min={1} type="number" value={days} onChange={(event) => setDays(Number(event.target.value) || 1)} /></label><label className={fieldClass}>Noches<Input min={0} type="number" value={nights} onChange={(event) => setNights(Number(event.target.value) || 0)} /></label><label className={fieldClass}>Técnicos<Input min={1} type="number" value={technicians} onChange={(event) => setTechnicians(Number(event.target.value) || 1)} /></label></div>
+            <div className="grid grid-cols-2 gap-3"><div className={cn(subCardClass, 'grid gap-1 p-3')}><Muted>Viático diario</Muted><div className="font-bold tabular-nums text-navy dark:text-white">₲ {moneyFormat.format(catalog?.dailyAllowance ?? 0)}</div></div><div className={cn(subCardClass, 'grid gap-1 p-3')}><Muted>Hotel por noche</Muted><div className="font-bold tabular-nums text-navy dark:text-white">₲ {moneyFormat.format(catalog?.hotelPerNight ?? 0)}</div></div></div>
+            {catalog && <details className={subCardClass}>
+              <summary className="cursor-pointer text-sm font-bold text-navy focus-visible:outline-sky dark:text-white">Ver rutas de peaje y pasajes cargados</summary>
+              <div className="mt-3 grid max-h-80 gap-2 overflow-y-auto">
+                <div className="flex items-center justify-between gap-2 text-sm font-bold text-navy dark:text-white">Rutas de peaje<Badge>{catalog.tollRoutes.length}</Badge></div>
+                {catalog.tollRoutes.map((route) => <div className="flex items-start justify-between gap-3 border-t border-navy/10 pt-2 dark:border-sky/15" key={`${route.route}-${route.total}`}><div className="min-w-0"><div className="text-sm font-semibold text-navy dark:text-white">{route.route}</div><Muted>{route.checkpoints.join(' · ')}</Muted></div><b className="whitespace-nowrap text-sm tabular-nums text-navy dark:text-white">₲ {moneyFormat.format(Math.round(route.total))}</b></div>)}
+                <div className="mt-2 flex items-center justify-between gap-2 text-sm font-bold text-navy dark:text-white">Pasajes en bus<Badge>{catalog.busFares.length}</Badge></div>
+                {catalog.busFares.map((fare) => <div className="flex items-start justify-between gap-3 border-t border-navy/10 pt-2 dark:border-sky/15" key={fare.destination}><div className="min-w-0"><div className="text-sm font-semibold text-navy dark:text-white">{fare.destination}</div><Muted>{fare.company || 'Empresa no indicada'}</Muted></div><b className="whitespace-nowrap text-sm tabular-nums text-navy dark:text-white">{fare.outbound === null || fare.returnFare === null ? 'Incompleto' : `₲ ${moneyFormat.format(Math.round(fare.outbound + fare.returnFare))}`}</b></div>)}
               </div>
             </details>}
-          </section>
+          </Card>
         </TravelDrawer>
       ) : null}
 
@@ -551,13 +559,17 @@ function TripSourceLabel({ trip }: { trip: TravelTrip }) {
 }
 
 function MoneyField({ label, value, allowNegative = false, onChange }: { label: string; value: number; allowNegative?: boolean; onChange: (value: string) => void }) {
-  return <label className="search-field"><span>{label}</span><input {...(allowNegative ? {} : { min: 0 })} step={1000} type="number" value={value || ''} onChange={(event) => onChange(event.target.value)} placeholder="0" /></label>;
+  return <label className={fieldClass}>{label}<Input {...(allowNegative ? {} : { min: 0 })} step={1000} type="number" value={value || ''} onChange={(event) => onChange(event.target.value)} placeholder="0" /></label>;
+}
+
+function SummaryStat({ value, label, accent = false }: { value: string; label: string; accent?: boolean }) {
+  return <Card className={cn('min-w-0 gap-1 p-4', accent && 'border-l-4 border-l-brand')}><div className="text-3xl font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{label}</Muted></Card>;
 }
 
 function MonthlyBars({ values }: { values: number[] }) {
   const labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
   const max = Math.max(...values, 1);
-  return <div className="travel-month-bars" role="img" aria-label="Gasto mensual de viáticos"><div className="travel-bars-grid">{labels.map((label, index) => <div className="travel-bar-column" key={label}><span>₲ {compactMoneyFormat.format(Math.round(values[index] ?? 0))}</span><div className="travel-bar-track"><div className="travel-bar-fill" style={{ height: `${values[index] ? Math.max((values[index] / max) * 100, 4) : 2}%` }} /></div><small>{label}</small></div>)}</div></div>;
+  return <div className="overflow-x-auto" role="img" aria-label="Gasto mensual de viáticos"><div className="grid h-56 min-w-[calc(12*2.8rem+11*0.3rem)] grid-cols-12 items-end gap-[0.3rem]">{labels.map((label, index) => <div className="grid h-full min-w-0 grid-rows-[auto_minmax(0,1fr)_auto] justify-items-center gap-1" key={label}><div className="text-[0.65rem] font-semibold tabular-nums text-ink-2 dark:text-[#d6e2f5]">₲ {compactMoneyFormat.format(Math.round(values[index] ?? 0))}</div><div className="flex h-full w-full items-end rounded-md bg-navy/5 dark:bg-white/5"><div className="w-full rounded-md bg-sky" style={{ height: `${values[index] ? Math.max((values[index] / max) * 100, 4) : 2}%` }} /></div><Muted>{label}</Muted></div>)}</div></div>;
 }
 
 function calculateTotal(input: TravelTripInput): number {

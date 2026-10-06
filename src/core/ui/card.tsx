@@ -1,10 +1,10 @@
-import type { ElementType, HTMLAttributes, ReactNode } from 'react';
+import type { ElementType, HTMLAttributes, ReactNode, Ref } from 'react';
 import { cn } from '../cn';
 
 // Primitivas shadcn/ui de tarjeta con tokens de marca. Los títulos y textos van en <div>/<h*>: el CSS heredado del tema claro
 // (theme/01-mantenimiento.css) colorea <p>/<span>/<strong> con más especificidad que las utilidades.
 
-export function Card({ as: Comp = 'section', className, ...props }: HTMLAttributes<HTMLElement> & { as?: ElementType; open?: boolean }) {
+export function Card({ as: Comp = 'section', className, ...props }: HTMLAttributes<HTMLElement> & { as?: ElementType; open?: boolean; ref?: Ref<HTMLElement> }) {
   return <Comp className={cn('grid gap-4 rounded-2xl border border-navy/10 bg-white p-5 shadow-md dark:border-sky/20 dark:bg-panel', className)} {...props} />;
 }
 

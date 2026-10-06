@@ -6,9 +6,6 @@ const css = readCssBundle('src/index.css');
 const rule = (selector: string) => css.match(new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*{([^}]*)}`))?.[1] ?? '';
 
 describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
-  it('los controles de Viáticos no se salen de su celda (campo "Mes" +7 px)', () => {
-    expect(rule('.travel-controls > label,\n.travel-controls .compact-field input')).toMatch(/min-width:\s*0/);
-  });
   it('el detalle de fuente con cientos de series no crece sin límite (20 000 px de alto)', () => {
     const r = rule('.source-details-grid');
     expect(r).toMatch(/max-height:\s*22rem/);
@@ -23,25 +20,20 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
     expect(summary).toMatch(/grid min-w-0 gap-1 rounded-xl/);
     expect(summary).toContain('h-6 min-w-10 flex-[0_1_auto]');
   });
-  it('Viáticos: el input de mes lleva el mismo fondo oscuro y borde que los select vecinos', () => {
-    const block = css.match(/vecinos \(Estado, Medio\)[^\n]*\*\/\n\.travel-controls \.compact-field input \{([^}]*)\}/)?.[1] ?? '';
-    expect(block).toMatch(/background:\s*rgba\(18, 31, 54, 0\.7\)/);
-    expect(block).toMatch(/border:\s*1px solid var\(--dk-line-strong\)/);
-  });
-  it('Viáticos: el contador de viajes pasa a otra línea en vez de cortar el nombre del medio', () => {
-    expect(css).toMatch(/\.travel-overview-row-heading,\n\.travel-overview-destination-content > div:first-child \{\s*flex-wrap:\s*wrap/);
-  });
-  it('960 px: cabecera y acciones envuelven, y la rejilla mensual cabe sus 12 columnas', () => {
+  it('960 px: la cabecera de módulo envuelve sus acciones', () => {
     expect(rule('.catalog-header')).toMatch(/flex-wrap:\s*wrap/);
-    expect(rule('.travel-actions')).toMatch(/flex-wrap:\s*wrap/);
-    expect(rule('.travel-bars-grid')).toMatch(/min-width:\s*calc\(12 \* 2\.8rem \+ 11 \* 0\.3rem\)/);
   });
   it('960 px: la tabla de mano de obra de Proformas cabe en ~600 px y deja "Precio venta" a la vista', () => {
     expect(rule('.labor-table')).toMatch(/min-width:\s*560px/);
     expect(css).toMatch(/\.labor-table th:nth-child\(3\),\n\.labor-table th:nth-child\(4\) \{\s*width:\s*8\.5rem/);
   });
-  it('tarjetas estrechas de Viáticos: fila de medio en dos líneas (la barra debajo)', () => {
-    expect(css).toMatch(/@media \(max-width: 1150px\) \{\s*\.travel-overview-row \{\s*grid-template-columns:\s*minmax\(0, 1fr\) auto/);
+  it('Viáticos: controles, barras mensuales y paneles se adaptan al ancho de su tarjeta', () => {
+    const module = fs.readFileSync('src/modules/viaticos/ViaticosModule.tsx', 'utf8');
+    expect(module).toContain('grid-cols-[repeat(auto-fit,minmax(min(100%,11rem),1fr))]');
+    expect(module).toContain('min-w-[calc(12*2.8rem+11*0.3rem)]');
+    const overview = fs.readFileSync('src/modules/viaticos/TravelOverviewPanels.tsx', 'utf8');
+    expect(overview).toContain('@[48rem]:grid-cols-2');
+    expect(overview).toContain('grid-cols-[minmax(0,1fr)_auto]');
   });
   it('pestañas con subtítulo: el texto puede bajar de línea en vez de cortarse a 960 px', () => {
     expect(rule('.anim-tabs.has-hint button')).toMatch(/white-space:\s*normal/);

@@ -1,4 +1,9 @@
 import { useEffect, useRef, type ReactNode } from 'react';
+import { X } from 'lucide-react';
+import { cn } from '../../core/cn';
+import { dialogPanel } from '../../core/dialog';
+import { Button } from '../../core/ui/button';
+import { CardHeader } from '../../core/ui/card';
 
 type TravelDrawerProps = {
   eyebrow: string;
@@ -16,26 +21,25 @@ export default function TravelDrawer({ eyebrow, title, onRequestClose, children 
     const dialog = ref.current;
     if (dialog && !dialog.open) dialog.showModal();
     // Por defecto el foco cae en la X (primer elemento enfocable): aquí se viene a escribir.
-    dialog?.querySelector<HTMLElement>('.travel-drawer-body input, .travel-drawer-body select, .travel-drawer-body textarea')?.focus();
+    dialog?.querySelector<HTMLElement>('[data-drawer-body] input, [data-drawer-body] select, [data-drawer-body] textarea')?.focus();
   }, []);
 
   return (
     <dialog
       ref={ref}
-      className="travel-drawer"
+      className={cn(dialogPanel, 'mr-0 ml-auto h-dvh max-h-none w-[min(34rem,100vw)] max-w-[100vw] rounded-r-none')}
       aria-labelledby="travel-drawer-title"
       onCancel={(event) => { event.preventDefault(); onRequestClose(); }}
       // Un clic en el fondo (::backdrop) llega con el propio <dialog> como destino.
       onClick={(event) => { if (event.target === event.currentTarget) onRequestClose(); }}
     >
-      <header className="travel-drawer-header">
-        <div>
-          <div className="eyebrow">{eyebrow}</div>
-          <h2 id="travel-drawer-title">{title}</h2>
-        </div>
-        <button className="travel-drawer-close" type="button" aria-label="Cerrar panel" onClick={onRequestClose}>×</button>
-      </header>
-      <div className="travel-drawer-body">{children}</div>
+      <div className="flex h-full min-h-0 flex-col">
+        <header className="flex shrink-0 items-start justify-between gap-4 border-b border-navy/10 p-5 dark:border-sky/20">
+          <CardHeader eyebrow={eyebrow} title={<span id="travel-drawer-title">{title}</span>} />
+          <Button variant="ghost" size="icon" onClick={onRequestClose} aria-label="Cerrar panel"><X /></Button>
+        </header>
+        <div data-drawer-body className="grid min-h-0 flex-1 content-start gap-4 overflow-y-auto p-5">{children}</div>
+      </div>
     </dialog>
   );
 }

@@ -67,14 +67,8 @@ html[data-theme='dark'] .eyebrow {
 
 .service-report-overlay,
 .sales-catalog-overlay,
-.open-contract-overlay,
-.travel-import-backdrop {
+.open-contract-overlay {
   backdrop-filter: blur(0.5rem);
-}
-
-.travel-import-dialog {
-  border-radius: var(--ds-radius-2xl);
-  box-shadow: var(--ds-shadow-md);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -133,15 +127,4 @@ html[data-theme] .module-symbol {
 html[data-theme='dark'] .nav-icon,
 html[data-theme='dark'] .module-symbol {
   color: var(--ds-sky);
-}
-
-/* Los diálogos de la suite usan clases Tailwind (src/core/dialog.ts); aquí quedan solo los modales con CSS heredado. */
-.travel-drawer::backdrop {
-  backdrop-filter: blur(0.5rem);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .travel-drawer::backdrop {
-    backdrop-filter: none;
-  }
 }

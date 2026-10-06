@@ -288,6 +288,9 @@ Los filtros de cartera del Discontinuador se distribuyen en filas cuando el espa
 disponible es menor, sin recortar las opciones ni el botón para limpiar filtros.
 En el detalle de un cliente, cada contrato permite contraer o mostrar sus equipos
 por separado desde el encabezado; el resumen y la exportación del cliente no cambian.
+Control de viáticos usa los componentes compartidos del rediseño en ambos temas: resumen, viajes,
+rendiciones e histórico. El alta de viajes y la previsualización de importación son diálogos nativos;
+las tablas y los gráficos se ajustan al ancho de su tarjeta.
 Mantenimiento usa los componentes compartidos del rediseño en ambos temas: fuente de contadores,
 tablero ejecutivo, expedientes técnicos con inspector y límites por modelo. Las tablas desplazan
 dentro de su tarjeta y el editor de reglas es un diálogo nativo. Los informes PDF conservan sus estilos.

@@ -1,36 +1,5 @@
 
 
-html[data-theme='light'] .travel-overview-row-heading strong,
-html[data-theme='light'] .travel-overview-destination-content strong {
-  color: var(--ds-ink);
-}
-
-html[data-theme='light'] .travel-overview-row-heading small,
-html[data-theme='light'] .travel-overview-destination-content small {
-  color: var(--ds-muted);
-}
-
-html[data-theme='light'] .travel-overview-row > b,
-html[data-theme='light'] .travel-overview-destination > b {
-  color: var(--ds-success);
-}
-
-html[data-theme='light'] .travel-overview-card {
-  border-color: var(--ds-border);
-  background: var(--ds-surface);
-  box-shadow: none;
-}
-
-html[data-theme='light'] .travel-overview-track {
-  background: var(--ds-chart-track);
-}
-
-html[data-theme='light'] .travel-overview-rank {
-  border-color: var(--ds-border);
-  color: var(--ds-navy);
-  background: var(--ds-blue-wash);
-}
-
 html[data-theme='light'] .summary-label,
 html[data-theme='light'] .detail-label,
 html[data-theme='light'] .module-section,

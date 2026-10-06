@@ -60,7 +60,7 @@ describe('layout entre 960 y 1350 px', () => {
     it.each([
       '.operations-table', '.discontinuation-table', '.discontinuation-equipment-table',
       '.contract-analytics-table', '.dispatch-equipment-table', '.outputs-table', '.consumables-table',
-      '.legacy-ficha-table', '.legacy-equipment-table', '.historical-travel-table', '.travel-rendition-table',
+      '.legacy-ficha-table', '.legacy-equipment-table', 
     ])('%s no fuerza scroll por encima de su contenido', (selector) => {
       expect(minWidth(selector)).toBe('0');
     });
@@ -77,11 +77,11 @@ describe('layout entre 960 y 1350 px', () => {
     expect(css).toMatch(/@media \(max-width: 1500px\)\s*{\s*\.consumables-layout\s*{\s*grid-template-columns:\s*1fr/);
   });
 
-  it('Viáticos: la tabla usa layout automático (sin columnas en % ni mínimo fijo) y no parte fecha ni importe', () => {
-    expect(css).toMatch(/\.travel-table\s*{[^}]*min-width:\s*0;[^}]*}/);
-    expect(css).not.toMatch(/\.travel-table th:nth-child\(1\),\s*\.travel-table td:nth-child\(1\)\s*{\s*width:/);
-    expect(css).not.toMatch(/\.travel-table\s*{[^}]*table-layout:\s*fixed/);
-    expect(css).toMatch(/\.travel-table td:nth-child\(1\) \.code-cell,\s*\.travel-table td:nth-child\(5\) \.code-cell\s*{\s*white-space:\s*nowrap/);
+  it('Viáticos: la tabla de viajes desplaza dentro de su tarjeta y no parte fecha ni importe', () => {
+    const module = fs.readFileSync('src/modules/viaticos/ViaticosModule.tsx', 'utf8');
+    expect(module).toContain('<Table className="min-w-[48rem] [overflow-wrap:normal]">');
+    expect(module.match(/whitespace-nowrap font-mono text-xs/g)).toHaveLength(1);
+    expect(module).toContain('whitespace-nowrap font-semibold tabular-nums');
   });
 
   it('Consumibles: la columna de fecha tiene ancho mínimo para que el origen no se parta en 2-3 líneas', () => {

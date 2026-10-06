@@ -1,6 +1,6 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import type { ButtonHTMLAttributes } from 'react';
+import type { ComponentProps } from 'react';
 import { cn } from '../cn';
 
 // Los colores de texto llevan "!" porque el CSS heredado del tema claro (theme/05-ventas.css: .app-shell :where(button)) los fija con más
@@ -31,7 +31,7 @@ export const buttonVariants = cva(
   },
 );
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonVariants> & { asChild?: boolean };
+type ButtonProps = ComponentProps<'button'> & VariantProps<typeof buttonVariants> & { asChild?: boolean };
 
 export function Button({ className, variant, size, asChild = false, type = 'button', ...props }: ButtonProps) {
   const Comp = asChild ? Slot : 'button';
