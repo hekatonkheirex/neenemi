@@ -464,6 +464,10 @@ Cobertura permite subir un PDF y calcula en este equipo la cobertura por canal d
 persiste el último análisis y conserva el catálogo manual de modelos Canon con su cálculo de
 rendimiento ISO/IEC 19798. Se retiraron las entradas de cobertura manual y la importación JSON;
 el informe se puede guardar como PDF.
+La carga, los resultados por página y el catálogo usan los componentes compartidos del
+rediseño en ambos temas. Las tablas desplazan dentro de su tarjeta y los nombres largos de
+archivos y modelos se ajustan sin invadir otras columnas; el informe PDF conserva su diseño
+de impresión independiente.
 
 Salvo la copia inicial de los datos de prueba y la reindexación idempotente de fuentes ya
 archivadas, descritas en «Persistencia objetivo», la suite no modifica ni migra bases

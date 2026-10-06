@@ -1,69 +1,10 @@
 
-
-html[data-theme='light'] .coverage-bottleneck {
-  border-color: #e7c68b;
-  color: var(--ds-warning);
-  background: #fff8e8;
-}
-
-html[data-theme='light'] .coverage-bottleneck > span {
-  color: var(--ds-warning);
-}
-
-html[data-theme='light'] .coverage-bottleneck strong {
-  color: var(--ds-navy);
-}
-
-html[data-theme='light'] .coverage-bottleneck small,
-html[data-theme='light'] .coverage-yield-footnote {
-  color: var(--ds-muted);
-}
-
-html[data-theme='light'] .app-shell .coverage-table thead th {
-  border-color: rgba(255, 255, 255, 0.12);
-  color: #e5edf7;
-  background: var(--ds-navy);
-}
-
-html[data-theme='light'] .app-shell .coverage-table tbody th {
-  color: var(--ds-ink);
-  background: transparent;
-}
-
-html[data-theme='light'] .app-shell .coverage-yield-table thead th {
-  border-color: var(--ds-border);
-  color: var(--ds-muted);
-  background: var(--ds-surface-alt);
-}
-
-html[data-theme='light'] .app-shell .coverage-yield-table tbody th {
-  border-color: var(--ds-border);
-  color: var(--ds-ink);
-}
-
-html[data-theme='light'] .app-shell .coverage-yield-table tbody td {
-  border-color: var(--ds-border);
-  color: var(--ds-muted);
-}
-
-html[data-theme='light'] .app-shell .coverage-yield-table .coverage-yield-estimate {
-  color: #006e95;
-}
-
-html[data-theme='light'] .coverage-color-dot.black {
-  border: 1px solid #9aa8b8;
-}
-
-html[data-theme='light'] .coverage-total {
-  color: var(--ds-navy);
-}
-
 html[data-theme='light'] .badge.neutral {
   color: var(--ds-muted);
   background: var(--ds-surface-alt);
 }
 
-html[data-theme='light'] .app-shell :where(.form-card, .analytics-panel, .coverage-sidebar) {
+html[data-theme='light'] .app-shell :where(.form-card, .analytics-panel) {
   color: var(--ds-ink);
 }
 

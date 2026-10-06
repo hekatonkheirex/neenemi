@@ -116,26 +116,6 @@ html[data-theme='light'] body .travel-drawer .sales-card + .sales-card {
   border-top-color: var(--ds-border);
 }
 
-/* Cobertura: la zona de carga del PDF y sus textos no tenían variante clara (bloque gris con texto de 2,9:1). */
-html[data-theme='light'] .coverage-upload-dropzone {
-  border-color: var(--ds-border-strong);
-  background: var(--ds-blue-wash);
-}
-
-html[data-theme='light'] .coverage-upload-dropzone.is-dragging {
-  border-color: var(--ds-sky);
-  background: #d4ecf7;
-}
-
-html[data-theme='light'] .coverage-upload-copy strong {
-  color: var(--ds-navy);
-}
-
-html[data-theme='light'] .coverage-upload-copy span,
-html[data-theme='light'] .coverage-upload-description,
-html[data-theme='light'] .coverage-empty {
-  color: var(--ds-muted);
-}
 
 /* Barrido de contraste en tema claro (WCAG AA): texto naranja, blanco sobre naranja y colores del tema oscuro sin variante clara. */
 html[data-theme='light'] .consumables-tabs button.active {

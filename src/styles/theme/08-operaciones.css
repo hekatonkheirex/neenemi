@@ -29,7 +29,6 @@ html[data-theme='light'] .status-dot.error {
 }
 
 html[data-theme='light'] .error-message,
-html[data-theme='light'] .danger-text,
 html[data-theme='light'] .icon-button {
   color: var(--ds-danger);
 }

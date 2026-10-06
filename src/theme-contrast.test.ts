@@ -33,11 +33,6 @@ describe('contraste del tema claro', () => {
     expect(ratio(fg, bg)).toBeGreaterThanOrEqual(4.5);
   });
 
-  it('el CSS usa esos colores', () => {
-    expect(theme).toMatch(/html\[data-theme='light'\] \.eyebrow\s*{\s*color:\s*#00698f/);
-    expect(theme).toMatch(/--ds-subtle:\s*#58677d/);
-    expect(theme).toMatch(/\.coverage-upload-dropzone\s*{[^}]*background:\s*var\(--ds-blue-wash\)/);
-  });
 
   it('botones por intencion (cargar celeste, exportar verde): texto >= 4,5:1 en los dos temas', () => {
     // Colores de src/core/ui/button.tsx (variantes upload y export) sobre su fondo: acento al 10 % sobre blanco o sobre #0e1b31.

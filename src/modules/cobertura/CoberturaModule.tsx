@@ -7,6 +7,16 @@ import type { PdfPageFailure, PdfProgressEvent } from './pdf-analysis';
 import type { CanonColorType, CanonModel, CanonModelDraft, CoverageAnalysis, PageCoverage, YieldEstimate } from './types';
 import { readJson, toErrorMessage } from '../../core/http';
 import { UploadTriggerButton } from '../../core/ActionButtons';
+import { FileText, Pencil, Plus, Printer, RotateCcw, Save, Trash2, X } from 'lucide-react';
+import { Button } from '../../core/ui/button';
+import { Badge } from '../../core/ui/badge';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Input } from '../../core/ui/input';
+import { PageHeader } from '../../core/ui/page-header';
+import { StatusLine } from '../../core/ui/status-line';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
+
+const selectClassName = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy dark:border-sky/30 dark:bg-navy/50 dark:text-white';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1, minimumFractionDigits: 1 });
 const pageFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
@@ -309,19 +319,21 @@ export default function CoberturaModule() {
 
   return (
     <div className="page-content coverage-page">
-      <section className="catalog-header">
-        <div><div className="eyebrow">ANÁLISIS / MPS</div><h1>Analizador de cobertura de tóner</h1><p className="lead">Sube un PDF para medir la cobertura real de cada página y estimar el rendimiento de tóners Canon.</p></div>
-        <div className="coverage-actions"><button className="secondary-button" type="button" onClick={() => void printReport()} disabled={coverage.pages.length === 0}>Imprimir / PDF</button></div>
-      </section>
+      <PageHeader eyebrow="ANÁLISIS / MPS" title="Analizador de cobertura de tóner"
+        lead="Sube un PDF para medir la cobertura real de cada página y estimar el rendimiento de tóners Canon."
+        actions={<Button variant="outline" onClick={() => void printReport()} disabled={coverage.pages.length === 0}><Printer />Imprimir / PDF</Button>}
+      />
+      <StatusLine state={error || uploadError ? 'error' : loading || uploadBusy ? 'pending' : 'ready'}>
+        <div className="[overflow-wrap:anywhere]">{error || message || (uploadError ? 'Revisa el mensaje del cargador de PDF.' : loading ? 'Cargando catálogo local…' : 'Carga un PDF para analizar la cobertura.')}</div>
+      </StatusLine>
 
-      <section className="sales-status" aria-live="polite"><span className={`status-dot ${error ? 'error' : loading ? 'pending' : 'ready'}`} /><span>{error || message || (uploadError ? 'Revisa el mensaje del cargador de PDF.' : loading ? 'Cargando catálogo local…' : 'Carga un PDF para analizar la cobertura.')}</span></section>
-
-      <section className="coverage-layout">
-        <main className="coverage-main">
-          <section className="sales-card coverage-input-card" aria-busy={uploadBusy}>
-            <div className="card-heading"><div><h2>Analizar un PDF</h2><p className="coverage-upload-description">El documento se procesa en este equipo, página por página, a 300 DPI.</p></div><span className="muted-note">{coverage.pages.length} páginas</span></div>
+      <div className="grid min-w-0 items-start gap-6 min-[90rem]:grid-cols-[minmax(0,1fr)_26rem]">
+        <div className="grid min-w-0 gap-6">
+          <Card className="min-w-0 grid-cols-1" aria-busy={uploadBusy}>
+            <CardHeader eyebrow="DOCUMENTO / PDF" title="Analizar un PDF" aside={<Badge>{coverage.pages.length} páginas</Badge>} />
+            <Muted>El documento se procesa en este equipo, página por página, a 300 DPI.</Muted>
             <div
-              className={`coverage-upload-dropzone${isDragging ? ' is-dragging' : ''}${uploadBusy ? ' is-busy' : ''}`}
+              className={`grid min-w-0 gap-4 rounded-xl border border-dashed p-6 transition-colors ${isDragging ? 'border-sky bg-sky/15' : 'border-sky/40 bg-sky/5'} ${uploadBusy ? 'cursor-progress' : ''}`}
               onDragEnter={(event) => { event.preventDefault(); if (!uploadBusy) setIsDragging(true); }}
               onDragOver={(event) => { event.preventDefault(); if (!uploadBusy) setIsDragging(true); }}
               onDragLeave={(event) => {
@@ -332,82 +344,74 @@ export default function CoberturaModule() {
             >
               <input
                 ref={fileInputRef}
-                className="coverage-upload-file-input"
+                className="sr-only"
                 id="coverage-pdf-upload"
+                aria-label="Archivo PDF para analizar"
+                tabIndex={-1}
                 type="file"
                 accept="application/pdf,.pdf"
                 disabled={uploadBusy}
                 onChange={handleFileInput}
               />
-              <div className="coverage-upload-copy">
-                <strong>{uploadStatus === 'analyzing' ? 'Analizando el PDF…' : uploadStatus === 'saving' ? 'Guardando el análisis…' : uploadStatus === 'complete' ? 'Análisis completado' : 'Suelta aquí tu archivo PDF'}</strong>
-                <span>Se calculará la cobertura de negro, cian, magenta y amarillo para cada página.</span>
-                <UploadTriggerButton onClick={() => fileInputRef.current?.click()} disabled={uploadBusy}>Seleccionar PDF</UploadTriggerButton>
+              <div className="mx-auto grid min-w-0 max-w-lg justify-items-center gap-3 text-center">
+                <FileText className="size-8 text-sky" aria-hidden="true" />
+                <strong className="text-sm text-navy dark:text-white">{uploadStatus === 'analyzing' ? 'Analizando el PDF…' : uploadStatus === 'saving' ? 'Guardando el análisis…' : uploadStatus === 'complete' ? 'Análisis completado' : 'Suelta aquí tu archivo PDF'}</strong>
+                <Muted>Se calculará la cobertura de negro, cian, magenta y amarillo para cada página.</Muted>
+                <UploadTriggerButton className="h-auto min-h-10 max-w-full whitespace-normal py-2" onClick={() => fileInputRef.current?.click()} disabled={uploadBusy}>Seleccionar PDF</UploadTriggerButton>
               </div>
             </div>
-
-            {fileName && <div className="coverage-upload-file"><span>Archivo</span><strong title={fileName}>{fileName}</strong></div>}
-
-            {uploadBusy && <div className="coverage-upload-progress" aria-live="polite">
-              <div className="coverage-upload-progress-heading"><span>{uploadStatus === 'saving' ? 'Guardando en SQLite' : uploadProgress.currentPage ? `Procesando página ${uploadProgress.currentPage}` : 'Abriendo documento'}</span><strong>{progressPercent}%</strong></div>
-              <div className="coverage-upload-progress-track" role="progressbar" aria-label="Progreso del análisis PDF" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPercent}><span style={{ width: `${progressPercent}%` }} /></div>
-              <small>{uploadProgress.completedPages} de {uploadProgress.totalPages || '…'} páginas procesadas{uploadProgress.failedPages > 0 ? ` · ${uploadProgress.failedPages} con error` : ''}</small>
+            {fileName && <div className="grid min-w-0 grid-cols-1 gap-1 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
+              <Muted>Archivo</Muted><strong className="break-words text-sm text-navy dark:text-white" title={fileName}>{fileName}</strong>
             </div>}
-
-            {uploadError && <div className="coverage-upload-error" role="alert">{uploadError}</div>}
-            {(uploadStatus === 'complete' || uploadStatus === 'error') && fileName && <button className="text-button coverage-upload-reset" type="button" onClick={resetUpload}>Analizar otro PDF</button>}
-          </section>
+            {uploadBusy && <div className="grid min-w-0 gap-2" aria-live="polite">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-navy dark:text-white"><div>{uploadStatus === 'saving' ? 'Guardando en SQLite' : uploadProgress.currentPage ? `Procesando página ${uploadProgress.currentPage}` : 'Abriendo documento'}</div><Badge>{progressPercent}%</Badge></div>
+              <div className="h-2 overflow-hidden rounded-full bg-sky/15" role="progressbar" aria-label="Progreso del análisis PDF" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPercent}><div className="h-full rounded-full bg-sky" style={{ width: `${progressPercent}%` }} /></div>
+              <Muted>{uploadProgress.completedPages} de {uploadProgress.totalPages || '…'} páginas procesadas{uploadProgress.failedPages > 0 ? ` · ${uploadProgress.failedPages} con error` : ''}</Muted>
+            </div>}
+            {uploadError && <div className="break-words rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-[#b42318] dark:text-[#ffd2cc]" role="alert">{uploadError}</div>}
+            {(uploadStatus === 'complete' || uploadStatus === 'error') && fileName && <Button variant="outline" className="w-fit" onClick={resetUpload}><RotateCcw />Analizar otro PDF</Button>}
+          </Card>
 
           <CoverageResults coverage={coverage} failedPages={failedPages} hasSavedAnalysis={analysis !== null} onClear={() => void clearSavedAnalysis()} />
-        </main>
+        </div>
 
-        <aside className="coverage-sidebar">
-          <section className="sales-card coverage-model-selection-card" aria-labelledby="coverage-selection-title">
-            <div className="card-heading">
-              <div>
-                <div className="eyebrow">SELECCIÓN DE CÁLCULO</div>
-                <h2 id="coverage-selection-title">Modelo Canon</h2>
-                <p className="coverage-upload-description">El modelo define el rendimiento nominal usado en la estimación.</p>
-              </div>
-            </div>
-            <label className="search-field">
-              <span>Modelo para el cálculo</span>
-              <select value={selectedModelId} onChange={(event) => setSelectedModelId(event.target.value)} disabled={models.length === 0 || loading}>
+        <aside className="grid min-w-0 grid-cols-1 gap-6">
+          <Card className="min-w-0 grid-cols-1" aria-labelledby="coverage-selection-title">
+            <CardHeader eyebrow="SELECCIÓN DE CÁLCULO" title={<span id="coverage-selection-title">Modelo Canon</span>} />
+            <Muted>El modelo define el rendimiento nominal usado en la estimación.</Muted>
+            <label className="grid min-w-0 gap-2 text-sm font-semibold text-navy dark:text-white">
+              <div>Modelo para el cálculo</div>
+              <select className={selectClassName} value={selectedModelId} onChange={(event) => setSelectedModelId(event.target.value)} disabled={models.length === 0 || loading}>
                 <option value="">Seleccionar modelo…</option>
                 {models.map((model) => <option key={model.id} value={model.id}>{model.name} · {model.colorType === 'color' ? 'Color' : 'Mono'}</option>)}
               </select>
             </label>
-            {!loading && models.length === 0 && <p className="coverage-catalog-hint">Agrega un modelo en el catálogo para habilitar el cálculo.</p>}
-          </section>
+            {!loading && models.length === 0 && <Muted>Agrega un modelo en el catálogo para habilitar el cálculo.</Muted>}
+          </Card>
 
-          <section className="sales-card coverage-model-catalog-card" aria-labelledby="coverage-catalog-title">
-            <div className="card-heading">
-              <div>
-                <div className="eyebrow">CATÁLOGO LOCAL</div>
-                <h2 id="coverage-catalog-title">Administrar modelos</h2>
-                <p className="coverage-upload-description">Guarda o actualiza los rendimientos nominales de tus equipos.</p>
-              </div>
-              {!modelFormOpen && <button className="text-button" type="button" onClick={beginNewModel} disabled={loading}>Agregar modelo</button>}
-            </div>
-
+          <Card className="min-w-0 grid-cols-1" aria-labelledby="coverage-catalog-title">
+            <CardHeader eyebrow="CATÁLOGO LOCAL" title={<span id="coverage-catalog-title">Administrar modelos</span>} aside={
+              !modelFormOpen && <Button variant="outline" size="sm" onClick={beginNewModel} disabled={loading}><Plus />Agregar modelo</Button>
+            } />
+            <Muted>Guarda o actualiza los rendimientos nominales de tus equipos.</Muted>
             {modelFormOpen && (
-              <form id="coverage-model-editor" className="coverage-model-form" onSubmit={(event) => void saveModel(event)}>
-                <div className="coverage-model-editor-heading">
-                  <h3>{editingModelId ? 'Editar modelo' : 'Nuevo modelo'}</h3>
-                  <button className="text-button" type="button" onClick={closeModelForm} disabled={saving}>Cancelar</button>
+              <form id="coverage-model-editor" className="grid min-w-0 gap-4 border-t border-navy/10 pt-4 dark:border-sky/20" onSubmit={(event) => void saveModel(event)}>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <h3 className="m-0 text-sm font-bold text-navy dark:text-white">{editingModelId ? 'Editar modelo' : 'Nuevo modelo'}</h3>
+                  <Button variant="ghost" size="sm" onClick={closeModelForm} disabled={saving}><X />Cancelar</Button>
                 </div>
-                <label className="search-field">
-                  <span>Nombre</span>
-                  <input value={modelForm.name} onChange={(event) => setModelForm((current) => ({ ...current, name: event.target.value }))} placeholder="imageRUNNER ADVANCE…" />
+                <label className="grid min-w-0 gap-2 text-sm font-semibold text-navy dark:text-white">
+                  <div>Nombre</div>
+                  <Input value={modelForm.name} onChange={(event) => setModelForm((current) => ({ ...current, name: event.target.value }))} placeholder="imageRUNNER ADVANCE…" />
                 </label>
-                <label className="search-field">
-                  <span>Tipo</span>
-                  <select value={modelForm.colorType} onChange={(event) => setModelForm((current) => ({ ...current, colorType: event.target.value as CanonColorType }))}>
+                <label className="grid min-w-0 gap-2 text-sm font-semibold text-navy dark:text-white">
+                  <div>Tipo</div>
+                  <select className={selectClassName} value={modelForm.colorType} onChange={(event) => setModelForm((current) => ({ ...current, colorType: event.target.value as CanonColorType }))}>
                     <option value="color">Color</option>
                     <option value="mono">Monocromo</option>
                   </select>
                 </label>
-                <div className="coverage-yield-fields">
+                <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-3">
                   <YieldField label="Negro" value={modelForm.black} onChange={(value) => setModelForm((current) => ({ ...current, black: value }))} />
                   {modelForm.colorType === 'color' && <>
                     <YieldField label="Cian" value={modelForm.cyan} onChange={(value) => setModelForm((current) => ({ ...current, cyan: value }))} />
@@ -415,36 +419,34 @@ export default function CoberturaModule() {
                     <YieldField label="Amarillo" value={modelForm.yellow} onChange={(value) => setModelForm((current) => ({ ...current, yellow: value }))} />
                   </>}
                 </div>
-                <button className="primary-button full-button" type="submit" disabled={saving}>{editingModelId ? 'Actualizar modelo' : 'Guardar modelo'}</button>
+                <Button className="w-full" type="submit" disabled={saving} aria-busy={saving}><Save />{saving ? 'Guardando…' : editingModelId ? 'Actualizar modelo' : 'Guardar modelo'}</Button>
               </form>
             )}
-
             {models.length > 0 ? (
-              <div className="coverage-model-list" aria-label="Modelos guardados">
+              <div className="grid min-w-0 grid-cols-1 max-h-[28rem] gap-3 overflow-y-auto p-1" aria-label="Modelos guardados">
                 {models.map((model) => (
-                  <div className="coverage-model-row" key={model.id}>
-                    <span>
-                      <strong>{model.name}</strong>
-                      <small>{model.colorType === 'color' ? 'Color' : 'Mono'} · K {pageFormat.format(model.nominalYield.black)} páginas</small>
-                    </span>
-                    <span>
-                      <button className="text-button" type="button" onClick={() => beginEditModel(model)}>Editar</button>
-                      <button className="text-button danger-text" type="button" onClick={() => void deleteModel(model)}>Borrar</button>
-                    </span>
+                  <div className="grid min-w-0 grid-cols-1 gap-3 rounded-xl border border-navy/10 bg-paper p-3 dark:border-sky/20 dark:bg-navy/30" key={model.id}>
+                    <div className="grid min-w-0 grid-cols-1 gap-1">
+                      <strong className="break-words text-sm text-navy dark:text-white">{model.name}</strong>
+                      <Muted>{model.colorType === 'color' ? 'Color' : 'Mono'} · K {pageFormat.format(model.nominalYield.black)} páginas</Muted>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button variant="outline" size="sm" aria-label={`Editar ${model.name}`} onClick={() => beginEditModel(model)}><Pencil />Editar</Button>
+                      <Button variant="ghost" size="sm" className="text-[#b42318]! dark:text-[#ff9ba4]!" aria-label={`Borrar ${model.name}`} onClick={() => void deleteModel(model)}><Trash2 />Borrar</Button>
+                    </div>
                   </div>
                 ))}
               </div>
-            ) : !loading ? (
-              <p className="coverage-catalog-empty">Todavía no hay modelos guardados.</p>
-            ) : (
-              <p className="coverage-catalog-empty">Cargando catálogo local…</p>
-            )}
-          </section>
+            ) : <Muted>{loading ? 'Cargando catálogo local…' : 'Todavía no hay modelos guardados.'}</Muted>}
+          </Card>
 
-          <section className="sales-card coverage-yield-card"><div className="card-heading"><div><div className="eyebrow">ESTIMACIÓN ISO / IEC 19798</div><h2>Rendimiento real</h2><p className="coverage-upload-description">Páginas estimadas desde la cobertura media por canal.</p></div><span className="muted-note">5% referencia</span></div>{yieldEstimate ? <YieldResults estimate={yieldEstimate} /> : <p className="coverage-note">Selecciona un modelo y calcula una cobertura para estimar páginas por color y el cuello de botella del conjunto.</p>}</section>
+          <Card className="min-w-0 grid-cols-1">
+            <CardHeader eyebrow="ESTIMACIÓN ISO / IEC 19798" title="Rendimiento real" aside={<Badge>5% referencia</Badge>} />
+            <Muted>Páginas estimadas desde la cobertura media por canal.</Muted>
+            {yieldEstimate ? <YieldResults estimate={yieldEstimate} /> : <Muted>Selecciona un modelo y calcula una cobertura para estimar páginas por color y el cuello de botella del conjunto.</Muted>}
+          </Card>
         </aside>
-      </section>
-
+      </div>
     </div>
   );
 }
@@ -470,51 +472,45 @@ function CoverageResults({ coverage, failedPages, hasSavedAnalysis, onClear }: {
   onClear: () => void;
 }) {
   return (
-    <section className="sales-card coverage-results-card">
-      <div className="card-heading">
-        <div><h2>Reporte de cobertura</h2><p className="coverage-upload-description">Promedio de tinta estimada por canal en cada página analizada.</p></div>
-        <div className="coverage-results-actions"><span className="coverage-page-count">{coverage.pages.length} páginas</span>{hasSavedAnalysis && <button className="text-button" type="button" onClick={onClear}>Borrar análisis</button>}</div>
-      </div>
-      {failedPages.length > 0 && <div className="coverage-upload-failures" role="status"><strong>{failedPages.length === 1 ? 'Una página fue excluida.' : `${failedPages.length} páginas fueron excluidas.`}</strong><span>{failedPages.map(({ page }) => `pág. ${page}`).join(', ')}</span></div>}
-      {coverage.pages.length === 0 ? <div className="coverage-empty">Sube un PDF para ver la cobertura por página.</div> : (
-        <div className="coverage-table-wrap">
-          <table className="coverage-table coverage-report-table">
-            <thead><tr><th scope="col">Página</th><th scope="col">Negro</th><th scope="col">Cian</th><th scope="col">Magenta</th><th scope="col">Amarillo</th><th scope="col">Total</th></tr></thead>
-            <tbody>{coverage.pages.map((page) => <tr key={page.page}><th scope="row">{page.page}</th><td>{numberFormat.format(page.black)}%</td><td>{numberFormat.format(page.cyan)}%</td><td>{numberFormat.format(page.magenta)}%</td><td>{numberFormat.format(page.yellow)}%</td><td className="coverage-total">{numberFormat.format(page.total)}%</td></tr>)}</tbody>
-            <tfoot><tr><th scope="row">Promedio</th><td>{numberFormat.format(coverage.average.black)}%</td><td>{numberFormat.format(coverage.average.cyan)}%</td><td>{numberFormat.format(coverage.average.magenta)}%</td><td>{numberFormat.format(coverage.average.yellow)}%</td><td className="coverage-total">{numberFormat.format(coverage.average.black + coverage.average.cyan + coverage.average.magenta + coverage.average.yellow)}%</td></tr></tfoot>
-          </table>
-        </div>
+    <Card className="min-w-0 grid-cols-1">
+      <CardHeader eyebrow="RESULTADOS / COBERTURA" title="Reporte de cobertura" aside={
+        <div className="flex flex-wrap items-center gap-2"><Badge>{coverage.pages.length} páginas</Badge>{hasSavedAnalysis && <Button variant="ghost" size="sm" onClick={onClear}><Trash2 />Borrar análisis</Button>}</div>
+      } />
+      <Muted>Promedio de tinta estimada por canal en cada página analizada.</Muted>
+      {failedPages.length > 0 && <div className="grid min-w-0 gap-1 break-words rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-[#7a4a00] dark:text-[#ffe4a8]" role="status"><strong>{failedPages.length === 1 ? 'Una página fue excluida.' : `${failedPages.length} páginas fueron excluidas.`}</strong><div>{failedPages.map(({ page }) => `pág. ${page}`).join(', ')}</div></div>}
+      {coverage.pages.length === 0 ? <div className="rounded-xl border border-dashed border-navy/20 p-6 text-center dark:border-sky/30"><Muted>Sube un PDF para ver la cobertura por página.</Muted></div> : (
+        <Table className="min-w-[36rem] tabular-nums" wrapperClassName="min-w-0" aria-label="Cobertura por página">
+          <TableHeader><TableRow><TableHead scope="col">Página</TableHead>{['Negro', 'Cian', 'Magenta', 'Amarillo', 'Total'].map(label => <TableHead className="text-right" scope="col" key={label}>{label}</TableHead>)}</TableRow></TableHeader>
+          <TableBody>{coverage.pages.map((page) => <TableRow key={page.page}><TableHead scope="row">{page.page}</TableHead>{[page.black, page.cyan, page.magenta, page.yellow, page.total].map((value, index) => <TableCell className={`text-right whitespace-nowrap ${index === 4 ? 'font-bold' : ''}`} key={index}>{numberFormat.format(value)}%</TableCell>)}</TableRow>)}</TableBody>
+          <tfoot className="border-t border-sky/30 bg-sky/10"><TableRow><TableHead scope="row">Promedio</TableHead>{[coverage.average.black, coverage.average.cyan, coverage.average.magenta, coverage.average.yellow, coverage.average.black + coverage.average.cyan + coverage.average.magenta + coverage.average.yellow].map((value, index) => <TableCell className="text-right font-bold whitespace-nowrap" key={index}>{numberFormat.format(value)}%</TableCell>)}</TableRow></tfoot>
+        </Table>
       )}
-    </section>
+    </Card>
   );
 }
 
 function YieldField({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
-  return <label className="search-field"><span>{label} páginas @ 5%</span><input min={1} type="number" value={value} onChange={(event) => onChange(event.target.value)} placeholder="10000" /></label>;
+  return <label className="grid min-w-0 gap-2 text-sm font-semibold text-navy dark:text-white"><div>{label} páginas @ 5%</div><Input min={1} type="number" value={value} onChange={(event) => onChange(event.target.value)} placeholder="10000" /></label>;
 }
 
 function YieldResults({ estimate }: { estimate: YieldEstimate }) {
   return (
-    <div className="coverage-yield-results">
-      <div className="coverage-bottleneck">
-        <span>Cuello de botella del conjunto</span>
-        <strong>{estimate.bottleneckPages === null ? '∞' : pageFormat.format(Math.round(estimate.bottleneckPages))}</strong>
-        <small>{estimate.bottleneckPages === null ? 'No se consume ningún canal en este documento.' : `páginas estimadas para ${estimate.modelName}`}</small>
+    <div className="grid min-w-0 grid-cols-1 gap-4">
+      <div className="grid min-w-0 grid-cols-1 gap-2 rounded-xl border border-sky/30 bg-sky/10 p-4">
+        <Muted>Cuello de botella del conjunto</Muted>
+        <strong className="break-all text-3xl font-bold tabular-nums text-navy dark:text-white">{estimate.bottleneckPages === null ? '∞' : pageFormat.format(Math.round(estimate.bottleneckPages))}</strong>
+        <Muted className="break-words">{estimate.bottleneckPages === null ? 'No se consume ningún canal en este documento.' : `páginas estimadas para ${estimate.modelName}`}</Muted>
       </div>
-      <div className="coverage-yield-table-wrap">
-        <table className="coverage-yield-table">
-          <thead><tr><th scope="col">Canal</th><th scope="col">Cobertura</th><th scope="col">Nominal</th><th scope="col">Estimado</th></tr></thead>
-          <tbody>{estimate.colors.map((color) => (
-            <tr key={color.color}>
-              <th scope="row"><span className={`coverage-color-dot ${color.color}`} aria-hidden="true" />{colorLabel(color.color)}</th>
-              <td>{numberFormat.format(color.measuredCoverage)}%</td>
-              <td>{pageFormat.format(color.nominalYield)}</td>
-              <td className="coverage-yield-estimate">{color.estimatedPages === null ? '∞ / no consumido' : pageFormat.format(Math.round(color.estimatedPages))}</td>
-            </tr>
-          ))}</tbody>
-        </table>
-      </div>
-      <p className="coverage-yield-footnote">El cuello de botella es el primer canal consumido que alcanza su rendimiento estimado. Los canales sin consumo no limitan el conjunto.</p>
+      <Table className="min-w-[22rem] tabular-nums" wrapperClassName="min-w-0" aria-label="Rendimiento por canal">
+        <TableHeader><TableRow><TableHead scope="col">Canal</TableHead>{['Cobertura', 'Nominal', 'Estimado'].map(label => <TableHead scope="col" className="text-right" key={label}>{label}</TableHead>)}</TableRow></TableHeader>
+        <TableBody>{estimate.colors.map((color) => <TableRow key={color.color}>
+          <TableHead scope="row">{colorLabel(color.color)}</TableHead>
+          <TableCell className="text-right whitespace-nowrap">{numberFormat.format(color.measuredCoverage)}%</TableCell>
+          <TableCell className="text-right whitespace-nowrap">{pageFormat.format(color.nominalYield)}</TableCell>
+          <TableCell className="text-right font-bold whitespace-nowrap">{color.estimatedPages === null ? '∞ / no consumido' : pageFormat.format(Math.round(color.estimatedPages))}</TableCell>
+        </TableRow>)}</TableBody>
+      </Table>
+      <Muted>El cuello de botella es el primer canal consumido que alcanza su rendimiento estimado. Los canales sin consumo no limitan el conjunto.</Muted>
     </div>
   );
 }

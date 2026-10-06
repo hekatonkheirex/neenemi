@@ -40,10 +40,7 @@ html[data-theme='light'] .source-cell,
 html[data-theme='light'] .empty-inline,
 html[data-theme='light'] .empty-cell,
 html[data-theme='light'] .analysis-meta,
-html[data-theme='light'] .overview-import-meta,
-html[data-theme='light'] .coverage-note,
-html[data-theme='light'] .coverage-catalog-hint,
-html[data-theme='light'] .coverage-catalog-empty {
+html[data-theme='light'] .overview-import-meta {
   color: var(--ds-muted);
 }
 
