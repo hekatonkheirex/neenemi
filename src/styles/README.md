@@ -12,3 +12,7 @@
 - Marca: `var(--ds-orange | --ds-sky | --ds-navy | --ds-border | --ds-ink)` (iguales en claro y oscuro).
 - Tema oscuro: `--dk-XXXXXX` (definidos en `index/01-*.css`), un token por valor exacto. Los tonos casi iguales se fusionaron con ΔE2000 ≤ 2,5 respecto del canónico (el más usado): `#e7efff`, `#e5eeff`, `#dce9ff`, `#d8e7ff` → `#dce8fc`; `#93a8ca` → `#8fa5c7`. Quedan separados los que distan más de 2,5 (p. ej. `#edf4ff`, `#c8d6ed`, `#9ab0d0`, `#8298ba`, `#7890b8`, `#7187aa`).
 - `src/styles/tokens.test.ts` falla si vuelve a aparecer uno de esos literales en `styles/index`. Color nuevo: usa un token existente o agrega uno.
+
+## Retirar CSS tras migrar un módulo
+
+`node scripts/strip-dead-css.mjs <archivo.tsx>...` (simulacro) y con `--write` quita los selectores cuyas clases estaban en la versión de HEAD de esos archivos y ya no aparecen en ningún `.ts`/`.tsx` de producción. Úsalo con los `.tsx` ya migrados y sin commit; luego corre `npm test` y actualiza las pruebas que leían ese CSS.

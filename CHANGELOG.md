@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.73 · 2026-10-06
+
+Proformas adopta el encabezado, las tarjetas, los campos, los botones, las tablas y los estados compartidos del rediseño. Cabecera, búsqueda de partes, ítems, mano de obra, resumen, catálogos, contrato abierto e historial conservan sus datos, cálculos y exportación XLSX. Bajo 1500 px el resumen queda como barra fija inferior, más compacta, y desde 1500 px pasa a la columna lateral. Las coincidencias de cada línea se muestran bajo el código sin recortarse. Importar contrato, Actualizar catálogos e Importar informe PDF son diálogos nativos (foco atrapado, Esc, fondo difuminado) que no se cierran mientras procesan. Se agrega el enlace de descarga compartido `ExportLink` y se retira el CSS anterior de pantalla del módulo.
+
 ## 0.1.72 · 2026-10-06
 
 Discontinuador adopta el encabezado, las tarjetas, los campos, los botones, las tablas y los estados compartidos del rediseño. Discontinuados, Stock Waldbott y Carga conservan sus datos, filtros por contrato, cliente y área, exportaciones XLSX, importaciones por fuente y filas originales. El resumen de cartera (estado Canon, equipos y contratos por tipo), los modelos identificados y el directorio de clientes se adaptan al ancho de su tarjeta; las tablas desplazan dentro de ella. La paginación y el detalle de origen compartidos con Consumibles, Listado de precios y Viáticos pasan a los componentes del rediseño, sin cambiar su comportamiento. Se retira el CSS anterior de pantalla del módulo.

@@ -84,6 +84,3 @@ html[data-theme='light'] .skeleton-block {
 }
 
 /* Los importes del Resumen de Proformas usaban #d8e6fb (pensado para el fondo oscuro). */
-html[data-theme='light'] .total-breakdown b {
-  color: var(--ds-navy);
-}

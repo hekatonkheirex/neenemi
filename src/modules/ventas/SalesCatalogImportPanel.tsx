@@ -1,8 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Tick02Icon } from '@hugeicons/core-free-icons';
 import { parseSalesCatalogFile, type SalesCatalogProgress } from './sales-catalog';
 import type { SalesCatalogKind, SalesCatalogMeta, SalesCatalogSnapshot, SalesCatalogs } from './types';
+import { X } from 'lucide-react';
+import { cn } from '../../core/cn';
+import ModalDialog, { modalBodyClass, modalFooterClass, modalHeaderClass } from '../../core/ModalDialog';
+import { Badge } from '../../core/ui/badge';
+import { Button, buttonVariants } from '../../core/ui/button';
+import { CardHeader, Muted } from '../../core/ui/card';
 
 type ImportPhase = 'idle' | 'reading' | 'saving' | 'success' | 'error';
 
@@ -42,22 +48,8 @@ export default function SalesCatalogImportPanel({ isOpen, catalogs, onClose, onI
   const [fileError, setFileError] = useState<string | null>(null);
   const [progress, setProgress] = useState<ImportProgress>(IDLE_PROGRESS);
   const inputs = useRef<Partial<Record<SalesCatalogKind, HTMLInputElement | null>>>({});
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const busy = progress.phase === 'reading' || progress.phase === 'saving';
   const selectedKinds = (Object.keys(files) as SalesCatalogKind[]).filter((kind) => Boolean(files[kind]));
-
-  useEffect(() => {
-    if (isOpen) closeButtonRef.current?.focus();
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !busy) closePanel();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [busy, isOpen]);
 
   function closePanel() {
     if (busy) return;
@@ -144,90 +136,83 @@ export default function SalesCatalogImportPanel({ isOpen, catalogs, onClose, onI
   if (!isOpen) return null;
 
   return (
-    <div className="sales-catalog-overlay" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget && !busy) closePanel(); }}>
-      <section className="sales-catalog-dialog" role="dialog" aria-modal="true" aria-labelledby="sales-catalog-title">
-        <header className="sales-catalog-dialog-header">
-          <div>
-            <div className="eyebrow">IMPORTACIÓN LOCAL / PROFORMAS</div>
-            <h2 id="sales-catalog-title">Actualizar catálogos</h2>
-            <p>Selecciona una o ambas planillas antiguas. Cada catálogo queda guardado en la SQLite compartida y conserva su archivo original.</p>
-          </div>
-          <button ref={closeButtonRef} className="mps-editor-close sales-catalog-close" type="button" onClick={closePanel} disabled={busy} aria-label="Cerrar ventana de actualización">×</button>
-        </header>
+    <ModalDialog labelledBy="sales-catalog-title" onRequestClose={() => { if (!busy) closePanel(); }} className="w-[min(52rem,calc(100vw-2rem))]">
+      <header className={modalHeaderClass}>
+        <div className="grid min-w-0 gap-2">
+          <CardHeader eyebrow="Importación local / Proformas" title={<span id="sales-catalog-title">Actualizar catálogos</span>} />
+          <Muted className="text-sm">Selecciona una o ambas planillas antiguas. Cada catálogo queda guardado en la SQLite compartida y conserva su archivo original.</Muted>
+        </div>
+        <Button variant="ghost" size="icon" onClick={closePanel} disabled={busy} aria-label="Cerrar ventana de actualización"><X /></Button>
+      </header>
 
-        <div className="sales-catalog-dialog-body">
-          <div className="sales-catalog-file-grid">
-            {CATALOGS.map(({ kind, label, helper, fileName }) => {
-              const file = files[kind];
-              const meta = catalogs[kind]?.meta;
-              return (
-                <div className="sales-catalog-file-card" key={kind}>
-                  <div className="sales-catalog-file-heading">
-                    <div>
-                      <label htmlFor={`proformas-${kind}-file`}>{label}</label>
-                      <small>{helper}</small>
-                    </div>
-                    <span>.xlsx</span>
+      <div className={modalBodyClass}>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {CATALOGS.map(({ kind, label, helper, fileName }) => {
+            const file = files[kind];
+            const meta = catalogs[kind]?.meta;
+            return (
+              <div className="grid min-w-0 content-start gap-3 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30" key={kind}>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="grid gap-0.5">
+                    <label className="font-bold text-navy dark:text-white" htmlFor={`proformas-${kind}-file`}>{label}</label>
+                    <Muted>{helper}</Muted>
                   </div>
-                  <label
-                    className={`sales-catalog-dropzone ${file ? 'selected' : ''} ${dragging === kind ? 'dragging' : ''}`}
-                    htmlFor={`proformas-${kind}-file`}
-                    onDragOver={(event) => {
-                      event.preventDefault();
-                      setDragging(kind);
-                    }}
-                    onDragLeave={() => setDragging(null)}
-                    onDrop={(event) => {
-                      event.preventDefault();
-                      setDragging(null);
-                      selectFile(kind, event.dataTransfer.files[0]);
-                    }}
-                  >
-                    <input
-                      ref={(element) => { inputs.current[kind] = element; }}
-                      id={`proformas-${kind}-file`}
-                      name={`proformas-${kind}-file`}
-                      type="file"
-                      accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                      onChange={(event) => { selectFile(kind, event.target.files?.[0]); event.target.value = ''; }}
-                    />
-                    <strong>{file ? file.name : fileName}</strong>
-                    <span>{file ? `${(file.size / 1024 / 1024).toFixed(1)} MB seleccionado` : 'Haz clic para seleccionar la planilla'}</span>
-                  </label>
-                  {meta ? <div className="sales-catalog-file-meta"><span><HugeiconsIcon icon={Tick02Icon} size={14} strokeWidth={2.5} aria-hidden="true" /> {meta.rowCount.toLocaleString('es-PY')} registros guardados · {meta.fileName}</span>{meta.sourceBatchId && meta.sourceFileId ? <a href={`/api/imports/${encodeURIComponent(meta.sourceBatchId)}/files/${encodeURIComponent(meta.sourceFileId)}`} download={meta.fileName}>Descargar original</a> : null}</div> : <p className="sales-catalog-file-meta muted">Todavía no hay una carga guardada.</p>}
+                  <Badge>.xlsx</Badge>
                 </div>
-              );
-            })}
-          </div>
-
-          {fileError && <p className="sales-catalog-error" role="alert">{fileError}</p>}
-          {progress.phase !== 'idle' && (
-            <div className={`sales-catalog-progress ${progress.phase === 'error' ? 'has-error' : ''}`} aria-live="polite">
-              <div className="sales-catalog-progress-heading">
-                <strong>{progress.phase === 'error' ? 'No se pudo completar la carga' : progress.message}</strong>
-                {progress.phase !== 'error' && <span>{progress.percent}%</span>}
+                <label
+                  className={cn('grid cursor-pointer gap-1 rounded-xl border border-dashed p-4 text-center focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-sky', dragging === kind || file ? 'border-sky bg-sky/10' : 'border-navy/25 bg-white dark:border-sky/30 dark:bg-transparent')}
+                  htmlFor={`proformas-${kind}-file`}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setDragging(kind);
+                  }}
+                  onDragLeave={() => setDragging(null)}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    setDragging(null);
+                    selectFile(kind, event.dataTransfer.files[0]);
+                  }}
+                >
+                  <input
+                    className="sr-only"
+                    ref={(element) => { inputs.current[kind] = element; }}
+                    id={`proformas-${kind}-file`}
+                    name={`proformas-${kind}-file`}
+                    type="file"
+                    accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    onChange={(event) => { selectFile(kind, event.target.files?.[0]); event.target.value = ''; }}
+                  />
+                  <div className="break-all text-sm font-bold text-navy dark:text-white">{file ? file.name : fileName}</div>
+                  <Muted>{file ? `${(file.size / 1024 / 1024).toFixed(1)} MB seleccionado` : 'Haz clic para seleccionar la planilla'}</Muted>
+                </label>
+                {meta ? <div className="grid gap-1 text-xs text-[#14532d] dark:text-[#9be3b9]"><div className="flex items-start gap-1.5"><HugeiconsIcon className="mt-0.5 shrink-0" icon={Tick02Icon} size={14} strokeWidth={2.5} aria-hidden="true" /><span>{meta.rowCount.toLocaleString('es-PY')} registros guardados · {meta.fileName}</span></div>{meta.sourceBatchId && meta.sourceFileId ? <a className={cn(buttonVariants({ variant: 'export', size: 'sm' }), 'export-button w-fit')} href={`/api/imports/${encodeURIComponent(meta.sourceBatchId)}/files/${encodeURIComponent(meta.sourceFileId)}`} download={meta.fileName}>Descargar original</a> : null}</div> : <Muted>Todavía no hay una carga guardada.</Muted>}
               </div>
-              {progress.phase !== 'error' && <div className="sales-catalog-progress-track"><span style={{ width: `${progress.percent}%` }} /></div>}
-              {progress.error && <p>{progress.error}</p>}
-              {Object.entries(progress.imported).map(([kind, meta]) => (
-                <small key={kind}>{meta?.kind === 'consumibles' ? 'Consumibles' : 'Repuestos'}: {meta?.rowCount.toLocaleString('es-PY')} registros</small>
-              ))}
-            </div>
-          )}
-
-          <div className="sales-catalog-notice">
-            El lector detecta código, descripción, categoría, precios USD/Gs., stock y estado de discontinuación. Las columnas que no se proyectan siguen disponibles en la fila original del archivo importado.
-          </div>
+            );
+          })}
         </div>
 
-        <footer className="sales-catalog-dialog-footer">
-          <span>{selectedKinds.length === 0 ? 'Puedes actualizar uno o ambos catálogos.' : `${selectedKinds.length} planilla${selectedKinds.length === 1 ? '' : 's'} lista${selectedKinds.length === 1 ? '' : 's'} para procesar.`}</span>
-          <div>
-            <button className="secondary-button" type="button" onClick={closePanel} disabled={busy}>Cerrar</button>
-            <button className="primary-button" type="button" onClick={() => void processFiles()} disabled={selectedKinds.length === 0 || busy}>{busy ? 'Procesando…' : 'Procesar planillas'}</button>
+        {fileError && <div className="rounded-xl border border-[#b42318]/30 bg-[#b42318]/5 p-4 text-sm text-[#b42318] dark:text-[#ffb0b7]" role="alert">{fileError}</div>}
+        {progress.phase !== 'idle' && (
+          <div className={cn('grid gap-2 rounded-xl border p-4', progress.phase === 'error' ? 'border-[#b42318]/30 bg-[#b42318]/5' : 'border-sky/40 bg-sky/10')} aria-live="polite">
+            <div className="flex items-baseline justify-between gap-3 text-sm"><div className="font-bold text-navy dark:text-white">{progress.phase === 'error' ? 'No se pudo completar la carga' : progress.message}</div>{progress.phase !== 'error' && <b className="tabular-nums text-navy dark:text-white">{progress.percent}%</b>}</div>
+            {progress.phase !== 'error' && <div className="h-2 overflow-hidden rounded-full bg-navy/10 dark:bg-white/10"><div className="h-full rounded-full bg-sky transition-[width]" style={{ width: `${progress.percent}%` }} /></div>}
+            {progress.error && <div className="text-sm text-[#b42318] dark:text-[#ffb0b7]">{progress.error}</div>}
+            {Object.entries(progress.imported).map(([kind, meta]) => (
+              <Muted key={kind}>{meta?.kind === 'consumibles' ? 'Consumibles' : 'Repuestos'}: {meta?.rowCount.toLocaleString('es-PY')} registros</Muted>
+            ))}
           </div>
-        </footer>
-      </section>
-    </div>
+        )}
+
+        <Muted className="text-sm leading-relaxed">El lector detecta código, descripción, categoría, precios USD/Gs., stock y estado de discontinuación. Las columnas que no se proyectan siguen disponibles en la fila original del archivo importado.</Muted>
+      </div>
+
+      <footer className={modalFooterClass}>
+        <Muted className="text-sm">{selectedKinds.length === 0 ? 'Puedes actualizar uno o ambos catálogos.' : `${selectedKinds.length} planilla${selectedKinds.length === 1 ? '' : 's'} lista${selectedKinds.length === 1 ? '' : 's'} para procesar.`}</Muted>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={closePanel} disabled={busy}>Cerrar</Button>
+          <Button onClick={() => void processFiles()} disabled={selectedKinds.length === 0 || busy}>{busy ? 'Procesando…' : 'Procesar planillas'}</Button>
+        </div>
+      </footer>
+    </ModalDialog>
   );
 }

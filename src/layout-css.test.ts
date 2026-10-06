@@ -7,7 +7,8 @@ const css = readCssBundle('src/index.css');
 
 describe('layout entre 960 y 1350 px', () => {
   it('las acciones de la cabecera pueden pasar a otra línea', () => {
-    expect(css).toMatch(/\.catalog-header \.sales-actions\s*{[^}]*flex-wrap:\s*wrap/);
+    expect(fs.readFileSync('src/core/ui/page-header.tsx', 'utf8')).toContain('flex flex-wrap items-end justify-between gap-4');
+    expect(fs.readFileSync('src/core/ui/page-header.tsx', 'utf8')).toContain('flex flex-wrap items-center gap-2');
   });
 
   it('los filtros de Mantenimiento envuelven en una rejilla auto-fit y la tabla desplaza dentro de su tarjeta', () => {
@@ -19,17 +20,11 @@ describe('layout entre 960 y 1350 px', () => {
 
 
   it('Proformas: bajo 1500 px el lateral pasa a celdas del grid y el Resumen es una barra fija inferior', () => {
-    const block = css.match(/@media \(max-width: 1500px\)\s*{\s*\.proforma-layout[\s\S]*?\n}\n/)?.[0] ?? '';
-    expect(block).toMatch(/\.proforma-sidebar\s*{\s*display:\s*contents/);
-    expect(block).toMatch(/\.proforma-sidebar > \.total-card\s*{[^}]*position:\s*sticky[^}]*bottom:/);
-    expect(block).toMatch(/html:has\(\.proforma-layout\)\s*{\s*scroll-padding-bottom/);
-    expect(css).not.toMatch(/\.proforma-table\s*{[^}]*min-width/);
-  });
-
-  it('Proformas: la barra tiene fondo opaco y los importes se leen en tema claro', () => {
-    expect(css).toMatch(/\.proforma-sidebar > \.total-card\s*{[^}]*,\s*#0b1220/);
-    const theme = readCssBundle('src/theme.css');
-    expect(theme).toMatch(/html\[data-theme='light'\] \.total-breakdown b\s*{\s*color:\s*var\(--ds-navy\)/);
+    const module = fs.readFileSync('src/modules/ventas/ProformasModule.tsx', 'utf8');
+    expect(module).toContain('min-[1500px]:grid-cols-[minmax(0,1fr)_22rem]');
+    expect(module).toContain('<aside className="contents min-[1500px]:grid');
+    expect(module).toContain('sticky bottom-0 z-10');
+    expect(module).toContain('min-[1500px]:static');
   });
 
 
@@ -95,12 +90,6 @@ describe('revisión visual 2026-10', () => {
 
 });
 
-
-describe('botones de texto', () => {
-  it('.text-button ofrece un objetivo de al menos 28px de alto y texto de 12px', () => {
-    expect(css).toMatch(/\.text-button\s*{[^}]*min-height:\s*1\.75rem[^}]*font-size:\s*0\.78rem/);
-  });
-});
 
 describe('barra de paginación', () => {
   it('usa utilidades Tailwind y el Button compartido: sin CSS heredado de .pagination-*', () => {

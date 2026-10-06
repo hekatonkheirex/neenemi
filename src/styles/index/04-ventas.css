@@ -118,12 +118,6 @@
   padding-top: 3.8rem;
 }
 
-.sales-actions {
-  display: flex;
-  gap: 0.65rem;
-  align-items: center;
-}
-
 .secondary-button {
   min-width: 8.5rem;
   padding: 0.78rem 1rem;
@@ -140,8 +134,7 @@
   background: rgba(39, 67, 112, 0.82);
 }
 
-.secondary-button:disabled,
-.full-button:disabled {
+.secondary-button:disabled {
   cursor: wait;
   opacity: 0.55;
 }

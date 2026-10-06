@@ -6,6 +6,12 @@ import {
   type ParsedServiceReport,
   type ServiceReportCatalogMatch,
 } from './service-report';
+import { X } from 'lucide-react';
+import { cn } from '../../core/cn';
+import ModalDialog, { modalBodyClass, modalFooterClass, modalHeaderClass } from '../../core/ModalDialog';
+import { Badge } from '../../core/ui/badge';
+import { Button, buttonVariants } from '../../core/ui/button';
+import { CardHeader, Muted } from '../../core/ui/card';
 
 type ServiceReportImportPanelProps = {
   isOpen: boolean;
@@ -30,7 +36,6 @@ export default function ServiceReportImportPanel({
   const [reading, setReading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const parseSequence = useRef(0);
 
   const matches = useMemo<ServiceReportCatalogMatch[]>(
@@ -41,19 +46,6 @@ export default function ServiceReportImportPanel({
     () => matches.filter((match) => selectedIds.has(match.item.id)).map((match) => match.item),
     [matches, selectedIds],
   );
-
-  useEffect(() => {
-    if (isOpen) closeButtonRef.current?.focus();
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape' && !reading) onClose();
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, reading]);
 
   useEffect(() => {
     if (!report) {
@@ -111,110 +103,98 @@ export default function ServiceReportImportPanel({
   }
 
   return (
-    <div
-      className="service-report-overlay"
-      role="presentation"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget && !reading) onClose();
-      }}
-    >
-      <section className="service-report-dialog" role="dialog" aria-modal="true" aria-labelledby="service-report-title" aria-describedby="service-report-description">
-        <header className="service-report-dialog-header">
-          <div>
-            <div className="eyebrow">IMPORTACIÓN LOCAL</div>
-            <h2 id="service-report-title">Cargar informe de servicio</h2>
-            <p id="service-report-description">Lee un PDF en este equipo, revisa los campos detectados y decide qué sugerencias agregar a la proforma.</p>
-          </div>
-          <button className="mps-editor-close" type="button" onClick={onClose} disabled={reading} ref={closeButtonRef} aria-label="Cerrar carga de informe">×</button>
-        </header>
-
-        <div className="service-report-dialog-body">
-          <label className={`service-report-dropzone ${file ? 'has-file' : ''}`} htmlFor="proforma-service-report-file">
-            <input
-              id="proforma-service-report-file"
-              name="serviceReportFile"
-              ref={inputRef}
-              type="file"
-              accept=".pdf,application/pdf"
-              onChange={(event) => {
-                selectFile(event.target.files?.[0]);
-                event.target.value = '';
-              }}
-            />
-            <strong>{file ? file.name : 'Seleccionar informe de servicio PDF'}</strong>
-            <span>{file ? `${(file.size / 1024 / 1024).toFixed(2)} MB · texto local` : 'Solo se procesan PDF con texto seleccionable'}</span>
-          </label>
-
-          {reading ? <div className="service-report-notice" role="status">Analizando el texto del informe…</div> : null}
-          {fileError ? <div className="service-report-error" role="alert">{fileError}</div> : null}
-
-          {report ? (
-            <div className="service-report-preview-stack">
-              <section className="service-report-preview" aria-labelledby="service-report-preview-title">
-                <div className="card-heading">
-                  <div>
-                    <div className="eyebrow">VISTA PREVIA</div>
-                    <h3 id="service-report-preview-title">Datos detectados</h3>
-                  </div>
-                  <span className="service-report-detected">Texto reconocido</span>
-                </div>
-                <dl className="service-report-fields">
-                  <div><dt>Cliente</dt><dd>{report.header.customerName || 'No detectado'}</dd></div>
-                  <div><dt>Informe Nº</dt><dd>{report.header.serviceReportNumber || 'No detectado'}</dd></div>
-                  <div><dt>Fecha / hora del informe</dt><dd>{report.reportDate || 'No detectada'} · {report.reportTime || 'No detectada'}</dd></div>
-                  <div><dt>Modelo</dt><dd>{report.header.modelName || 'No detectado'}</dd></div>
-                  <div><dt>Número de serie</dt><dd>{report.header.serialNumber || 'No detectado'}</dd></div>
-                  <div><dt>Técnico</dt><dd>{report.header.attendedBy || 'No detectado'}</dd></div>
-                </dl>
-                <div className="service-report-details">
-                  <div><strong>Problema</strong><p>{report.problemDescription || 'No detectado'}</p></div>
-                  <div><strong>Tarea realizada</strong><p>{report.taskDescription || 'No detectada'}</p></div>
-                  {report.usedPartsDescription ? <div><strong>Repuestos indicados</strong><p>{report.usedPartsDescription}</p></div> : null}
-                </div>
-                <p className="service-report-footnote">La fecha y hora detectadas se aplican a la emisión de la proforma y también quedan en el detalle del informe.</p>
-              </section>
-
-              <section className="service-report-matches" aria-labelledby="service-report-matches-title">
-                <div className="card-heading">
-                  <div>
-                    <div className="eyebrow">CATÁLOGOS DISPONIBLES</div>
-                    <h3 id="service-report-matches-title">Sugerencias de repuestos</h3>
-                  </div>
-                  <span className="muted-note">{selectedItems.length}/{matches.length} seleccionadas</span>
-                </div>
-                <p className="service-report-explanation">Las coincidencias combinan modelo, descripción de la tarea y códigos explícitos del informe. Se priorizan las planillas específicas de Proformas y se completa con el catálogo común. Revísalas antes de agregarlas.</p>
-                {catalogLoading ? <p className="empty-inline">Cargando catálogo común…</p> : null}
-                {!catalogLoading && matches.length > 0 ? (
-                  <div className="service-report-match-list">
-                    {matches.map((match) => (
-                      <label className="service-report-match" key={match.item.id}>
-                        <input type="checkbox" checked={selectedIds.has(match.item.id)} onChange={() => toggleMatch(match.item.id)} />
-                        <span>
-                          <strong>{match.item.code}</strong>
-                          <small>{match.item.description || 'Sin descripción'}</small>
-                          <em>{match.reason}{match.item.origin === 'proformas' ? ' · planilla específica de Proformas' : ' · catálogo común'}</em>
-                        </span>
-                        <b>{currencyLabel(match.item.fixedPriceCurrency ?? priceCurrency)} {formatPrice(match.item, match.item.fixedPriceCurrency ?? priceCurrency)}</b>
-                      </label>
-                    ))}
-                  </div>
-                ) : null}
-                {!catalogLoading && matches.length === 0 ? <p className="empty-inline">No se encontraron coincidencias confiables. Puedes aplicar los datos y agregar las líneas manualmente.</p> : null}
-              </section>
-            </div>
-          ) : null}
+    <ModalDialog labelledBy="service-report-title" describedBy="service-report-description" onRequestClose={() => { if (!reading) onClose(); }} className="w-[min(56rem,calc(100vw-2rem))]">
+      <header className={modalHeaderClass}>
+        <div className="grid min-w-0 gap-2">
+          <CardHeader eyebrow="Importación local" title={<span id="service-report-title">Cargar informe de servicio</span>} />
+          <Muted id="service-report-description" className="text-sm">Lee un PDF en este equipo, revisa los campos detectados y decide qué sugerencias agregar a la proforma.</Muted>
         </div>
+        <Button variant="ghost" size="icon" onClick={onClose} disabled={reading} aria-label="Cerrar carga de informe"><X /></Button>
+      </header>
 
-        <footer className="service-report-dialog-footer">
-          <span>{report ? `${selectedItems.length} línea${selectedItems.length === 1 ? '' : 's'} lista${selectedItems.length === 1 ? '' : 's'} para agregar.` : 'Selecciona un informe para continuar.'}</span>
-          <div className="sales-actions">
-            <button className="secondary-button" type="button" onClick={onClose} disabled={reading}>Cerrar</button>
-            <button className="primary-button" type="button" onClick={applyReport} disabled={!report || reading}>Aplicar informe</button>
+      <div className={modalBodyClass}>
+        <label className="grid cursor-pointer gap-1 rounded-xl border border-dashed border-navy/25 bg-paper p-5 text-center focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-sky dark:border-sky/30 dark:bg-navy/30" htmlFor="proforma-service-report-file">
+          <input
+            className="sr-only"
+            id="proforma-service-report-file"
+            name="serviceReportFile"
+            ref={inputRef}
+            type="file"
+            accept=".pdf,application/pdf"
+            onChange={(event) => {
+              selectFile(event.target.files?.[0]);
+              event.target.value = '';
+            }}
+          />
+          <div className="font-bold text-navy dark:text-white">{file ? file.name : 'Seleccionar informe de servicio PDF'}</div>
+          <Muted>{file ? `${(file.size / 1024 / 1024).toFixed(2)} MB · texto local` : 'Solo se procesan PDF con texto seleccionable'}</Muted>
+        </label>
+
+        {reading ? <div className="rounded-xl border border-sky/40 bg-sky/10 p-4 text-sm font-semibold text-navy dark:text-white" role="status">Analizando el texto del informe…</div> : null}
+        {fileError ? <div className="rounded-xl border border-[#b42318]/30 bg-[#b42318]/5 p-4 text-sm text-[#b42318] dark:text-[#ffb0b7]" role="alert">{fileError}</div> : null}
+
+        {report ? (
+          <div className="grid gap-4">
+            <section className="grid gap-3" aria-labelledby="service-report-preview-title">
+              <CardHeader eyebrow="Vista previa" title={<span id="service-report-preview-title">Datos detectados</span>} aside={<Badge tone="success">Texto reconocido</Badge>} />
+              <dl className="m-0 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <Field label="Cliente" value={report.header.customerName || 'No detectado'} />
+                <Field label="Informe Nº" value={report.header.serviceReportNumber || 'No detectado'} />
+                <Field label="Fecha / hora del informe" value={`${report.reportDate || 'No detectada'} · ${report.reportTime || 'No detectada'}`} />
+                <Field label="Modelo" value={report.header.modelName || 'No detectado'} />
+                <Field label="Número de serie" value={report.header.serialNumber || 'No detectado'} />
+                <Field label="Técnico" value={report.header.attendedBy || 'No detectado'} />
+              </dl>
+              <div className="grid gap-3">
+                <Detail title="Problema" text={report.problemDescription || 'No detectado'} />
+                <Detail title="Tarea realizada" text={report.taskDescription || 'No detectada'} />
+                {report.usedPartsDescription ? <Detail title="Repuestos indicados" text={report.usedPartsDescription} /> : null}
+              </div>
+              <Muted>La fecha y hora detectadas se aplican a la emisión de la proforma y también quedan en el detalle del informe.</Muted>
+            </section>
+
+            <section className="grid gap-3" aria-labelledby="service-report-matches-title">
+              <CardHeader eyebrow="Catálogos disponibles" title={<span id="service-report-matches-title">Sugerencias de repuestos</span>} aside={<Badge>{selectedItems.length}/{matches.length} seleccionadas</Badge>} />
+              <Muted className="text-sm leading-relaxed">Las coincidencias combinan modelo, descripción de la tarea y códigos explícitos del informe. Se priorizan las planillas específicas de Proformas y se completa con el catálogo común. Revísalas antes de agregarlas.</Muted>
+              {catalogLoading ? <Muted className="text-sm">Cargando catálogo común…</Muted> : null}
+              {!catalogLoading && matches.length > 0 ? (
+                <div className="grid max-h-80 gap-2 overflow-y-auto pr-1">
+                  {matches.map((match) => (
+                    <label className={cn('grid cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 rounded-xl border p-3', selectedIds.has(match.item.id) ? 'border-sky bg-sky/10' : 'border-navy/10 bg-white dark:border-sky/20 dark:bg-transparent')} key={match.item.id}>
+                      <input className="mt-1 size-4 accent-sky" type="checkbox" checked={selectedIds.has(match.item.id)} onChange={() => toggleMatch(match.item.id)} />
+                      <div className="grid min-w-0 gap-0.5">
+                        <div className="font-bold text-navy dark:text-white">{match.item.code}</div>
+                        <Muted>{match.item.description || 'Sin descripción'}</Muted>
+                        <Muted className="italic">{match.reason}{match.item.origin === 'proformas' ? ' · planilla específica de Proformas' : ' · catálogo común'}</Muted>
+                      </div>
+                      <b className="whitespace-nowrap text-sm tabular-nums text-navy dark:text-white">{currencyLabel(match.item.fixedPriceCurrency ?? priceCurrency)} {formatPrice(match.item, match.item.fixedPriceCurrency ?? priceCurrency)}</b>
+                    </label>
+                  ))}
+                </div>
+              ) : null}
+              {!catalogLoading && matches.length === 0 ? <Muted className="text-sm">No se encontraron coincidencias confiables. Puedes aplicar los datos y agregar las líneas manualmente.</Muted> : null}
+            </section>
           </div>
-        </footer>
-      </section>
-    </div>
+        ) : null}
+      </div>
+
+      <footer className={modalFooterClass}>
+        <Muted className="text-sm">{report ? `${selectedItems.length} línea${selectedItems.length === 1 ? '' : 's'} lista${selectedItems.length === 1 ? '' : 's'} para agregar.` : 'Selecciona un informe para continuar.'}</Muted>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={onClose} disabled={reading}>Cerrar</Button>
+          <Button onClick={applyReport} disabled={!report || reading}>Aplicar informe</Button>
+        </div>
+      </footer>
+    </ModalDialog>
   );
+}
+
+function Field({ label, value }: { label: string; value: string }) {
+  return <div className="grid min-w-0 gap-0.5 rounded-xl border border-navy/10 bg-paper p-3 dark:border-sky/20 dark:bg-navy/30"><dt className="text-xs text-ink-2 dark:text-[#9fb2d1]">{label}</dt><dd className="m-0 text-sm font-semibold text-navy dark:text-white">{value}</dd></div>;
+}
+
+function Detail({ title, text }: { title: string; text: string }) {
+  return <div className="grid gap-1"><div className="text-sm font-bold text-navy dark:text-white">{title}</div><Muted className="text-sm leading-relaxed">{text}</Muted></div>;
 }
 
 function formatNumber(value: number): string {

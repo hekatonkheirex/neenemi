@@ -26,7 +26,6 @@ html[data-theme='dark'] .topbar {
 }
 
 html[data-theme='dark'] .sales-card,
-html[data-theme='dark'] .total-card,
 html[data-theme='dark'] .module-card {
   border-color: var(--dk-line);
   background: var(--ds-panel);
@@ -47,7 +46,6 @@ html[data-theme='dark'] .eyebrow {
 
 /* Formas compartidas (ambos temas). */
 .sales-card,
-.total-card,
 .module-card {
   padding: 1.5rem;
   border-radius: var(--ds-radius-2xl);
@@ -63,12 +61,6 @@ html[data-theme='dark'] .eyebrow {
 
 .nav-item.active {
   border-radius: var(--ds-radius-xl);
-}
-
-.service-report-overlay,
-.sales-catalog-overlay,
-.open-contract-overlay {
-  backdrop-filter: blur(0.5rem);
 }
 
 @media (prefers-reduced-motion: reduce) {

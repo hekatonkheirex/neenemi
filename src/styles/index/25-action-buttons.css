@@ -41,7 +41,3 @@
   outline: 2px solid var(--ds-sky);
   outline-offset: 2px;
 }
-
-.operations-page .sales-actions .upload-button {
-  flex: 1 1 10rem;
-}

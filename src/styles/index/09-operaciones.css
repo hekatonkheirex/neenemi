@@ -40,22 +40,6 @@
   background: rgba(12, 23, 41, 0.72);
 }
 
-.text-button {
-  display: inline-flex;
-  min-height: 1.75rem;
-  align-items: center;
-  padding: 0;
-  border: 0;
-  color: #8eb9ff;
-  background: transparent;
-  font-size: 0.78rem;
-  font-weight: 800;
-}
-
-.text-button:hover {
-  color: #c1d8ff;
-}
-
 .inline-muted {
   display: inline;
   margin-left: 0.15rem;

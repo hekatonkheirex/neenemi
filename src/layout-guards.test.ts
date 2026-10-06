@@ -23,9 +23,10 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
   it('960 px: la cabecera de módulo envuelve sus acciones', () => {
     expect(rule('.catalog-header')).toMatch(/flex-wrap:\s*wrap/);
   });
-  it('960 px: la tabla de mano de obra de Proformas cabe en ~600 px y deja "Precio venta" a la vista', () => {
-    expect(rule('.labor-table')).toMatch(/min-width:\s*560px/);
-    expect(css).toMatch(/\.labor-table th:nth-child\(3\),\n\.labor-table th:nth-child\(4\) \{\s*width:\s*8\.5rem/);
+  it('960 px: la tabla de mano de obra de Proformas desplaza dentro de su tarjeta y deja "Precio venta" alcanzable', () => {
+    const module = fs.readFileSync('src/modules/ventas/ProformasModule.tsx', 'utf8');
+    expect(module).toContain('<Table className="min-w-[36rem]">');
+    expect(module).toContain('Precio venta {priceLabel}');
   });
   it('Viáticos: controles, barras mensuales y paneles se adaptan al ancho de su tarjeta', () => {
     const module = fs.readFileSync('src/modules/viaticos/ViaticosModule.tsx', 'utf8');

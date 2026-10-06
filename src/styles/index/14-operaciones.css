@@ -27,11 +27,6 @@
   font-size: 0.68rem;
 }
 
-.operations-page .sales-actions {
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
 .import-summary {
   display: grid;
   gap: 0.3rem;

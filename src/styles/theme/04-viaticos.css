@@ -5,7 +5,6 @@ html[data-theme='light'] .detail-label,
 html[data-theme='light'] .module-section,
 html[data-theme='light'] .muted-note,
 html[data-theme='light'] .form-hint,
-html[data-theme='light'] .empty-inline,
 html[data-theme='light'] .empty-cell,
 html[data-theme='light'] .analysis-meta,
 html[data-theme='light'] .overview-import-meta {
@@ -57,8 +56,7 @@ html[data-theme='light'] .data-tag {
   background: var(--ds-blue-wash);
 }
 
-html[data-theme='light'] .io-panel,
-html[data-theme='light'] .total-card {
+html[data-theme='light'] .io-panel {
   border-color: #b9d5e5;
   background: linear-gradient(135deg, #f7fbfd, #ffffff);
 }

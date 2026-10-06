@@ -22,7 +22,17 @@ import type {
   SalesCatalogs,
 } from './types';
 import { readJson, toErrorMessage } from '../../core/http';
-import { ExportButton, UploadTriggerButton } from '../../core/ActionButtons';
+import { ExportButton, ExportLink, UploadTriggerButton } from '../../core/ActionButtons';
+import { X } from 'lucide-react';
+import { cn } from '../../core/cn';
+import { PageHeader } from '../../core/ui/page-header';
+import { Card, CardHeader, Eyebrow, Muted } from '../../core/ui/card';
+import { Button } from '../../core/ui/button';
+import { Input } from '../../core/ui/input';
+import { Textarea } from '../../core/ui/textarea';
+import { Badge, type BadgeTone } from '../../core/ui/badge';
+import { StatusLine } from '../../core/ui/status-line';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const usdNumberFormat = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -45,6 +55,11 @@ type DraftLaborLine = {
 };
 
 const PROFORMA_LABOR_ROWS = 7;
+
+const cardClass = 'min-w-0 grid-cols-1 [overflow-wrap:anywhere]';
+const fieldClass = 'grid min-w-0 gap-1.5 text-xs font-semibold text-navy dark:text-white';
+const selectClass = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky disabled:opacity-50 dark:border-sky/30 dark:bg-navy/50 dark:text-white';
+const subCardClass = 'min-w-0 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30';
 
 const EMPTY_SALES_CATALOGS: SalesCatalogs = { consumibles: null, repuestos: null };
 
@@ -624,243 +639,229 @@ export default function ProformasModule() {
   }
 
   return (
-    <div className="page-content sales-page proforma-page">
-      <section className="catalog-header">
-        <div>
-          <div className="eyebrow">VENTAS / DOCUMENTOS</div>
-          <h1>Proformas</h1>
-          <p className="lead">Arma una cotización con el catálogo común, guárdala en SQLite y descárgala como XLSX.</p>
-        </div>
-        <div className="sales-actions">
-          <button className="secondary-button" type="button" onClick={startNew}>Nueva</button>
+    <div className="page-content proforma-page grid min-w-0 grid-cols-1 gap-6 [overflow-wrap:anywhere]">
+      <PageHeader
+        eyebrow="ADMINISTRATIVO / DOCUMENTOS"
+        title="Proformas"
+        lead="Arma una cotización con el catálogo común, guárdala en SQLite y descárgala como XLSX."
+        actions={<>
+          <Button variant="outline" onClick={startNew}>Nueva</Button>
           <UploadTriggerButton onClick={() => setReportImportOpen(true)}>Importar informe PDF</UploadTriggerButton>
-          <button className="secondary-button" type="button" onClick={() => setSalesCatalogImportOpen(true)}>Actualizar catálogos</button>
+          <Button variant="outline" onClick={() => setSalesCatalogImportOpen(true)}>Actualizar catálogos</Button>
           <UploadTriggerButton onClick={() => setContractImportOpen(true)}>Importar contrato</UploadTriggerButton>
           <ExportButton onClick={() => void handleExport()} disabled={!savedProforma}>Exportar XLSX</ExportButton>
-        </div>
-      </section>
+        </>}
+      />
 
-      <section className="sales-status" aria-live="polite">
-        <span className={`status-dot ${error ? 'error' : !pricing ? 'pending' : 'ready'}`} />
-        <span>{error || message || (pricing ? 'Lista para preparar una proforma.' : 'Conectando con ventas…')}</span>
-      </section>
+      <StatusLine state={error ? 'error' : !pricing ? 'pending' : 'ready'}>{error || message || (pricing ? 'Lista para preparar una proforma.' : 'Conectando con ventas…')}</StatusLine>
 
-      <section className="proforma-layout">
-        <div className="proforma-main">
-          <section className="sales-card">
-            <div className="card-heading">
-              <div>
-                <div className="eyebrow">CABECERA</div>
-                <h2>Datos de la consulta</h2>
-              </div>
-              <label className="compact-field">
-                <span>Modo</span>
-                <select id="proforma-mode" name="mode" value={header.mode} onChange={(event) => updateHeader('mode', event.target.value)}>
+      <section className="grid min-w-0 items-start gap-4 min-[1500px]:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="grid min-w-0 gap-4">
+          <Card className={cardClass}>
+            <CardHeader
+              eyebrow="Cabecera"
+              title="Datos de la consulta"
+              aside={<label className={cn(fieldClass, 'w-44')}>Modo
+                <select className={selectClass} id="proforma-mode" name="mode" value={header.mode} onChange={(event) => updateHeader('mode', event.target.value)}>
                   <option value="sin-contrato">Sin contrato</option>
                   <option value="contrato-abierto">Contrato abierto</option>
                 </select>
-              </label>
+              </label>}
+            />
+            <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-4">
+              <label className={fieldClass}>Cliente<Input id="proforma-customer" name="customerName" value={header.customerName} onChange={(event) => updateHeader('customerName', event.target.value)} placeholder="Nombre del cliente" /></label>
+              <label className={fieldClass}>Contacto<Input id="proforma-contact" name="customerContact" value={header.customerContact} onChange={(event) => updateHeader('customerContact', event.target.value)} placeholder="Teléfono o correo" /></label>
+              <label className={fieldClass}>INF. Servicio Nº<Input id="proforma-service-report-number" name="serviceReportNumber" value={header.serviceReportNumber} onChange={(event) => updateHeader('serviceReportNumber', event.target.value)} placeholder="Ej. 2921689" /></label>
+              <label className={fieldClass}>Referencia<Input id="proforma-reference" name="reference" value={header.reference} onChange={(event) => updateHeader('reference', event.target.value)} placeholder="Ej. Consulta 2026-001" /></label>
+              <label className={fieldClass}>Fecha<Input id="proforma-issued-at" name="issuedAt" type="date" value={header.issuedAt.slice(0, 10)} onChange={(event) => updateHeader('issuedAt', `${event.target.value}T12:00:00.000Z`)} /></label>
+              <label className={fieldClass}>Hora<Input id="proforma-issued-time" name="issuedTime" type="time" value={timeInputValue(header.issuedAt)} onChange={(event) => updateIssuedTime(event.target.value)} /></label>
+              <label className={fieldClass}>Modelo<Input id="proforma-model" name="modelName" value={header.modelName} onChange={(event) => updateHeader('modelName', event.target.value)} placeholder="Modelo Canon" /></label>
+              <label className={fieldClass}>Número de serie<Input id="proforma-serial" name="serialNumber" value={header.serialNumber} onChange={(event) => updateHeader('serialNumber', event.target.value)} placeholder="Opcional" /></label>
+              <label className={fieldClass}>Atendido por<Input id="proforma-attended-by" name="attendedBy" value={header.attendedBy} onChange={(event) => updateHeader('attendedBy', event.target.value)} placeholder="Responsable" /></label>
+              <label className={cn(fieldClass, 'col-span-full')}>Informe / observación<Textarea id="proforma-service-report" name="serviceReport" value={header.serviceReport} onChange={(event) => updateHeader('serviceReport', event.target.value)} placeholder="Detalle del pedido o del servicio" rows={3} /></label>
             </div>
-            <div className="form-grid">
-              <label className="search-field"><span>Cliente</span><input id="proforma-customer" name="customerName" value={header.customerName} onChange={(event) => updateHeader('customerName', event.target.value)} placeholder="Nombre del cliente" /></label>
-              <label className="search-field"><span>Contacto</span><input id="proforma-contact" name="customerContact" value={header.customerContact} onChange={(event) => updateHeader('customerContact', event.target.value)} placeholder="Teléfono o correo" /></label>
-              <label className="search-field"><span>INF. Servicio Nº</span><input id="proforma-service-report-number" name="serviceReportNumber" value={header.serviceReportNumber} onChange={(event) => updateHeader('serviceReportNumber', event.target.value)} placeholder="Ej. 2921689" /></label>
-              <label className="search-field"><span>Referencia</span><input id="proforma-reference" name="reference" value={header.reference} onChange={(event) => updateHeader('reference', event.target.value)} placeholder="Ej. Consulta 2026-001" /></label>
-              <label className="search-field"><span>Fecha</span><input id="proforma-issued-at" name="issuedAt" type="date" value={header.issuedAt.slice(0, 10)} onChange={(event) => updateHeader('issuedAt', `${event.target.value}T12:00:00.000Z`)} /></label>
-              <label className="search-field"><span>Hora</span><input id="proforma-issued-time" name="issuedTime" type="time" value={timeInputValue(header.issuedAt)} onChange={(event) => updateIssuedTime(event.target.value)} /></label>
-              <label className="search-field"><span>Modelo</span><input id="proforma-model" name="modelName" value={header.modelName} onChange={(event) => updateHeader('modelName', event.target.value)} placeholder="Modelo Canon" /></label>
-              <label className="search-field"><span>Número de serie</span><input id="proforma-serial" name="serialNumber" value={header.serialNumber} onChange={(event) => updateHeader('serialNumber', event.target.value)} placeholder="Opcional" /></label>
-              <label className="search-field"><span>Atendido por</span><input id="proforma-attended-by" name="attendedBy" value={header.attendedBy} onChange={(event) => updateHeader('attendedBy', event.target.value)} placeholder="Responsable" /></label>
-              <label className="search-field form-wide"><span>Informe / observación</span><textarea id="proforma-service-report" name="serviceReport" value={header.serviceReport} onChange={(event) => updateHeader('serviceReport', event.target.value)} placeholder="Detalle del pedido o del servicio" rows={3} /></label>
-            </div>
-          </section>
+          </Card>
 
-          <section className="sales-card">
-            <div className="card-heading">
-              <div>
-                <div className="eyebrow">{header.mode === 'contrato-abierto' ? 'CONTRATO ABIERTO' : 'CATÁLOGO COMÚN'}</div>
-                <h2>{header.mode === 'contrato-abierto' ? 'Agregar líneas contractuales' : 'Agregar repuestos'}</h2>
-              </div>
-              <div className="sales-actions">
-                <span className="muted-note">{header.mode === 'contrato-abierto' ? `Precio fijo en ${priceLabel}` : 'Escribe al menos 2 caracteres'}</span>
-                <button className="secondary-button" type="button" onClick={() => addLine()}>Agregar línea</button>
-              </div>
-            </div>
+          <Card className={cardClass}>
+            <CardHeader
+              eyebrow={header.mode === 'contrato-abierto' ? 'Contrato abierto' : 'Catálogo común'}
+              title={header.mode === 'contrato-abierto' ? 'Agregar líneas contractuales' : 'Agregar repuestos'}
+              aside={<div className="flex flex-wrap items-center gap-2">
+                <Badge>{header.mode === 'contrato-abierto' ? `Precio fijo en ${priceLabel}` : 'Escribe al menos 2 caracteres'}</Badge>
+                <Button variant="outline" onClick={() => addLine()}>Agregar línea</Button>
+              </div>}
+            />
             {header.mode === 'contrato-abierto' ? (
-              <div className="contract-source-banner">
-              <div>
-                <strong>{openContract ? openContract.meta.fileName : 'Sin contrato cargado'}</strong>
-                <span>{openContract ? `${numberFormat.format(openContract.items.length)} líneas · precio fijo original en ${currencyLabel(openContract.meta.priceCurrency)}` : 'Importa un XLSX o PDF para habilitar la búsqueda contractual.'}</span>
-              </div>
-                {openContract?.meta.sourceBatchId && openContract.meta.sourceFileId ? <a className="text-button" href={`/api/imports/${encodeURIComponent(openContract.meta.sourceBatchId)}/files/${encodeURIComponent(openContract.meta.sourceFileId)}`} download={openContract.meta.fileName}>Descargar original</a> : null}
-                <button className="secondary-button" type="button" onClick={() => setContractImportOpen(true)}>Cargar lista</button>
+              <div className={cn(subCardClass, 'flex flex-wrap items-center justify-between gap-3')}>
+                <div className="grid min-w-0 gap-0.5">
+                  <div className="font-bold text-navy dark:text-white">{openContract ? openContract.meta.fileName : 'Sin contrato cargado'}</div>
+                  <Muted>{openContract ? `${numberFormat.format(openContract.items.length)} líneas · precio fijo original en ${currencyLabel(openContract.meta.priceCurrency)}` : 'Importa un XLSX o PDF para habilitar la búsqueda contractual.'}</Muted>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {openContract?.meta.sourceBatchId && openContract.meta.sourceFileId ? <ExportLink size="sm" href={`/api/imports/${encodeURIComponent(openContract.meta.sourceBatchId)}/files/${encodeURIComponent(openContract.meta.sourceFileId)}`} download={openContract.meta.fileName} /> : null}
+                  <Button variant="outline" onClick={() => setContractImportOpen(true)}>Cargar lista</Button>
+                </div>
               </div>
             ) : null}
             {header.mode === 'sin-contrato' ? (
-              <div className="sales-catalog-source-banner">
-                <div>
-                  <strong>{loadedSalesCatalogCount === 0 ? 'Catálogos específicos no cargados' : `${loadedSalesCatalogCount}/2 catálogos específicos cargados`}</strong>
-                  <span>{loadedSalesCatalogCount === 0 ? 'La búsqueda usa el catálogo común de la suite. Puedes recuperar las planillas antiguas de Consumibles y Repuestos cuando las tengas.' : 'Las planillas antiguas tienen prioridad en la búsqueda; el catálogo común completa los resultados que no estén en ellas.'}</span>
+              <div className={cn(subCardClass, 'flex flex-wrap items-center justify-between gap-3')}>
+                <div className="grid min-w-0 gap-0.5">
+                  <div className="font-bold text-navy dark:text-white">{loadedSalesCatalogCount === 0 ? 'Catálogos específicos no cargados' : `${loadedSalesCatalogCount}/2 catálogos específicos cargados`}</div>
+                  <Muted>{loadedSalesCatalogCount === 0 ? 'La búsqueda usa el catálogo común de la suite. Puedes recuperar las planillas antiguas de Consumibles y Repuestos cuando las tengas.' : 'Las planillas antiguas tienen prioridad en la búsqueda; el catálogo común completa los resultados que no estén en ellas.'}</Muted>
                 </div>
-                <button className="secondary-button" type="button" onClick={() => setSalesCatalogImportOpen(true)}>Actualizar</button>
+                <Button variant="outline" onClick={() => setSalesCatalogImportOpen(true)}>Actualizar</Button>
               </div>
             ) : null}
-            <label className="search-field sales-search"><span>Buscar por código o descripción</span><input id="proforma-part-search" name="partSearch" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Ej. FK-123 o rodillo" /></label>
+            <label className={fieldClass}>Buscar por código o descripción<Input id="proforma-part-search" name="partSearch" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Ej. FK-123 o rodillo" /></label>
             {search.trim().length >= 2 && (
-              <div className="suggestion-list">
+              <div className="grid max-h-80 gap-2 overflow-y-auto pr-1">
                 {searchResults.map((item) => (
-                  <button className="suggestion-row" key={item.id} type="button" onClick={() => addPart(item)}>
-                    <span>
-                      <strong>{item.code}</strong>
-                      <small>{item.description || 'Sin descripción'}</small>
-                      <small className="suggestion-meta">{partSourceLabel(item)}</small>
-                    </span>
-                    <span className="suggestion-price">{priceLabel} {formatProformaAmount(getPartSalePrice(item, priceCurrency), priceCurrency)}{item.fixedPriceCurrency ? ' fijo' : ''} <b>+</b></span>
+                  <button className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-navy/10 bg-white p-3 text-left hover:bg-sky/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky dark:border-sky/20 dark:bg-transparent" key={item.id} type="button" onClick={() => addPart(item)}>
+                    <div className="grid min-w-0 gap-0.5">
+                      <div className="font-bold text-navy dark:text-white">{item.code}</div>
+                      <Muted>{item.description || 'Sin descripción'}</Muted>
+                      <Muted className="italic">{partSourceLabel(item)}</Muted>
+                    </div>
+                    <div className="whitespace-nowrap text-sm font-semibold tabular-nums text-navy dark:text-white">{priceLabel} {formatProformaAmount(getPartSalePrice(item, priceCurrency), priceCurrency)}{item.fixedPriceCurrency ? ' fijo' : ''} <b className="text-brand">+</b></div>
                   </button>
                 ))}
-                {searchResults.length === 0 && <p className="empty-inline">{loadingSearch ? 'Buscando…' : header.mode === 'contrato-abierto' && !openContract ? 'Carga primero el contrato abierto.' : 'No se encontraron partes.'}</p>}
+                {searchResults.length === 0 && <Muted className="text-sm">{loadingSearch ? 'Buscando…' : header.mode === 'contrato-abierto' && !openContract ? 'Carga primero el contrato abierto.' : 'No se encontraron partes.'}</Muted>}
               </div>
             )}
-          </section>
+          </Card>
 
-          <section className="sales-card">
-            <div className="card-heading"><div><div className="eyebrow">DETALLE</div><h2>Ítems de la proforma</h2></div><span className="muted-note">{lines.length} líneas</span></div>
-            <div className="proforma-table-wrap">
-              <table className="proforma-table">
-                <thead><tr><th>Tipo</th><th>Código</th><th>Descripción</th><th>Estado / stock</th><th>Cantidad</th><th className="align-right">Unitario {priceLabel}</th><th className="align-right">Total {priceLabel}</th><th /></tr></thead>
-                <tbody>
-                  {lines.map((line) => (
-                    <tr key={line.id}>
-                      <td>
-                        <select className="proforma-line-kind" value={line.kind} onChange={(event) => updateLineKind(line.id, event.target.value as SalesCatalogKind)} aria-label={`Tipo de línea ${line.id}`}>
-                          <option value="repuestos">Repuesto</option>
-                          <option value="consumibles">Consumible</option>
-                        </select>
-                      </td>
-                      <td>
-                        <input className="labor-input proforma-line-code" value={line.code} onChange={(event) => updateLineCode(line.id, event.target.value)} placeholder="Código" aria-label={`Código de línea ${line.id}`} />
-                        {line.part ? null : lineMatches[line.id]?.length ? (
-                          <div className="proforma-line-matches">
-                            {lineMatches[line.id].map((match) => (
-                              <button key={`${match.origin ?? 'shared'}-${match.id}`} type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => chooseLinePart(line.id, match)}>
-                                <strong>{match.code}</strong>
-                                <span>{match.description || 'Sin descripción'}</span>
-                              </button>
-                            ))}
-                          </div>
-                        ) : null}
-                      </td>
-                      <td>{line.part ? <><strong>{line.part.description || 'Sin descripción'}</strong>{line.part.group ? <small className="table-secondary-text">{line.part.group}</small> : null}</> : line.code ? <span className="proforma-unresolved-line">Código no encontrado</span> : <span className="table-secondary-text">La descripción aparecerá aquí</span>}</td>
-                      <td>
-                        {line.part ? (
-                          <div className="proforma-line-metadata">
-                            <span className={`proforma-line-status ${partStatusTone(line.part, header.mode)}`}>{partStatusLabel(line.part, header.mode)}</span>
-                            <small>{partStockLabel(line.part, header.mode)}</small>
-                            <small>{`Origen: ${linePartSourceLabel(line.part)}`}</small>
-                          </div>
-                        ) : (
-                          <span className="table-secondary-text">Se mostrará al resolver el código</span>
-                        )}
-                      </td>
-                      <td><input className="quantity-input" id={`proforma-line-${line.id}-quantity`} name={`lineQuantity-${line.id}`} type="number" min="1" step="1" value={line.quantity} onChange={(event) => updateQuantity(line.id, event.target.value)} /></td>
-                      <td className="align-right">{line.part ? formatProformaAmount(getPartSalePrice(line.part, priceCurrency), priceCurrency) : '—'}</td>
-                      <td className="align-right price-cell">{line.part ? formatProformaAmount(getPartSalePrice(line.part, priceCurrency) * line.quantity, priceCurrency) : '—'}</td>
-                      <td><button className="icon-button" type="button" onClick={() => removeLine(line.id)} aria-label={`Quitar ${line.code || 'línea vacía'}`}>×</button></td>
-                    </tr>
+          <Card className={cardClass}>
+            <CardHeader eyebrow="Detalle" title="Ítems de la proforma" aside={<Badge>{lines.length} líneas</Badge>} />
+            <Table className="min-w-[56rem] [overflow-wrap:normal]">
+              <TableHeader><TableRow><TableHead>Tipo</TableHead><TableHead>Código</TableHead><TableHead>Descripción</TableHead><TableHead>Estado / stock</TableHead><TableHead>Cantidad</TableHead><TableHead className="text-right">Unitario {priceLabel}</TableHead><TableHead className="text-right">Total {priceLabel}</TableHead><TableHead><span className="sr-only">Quitar</span></TableHead></TableRow></TableHeader>
+              <TableBody>
+                {lines.map((line) => (
+                  <TableRow key={line.id}>
+                    <TableCell>
+                      <select className={cn(selectClass, 'h-9 w-32')} value={line.kind} onChange={(event) => updateLineKind(line.id, event.target.value as SalesCatalogKind)} aria-label={`Tipo de línea ${line.id}`}>
+                        <option value="repuestos">Repuesto</option>
+                        <option value="consumibles">Consumible</option>
+                      </select>
+                    </TableCell>
+                    <TableCell className="min-w-[10rem]">
+                      <Input className="h-9 w-40 font-mono text-xs" value={line.code} onChange={(event) => updateLineCode(line.id, event.target.value)} placeholder="Código" aria-label={`Código de línea ${line.id}`} />
+                      {line.part ? null : lineMatches[line.id]?.length ? (
+                        <div className="mt-1 grid max-h-44 w-64 gap-0.5 overflow-y-auto rounded-xl border border-navy/15 bg-white p-1.5 dark:border-sky/25 dark:bg-panel">
+                          {lineMatches[line.id].map((match) => (
+                            <button className="grid min-w-0 gap-0.5 rounded-lg bg-transparent px-2.5 py-1.5 text-left hover:bg-sky/15 focus-visible:outline-2 focus-visible:outline-sky" key={`${match.origin ?? 'shared'}-${match.id}`} type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => chooseLinePart(line.id, match)}>
+                              <div className="text-sm font-bold text-navy dark:text-white">{match.code}</div>
+                              <Muted>{match.description || 'Sin descripción'}</Muted>
+                            </button>
+                          ))}
+                        </div>
+                      ) : null}
+                    </TableCell>
+                    <TableCell className="min-w-[12rem]">{line.part ? <><div className="font-semibold text-navy dark:text-white">{line.part.description || 'Sin descripción'}</div>{line.part.group ? <Muted className="mt-1">{line.part.group}</Muted> : null}</> : line.code ? <span className="font-semibold text-[#912018] dark:text-[#ffb4ab]">Código no encontrado</span> : <Muted>La descripción aparecerá aquí</Muted>}</TableCell>
+                    <TableCell className="min-w-[10rem]">
+                      {line.part ? (
+                        <div className="grid justify-items-start gap-1">
+                          <Badge tone={partStatusTone(line.part, header.mode)}>{partStatusLabel(line.part, header.mode)}</Badge>
+                          <Muted>{partStockLabel(line.part, header.mode)}</Muted>
+                          <Muted>{`Origen: ${linePartSourceLabel(line.part)}`}</Muted>
+                        </div>
+                      ) : (
+                        <Muted>Se mostrará al resolver el código</Muted>
+                      )}
+                    </TableCell>
+                    <TableCell><Input className="h-9 w-20 tabular-nums" id={`proforma-line-${line.id}-quantity`} name={`lineQuantity-${line.id}`} type="number" min="1" step="1" value={line.quantity} onChange={(event) => updateQuantity(line.id, event.target.value)} aria-label={`Cantidad de ${line.code || 'línea vacía'}`} /></TableCell>
+                    <TableCell className="whitespace-nowrap text-right tabular-nums">{line.part ? formatProformaAmount(getPartSalePrice(line.part, priceCurrency), priceCurrency) : '—'}</TableCell>
+                    <TableCell className="whitespace-nowrap text-right font-semibold tabular-nums">{line.part ? formatProformaAmount(getPartSalePrice(line.part, priceCurrency) * line.quantity, priceCurrency) : '—'}</TableCell>
+                    <TableCell><Button variant="ghost" size="icon" className="size-8" onClick={() => removeLine(line.id)} aria-label={`Quitar ${line.code || 'línea vacía'}`}><X /></Button></TableCell>
+                  </TableRow>
+                ))}
+                {lines.length === 0 && <TableRow><TableCell colSpan={8} className="py-8 text-center">Agrega una línea desde el buscador superior o con “Agregar línea”.</TableCell></TableRow>}
+              </TableBody>
+            </Table>
+
+            <section className="grid gap-3 border-t border-navy/10 pt-4 dark:border-sky/20" aria-labelledby="proforma-labor-title">
+              <CardHeader eyebrow="Mano de obra / servicio" title={<span id="proforma-labor-title">Trabajos opcionales</span>} aside={<Badge>Hasta {PROFORMA_LABOR_ROWS} renglones</Badge>} />
+              <Muted className="text-sm">Completa descripción, costo unitario y precio de venta. Si no indicas un precio, se usa la tarifa configurada.</Muted>
+              <Table className="min-w-[36rem]">
+                <TableHeader><TableRow><TableHead>Ítem</TableHead><TableHead>Descripción del trabajo</TableHead><TableHead>Costo unit. {priceLabel}</TableHead><TableHead>Precio venta {priceLabel}</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {laborRows.map((row, index) => (
+                    <TableRow key={row.id}>
+                      <TableCell className="font-mono text-xs">{String(index + 1).padStart(2, '0')}</TableCell>
+                      <TableCell><Input className="h-9" id={`proforma-labor-${index + 1}-description`} name={`laborDescription-${index + 1}`} value={row.description} onChange={(event) => updateLaborRow(row.id, { description: event.target.value })} placeholder="Describe el trabajo realizado" aria-label={`Descripción del trabajo ${index + 1}`} /></TableCell>
+                      <TableCell><Input className="h-9 w-32 tabular-nums" id={`proforma-labor-${index + 1}-cost`} name={`laborCost-${index + 1}`} type="number" min="0" step="1" value={row.costLocal ?? ''} onChange={(event) => updateLaborRow(row.id, { costLocal: parseNonNegativeNumber(event.target.value) })} placeholder="0" aria-label={`Costo unitario del trabajo ${index + 1}`} /></TableCell>
+                      <TableCell><Input className="h-9 w-32 tabular-nums" id={`proforma-labor-${index + 1}-price`} name={`laborPrice-${index + 1}`} type="number" min="0" step="1" value={row.salePriceLocal ?? ''} onChange={(event) => updateLaborRow(row.id, { salePriceLocal: parseNonNegativeNumber(event.target.value) })} placeholder={pricing ? formatProformaAmount(getDefaultLaborSalePrice(pricing, priceCurrency), priceCurrency) : '0'} aria-label={`Precio de venta del trabajo ${index + 1}`} /></TableCell>
+                    </TableRow>
                   ))}
-                  {lines.length === 0 && <tr><td colSpan={7} className="empty-cell">Agrega una línea desde el buscador superior o con “Agregar línea”.</td></tr>}
-                </tbody>
-              </table>
-            </div>
-            <section className="labor-section" aria-labelledby="proforma-labor-title">
-              <div className="card-heading labor-section-heading">
-                <div>
-                  <div className="eyebrow">MANO DE OBRA / SERVICIO</div>
-                  <h2 id="proforma-labor-title">Trabajos opcionales</h2>
-                </div>
-                <span className="muted-note">Hasta {PROFORMA_LABOR_ROWS} renglones</span>
-              </div>
-              <p className="labor-help">Completa descripción, costo unitario y precio de venta. Si no indicas un precio, se usa la tarifa configurada.</p>
-              <div className="proforma-table-wrap labor-table-wrap">
-                <table className="proforma-table labor-table">
-                <thead><tr><th>Ítem</th><th>Descripción del trabajo</th><th>Costo unit. {priceLabel}</th><th>Precio venta {priceLabel}</th></tr></thead>
-                  <tbody>
-                    {laborRows.map((row, index) => (
-                      <tr key={row.id}>
-                        <td className="code-cell">{String(index + 1).padStart(2, '0')}</td>
-                        <td><input className="labor-input labor-description-input" id={`proforma-labor-${index + 1}-description`} name={`laborDescription-${index + 1}`} value={row.description} onChange={(event) => updateLaborRow(row.id, { description: event.target.value })} placeholder="Describe el trabajo realizado" /></td>
-                        <td><input className="labor-input" id={`proforma-labor-${index + 1}-cost`} name={`laborCost-${index + 1}`} type="number" min="0" step="1" value={row.costLocal ?? ''} onChange={(event) => updateLaborRow(row.id, { costLocal: parseNonNegativeNumber(event.target.value) })} placeholder="0" /></td>
-                        <td><input className="labor-input" id={`proforma-labor-${index + 1}-price`} name={`laborPrice-${index + 1}`} type="number" min="0" step="1" value={row.salePriceLocal ?? ''} onChange={(event) => updateLaborRow(row.id, { salePriceLocal: parseNonNegativeNumber(event.target.value) })} placeholder={pricing ? formatProformaAmount(getDefaultLaborSalePrice(pricing, priceCurrency), priceCurrency) : '0'} /></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="labor-total-row"><span>Total mano de obra</span><strong>{priceLabel} {formatProformaAmount(laborTotal, priceCurrency)}</strong></div>
+                </TableBody>
+              </Table>
+              <div className="flex items-baseline justify-between gap-3"><div className="text-sm font-semibold text-navy dark:text-white">Total mano de obra</div><div className="text-lg font-bold tabular-nums text-navy dark:text-white">{priceLabel} {formatProformaAmount(laborTotal, priceCurrency)}</div></div>
             </section>
-          </section>
+          </Card>
         </div>
 
-        <aside className="proforma-sidebar">
-          <section className="total-card">
-            <div className="eyebrow">RESUMEN</div>
-            <span className="total-label">Total estimado</span>
-            <strong>{priceLabel} {formatProformaAmount(total, priceCurrency)}</strong>
-            <div className="total-breakdown"><span>Repuestos</span><b>{priceLabel} {formatProformaAmount(partsTotal, priceCurrency)}</b></div>
-            <div className="total-breakdown"><span>Mano de obra</span><b>{priceLabel} {formatProformaAmount(laborTotal, priceCurrency)}</b></div>
-            <button className="primary-button full-button" type="button" onClick={() => void saveDraft()} disabled={saving || !pricing || lines.some((line) => !line.part)}>{saving ? 'Guardando…' : savedProforma ? 'Actualizar proforma' : 'Guardar proforma'}</button>
-          </section>
+        {/* Bajo 1500 px el lateral pasa a celdas del grid y el Resumen es una barra fija inferior. */}
+        <aside className="contents min-[1500px]:grid min-[1500px]:min-w-0 min-[1500px]:gap-4">
+          <Card className={cn(cardClass, '@container sticky bottom-0 z-10 border-brand/50 py-3 min-[1500px]:static min-[1500px]:py-5')} aria-label="Resumen de la proforma">
+            <div className="grid min-w-0 gap-3 @[40rem]:grid-cols-[auto_1fr_auto] @[40rem]:items-center @[40rem]:gap-6">
+              <div className="grid gap-0.5">
+                <Eyebrow>Resumen · Total estimado</Eyebrow>
+                <div className="text-2xl font-bold tabular-nums text-navy dark:text-white">{priceLabel} {formatProformaAmount(total, priceCurrency)}</div>
+              </div>
+              <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-ink-2 dark:text-[#d6e2f5]">
+                <div className="flex items-baseline gap-2">Repuestos <b className="tabular-nums text-navy dark:text-white">{priceLabel} {formatProformaAmount(partsTotal, priceCurrency)}</b></div>
+                <div className="flex items-baseline gap-2">Mano de obra <b className="tabular-nums text-navy dark:text-white">{priceLabel} {formatProformaAmount(laborTotal, priceCurrency)}</b></div>
+              </div>
+              <Button className="w-full @[40rem]:w-auto" onClick={() => void saveDraft()} disabled={saving || !pricing || lines.some((line) => !line.part)}>{saving ? 'Guardando…' : savedProforma ? 'Actualizar proforma' : 'Guardar proforma'}</Button>
+            </div>
+          </Card>
 
           {header.mode === 'contrato-abierto' ? (
-            <section className="sales-card contract-summary-card">
-              <div className="eyebrow">FUENTE CONTRACTUAL</div>
-              <h2>{openContract ? 'Lista activa' : 'Lista pendiente'}</h2>
-              <p>{openContract ? openContract.meta.fileName : 'Todavía no hay un contrato abierto guardado.'}</p>
+            <Card className={cardClass}>
+              <CardHeader eyebrow="Fuente contractual" title={openContract ? 'Lista activa' : 'Lista pendiente'} />
+              <Muted className="text-sm">{openContract ? openContract.meta.fileName : 'Todavía no hay un contrato abierto guardado.'}</Muted>
               {openContract ? (
-                <div className="contract-summary-lines">
-                  <span><b>{numberFormat.format(openContract.items.length)}</b> líneas</span>
-                  <span>Precio original: <b>{currencyLabel(openContract.meta.priceCurrency)}</b></span>
-                  <span>Última carga: <b>{formatDate(openContract.meta.updatedAt)}</b></span>
-                  {openContract.meta.sourceBatchId && openContract.meta.sourceFileId ? <a className="text-button" href={`/api/imports/${encodeURIComponent(openContract.meta.sourceBatchId)}/files/${encodeURIComponent(openContract.meta.sourceFileId)}`} download={openContract.meta.fileName}>Descargar original</a> : null}
+                <div className="grid gap-1.5 text-sm text-ink-2 dark:text-[#d6e2f5]">
+                  <div><b className="text-navy dark:text-white">{numberFormat.format(openContract.items.length)}</b> líneas</div>
+                  <div>Precio original: <b className="text-navy dark:text-white">{currencyLabel(openContract.meta.priceCurrency)}</b></div>
+                  <div>Última carga: <b className="text-navy dark:text-white">{formatDate(openContract.meta.updatedAt)}</b></div>
+                  {openContract.meta.sourceBatchId && openContract.meta.sourceFileId ? <ExportLink size="sm" href={`/api/imports/${encodeURIComponent(openContract.meta.sourceBatchId)}/files/${encodeURIComponent(openContract.meta.sourceFileId)}`} download={openContract.meta.fileName} /> : null}
                 </div>
               ) : null}
-              <UploadTriggerButton className="full-button" onClick={() => setContractImportOpen(true)}>{openContract ? 'Reemplazar contrato' : 'Importar contrato'}</UploadTriggerButton>
-            </section>
+              <UploadTriggerButton className="w-full" onClick={() => setContractImportOpen(true)}>{openContract ? 'Reemplazar contrato' : 'Importar contrato'}</UploadTriggerButton>
+            </Card>
           ) : null}
 
           {header.mode === 'sin-contrato' ? (
-            <section className="sales-card sales-catalog-summary-card">
-              <div className="eyebrow">CATÁLOGOS DE PROFORMAS</div>
-              <h2>{loadedSalesCatalogCount === 2 ? 'Planillas operativas' : 'Planillas opcionales'}</h2>
-              <p>Se guardan en la SQLite compartida y se conservan sus archivos originales.</p>
-              <div className="sales-catalog-summary-list">
+            <Card className={cardClass}>
+              <CardHeader eyebrow="Catálogos de proformas" title={loadedSalesCatalogCount === 2 ? 'Planillas operativas' : 'Planillas opcionales'} />
+              <Muted className="text-sm">Se guardan en la SQLite compartida y se conservan sus archivos originales.</Muted>
+              <div className="grid gap-2">
                 {(['consumibles', 'repuestos'] as const).map((kind) => {
                   const meta = salesCatalogs[kind]?.meta;
                   return (
-                    <div key={kind}>
-                      <strong>{kind === 'consumibles' ? 'Consumibles' : 'Repuestos'}</strong>
-                      <span>{meta ? `${numberFormat.format(meta.rowCount)} registros · ${meta.fileName}` : 'Sin planilla específica cargada'}</span>
+                    <div className={cn(subCardClass, 'grid gap-0.5 p-3')} key={kind}>
+                      <div className="font-bold text-navy dark:text-white">{kind === 'consumibles' ? 'Consumibles' : 'Repuestos'}</div>
+                      <Muted>{meta ? `${numberFormat.format(meta.rowCount)} registros · ${meta.fileName}` : 'Sin planilla específica cargada'}</Muted>
                     </div>
                   );
                 })}
               </div>
-              <button className="secondary-button full-button" type="button" onClick={() => setSalesCatalogImportOpen(true)}>Actualizar catálogos</button>
-            </section>
+              <Button variant="outline" className="w-full" onClick={() => setSalesCatalogImportOpen(true)}>Actualizar catálogos</Button>
+            </Card>
           ) : null}
 
-          <section className="sales-card history-card">
-            <div className="eyebrow">HISTORIAL LOCAL</div>
-            <h2>Proformas guardadas</h2>
-            <div className="history-list">
+          <Card className={cardClass}>
+            <CardHeader eyebrow="Historial local" title="Proformas guardadas" />
+            <div className="grid max-h-96 gap-2 overflow-y-auto pr-1">
               {history.map((item) => (
-                <button className={`history-item ${savedProforma?.id === item.id ? 'active' : ''}`} key={item.id} type="button" onClick={() => void loadSaved(item.id)}>
-                  <span><strong>{item.customerName || 'Sin cliente'}</strong><small>{item.reference || 'Sin referencia'} · {formatDate(item.issuedAt)}</small></span>
-                  <b>{item.currency === 'USD' ? 'USD' : 'Gs.'} {formatProformaAmount(item.currency === 'USD' ? item.totalUsd : item.totalLocal, item.currency === 'USD' ? 'usd' : 'local')}</b>
+                <button className={cn('grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-xl border p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky', savedProforma?.id === item.id ? 'border-sky bg-sky/10' : 'border-navy/10 bg-white hover:bg-sky/5 dark:border-sky/20 dark:bg-transparent')} key={item.id} type="button" aria-pressed={savedProforma?.id === item.id} onClick={() => void loadSaved(item.id)}>
+                  <div className="grid min-w-0 gap-0.5"><div className="font-bold text-navy dark:text-white">{item.customerName || 'Sin cliente'}</div><Muted>{item.reference || 'Sin referencia'} · {formatDate(item.issuedAt)}</Muted></div>
+                  <b className="whitespace-nowrap text-sm tabular-nums text-navy dark:text-white">{item.currency === 'USD' ? 'USD' : 'Gs.'} {formatProformaAmount(item.currency === 'USD' ? item.totalUsd : item.totalLocal, item.currency === 'USD' ? 'usd' : 'local')}</b>
                 </button>
               ))}
-              {history.length === 0 && <p className="empty-inline">Todavía no hay proformas guardadas.</p>}
+              {history.length === 0 && <Muted className="text-sm">Todavía no hay proformas guardadas.</Muted>}
             </div>
-          </section>
+          </Card>
         </aside>
       </section>
       <OpenContractImportPanel
@@ -1108,10 +1109,10 @@ function partStatusLabel(part: SalesPricePart, mode: ProformaHeader['mode']): st
   return 'Estado no indicado';
 }
 
-function partStatusTone(part: SalesPricePart, mode: ProformaHeader['mode']): string {
-  if (mode === 'contrato-abierto' || part.fixedPriceCurrency) return 'contract';
+function partStatusTone(part: SalesPricePart, mode: ProformaHeader['mode']): BadgeTone {
+  if (mode === 'contrato-abierto' || part.fixedPriceCurrency) return 'neutral';
   if (part.discontinuedStatus === 'discontinued' || part.discontinuedAt) return 'warning';
-  if (part.discontinuedStatus === 'active') return 'ok';
+  if (part.discontinuedStatus === 'active') return 'success';
   return 'neutral';
 }
 

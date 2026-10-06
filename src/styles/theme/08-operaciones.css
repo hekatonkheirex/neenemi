@@ -10,29 +10,16 @@ html[data-theme='light'] .status-dot.error {
   box-shadow: 0 0 0 0.25rem rgba(214, 69, 69, 0.14);
 }
 
-html[data-theme='light'] .error-message,
-html[data-theme='light'] .icon-button {
+html[data-theme='light'] .error-message {
   color: var(--ds-danger);
 }
 
-html[data-theme='light'] .icon-button {
-  border-color: #efb3b0;
-  background: #fff1f0;
-}
-
-html[data-theme='light'] .icon-button:hover {
-  background: #ffe2df;
-}
-
 html[data-theme='light'] .price-cell,
-html[data-theme='light'] .suggestion-price,
 html[data-theme='light'] .import-summary strong,
 html[data-theme='light'] .analytics-equipment-value strong {
   color: var(--ds-success);
 }
 
-html[data-theme='light'] .suggestion-row,
-html[data-theme='light'] .history-item,
 html[data-theme='light'] .analytics-equipment-row {
   color: var(--ds-ink);
   background: transparent;

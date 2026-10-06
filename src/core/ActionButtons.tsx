@@ -1,5 +1,5 @@
 import { Download, Upload } from 'lucide-react';
-import type { ButtonHTMLAttributes, ChangeEvent, ReactNode, Ref } from 'react';
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ChangeEvent, ReactNode, Ref } from 'react';
 import { cn } from './cn';
 import { buttonVariants } from './ui/button';
 
@@ -83,5 +83,15 @@ export function UploadTriggerButton({ className, children, ...rest }: UploadTrig
       <UploadIcon />
       {children}
     </button>
+  );
+}
+
+/** Enlace de descarga con el aspecto del botón «exportar» (icono de descarga, verde). */
+export function ExportLink({ className, children = 'Descargar original', size, ...rest }: AnchorHTMLAttributes<HTMLAnchorElement> & { size?: 'default' | 'sm' }) {
+  return (
+    <a {...rest} className={cn(buttonVariants({ variant: 'export', size }), 'export-button w-fit', className)}>
+      <DownloadIcon />
+      {children}
+    </a>
   );
 }
