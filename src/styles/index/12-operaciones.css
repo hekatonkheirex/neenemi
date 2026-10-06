@@ -269,7 +269,7 @@
   min-width: 0;
   padding: 1rem;
   border: 1px dashed rgba(117, 166, 255, 0.42);
-  border-radius: 0.7rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(55, 101, 197, 0.07);
   transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
 }
@@ -354,7 +354,7 @@ html[data-theme='dark'] .anim-tabs {
   min-height: 2.75rem;
   padding: 0.6rem 1rem;
   border: 1px solid var(--tab-border);
-  border-radius: 0.8rem;
+  border-radius: var(--ds-radius-2xl);
   color: var(--tab-fg);
   background: var(--tab-surface);
   box-shadow: 0 1px 2px var(--tab-shadow);
@@ -478,7 +478,7 @@ html[data-theme] .anim-tabs button strong {
   flex: none;
   place-items: center;
   border: 1px solid var(--ds-sky, #00a3e0);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   color: var(--ds-navy, #1a2c4c);
   background: var(--ds-blue-wash, #e9f5fb);
   opacity: 1;

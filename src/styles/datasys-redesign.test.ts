@@ -57,4 +57,11 @@ describe('rediseño Datasys', () => {
     expect(block).toMatch(/border:\s*0/);
     expect(block).toMatch(/background:\s*none/);
   });
+
+  it('todos los modales llevan blur y no quedan azules fuera de paleta ni glifos de texto como iconos', () => {
+    for (const sel of ['.changelog-overlay', '.confirm-dialog::backdrop', '.command-palette::backdrop', '.travel-drawer::backdrop']) {
+      expect(theme, sel).toMatch(new RegExp(`${sel.replace(/[.:]/g, '\\$&')}[^{]*{[^}]*backdrop-filter:\\s*blur`));
+    }
+    expect(theme).not.toMatch(/#4277e9|#77a7ff|rgba\(66, ?119, ?233/);
+  });
 });

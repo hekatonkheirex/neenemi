@@ -10,7 +10,7 @@
   gap: 0.45rem;
   padding: 0.75rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(18, 31, 54, 0.32);
 }
 

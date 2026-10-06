@@ -1,4 +1,6 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Alert02Icon } from '@hugeicons/core-free-icons';
 import type {
   CustomerRecord,
   EquipmentRecord,
@@ -519,7 +521,7 @@ function MaintenanceInspectionRow({ analysis, onPrint }: { analysis: Maintenance
                   <td className="align-right">{period.copies.toLocaleString('es-PY')}</td>
                   <td className="align-right">{period.counter.toLocaleString('es-PY')}</td>
                   <td className="align-right">{period.optimalMonthly.toLocaleString('es-PY')}</td>
-                  <td className={isOver ? 'align-right is-over' : 'align-right'}>{period.ratio.toFixed(2)}{isOver ? ' ⚠️' : ''}</td>
+                  <td className={isOver ? 'align-right is-over' : 'align-right'}>{period.ratio.toFixed(2)}{isOver ? <> <HugeiconsIcon icon={Alert02Icon} size={14} aria-label="Excede el límite" /></> : null}</td>
                 </tr>;
               })}</tbody>
             </table>

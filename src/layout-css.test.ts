@@ -128,7 +128,7 @@ describe('botones de texto', () => {
 
 describe('barra de paginación', () => {
   it('es una barra propia (borde, radio y relleno) con el conteo a la izquierda y los controles agrupados a la derecha', () => {
-    expect(css).toMatch(/\.pagination-controls \{[^}]*justify-content:\s*flex-end[^}]*padding:\s*0\.65rem 0\.9rem[^}]*border:\s*1px solid[^}]*border-radius:\s*0\.8rem/);
+    expect(css).toMatch(/\.pagination-controls \{[^}]*justify-content:\s*flex-end[^}]*padding:\s*0\.65rem 0\.9rem[^}]*border:\s*1px solid[^}]*border-radius:\s*var\(--ds-radius-2xl\)/);
     expect(css).toMatch(/\.pagination-count \{[^}]*margin-right:\s*auto/);
     expect(css).toMatch(/\.pagination-page \{[^}]*white-space:\s*nowrap/);
   });

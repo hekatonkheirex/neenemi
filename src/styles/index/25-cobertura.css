@@ -39,7 +39,7 @@
   position: relative;
   padding: 2rem 1.25rem;
   border: 1px dashed rgba(144, 174, 229, 0.34);
-  border-radius: 0.7rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(18, 31, 54, 0.42);
   transition: border-color 140ms ease, background-color 140ms ease;
 }
@@ -94,7 +94,7 @@
   margin-top: 0.85rem;
   padding: 0.7rem 0.8rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(10, 19, 34, 0.38);
 }
 
@@ -157,7 +157,7 @@
   margin-top: 0.85rem;
   padding: 0.7rem 0.8rem;
   border: 1px solid rgba(255, 196, 92, 0.3);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   color: #ffe4a8;
   background: rgba(255, 196, 92, 0.08);
   font-size: 0.72rem;
@@ -185,7 +185,7 @@
 .coverage-table-wrap {
   overflow-x: auto;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.8rem;
+  border-radius: var(--ds-radius-2xl);
 }
 
 .coverage-table {
@@ -349,7 +349,7 @@
   justify-content: space-between;
   padding: 0.62rem 0.7rem;
   border: 1px solid var(--dk-line-faint);
-  border-radius: 0.45rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(10, 19, 34, 0.38);
 }
 
@@ -430,7 +430,7 @@
 .coverage-yield-table-wrap {
   overflow-x: auto;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.8rem;
+  border-radius: var(--ds-radius-2xl);
 }
 
 .coverage-yield-table {

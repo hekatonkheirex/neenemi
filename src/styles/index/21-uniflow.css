@@ -116,7 +116,7 @@
   align-items: end;
   padding: 1rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.65rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(12, 23, 41, 0.46);
 }
 
@@ -149,7 +149,7 @@
   justify-content: space-between;
   padding: 0.55rem 0.7rem;
   border: 1px solid var(--dk-line-strong);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);
   text-align: left;
@@ -158,7 +158,7 @@
 .uniflow-model-trigger:hover,
 .uniflow-model-select.open .uniflow-model-trigger {
   border-color: rgba(116, 166, 255, 0.7);
-  box-shadow: 0 0 0 3px rgba(66, 119, 233, 0.13);
+  box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.22);
 }
 
 .uniflow-model-trigger-copy {
@@ -210,7 +210,7 @@
   min-width: 18rem;
   overflow: hidden;
   border: 1px solid var(--dk-line-emphasis);
-  border-radius: 0.65rem;
+  border-radius: var(--ds-radius-xl);
   background: var(--dk-0f1b30);
   box-shadow: 0 1rem 2rem rgba(4, 10, 20, 0.35);
 }
@@ -318,7 +318,7 @@
   grid-template-columns: 1.6rem minmax(0, 1fr) 1.6rem;
   overflow: hidden;
   border: 1px solid var(--dk-line-strong);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(18, 31, 54, 0.7);
 }
 
@@ -421,7 +421,7 @@
   place-content: center;
   padding: 1.5rem;
   border: 1px dashed rgba(117, 166, 255, 0.22);
-  border-radius: 0.65rem;
+  border-radius: var(--ds-radius-xl);
   color: #8197bb;
   text-align: center;
 }
@@ -466,7 +466,7 @@
   gap: 0.3rem;
   padding: 0.75rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(18, 31, 54, 0.34);
 }
 
@@ -503,7 +503,7 @@
 .uniflow-license-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--dk-line);
-  border-radius: 0.65rem;
+  border-radius: var(--ds-radius-xl);
 }
 
 .uniflow-license-table {
@@ -572,7 +572,7 @@
   gap: 0.35rem;
   padding: 0.75rem;
   border: 1px solid rgba(117, 166, 255, 0.14);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(38, 67, 121, 0.15);
 }
 
@@ -672,7 +672,7 @@
 
 .uniflow-inline-input:focus {
   border-color: rgba(116, 166, 255, 0.7);
-  box-shadow: 0 0 0 3px rgba(66, 119, 233, 0.13);
+  box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.22);
 }
 
 @media (max-width: 1050px) {

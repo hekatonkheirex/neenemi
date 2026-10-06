@@ -6,7 +6,7 @@
   overflow: auto;
   margin-top: 0.9rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
 }
 
 .maintenance-rule-row {
@@ -55,7 +55,7 @@
   margin-top: 0.9rem;
   padding: 0.8rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(10, 19, 34, 0.44);
 }
 

@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Tick02Icon } from '@hugeicons/core-free-icons';
 import { parseSalesCatalogFile, type SalesCatalogProgress } from './sales-catalog';
 import type { SalesCatalogKind, SalesCatalogMeta, SalesCatalogSnapshot, SalesCatalogs } from './types';
 
@@ -192,7 +194,7 @@ export default function SalesCatalogImportPanel({ isOpen, catalogs, onClose, onI
                     <strong>{file ? file.name : fileName}</strong>
                     <span>{file ? `${(file.size / 1024 / 1024).toFixed(1)} MB seleccionado` : 'Haz clic para seleccionar la planilla'}</span>
                   </label>
-                  {meta ? <div className="sales-catalog-file-meta"><span>✓ {meta.rowCount.toLocaleString('es-PY')} registros guardados · {meta.fileName}</span>{meta.sourceBatchId && meta.sourceFileId ? <a href={`/api/imports/${encodeURIComponent(meta.sourceBatchId)}/files/${encodeURIComponent(meta.sourceFileId)}`} download={meta.fileName}>Descargar original</a> : null}</div> : <p className="sales-catalog-file-meta muted">Todavía no hay una carga guardada.</p>}
+                  {meta ? <div className="sales-catalog-file-meta"><span><HugeiconsIcon icon={Tick02Icon} size={14} strokeWidth={2.5} aria-hidden="true" /> {meta.rowCount.toLocaleString('es-PY')} registros guardados · {meta.fileName}</span>{meta.sourceBatchId && meta.sourceFileId ? <a href={`/api/imports/${encodeURIComponent(meta.sourceBatchId)}/files/${encodeURIComponent(meta.sourceFileId)}`} download={meta.fileName}>Descargar original</a> : null}</div> : <p className="sales-catalog-file-meta muted">Todavía no hay una carga guardada.</p>}
                 </div>
               );
             })}

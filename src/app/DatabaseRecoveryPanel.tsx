@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Tick02Icon, Alert02Icon } from '@hugeicons/core-free-icons';
 import { submitImportJob, type ImportJobSnapshot } from '../core/import-job-client';
 import { confirmAction } from '../core/confirm';
 
@@ -189,7 +191,7 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
   return (
     <section className={`database-recovery level-${health?.level ?? 'loading'}`} aria-label="Respaldo y recuperación de la base">
       <div className="backup-banner" role="status">
-        <span className="backup-banner-icon" aria-hidden="true">{health?.level === 'ok' ? '✓' : '!'}</span>
+        <span className="backup-banner-icon" aria-hidden="true"><HugeiconsIcon icon={health?.level === 'ok' ? Tick02Icon : Alert02Icon} size={22} strokeWidth={2.5} aria-hidden="true" /></span>
         <div className="backup-banner-copy">
           <span className="detail-label">Respaldo y recuperación</span>
           <h3>{reminder?.title ?? 'Consultando el estado del respaldo…'}</h3>

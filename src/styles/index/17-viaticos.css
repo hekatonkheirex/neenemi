@@ -62,7 +62,7 @@
   width: 100%;
   padding: 0.6rem 0.7rem;
   border: 1px solid var(--dk-line-strong);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   outline: 0;
   color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);

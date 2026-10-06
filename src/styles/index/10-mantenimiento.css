@@ -30,7 +30,7 @@
   min-width: 0;
   padding: 0.8rem;
   border: 1px solid var(--dk-line-emphasis);
-  border-radius: 0.7rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(246, 249, 253, 0.85);
 }
 
@@ -95,7 +95,7 @@
   min-width: 0;
   padding: 0.9rem;
   border: 1px solid var(--dk-line-emphasis);
-  border-radius: 0.7rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(250, 252, 255, 0.76);
 }
 
@@ -204,7 +204,7 @@
   min-width: 0;
   padding: 0.9rem;
   border: 1px solid var(--dk-line-emphasis);
-  border-radius: 0.7rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(250, 252, 255, 0.76);
 }
 
@@ -261,7 +261,7 @@
   margin-top: 0.05rem;
   padding: 0.95rem 1rem;
   border: 1px solid var(--dk-line-emphasis);
-  border-radius: 0.7rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(246, 249, 253, 0.85);
 }
 

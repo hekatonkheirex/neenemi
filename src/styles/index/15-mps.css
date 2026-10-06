@@ -47,7 +47,7 @@
   max-height: 27rem;
   overflow-y: auto;
   border: 1px solid var(--dk-line);
-  border-radius: 0.6rem;
+  border-radius: var(--ds-radius-xl);
 }
 
 .mps-model-option {
@@ -73,7 +73,7 @@
 }
 
 .mps-model-option.active {
-  box-shadow: inset 2px 0 #77a7ff;
+  box-shadow: inset 2px 0 var(--ds-sky);
 }
 
 .mps-model-select {
@@ -91,7 +91,7 @@
 }
 
 .mps-model-select:focus-visible {
-  outline: 2px solid #77a7ff;
+  outline: 2px solid var(--ds-sky);
   outline-offset: -2px;
 }
 
@@ -148,7 +148,7 @@
   gap: 0.45rem;
   padding: 2.2rem 1rem;
   border: 1px dashed rgba(117, 166, 255, 0.26);
-  border-radius: 0.6rem;
+  border-radius: var(--ds-radius-xl);
   color: var(--dk-7890b8);
   font-size: 0.76rem;
   text-align: center;
@@ -173,7 +173,7 @@
   grid-column: 1 / -1;
   padding: 0.65rem 0.75rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.45rem;
+  border-radius: var(--ds-radius-xl);
   color: var(--dk-8298ba);
   background: rgba(10, 19, 34, 0.42);
   font-size: 0.72rem;
@@ -336,7 +336,7 @@
   gap: 0.3rem;
   padding: 0.75rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(10, 19, 34, 0.28);
 }
 
@@ -400,7 +400,7 @@
   justify-content: space-between;
   padding: 0.75rem 0.85rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(10, 19, 34, 0.25);
 }
 
@@ -458,7 +458,7 @@
   gap: 0.3rem;
   padding: 0.85rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(10, 19, 34, 0.28);
 }
 
@@ -491,7 +491,7 @@
   min-width: 0;
   padding: 0.9rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(10, 19, 34, 0.2);
 }
 
@@ -571,7 +571,7 @@
   gap: 0.35rem;
   padding: 0.8rem;
   border: 1px solid rgba(94, 230, 168, 0.25);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   color: #a7ebc8;
   background: rgba(39, 126, 87, 0.12);
   font-size: 0.71rem;
@@ -616,7 +616,7 @@
 .mps-analysis-empty {
   padding: 1.25rem;
   border: 1px dashed rgba(117, 166, 255, 0.26);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: var(--dk-8298ba);
   font-size: 0.74rem;
   text-align: center;
@@ -646,7 +646,7 @@
   flex-direction: column;
   overflow: hidden;
   border: 1px solid rgba(117, 166, 255, 0.32);
-  border-radius: 0.9rem;
+  border-radius: var(--ds-radius-2xl);
   color: var(--dk-dce8fc);
   background: var(--dk-0f1b30);
   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.42);
@@ -719,7 +719,7 @@
 .mps-editor-error {
   padding: 0.75rem 0.85rem;
   border: 1px solid rgba(117, 166, 255, 0.2);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: #b9cbea;
   background: rgba(57, 101, 190, 0.12);
   font-size: 0.72rem;
@@ -761,7 +761,7 @@
   min-width: 0;
   padding: 0.62rem 0.7rem;
   border: 1px solid var(--dk-line-strong);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   outline: 0;
   color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);
@@ -772,7 +772,7 @@
 .mps-consumable-editor-row select:focus,
 .mps-consumable-editor-row input:focus {
   border-color: rgba(116, 166, 255, 0.7);
-  box-shadow: 0 0 0 3px rgba(66, 119, 233, 0.13);
+  box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.22);
 }
 
 .mps-editor-error {
@@ -826,7 +826,7 @@
   align-items: end;
   padding: 0.7rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(10, 19, 34, 0.42);
 }
 
@@ -861,7 +861,7 @@
 .mps-editor-empty {
   padding: 1rem;
   border: 1px dashed rgba(117, 166, 255, 0.3);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: #8ea2c5;
   font-size: 0.72rem;
   text-align: center;

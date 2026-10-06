@@ -138,3 +138,27 @@ html[data-theme='dark'] .nav-icon,
 html[data-theme='dark'] .module-symbol {
   color: var(--ds-sky);
 }
+
+/* Todos los modales: fondo con blur (los <dialog> nativos usan ::backdrop). */
+.changelog-overlay,
+.confirm-dialog::backdrop,
+.command-palette::backdrop,
+.travel-drawer::backdrop {
+  backdrop-filter: blur(0.5rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .changelog-overlay,
+  .confirm-dialog::backdrop,
+  .command-palette::backdrop,
+  .travel-drawer::backdrop {
+    backdrop-filter: none;
+  }
+}
+
+.confirm-dialog,
+.command-palette,
+.changelog-dialog {
+  border-radius: var(--ds-radius-2xl);
+  box-shadow: var(--ds-shadow-md);
+}

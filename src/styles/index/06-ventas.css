@@ -8,7 +8,7 @@
   margin-bottom: 1.25rem;
   padding: 1.35rem 1.5rem;
   border: 1px solid rgba(117, 166, 255, 0.2);
-  border-radius: 0.9rem;
+  border-radius: var(--ds-radius-2xl);
   background: linear-gradient(135deg, rgba(28, 53, 98, 0.58), rgba(15, 27, 48, 0.76));
 }
 
@@ -72,7 +72,7 @@
   width: 100%;
   padding: 0.7rem 0.8rem;
   border: 1px solid var(--dk-line-strong);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   outline: 0;
   color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);
@@ -93,7 +93,7 @@
 .search-field select:focus,
 .compact-field select:focus {
   border-color: rgba(116, 166, 255, 0.7);
-  box-shadow: 0 0 0 3px rgba(66, 119, 233, 0.13);
+  box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.22);
 }
 
 .price-cell {
@@ -177,7 +177,7 @@
   min-width: 0;
   padding: 1.35rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.85rem;
+  border-radius: var(--ds-radius-2xl);
   background: rgba(15, 27, 48, 0.72);
 }
 
@@ -236,7 +236,7 @@
   max-height: 17rem;
   overflow-y: auto;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(10, 19, 34, 0.72);
 }
 
@@ -312,7 +312,7 @@
   overflow-x: auto;
   margin-bottom: 1rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
 }
 
 .proforma-table {
@@ -336,7 +336,7 @@
 
 .proforma-line-kind:focus {
   border-color: rgba(116, 166, 255, 0.7);
-  box-shadow: 0 0 0 3px rgba(66, 119, 233, 0.13);
+  box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.22);
 }
 
 .proforma-line-code {
@@ -355,7 +355,7 @@
   margin-top: 0.35rem;
   overflow-y: auto;
   border: 1px solid var(--dk-line);
-  border-radius: 0.45rem;
+  border-radius: var(--ds-radius-xl);
   background: var(--dk-0f1b30);
   box-shadow: 0 0.7rem 1.4rem rgba(4, 10, 20, 0.28);
 }
@@ -528,7 +528,7 @@
 
 .labor-input:focus {
   border-color: rgba(116, 166, 255, 0.7);
-  box-shadow: 0 0 0 3px rgba(66, 119, 233, 0.13);
+  box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.22);
 }
 
 .labor-total-row {
@@ -566,7 +566,7 @@
   flex-direction: column;
   overflow: hidden;
   border: 1px solid rgba(117, 166, 255, 0.32);
-  border-radius: 0.9rem;
+  border-radius: var(--ds-radius-2xl);
   color: var(--dk-dce8fc);
   background: var(--dk-0f1b30);
   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.42);
@@ -621,7 +621,7 @@
   place-content: center;
   padding: 1rem;
   border: 1px dashed rgba(117, 166, 255, 0.42);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: #b5d0ff;
   background: rgba(55, 101, 197, 0.13);
   text-align: center;
@@ -655,7 +655,7 @@
 .service-report-notice,
 .service-report-error {
   padding: 0.75rem 0.85rem;
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   font-size: 0.72rem;
   line-height: 1.45;
 }
@@ -681,7 +681,7 @@
 .service-report-matches {
   padding: 1rem;
   border: 1px solid rgba(117, 166, 255, 0.2);
-  border-radius: 0.65rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(18, 31, 54, 0.54);
 }
 
@@ -771,7 +771,7 @@
   max-height: 17rem;
   overflow-y: auto;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
 }
 
 .service-report-match {
@@ -841,7 +841,7 @@
   margin: -0.15rem 0 1rem;
   padding: 0.75rem 0.85rem;
   border: 1px solid rgba(117, 166, 255, 0.22);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(57, 101, 190, 0.12);
 }
 
@@ -902,7 +902,7 @@
   margin: -0.15rem 0 1rem;
   padding: 0.75rem 0.85rem;
   border: 1px solid rgba(117, 166, 255, 0.22);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(57, 101, 190, 0.12);
 }
 
@@ -987,7 +987,7 @@
   flex-direction: column;
   overflow: hidden;
   border: 1px solid rgba(117, 166, 255, 0.32);
-  border-radius: 0.9rem;
+  border-radius: var(--ds-radius-2xl);
   color: var(--dk-dce8fc);
   background: var(--dk-0f1b30);
   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.42);
@@ -1054,7 +1054,7 @@
   gap: 0.65rem;
   padding: 1rem;
   border: 1px solid rgba(117, 166, 255, 0.2);
-  border-radius: 0.65rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(18, 31, 54, 0.54);
 }
 
@@ -1099,7 +1099,7 @@
   place-content: center;
   padding: 1rem;
   border: 1px dashed rgba(117, 166, 255, 0.42);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: #b5d0ff;
   background: rgba(55, 101, 197, 0.13);
   text-align: center;
@@ -1167,7 +1167,7 @@
   margin: 0;
   padding: 0.75rem 0.85rem;
   border: 1px solid rgba(255, 124, 135, 0.28);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: #ffb2b9;
   background: rgba(118, 39, 51, 0.17);
   font-size: 0.72rem;
@@ -1177,7 +1177,7 @@
 .sales-catalog-progress {
   padding: 0.8rem 0.9rem;
   border: 1px solid rgba(117, 166, 255, 0.2);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(57, 101, 190, 0.12);
 }
 
@@ -1236,7 +1236,7 @@
 .sales-catalog-notice {
   padding: 0.75rem 0.85rem;
   border: 1px solid rgba(117, 166, 255, 0.2);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: #b9cbea;
   background: rgba(57, 101, 190, 0.12);
 }
@@ -1302,7 +1302,7 @@
   flex-direction: column;
   overflow: hidden;
   border: 1px solid rgba(117, 166, 255, 0.32);
-  border-radius: 0.9rem;
+  border-radius: var(--ds-radius-2xl);
   color: var(--dk-dce8fc);
   background: var(--dk-0f1b30);
   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.42);
@@ -1358,7 +1358,7 @@
   place-content: center;
   padding: 1rem;
   border: 1px dashed rgba(117, 166, 255, 0.42);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: #b5d0ff;
   background: rgba(55, 101, 197, 0.13);
   text-align: center;
@@ -1395,7 +1395,7 @@
 .open-contract-error,
 .open-contract-help {
   padding: 0.75rem 0.85rem;
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   font-size: 0.72rem;
   line-height: 1.45;
 }
@@ -1447,7 +1447,7 @@
 .open-contract-preview {
   padding: 1rem;
   border: 1px solid rgba(117, 166, 255, 0.2);
-  border-radius: 0.65rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(18, 31, 54, 0.54);
 }
 
@@ -1496,7 +1496,7 @@
 .open-contract-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
 }
 
 .open-contract-table {
@@ -1653,7 +1653,7 @@
   justify-content: space-between;
   padding: 0.7rem;
   border: 1px solid var(--dk-line-faint);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.64);
   text-align: left;

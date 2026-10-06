@@ -56,7 +56,7 @@
   padding: 0.65rem;
   overflow-y: auto;
   border: 1px solid var(--dk-line);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(12, 23, 41, 0.72);
 }
 
@@ -181,7 +181,7 @@
   min-width: 5.5rem;
   padding: 0.4rem 0.6rem;
   border: 1px solid rgba(144, 174, 229, 0.28);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   color: #c6d7f2;
   background: rgba(25, 43, 73, 0.7);
   font-size: 0.64rem;
@@ -287,7 +287,7 @@
   width: min(100%, 22rem);
   height: auto;
   border: 1px solid var(--dk-line);
-  border-radius: 0.45rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(12, 23, 41, 0.5);
 }
 
@@ -319,7 +319,7 @@
 .maintenance-history-chart-empty {
   padding: 1.2rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.45rem;
+  border-radius: var(--ds-radius-xl);
   color: var(--dk-7890b8);
   font-size: 0.68rem;
 }
@@ -327,7 +327,7 @@
 .maintenance-readings-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(12, 23, 41, 0.5);
 }
 

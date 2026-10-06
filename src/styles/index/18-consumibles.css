@@ -187,7 +187,7 @@
   min-width: 0;
   padding: 0.8rem 0.9rem;
   border: 1px solid var(--dk-line-faint);
-  border-radius: 0.65rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(18, 31, 54, 0.42);
 }
 
@@ -213,7 +213,7 @@
   margin-bottom: 1.25rem;
   padding: 0.9rem 1rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.8rem;
+  border-radius: var(--ds-radius-2xl);
   background: rgba(15, 27, 48, 0.72);
 }
 
@@ -226,7 +226,7 @@
   min-height: 2.35rem;
   padding: 0.55rem 0.65rem;
   border: 1px solid var(--dk-line-strong);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   outline: 0;
   color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);
@@ -328,7 +328,7 @@
   margin: 0;
   padding: 0.9rem 1rem;
   border: 1px solid rgba(0, 163, 224, 0.22);
-  border-radius: 0.65rem;
+  border-radius: var(--ds-radius-xl);
   color: #b6c8e5;
   background: rgba(0, 163, 224, 0.07);
   font-size: 0.76rem;
@@ -358,7 +358,7 @@
 .legacy-chart-inset {
   padding: 1rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.7rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(18, 31, 54, 0.3);
 }
 
@@ -635,7 +635,7 @@
   display: grid;
   overflow: hidden;
   border: 1px solid var(--dk-line);
-  border-radius: 0.65rem;
+  border-radius: var(--ds-radius-xl);
 }
 
 .legacy-timeline-event {
@@ -675,7 +675,7 @@
   margin: 0.5rem 0 1rem;
   padding: 0.8rem 0.9rem;
   border: 1px solid var(--dk-line-faint);
-  border-radius: 0.65rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(18, 31, 54, 0.3);
 }
 

@@ -136,7 +136,7 @@
   align-items: start;
   padding: 0.7rem 0.75rem;
   border: 1px solid var(--dk-line-faint);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(10, 19, 34, 0.38);
   cursor: pointer;
 }
@@ -176,7 +176,7 @@
   gap: 0.45rem;
   padding: 1.8rem 1rem;
   border: 1px dashed rgba(117, 166, 255, 0.26);
-  border-radius: 0.6rem;
+  border-radius: var(--ds-radius-xl);
   color: var(--dk-7187aa);
   font-size: 0.74rem;
   line-height: 1.45;
@@ -199,7 +199,7 @@
   gap: 0.2rem;
   padding: 0.7rem 0.75rem;
   border: 1px solid rgba(117, 166, 255, 0.2);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   color: #cbdafa;
   background: rgba(18, 31, 54, 0.45);
   text-align: left;
@@ -229,7 +229,7 @@
 .software-recommendation {
   padding: 0.85rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.6rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(10, 19, 34, 0.45);
 }
 

@@ -15,7 +15,7 @@
   align-content: center;
   padding: 2rem;
   border: 1px dashed rgba(144, 174, 229, 0.28);
-  border-radius: 0.85rem;
+  border-radius: var(--ds-radius-2xl);
   color: #9fb2d1;
   background: rgba(15, 27, 48, 0.58);
   text-align: center;
@@ -57,7 +57,7 @@
   margin-bottom: 1.25rem;
   padding: 1.25rem 1.35rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.85rem;
+  border-radius: var(--ds-radius-2xl);
   background: rgba(15, 27, 48, 0.68);
 }
 
@@ -133,7 +133,7 @@
   align-items: flex-start;
   padding: 0.65rem 0.7rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.6rem;
+  border-radius: var(--ds-radius-xl);
   color: var(--dk-c8d6ed);
   background: rgba(18, 31, 54, 0.55);
   cursor: pointer;
@@ -191,7 +191,7 @@
   width: 100%;
   padding: 0.7rem 0.8rem;
   border: 1px solid var(--dk-line-strong);
-  border-radius: 0.5rem;
+  border-radius: var(--ds-radius-xl);
   outline: 0;
   color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);
@@ -202,7 +202,7 @@
 
 .search-field input:focus {
   border-color: rgba(116, 166, 255, 0.7);
-  box-shadow: 0 0 0 3px rgba(66, 119, 233, 0.13);
+  box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.22);
 }
 
 .search-field input::placeholder {

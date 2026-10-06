@@ -26,7 +26,7 @@
   margin-bottom: 1.25rem;
   padding: 0.35rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.8rem;
+  border-radius: var(--ds-radius-2xl);
   background: rgba(15, 27, 48, 0.72);
 }
 
@@ -34,7 +34,7 @@
   min-height: 2.25rem;
   padding: 0.5rem 0.75rem;
   border: 1px solid transparent;
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: #8ea2c5;
   background: transparent;
   font-size: 0.72rem;
@@ -66,7 +66,7 @@
   margin-bottom: 1.25rem;
   padding: 1.35rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.85rem;
+  border-radius: var(--ds-radius-2xl);
   background: rgba(15, 27, 48, 0.72);
 }
 
@@ -156,7 +156,7 @@
   margin-bottom: 1rem;
   padding: 0.7rem 0.85rem;
   border: 1px solid rgba(214, 69, 69, 0.35);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: #ffb6b0;
   background: rgba(114, 31, 39, 0.2);
   font-size: 0.74rem;
@@ -166,7 +166,7 @@
   margin-bottom: 1rem;
   padding: 0.7rem 0.85rem;
   border: 1px solid rgba(94, 230, 168, 0.3);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: var(--dk-8fe5b5);
   background: rgba(94, 230, 168, 0.1);
   font-size: 0.74rem;
@@ -178,7 +178,7 @@
   margin-bottom: 1rem;
   padding: 1rem;
   border: 1px solid rgba(0, 163, 224, 0.28);
-  border-radius: 0.75rem;
+  border-radius: var(--ds-radius-xl);
   background: linear-gradient(135deg, rgba(0, 163, 224, 0.08), rgba(18, 31, 54, 0.5));
 }
 
@@ -230,7 +230,7 @@
   align-items: center;
   padding: 0.65rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.6rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(12, 23, 41, 0.52);
 }
 
@@ -327,7 +327,7 @@
   min-width: 0;
   padding: 0.85rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.7rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(12, 23, 41, 0.58);
 }
 
@@ -351,7 +351,7 @@
   gap: 0.25rem;
   padding: 0.7rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
   color: var(--dk-c8d6ed);
   background: rgba(18, 31, 54, 0.66);
   text-align: left;

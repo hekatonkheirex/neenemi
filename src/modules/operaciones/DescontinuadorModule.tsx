@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import type { ChangeEvent } from 'react';
+import { HugeiconsIcon } from '@hugeicons/react';
 import AnimatedTabs from '../../core/AnimatedTabs';
 import {
   Alert02Icon,
   Package01Icon,
+  Tick02Icon,
   Upload01Icon,
 } from '@hugeicons/core-free-icons';
 import { exportCustomerPortfolio, exportOperationsWorkbook } from './export';
@@ -138,7 +140,7 @@ function DiscontinuationSourceCard({
         {!loadingBatches && !sourceBatchesError && loadedBatches.length === 0 ? <span className="discontinuation-source-loaded-empty">Sin archivo cargado</span> : null}
         {!loadingBatches && !sourceBatchesError && loadedBatches.length > 0 ? (
           <ul className="discontinuation-source-loaded-list">
-            {loadedBatches.map((batch) => <li key={batch.id} title={batch.sourceName}><span aria-hidden="true">✓</span><strong>{batch.sourceName}</strong></li>)}
+            {loadedBatches.map((batch) => <li key={batch.id} title={batch.sourceName}><HugeiconsIcon icon={Tick02Icon} size={14} strokeWidth={2.5} aria-hidden="true" /><strong>{batch.sourceName}</strong></li>)}
           </ul>
         ) : null}
       </div>

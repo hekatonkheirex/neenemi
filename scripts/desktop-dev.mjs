@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isPortFree } from './port-free.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const isWindows = process.platform === 'win32';
@@ -91,6 +92,16 @@ async function restartApi() {
 }
 
 const dataDirectory = path.join(root, 'data');
+
+// Un stack de dev anterior que sigue vivo hace que la API nueva muera con EADDRINUSE y el
+// health check pase contra la vieja. Se falla antes de arrancar nada.
+for (const [name, port] of [['API', apiPort], ['renderer', rendererPort]]) {
+  if (!(await isPortFree(port))) {
+    console.error(`El puerto ${port} (${name}) ya está en uso: hay otro "npm run dev" vivo. Ciérralo (ver: ss -ltnp | grep ${port}) y vuelve a ejecutar.`);
+    process.exit(1);
+  }
+}
+
 apiProcess = start(npmCommand, ['run', 'dev:server'], {
   PORT: String(apiPort),
   DS_DATA_DIR: dataDirectory,

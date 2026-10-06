@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Tick02Icon } from '@hugeicons/core-free-icons';
 import { canonicalMunicipality, searchParaguayMunicipalities } from './paraguay-municipalities';
 
 type DestinationComboboxProps = {
@@ -101,7 +103,7 @@ export function DestinationCombobox({ id = 'travel-destination', value, onChange
                     className={isHighlighted ? 'highlighted' : undefined}
                   >
                     <span>{municipality}</span>
-                    {isSelected && <span aria-hidden="true">✓</span>}
+                    {isSelected && <HugeiconsIcon icon={Tick02Icon} size={14} strokeWidth={2.5} aria-hidden="true" />}
                   </li>
                 );
               })}

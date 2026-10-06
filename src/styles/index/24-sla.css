@@ -79,7 +79,7 @@
   align-content: space-between;
   padding: 1rem;
   border: 1px solid var(--dk-line);
-  border-radius: 0.75rem;
+  border-radius: var(--ds-radius-xl);
   background: rgba(18, 31, 54, 0.58);
 }
 
@@ -146,7 +146,7 @@
 .sla-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--dk-line);
-  border-radius: 0.55rem;
+  border-radius: var(--ds-radius-xl);
 }
 
 .sla-table {
