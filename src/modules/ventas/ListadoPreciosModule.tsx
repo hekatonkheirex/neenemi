@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { importCatalogFile } from '../catalogo/import-file';
 import { loadLegacyPriceListSeed } from '../catalogo/legacy-seed';
 import { normalizeModelName, type CatalogFamilySummary, type CatalogModelNote, type CatalogServiceItem, type CatalogSourceFile } from '../catalogo/repository';
 import { exportPriceList } from './export';
+import { selectionNeedsSave } from './selection-sync';
 import type { PricingSettings, SalesPricePart } from './types';
 import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
@@ -38,6 +39,7 @@ export default function ListadoPreciosModule() {
   const [refreshVersion, setRefreshVersion] = useState(0);
   const [selectionReady, setSelectionReady] = useState(false);
   const [savingSelection, setSavingSelection] = useState(false);
+  const persistedSelection = useRef<string[] | null>(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -127,7 +129,9 @@ export default function ListadoPreciosModule() {
         return (await response.json()) as { modelNames?: unknown };
       })
       .then((body) => {
-        setSelectedModels(Array.isArray(body.modelNames) ? body.modelNames.filter((value): value is string => typeof value === 'string') : []);
+        const loaded = Array.isArray(body.modelNames) ? body.modelNames.filter((value): value is string => typeof value === 'string') : [];
+        persistedSelection.current = loaded;
+        setSelectedModels(loaded);
         setSelectionReady(true);
       })
       .catch((requestError: unknown) => {
@@ -237,7 +241,7 @@ export default function ListadoPreciosModule() {
   }, [familyModelKeys, modelName, modelNotes, onlySelected, selectedModelKeys, selectedModels.length]);
 
   useEffect(() => {
-    if (!selectionReady) return;
+    if (!selectionReady || !selectionNeedsSave(selectedModels, persistedSelection.current)) return;
     const controller = new AbortController();
     const timer = window.setTimeout(() => {
       setSavingSelection(true);
@@ -252,6 +256,7 @@ export default function ListadoPreciosModule() {
           if (!response.ok || !body || !Array.isArray(body.modelNames)) {
             throw new Error(body?.error || 'No se pudo guardar la selección de modelos.');
           }
+          persistedSelection.current = body.modelNames.filter((value): value is string => typeof value === 'string');
           setMessage('Selección de modelos guardada en SQLite.');
         })
         .catch((requestError: unknown) => {
