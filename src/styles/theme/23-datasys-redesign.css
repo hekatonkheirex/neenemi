@@ -123,3 +123,18 @@ html[data-theme='dark'] .primary-button:disabled {
   font-size: 1rem;
   line-height: 1.55;
 }
+
+/* Iconos sin recuadro: barra lateral, pestañas y tarjetas de módulo. Se conserva el tamaño y el color de cada uno. */
+html[data-theme] .nav-icon,
+html[data-theme] .anim-tabs button > .anim-tabs-icon,
+html[data-theme] .module-symbol {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+html[data-theme='dark'] .nav-icon,
+html[data-theme='dark'] .module-symbol {
+  color: var(--ds-sky);
+}

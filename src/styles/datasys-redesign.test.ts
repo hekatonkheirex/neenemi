@@ -50,4 +50,11 @@ describe('rediseño Datasys', () => {
       expect(theme.match(/\.page-content h1,[^{]*\{/)?.[0], cls).toContain(cls);
     }
   });
+
+  it('los iconos de la barra lateral, las pestañas y las tarjetas no llevan recuadro', () => {
+    const block = theme.match(/html\[data-theme\] \.nav-icon,[^{]*\{([^}]*)\}/)?.[0] ?? '';
+    for (const cls of ['.nav-icon', '.anim-tabs button > .anim-tabs-icon', '.module-symbol']) expect(block, cls).toContain(cls);
+    expect(block).toMatch(/border:\s*0/);
+    expect(block).toMatch(/background:\s*none/);
+  });
 });
