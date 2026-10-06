@@ -6,6 +6,18 @@ import RouteMap from './RouteMap';
 import TrackingTables from './TrackingTables';
 import type { Coordinate, DayAnalysis, GeocodingCandidate, RoadRoute, TrackingState, TrackingVisit } from './types';
 import './tracking.css';
+import { PageHeader } from '../../core/ui/page-header';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Button } from '../../core/ui/button';
+import { Input } from '../../core/ui/input';
+import { Badge } from '../../core/ui/badge';
+import { StatusLine } from '../../core/ui/status-line';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
+
+const cardClass = 'min-w-0 grid-cols-1 [overflow-wrap:anywhere]';
+const fieldClass = 'grid min-w-0 gap-2 text-sm font-semibold text-navy dark:text-white';
+const selectClass = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky disabled:opacity-50 dark:border-sky/30 dark:bg-navy/50 dark:text-white';
+const wrapButtonClass = 'h-auto min-h-10 max-w-full whitespace-normal text-left [overflow-wrap:anywhere]';
 
 async function fetchState(path: string, method = 'GET', body?: unknown): Promise<TrackingState> {
   const response = await fetch(path, { method, headers: body === undefined ? undefined : { 'content-type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) });
@@ -155,66 +167,119 @@ export default function TrackingModule() {
   ]));
   const unmatchedReports = snapshot?.reports.filter(report => !linkedIds.has(JSON.stringify([report.reportId, normalizeIdentity(report.customer), normalizeIdentity(report.technician)]))) ?? [];
   const undated = (visits ?? []).filter(v => !v.checkIn && !v.checkOut);
-  return <div className="page-content tracking-module">
-    <section className="catalog-header"><div><div className="eyebrow">OPERACIONES / TRAZABILIDAD</div><h1>Tracking de técnicos</h1><p className="lead">Marcaciones diarias, intervalos entre visitas y proximidad a la sede del cliente.</p></div></section>
-    <section className="tracking-card"><h2>Cargar fuentes originales</h2><p>Selecciona el detalle de informes y las marcaciones de geolocalización. Se vinculan por Nº I.S., técnico y cliente; las filas sin coincidencia se conservan. Una nueva carga reemplaza el análisis vigente, no el archivo histórico ni las sedes confirmadas.</p>
-      <div className="tracking-import-grid">
-        <div className="tracking-file"><span>1. Informes de servicio</span><UploadButton label={reportsFile ? reportsFile.name : 'Seleccionar archivo'} accept=".csv,.xlsx" aria-label="1. Informes de servicio" aria-describedby="tracking-reports-source" disabled={busy || loading} onChange={e => setReportsFile(e.target.files?.[0] ?? null)} /><small id="tracking-reports-source">Superset &gt; SGS - Tecnicos asignados &gt; Detalle de Servicios</small></div>
-        <div className="tracking-file"><span>2. Geolocalización</span><UploadButton label={gpsFile ? gpsFile.name : 'Seleccionar archivo'} accept=".csv,.xlsx" aria-label="2. Geolocalización" aria-describedby="tracking-gps-source" disabled={busy || loading} onChange={e => setGpsFile(e.target.files?.[0] ?? null)} /><small id="tracking-gps-source">Superset &gt; SGS - I.S Pendientes y Asignados - Tracking &gt; Del mobile</small></div>
-        <button type="button" className="primary-button" disabled={!reportsFile || !gpsFile || busy || loading} onClick={() => void importFiles()}>{busy ? 'Guardando…' : 'Cargar y analizar'}</button>
+  return <div className="page-content tracking-module grid min-w-0 grid-cols-1 gap-6 [overflow-wrap:anywhere] [&_li]:before:content-none">
+    <PageHeader eyebrow="OPERACIONES / TRAZABILIDAD" title="Tracking de técnicos" lead="Marcaciones diarias, intervalos entre visitas y proximidad a la sede del cliente." />
+    <Card className={cardClass}>
+      <CardHeader eyebrow="Importación" title="Cargar fuentes originales" aside={<Badge>CSV / XLSX</Badge>} />
+      <Muted className="text-sm leading-relaxed">Selecciona el detalle de informes y las marcaciones de geolocalización. Se vinculan por Nº I.S., técnico y cliente; las filas sin coincidencia se conservan. Una nueva carga reemplaza el análisis vigente, no el archivo histórico ni las sedes confirmadas.</Muted>
+      <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-4">
+        <div className="grid min-w-0 content-start gap-3 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
+          <div className="text-sm font-bold text-navy dark:text-white">1. Informes de servicio</div>
+          <div><UploadButton label="Seleccionar informes" accept=".csv,.xlsx" aria-label="1. Informes de servicio" aria-describedby="tracking-reports-source tracking-reports-file" disabled={busy || loading} onChange={e => setReportsFile(e.target.files?.[0] ?? null)} /></div>
+          <div id="tracking-reports-file" className="min-w-0 text-sm text-navy dark:text-white [overflow-wrap:anywhere]">{reportsFile?.name ?? 'Sin archivo seleccionado'}</div>
+          <Muted id="tracking-reports-source">Superset &gt; SGS - Tecnicos asignados &gt; Detalle de Servicios</Muted>
+        </div>
+        <div className="grid min-w-0 content-start gap-3 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
+          <div className="text-sm font-bold text-navy dark:text-white">2. Geolocalización</div>
+          <div><UploadButton label="Seleccionar GPS" accept=".csv,.xlsx" aria-label="2. Geolocalización" aria-describedby="tracking-gps-source tracking-gps-file" disabled={busy || loading} onChange={e => setGpsFile(e.target.files?.[0] ?? null)} /></div>
+          <div id="tracking-gps-file" className="min-w-0 text-sm text-navy dark:text-white [overflow-wrap:anywhere]">{gpsFile?.name ?? 'Sin archivo seleccionado'}</div>
+          <Muted id="tracking-gps-source">Superset &gt; SGS - I.S Pendientes y Asignados - Tracking &gt; Del mobile</Muted>
+        </div>
       </div>
-      <small>CSV UTF-8 o XLSX · máximo 18 MB por archivo · horas locales literales de SGS, sin convertir de zona horaria.</small>
-    </section>
-    {error && <p className="tracking-error" role="alert">{error}<button type="button" className="secondary-button" disabled={busy} onClick={() => { setLoading(true); fetchState('/api/tracking').then(value => { setState(value); setError(''); }).catch(err => setError(err.message)).finally(() => setLoading(false)); }}>Reintentar consulta</button></p>}
-    {notice && <p className="tracking-notice" role="status">{notice}</p>}
-    {loading && <p role="status">Consultando la carga local…</p>}
-    {!loading && !snapshot && <section className="tracking-card"><h2>Sin carga de tracking</h2><p>Carga ambos archivos para consultar el recorrido. No se generan datos de ejemplo ni ubicaciones inferidas.</p></section>}
+      <div className="flex min-w-0 flex-wrap items-center gap-3">
+        <Button disabled={!reportsFile || !gpsFile || busy || loading} onClick={() => void importFiles()}>{busy ? 'Guardando…' : 'Cargar y analizar'}</Button>
+        <Muted>CSV UTF-8 o XLSX · máximo 18 MB por archivo · horas locales literales de SGS, sin convertir de zona horaria.</Muted>
+      </div>
+    </Card>
+    {error && <Card className={`${cardClass} border-[#d92d20]/30`} role="alert">
+      <div className="text-sm text-[#912018] dark:text-[#ffb4ab]">{error}</div>
+      <div><Button variant="outline" disabled={busy} onClick={() => { setLoading(true); fetchState('/api/tracking').then(value => { setState(value); setError(''); }).catch(err => setError(err.message)).finally(() => setLoading(false)); }}>Reintentar consulta</Button></div>
+    </Card>}
+    {notice && <StatusLine state="ready"><div className="[overflow-wrap:anywhere]">{notice}</div></StatusLine>}
+    {loading && <StatusLine state="pending">Consultando la carga local…</StatusLine>}
+    {!loading && !snapshot && <Card className={cardClass}><CardHeader title="Sin carga de tracking" /><Muted className="text-sm">Carga ambos archivos para consultar el recorrido. No se generan datos de ejemplo ni ubicaciones inferidas.</Muted></Card>}
     {snapshot && <>
-      <section className="summary-grid" aria-label="Cobertura de fuentes"><div className="summary-card accent"><span className="summary-value">{technicians.length}</span><span className="summary-label">técnicos con marcaciones</span></div><div className="summary-card"><span className="summary-value">{snapshot.visits.length.toLocaleString('es-PY')}</span><span className="summary-label">registros de geolocalización</span></div><div className="summary-card"><span className="summary-value">{snapshot.matchedVisits.toLocaleString('es-PY')}</span><span className="summary-label">registros con detalle de informe vinculado</span></div></section>
-      <section className="tracking-card tracking-source-summary"><strong>{snapshot.reportFile} + {snapshot.geolocationFile}</strong><small>Carga: {new Date(snapshot.importedAt).toLocaleString('es-PY')} · {snapshot.reports.length} filas de informes</small>{snapshot.warnings.length > 0 && <ul>{snapshot.warnings.map(warning => <li key={warning}>{warning}</li>)}</ul>}</section>
-      <section className="tracking-card tracking-filters" aria-label="Filtros de recorrido"><label>Técnico<select value={technician} disabled={busy} onChange={e => setTechnician(e.target.value)}>{technicians.map(name => <option key={name} value={name}>{name}</option>)}</select></label><label>Día de marcación<select value={day} disabled={busy} onChange={e => setDay(e.target.value)}>{days.length ? days.map(date => <option key={date} value={date}>{date.split('-').reverse().join('/')}</option>) : <option value="">Sin fechas utilizables</option>}</select></label><label className="tracking-checkbox"><input type="checkbox" checked={onsiteOnly} disabled={busy} onChange={e => setOnsiteOnly(e.target.checked)} /> Sólo servicios en sitio</label><span>{analysis.visits.length} registros · {analysis.events.filter(e => e.coordinate).length}/{analysis.events.length} eventos con GPS</span></section>
-      {!onsiteOnly && <p className="tracking-notice">Incluye servicios remotos, internos, de taller o sin tipo. Sus puntos no demuestran desplazamientos a clientes.</p>}
-      {analysis.suspectVisitKeys.length > 0 && <p className="tracking-error" role="alert">GPS dudoso en {analysis.suspectVisitKeys.length} servicio(s): {analysis.visits.filter(v => analysis.suspectVisitKeys.includes(v.key)).map(v => `I.S. ${v.reportId}`).join(', ')}. Su entrada y su salida están a más de 5 km entre sí, por lo que no describen un solo lugar (marcación remota o ubicación errónea). Los tramos entre marcaciones de servicios dudosos se muestran en rojo discontinuo; los que tocan solo uno se dibujan normales. Esas rutas rojas y su distancia no son confiables.</p>}
-      <div className="tracking-map-layout">
-        <RouteMap events={analysis.events} roadSegments={analysis.roadSegments} suspectVisitKeys={analysis.suspectVisitKeys} sites={mapSites} selectedVisit={selectedKey} candidate={selected ? candidate : null} editing={editing && !busy} onPick={point => { setLatitude(point.latitude.toFixed(7)); setLongitude(point.longitude.toFixed(7)); }} onSelect={key => { const visit = visits?.find(v => v.key === key); if (visit) selectVisit(visit); }} />
-        <section className="tracking-card tracking-site-editor" aria-label="Confirmación manual de sede"><h2>Sede de referencia</h2>
-          {!selected ? <p>Selecciona un I.S. en la tabla o un punto del mapa. La ubicación debe confirmarse con una fuente independiente de las marcaciones del técnico.</p> : <><strong>{selected.customer}</strong><span>I.S. {selected.reportId} · {selected.branch || 'Sucursal no informada'}</span>
-            <label>Número de serie del equipo<input value={serialNumber} maxLength={100} disabled={busy} onChange={event => {
-              const value = event.target.value;
-              setSerialNumber(value);
-              const reference = state.sites.find(site => site.serialNumber && site.serialNumber === normalizeTrackingSerial(value));
-              if (reference) {
-                setLatitude(String(reference.latitude)); setLongitude(String(reference.longitude)); setAddress(reference.address);
-              }
-            }} placeholder="Serie verificada del equipo" /></label>
-            <p>{normalizeTrackingSerial(serialNumber)
-              ? 'La sede se guardará por serie y se aplicará a todos los informes de ese equipo, incluso en futuras cargas. Si el equipo se traslada, reconfirma su sede.'
-              : selected.branch ? 'Sin serie, esta referencia se reutiliza para el mismo cliente y sucursal.'
-              : 'Sin serie ni sucursal, la referencia se aplica sólo a este Nº I.S. y cliente. Completa la serie para reutilizarla entre informes.'}</p>
-            {serialSite && <small>Esta serie ya tiene una sede confirmada. Se cargó su ubicación; confirmar vinculará este I.S. al mismo equipo.</small>}
-            {selectedSite && <small>Confirmada: {new Date(selectedSite.confirmedAt).toLocaleString('es-PY')}</small>}
-            <button type="button" className="secondary-button" disabled={busy} onClick={() => setEditing(value => !value)}>{editing ? 'Terminar selección en mapa' : 'Elegir ubicación en el mapa'}</button>
-            {editing && <p role="status">Haz clic en la sede real, no en el GPS del técnico. Arrastra para desplazar el mapa.</p>}
-            <label>Dirección de referencia<input value={address} maxLength={500} disabled={busy} onChange={e => setAddress(e.target.value)} placeholder="Dirección verificada del cliente" /></label>
-            {!selected.branch && <small>Sin sucursal informada: esta dirección podría ser de casa matriz. Verifica que sea la ubicación del equipo.</small>}
-            <button type="button" className="secondary-button" disabled={busy || address.trim().length < 5} onClick={() => void searchAddress()}>Buscar dirección en Paraguay</button>
-            <small>Sólo al pulsar Buscar se envía esta dirección a Photon/Komoot. No se envían series ni marcaciones. Las coincidencias son aproximadas, no sedes confirmadas. Incluye ciudad, calle y número; no envíes datos confidenciales.</small>
-            {geocodingResults.length > 0 && <div className="tracking-geocoding-results" aria-label="Ubicaciones propuestas">{geocodingResults.map((result, index) => <button type="button" className="secondary-button" disabled={busy} key={index} onClick={() => {
-              setLatitude(String(result.latitude)); setLongitude(String(result.longitude)); setEditing(false);
-              setNotice(`Ubicación propuesta: ${result.label}. Revisa el mapa; aún no se confirmó ni se usa para validar marcaciones.`);
-            }}>{result.label}<small>{result.kind} · {result.latitude.toFixed(6)}, {result.longitude.toFixed(6)}</small></button>)}</div>}
-            <small>Geocodificación: <a href="https://github.com/komoot/photon" target="_blank" rel="noreferrer">Photon/Komoot</a> · Datos <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a>. Servicio público sin garantía de disponibilidad.</small>
-            <label>Latitud<input type="number" step="any" min="-85.05112878" max="85.05112878" value={latitude} disabled={busy} onChange={e => setLatitude(e.target.value)} /></label><label>Longitud<input type="number" step="any" min="-180" max="180" value={longitude} disabled={busy} onChange={e => setLongitude(e.target.value)} /></label>
-            <small>El pin propuesto no se usa para validar hasta confirmar. Radio fijo: 100 metros.</small>
-            <button type="button" className="primary-button" disabled={!candidate || busy} onClick={() => void saveSite()}>Confirmar sede verificada</button>
-            {selectedSite && <button type="button" className="secondary-button" disabled={busy} onClick={() => void removeSite()}>Retirar referencia</button>}
-          </>}
-        </section>
+      <Card className={cardClass} aria-label="Cobertura de fuentes">
+        <CardHeader eyebrow="Carga vigente" title="Cobertura de fuentes" />
+        <dl className="m-0 grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-4">
+          <div className="min-w-0 rounded-xl border-l-4 border-brand bg-paper p-4 dark:bg-navy/30"><dt className="text-sm text-ink-2 dark:text-[#9fb2d1]">técnicos con marcaciones</dt><dd className="mt-2 ml-0 text-3xl font-bold text-navy dark:text-white">{technicians.length}</dd></div>
+          <div className="min-w-0 rounded-xl bg-paper p-4 dark:bg-navy/30"><dt className="text-sm text-ink-2 dark:text-[#9fb2d1]">registros de geolocalización</dt><dd className="mt-2 ml-0 text-3xl font-bold text-navy dark:text-white">{snapshot.visits.length.toLocaleString('es-PY')}</dd></div>
+          <div className="min-w-0 rounded-xl bg-paper p-4 dark:bg-navy/30"><dt className="text-sm text-ink-2 dark:text-[#9fb2d1]">registros con detalle de informe vinculado</dt><dd className="mt-2 ml-0 text-3xl font-bold text-navy dark:text-white">{snapshot.matchedVisits.toLocaleString('es-PY')}</dd></div>
+        </dl>
+        <div className="min-w-0 border-t border-navy/10 pt-4 dark:border-sky/20">
+          <div className="font-semibold text-navy dark:text-white">{snapshot.reportFile} + {snapshot.geolocationFile}</div>
+          <Muted className="mt-2">Carga: {new Date(snapshot.importedAt).toLocaleString('es-PY')} · {snapshot.reports.length} filas de informes</Muted>
+          {snapshot.warnings.length > 0 && <ul className="mt-3 grid gap-2 pl-5 text-sm text-[#7a4a00] dark:text-[#ffd28a] list-disc">{snapshot.warnings.map(warning => <li key={warning}>{warning}</li>)}</ul>}
+        </div>
+      </Card>
+      <Card className={cardClass} aria-label="Filtros de recorrido">
+        <CardHeader eyebrow="Recorrido diario" title="Técnico y jornada" aside={<Badge className="max-w-full [overflow-wrap:anywhere]">{analysis.visits.length} registros · {analysis.events.filter(e => e.coordinate).length}/{analysis.events.length} eventos con GPS</Badge>} />
+        <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] items-end gap-4">
+          <label className={fieldClass}>Técnico<select className={selectClass} value={technician} disabled={busy} onChange={e => setTechnician(e.target.value)}>{technicians.map(name => <option key={name} value={name}>{name}</option>)}</select></label>
+          <label className={fieldClass}>Día de marcación<select className={selectClass} value={day} disabled={busy} onChange={e => setDay(e.target.value)}>{days.length ? days.map(date => <option key={date} value={date}>{date.split('-').reverse().join('/')}</option>) : <option value="">Sin fechas utilizables</option>}</select></label>
+          <label className="flex min-h-10 min-w-0 items-center gap-2 text-sm text-navy dark:text-white"><input className="size-4 shrink-0 accent-sky" type="checkbox" checked={onsiteOnly} disabled={busy} onChange={e => setOnsiteOnly(e.target.checked)} /> Sólo servicios en sitio</label>
+        </div>
+      </Card>
+      {!onsiteOnly && <Card className={`${cardClass} border-[#e08a00]/30`}><Muted className="text-sm">Incluye servicios remotos, internos, de taller o sin tipo. Sus puntos no demuestran desplazamientos a clientes.</Muted></Card>}
+      {analysis.suspectVisitKeys.length > 0 && <Card className={`${cardClass} border-[#d92d20]/30`} role="alert"><div className="text-sm text-[#912018] dark:text-[#ffb4ab]">GPS dudoso en {analysis.suspectVisitKeys.length} servicio(s): {analysis.visits.filter(v => analysis.suspectVisitKeys.includes(v.key)).map(v => `I.S. ${v.reportId}`).join(', ')}. Su entrada y su salida están a más de 5 km entre sí, por lo que no describen un solo lugar (marcación remota o ubicación errónea). Los tramos entre marcaciones de servicios dudosos se muestran en rojo discontinuo; los que tocan solo uno se dibujan normales. Esas rutas rojas y su distancia no son confiables.</div></Card>}
+      <div className="min-w-0 @container">
+        <div className="grid min-w-0 grid-cols-1 items-start gap-4 @[840px]:grid-cols-[minmax(0,3fr)_minmax(20rem,2fr)]">
+          <div className="min-w-0">
+            <RouteMap events={analysis.events} roadSegments={analysis.roadSegments} suspectVisitKeys={analysis.suspectVisitKeys} sites={mapSites} selectedVisit={selectedKey} candidate={selected ? candidate : null} editing={editing && !busy} onPick={point => { setLatitude(point.latitude.toFixed(7)); setLongitude(point.longitude.toFixed(7)); }} onSelect={key => { const visit = visits?.find(v => v.key === key); if (visit) selectVisit(visit); }} />
+          </div>
+          <Card className={cardClass} aria-label="Confirmación manual de sede">
+            <CardHeader eyebrow="Verificación independiente" title="Sede de referencia" />
+            {!selected ? <Muted className="text-sm leading-relaxed">Selecciona un I.S. en la tabla o un punto del mapa. La ubicación debe confirmarse con una fuente independiente de las marcaciones del técnico.</Muted> : <>
+              <div className="grid min-w-0 gap-1"><div className="font-bold text-navy dark:text-white">{selected.customer}</div><Muted>I.S. {selected.reportId} · {selected.branch || 'Sucursal no informada'}</Muted></div>
+              <label className={fieldClass}>Número de serie del equipo<Input value={serialNumber} maxLength={100} disabled={busy} onChange={event => {
+                const value = event.target.value;
+                setSerialNumber(value);
+                const reference = state.sites.find(site => site.serialNumber && site.serialNumber === normalizeTrackingSerial(value));
+                if (reference) {
+                  setLatitude(String(reference.latitude)); setLongitude(String(reference.longitude)); setAddress(reference.address);
+                }
+              }} placeholder="Serie verificada del equipo" /></label>
+              <Muted className="leading-relaxed">{normalizeTrackingSerial(serialNumber)
+                ? 'La sede se guardará por serie y se aplicará a todos los informes de ese equipo, incluso en futuras cargas. Si el equipo se traslada, reconfirma su sede.'
+                : selected.branch ? 'Sin serie, esta referencia se reutiliza para el mismo cliente y sucursal.'
+                : 'Sin serie ni sucursal, la referencia se aplica sólo a este Nº I.S. y cliente. Completa la serie para reutilizarla entre informes.'}</Muted>
+              {serialSite && <Muted>Esta serie ya tiene una sede confirmada. Se cargó su ubicación; confirmar vinculará este I.S. al mismo equipo.</Muted>}
+              {selectedSite && <Muted>Confirmada: {new Date(selectedSite.confirmedAt).toLocaleString('es-PY')}</Muted>}
+              <Button variant="outline" className={wrapButtonClass} aria-pressed={editing} disabled={busy} onClick={() => setEditing(value => !value)}>{editing ? 'Terminar selección en mapa' : 'Elegir ubicación en el mapa'}</Button>
+              {editing && <StatusLine state="pending">Haz clic en la sede real, no en el GPS del técnico. Arrastra para desplazar el mapa.</StatusLine>}
+              <label className={fieldClass}>Dirección de referencia<Input value={address} maxLength={500} disabled={busy} onChange={e => setAddress(e.target.value)} placeholder="Dirección verificada del cliente" /></label>
+              {!selected.branch && <Muted>Sin sucursal informada: esta dirección podría ser de casa matriz. Verifica que sea la ubicación del equipo.</Muted>}
+              <Button variant="outline" className={wrapButtonClass} disabled={busy || address.trim().length < 5} onClick={() => void searchAddress()}>Buscar dirección en Paraguay</Button>
+              <Muted className="leading-relaxed">Sólo al pulsar Buscar se envía esta dirección a Photon/Komoot. No se envían series ni marcaciones. Las coincidencias son aproximadas, no sedes confirmadas. Incluye ciudad, calle y número; no envíes datos confidenciales.</Muted>
+              {geocodingResults.length > 0 && <div className="grid min-w-0 grid-cols-1 gap-2" aria-label="Ubicaciones propuestas">{geocodingResults.map((result, index) => <Button variant="outline" className={`${wrapButtonClass} grid grid-cols-1 justify-items-start gap-1 py-3`} disabled={busy} key={index} onClick={() => {
+                setLatitude(String(result.latitude)); setLongitude(String(result.longitude)); setEditing(false);
+                setNotice(`Ubicación propuesta: ${result.label}. Revisa el mapa; aún no se confirmó ni se usa para validar marcaciones.`);
+              }}><div>{result.label}</div><div className="text-xs font-normal">{result.kind} · {result.latitude.toFixed(6)}, {result.longitude.toFixed(6)}</div></Button>)}</div>}
+              <Muted>Geocodificación: <a className="underline" href="https://github.com/komoot/photon" target="_blank" rel="noreferrer">Photon/Komoot</a> · Datos <a className="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a>. Servicio público sin garantía de disponibilidad.</Muted>
+              <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,12rem),1fr))] gap-3">
+                <label className={fieldClass}>Latitud<Input type="number" step="any" min="-85.05112878" max="85.05112878" value={latitude} disabled={busy} onChange={e => setLatitude(e.target.value)} /></label>
+                <label className={fieldClass}>Longitud<Input type="number" step="any" min="-180" max="180" value={longitude} disabled={busy} onChange={e => setLongitude(e.target.value)} /></label>
+              </div>
+              <Muted>El pin propuesto no se usa para validar hasta confirmar. Radio fijo: 100 metros.</Muted>
+              <Button className={wrapButtonClass} disabled={!candidate || busy} onClick={() => void saveSite()}>Confirmar sede verificada</Button>
+              {selectedSite && <Button variant="outline" className={wrapButtonClass} disabled={busy} onClick={() => void removeSite()}>Retirar referencia</Button>}
+            </>}
+          </Card>
+        </div>
       </div>
-      <details className="tracking-card"><summary>Cronología de eventos ({analysis.events.length})</summary><ol className="tracking-timeline">{analysis.events.map((event, index) => <li key={event.key}><button type="button" onClick={() => { const visit = visits?.find(v => v.key === event.visitKey); if (visit) selectVisit(visit); }}>{index + 1}. {event.timestamp.slice(11, 19)} · {event.kind === 'in' ? 'Entrada' : 'Salida'} · I.S. {event.reportId} · {event.customer}{!event.coordinate ? ' · Sin GPS' : ''}</button></li>)}</ol></details>
+      <Card as="details" className={cardClass}>
+        <summary className="cursor-pointer text-sm font-bold text-navy focus-visible:outline-sky dark:text-white">Cronología de eventos ({analysis.events.length})</summary>
+        {analysis.events.length ? <ol className="mt-4 grid min-w-0 grid-cols-1 gap-2">{analysis.events.map((event, index) => <li className="min-w-0" key={event.key}><Button variant="ghost" className={`${wrapButtonClass} w-full justify-start py-2`} onClick={() => { const visit = visits?.find(v => v.key === event.visitKey); if (visit) selectVisit(visit); }}>{index + 1}. {event.timestamp.slice(11, 19)} · {event.kind === 'in' ? 'Entrada' : 'Salida'} · I.S. {event.reportId} · {event.customer}{!event.coordinate ? ' · Sin GPS' : ''}</Button></li>)}</ol> : <Muted className="mt-4">Sin eventos para estos filtros. Selecciona otro técnico o día, o revisa el filtro de servicios en sitio.</Muted>}
+      </Card>
       <TrackingTables analysis={analysis} idleDays={idleDays} day={day} roadStatus={roadStatus} sites={state.sites} selectedKey={selectedKey} onSelect={selectVisit} />
-      <details className="tracking-card"><summary>Informes sin marcaciones vinculadas ({unmatchedReports.length})</summary><div className="tracking-table-scroll"><table><thead><tr><th>I.S.</th><th>Cliente / sede</th><th>Técnico</th><th>Estado / servicio</th></tr></thead><tbody>{unmatchedReports.map(report => <tr key={`${report.sourceSheet}:${report.sourceRow}`}><td>{report.reportId}</td><td>{report.customer}<small>{report.branch || 'Sucursal no informada'} · {report.address || 'Dirección no informada'}</small></td><td>{report.technician || 'Sin técnico'}</td><td>{report.status}<small>{report.requestedService}</small></td></tr>)}</tbody></table></div></details>
-      {undated.length > 0 && <details className="tracking-card"><summary>Registros sin fecha de marcación utilizable ({undated.length})</summary><ul>{undated.map(visit => <li key={visit.key}>I.S. {visit.reportId} · {visit.customer} · {visit.technician} · {visit.issues.join(', ') || 'Sin check-in ni check-out'}</li>)}</ul></details>}
+      <Card as="details" className={cardClass}>
+        <summary className="cursor-pointer text-sm font-bold text-navy focus-visible:outline-sky dark:text-white">Informes sin marcaciones vinculadas ({unmatchedReports.length})</summary>
+        {unmatchedReports.length ? <Table className="mt-0 min-w-[42rem] table-fixed" wrapperClassName="mt-4 min-w-0 overflow-auto">
+          <TableHeader><TableRow><TableHead className="w-24">I.S.</TableHead><TableHead>Cliente / sede</TableHead><TableHead>Técnico</TableHead><TableHead>Estado / servicio</TableHead></TableRow></TableHeader>
+          <TableBody>{unmatchedReports.map(report => <TableRow key={`${report.sourceSheet}:${report.sourceRow}`}><TableCell>{report.reportId}</TableCell><TableCell>{report.customer}<Muted className="mt-1">{report.branch || 'Sucursal no informada'} · {report.address || 'Dirección no informada'}</Muted></TableCell><TableCell>{report.technician || 'Sin técnico'}</TableCell><TableCell>{report.status}<Muted className="mt-1">{report.requestedService}</Muted></TableCell></TableRow>)}</TableBody>
+        </Table> : <Muted className="mt-4">No hay informes sin marcaciones vinculadas en esta carga.</Muted>}
+      </Card>
+      {undated.length > 0 && <Card as="details" className={cardClass}><summary className="cursor-pointer text-sm font-bold text-navy focus-visible:outline-sky dark:text-white">Registros sin fecha de marcación utilizable ({undated.length})</summary><ul className="mt-4 grid gap-2 pl-5 text-sm text-ink-2 dark:text-[#d6e2f5] list-disc">{undated.map(visit => <li key={visit.key}>I.S. {visit.reportId} · {visit.customer} · {visit.technician} · {visit.issues.join(', ') || 'Sin check-in ni check-out'}</li>)}</ul></Card>}
     </>}
   </div>;
 }

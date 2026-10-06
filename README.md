@@ -109,6 +109,12 @@ Una nueva carga reemplaza el análisis vigente, conserva las referencias y manti
 las importaciones anteriores en el archivo histórico. “Limpiar cargas” retira el
 análisis y archiva los originales; no borra las referencias manuales.
 
+La pantalla usa los componentes compartidos del rediseño en ambos temas. Separa la carga,
+la cobertura de fuentes, los filtros, el mapa y las evidencias; los nombres completos de
+archivos, clientes y ubicaciones se ajustan sin invadir otras tarjetas. El mapa y el editor
+comparten columnas cuando caben y se apilan en anchos menores. Las tablas desplazan dentro
+de su tarjeta; las advertencias y la confirmación independiente de sedes permanecen visibles.
+
 El cruce usa **Nº I.S., técnico y cliente**; un informe sin técnico sólo se vincula
 si existe una coincidencia única del I.S. y cliente. Las filas ambiguas o sin
 coincidencia permanecen visibles, sin atribuirles un detalle de otro informe.

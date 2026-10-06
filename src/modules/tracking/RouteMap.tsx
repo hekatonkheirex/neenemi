@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { isSuspectSegment, segmentKey } from './analysis';
 import type { Coordinate, RouteEvent, SiteReference } from './types';
+import { Minus, Plus, ScanLine } from 'lucide-react';
+import { Button } from '../../core/ui/button';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
 
 const WIDTH = 900;
 const HEIGHT = 500;
@@ -68,15 +71,14 @@ export default function RouteMap({ events, roadSegments = {}, suspectVisitKeys =
   }
   if (segment.length > 1) paths.push(segment.join(' '));
   const mapCenter = unproject(center.x, center.y);
-  return <section className="tracking-map-panel" aria-label="Mapa de recorrido diario">
-    <div className="tracking-map-toolbar">
-      <strong>Secuencia de marcaciones</strong>
-      <div className="tracking-button-row">
-        <button type="button" className="secondary-button" aria-label="Alejar mapa" onClick={() => setZoom(z => Math.max(2, z - 1))}>−</button>
-        <button type="button" className="secondary-button" aria-label="Acercar mapa" onClick={() => setZoom(z => Math.min(18, z + 1))}>+</button>
-        <button type="button" className="secondary-button" onClick={fit}>Ajustar recorrido</button>
+  return <Card className="min-w-0 grid-cols-1" aria-label="Mapa de recorrido diario">
+    <CardHeader eyebrow="RECORRIDO DIARIO" title="Secuencia de marcaciones" aside={
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
+        <Button variant="outline" size="sm" className="size-8 px-0" aria-label="Alejar mapa" onClick={() => setZoom(z => Math.max(2, z - 1))}><Minus aria-hidden="true" /></Button>
+        <Button variant="outline" size="sm" className="size-8 px-0" aria-label="Acercar mapa" onClick={() => setZoom(z => Math.min(18, z + 1))}><Plus aria-hidden="true" /></Button>
+        <Button variant="outline" size="sm" onClick={fit}><ScanLine aria-hidden="true" />Ajustar recorrido</Button>
       </div>
-    </div>
+    } />
     <svg className={`tracking-map ${editing ? 'is-editing' : ''}`} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="none" role="application" aria-label="Mapa geográfico. Flechas para desplazar, más o menos para zoom. Selecciona una sede con clic en modo edición o usa el centro del mapa." tabIndex={0}
       onKeyDown={event => {
         const steps: Record<string, [number, number]> = { ArrowLeft: [-100, 0], ArrowRight: [100, 0], ArrowUp: [0, -100], ArrowDown: [0, 100] };
@@ -127,10 +129,13 @@ export default function RouteMap({ events, roadSegments = {}, suspectVisitKeys =
       })}
       {candidate && (() => { const p = project(candidate); return <g transform={`translate(${p.x * world - left} ${p.y * world - top})`} className="tracking-candidate-pin"><circle r="12" /><path d="M-18 0 H18 M0 -18 V18" /><title>Ubicación propuesta, todavía no confirmada</title></g>; })()}
     </svg>
-    <div className="tracking-map-footer"><span>Azul: entrada · Naranja: salida · Rombo: sede confirmada (100 m). Línea negra continua: posible ruta tomada por carretera entre marcaciones consecutivas (estimada, no el GPS real). Punteada: línea recta (menos de 100 m o sin ruta). Roja discontinua: entre marcaciones de servicios con GPS dudoso (no confiable).</span><span>Centro: {mapCenter.latitude.toFixed(6)}, {mapCenter.longitude.toFixed(6)}</span></div>
-    {editing && <button type="button" className="secondary-button" onClick={() => onPick(mapCenter)}>Usar centro del mapa como sede propuesta</button>}
-    <small>Fondo de calles activo automáticamente · requiere internet; envía la zona visible, no los archivos, nombres ni direcciones. © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a></small>
-    {tilesFailed && <p role="status">No se pudo cargar parte del mapa base. Los puntos y cálculos locales siguen disponibles.</p>}
-    {!points.length && <p role="status">No hay coordenadas de marcaciones en este día. Puedes ubicar la sede con el mapa o introducir sus coordenadas verificadas.</p>}
-  </section>;
+    <div className="grid min-w-0 grid-cols-1 gap-2 [overflow-wrap:anywhere]">
+      <Muted>Azul: entrada · Naranja: salida · Rombo: sede confirmada (100 m). Línea continua: posible ruta tomada por carretera entre marcaciones consecutivas (estimada, no el GPS real). Punteada: línea recta (menos de 100 m o sin ruta). Roja discontinua: entre marcaciones de servicios con GPS dudoso (no confiable).</Muted>
+      <Muted className="tabular-nums">Centro: {mapCenter.latitude.toFixed(6)}, {mapCenter.longitude.toFixed(6)}</Muted>
+    </div>
+    {editing && <Button variant="outline" className="h-auto min-h-10 whitespace-normal" onClick={() => onPick(mapCenter)}>Usar centro del mapa como sede propuesta</Button>}
+    <Muted>Fondo de calles activo automáticamente · requiere internet; envía la zona visible, no los archivos, nombres ni direcciones. © <a className="text-[#00698f] underline dark:text-sky" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a></Muted>
+    {tilesFailed && <Muted role="status">No se pudo cargar parte del mapa base. Los puntos y cálculos locales siguen disponibles.</Muted>}
+    {!points.length && <Muted role="status">No hay coordenadas de marcaciones en este día. Puedes ubicar la sede con el mapa o introducir sus coordenadas verificadas.</Muted>}
+  </Card>;
 }

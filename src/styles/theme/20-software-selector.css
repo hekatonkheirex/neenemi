@@ -1,10 +1,3 @@
-/* El aviso de error de Tracking es rosado en los dos temas; su botón de reintento no debe heredar el fondo oscuro. */
-html[data-theme] .tracking-error .secondary-button {
-  border-color: #e1b4ae;
-  color: var(--ds-navy);
-  background: #ffffff;
-}
-
 /* Contraste de elementos que no son texto (WCAG 1.4.11 y 2.4.7). Medido: los bordes de inputs/selects/textareas daban 1,3-1,7:1 y varios
    anillos de foco 1,3-2,2:1 (o no había ninguno). Los valores cumplen 3:1 sobre los fondos de ambos temas. */
 html[data-theme='light'] :is(input:not([type='checkbox']):not([type='radio']):not([type='range']), select, textarea) {

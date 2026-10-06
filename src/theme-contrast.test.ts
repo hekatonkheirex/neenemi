@@ -81,11 +81,6 @@ describe('contraste del tema claro', () => {
     });
   });
 
-  it('el reintento de Tracking conserva contraste en ambos temas', () => {
-    expect(theme).toMatch(/html\[data-theme\] \.tracking-error \.secondary-button\s*{[^}]*background:\s*#ffffff/);
-    expect(ratio('#1a2c4c', '#ffffff')).toBeGreaterThanOrEqual(4.5);
-  });
-
   describe('elementos que no son texto (WCAG 1.4.11 y 2.4.7): >= 3:1', () => {
     it.each([
       ['borde de campo, tema claro, sobre blanco', '#73869f', '#ffffff'],

@@ -13,35 +13,8 @@ html[data-theme='dark'] .tracking-module {
   --tracking-ink: #edf3ff;
   --tracking-wash: #1a2c4c;
 }
-/* One vertical rhythm: every direct child is separated by the same gap, so global landing-page margins (summary-grid 4rem/5.2rem, h1 1.35rem) cannot stack with card margins. */
-.tracking-module { display: flex; flex-direction: column; gap: 1.25rem; }
+.tracking-module { display: grid; gap: 1.5rem; min-width: 0; }
 .tracking-module > * { margin-top: 0; margin-bottom: 0; }
-.tracking-module > .summary-grid { margin: 0; }
-.tracking-module .summary-card { min-height: 6rem; gap: .75rem; }
-.tracking-module .summary-value { font-size: 2rem; }
-.tracking-map-layout { margin: 0; }
-.tracking-module .tracking-error, .tracking-module .tracking-notice { margin: 0; }
-.tracking-card, .tracking-map-panel { padding: 1.25rem; margin-bottom: 0; border: 1px solid var(--tracking-border); border-radius: .75rem; background: var(--tracking-surface); min-width: 0; }
-.tracking-card h2 { margin: 0 0 .75rem; font-size: 1.15rem; }
-.tracking-card p, .tracking-card small, .tracking-map-footer, .tracking-map-panel small { color: var(--tracking-muted); line-height: 1.5; }
-.tracking-card p { margin: .5rem 0 1rem; }
-.tracking-card small { display: block; font-size: .8rem; }
-.tracking-card label { display: flex; flex-direction: column; gap: .5rem; font-size: .85rem; font-weight: 600; }
-.tracking-module input:not([type='checkbox']):not([type='file']), .tracking-module select { background: var(--tracking-surface); color: var(--tracking-ink); border: 1px solid var(--tracking-border); border-radius: .5rem; padding: .65rem; width: 100%; min-width: 0; font: inherit; }
-.tracking-file { display: flex; flex-direction: column; gap: .5rem; font-size: .85rem; font-weight: 600; min-width: 0; }
-.tracking-card label.upload-button { flex-direction: row; align-self: flex-start; max-width: 100%; font-size: .78rem; font-weight: 800; }
-.tracking-file .upload-button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tracking-import-grid { display: grid; grid-template-columns: 1fr 1fr auto; align-items: start; gap: 1rem; margin: 0 0 .75rem; }
-.tracking-filters { display: flex; gap: 1rem; flex-wrap: wrap; align-items: end; }
-.tracking-filters > label:first-child { min-width: 16rem; flex: 1; }
-.tracking-filters > label:nth-child(2) { min-width: 10rem; }
-.tracking-checkbox, .tracking-card .tracking-checkbox { display: flex; flex-direction: row; align-items: center; gap: .5rem; font-weight: 400; font-size: .85rem; line-height: 1.5; }
-.tracking-checkbox input { flex-shrink: 0; }
-.tracking-map-layout { display: grid; grid-template-columns: minmax(0, 1fr) 19rem; gap: 1rem; align-items: start; }
-.tracking-map-panel { padding: 1rem; }
-.tracking-map-toolbar, .tracking-button-row { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
-.tracking-map-toolbar { justify-content: space-between; margin-bottom: .75rem; }
-.tracking-map-toolbar button { padding: .4rem .75rem; }
 .tracking-map { display: block; width: 100%; border: 1px solid var(--tracking-border); border-radius: .5rem; touch-action: none; cursor: grab; }
 .tracking-map.is-editing { cursor: crosshair; }
 .tracking-map-background { fill: var(--tracking-wash); }
@@ -61,56 +34,12 @@ html[data-theme='dark'] .tracking-route-line { stroke: #00a3e0; }
 .tracking-site-pin { fill: #176b45; stroke: #fff; stroke-width: 2; }
 .tracking-candidate-pin circle { fill: #fff; stroke: #b42318; stroke-width: 3; }
 .tracking-candidate-pin path { stroke: #b42318; stroke-width: 2; }
-.tracking-map-footer { display: flex; justify-content: space-between; gap: .5rem; flex-wrap: wrap; font-size: .75rem; margin: .75rem 0; }
-.tracking-site-editor { display: flex; flex-direction: column; gap: .75rem; }
-.tracking-site-editor > p { margin: 0; }
-.tracking-geocoding-results { display: flex; flex-direction: column; gap: .5rem; grid-column: 1 / -1; }
-.tracking-geocoding-results button { text-align: left; overflow-wrap: anywhere; }
-.tracking-table-scroll { overflow-x: auto; }
-.tracking-module table { width: 100%; border-collapse: collapse; font-size: .85rem; }
-.tracking-module th, .tracking-module td { text-align: left; vertical-align: top; padding: .75rem; border-bottom: 1px solid var(--tracking-border); }
-.tracking-module th { color: var(--tracking-muted); font-size: .75rem; }
-.tracking-module td > strong, .tracking-module td > span { display: block; margin: .35rem 0; }
-.tracking-module td { min-width: 10rem; }
-.tracking-module td:first-child { min-width: 12rem; }
-.tracking-selected-row { background: var(--tracking-wash); }
-.tracking-event-evidence { display: flex; flex-direction: column; gap: .4rem; white-space: nowrap; }
-.tracking-event-evidence strong { font-variant-numeric: tabular-nums; font-size: .8rem; }
-.tracking-status { font-size: .75rem; padding: .25rem .5rem; border: 1px solid var(--tracking-border); border-radius: .35rem; width: fit-content; }
-.tracking-status.inside { color: #176b45; background: #edf8f0; border-color: #b9d9c7; }
-.tracking-status.outside { color: #b42318; background: #fff2f0; border-color: #ebc1b9; }
-.tracking-status.unconfirmed, .tracking-status.missing-gps, .tracking-status.missing-event { color: var(--tracking-muted); }
 .tracking-module .tracking-issue { color: var(--ds-danger); }
-.tracking-report-button { border: 0; background: none; color: var(--tracking-ink); padding: 0; text-decoration: underline; font-weight: 700; }
-.tracking-error, .tracking-notice { padding: 1rem; border-radius: .5rem; border: 1px solid var(--tracking-border); margin: 0 0 1rem; }
-.tracking-error { color: #b42318; background: #fff2f0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-.tracking-notice { color: var(--tracking-ink); background: var(--tracking-wash); }
-.tracking-source-summary strong { overflow-wrap: anywhere; }
-.tracking-source-summary ul { padding-left: 1.25rem; font-size: .85rem; color: var(--tracking-muted); line-height: 1.6; }
-.tracking-module summary { cursor: pointer; font-weight: 600; }
-.tracking-timeline { padding-left: 1.5rem; }
-.tracking-timeline button { text-align: left; background: none; color: var(--tracking-ink); border: 0; padding: .5rem 0; font-size: .85rem; }
-.tracking-module button:disabled { cursor: not-allowed; opacity: .55; }
 .tracking-module :focus-visible { outline: 3px solid var(--ds-sky); outline-offset: 3px; }
-@media (max-width: 1200px) { .tracking-map-layout { grid-template-columns: 1fr; } .tracking-site-editor { display: grid; grid-template-columns: 1fr 1fr; } .tracking-site-editor h2, .tracking-site-editor > p { grid-column: 1 / -1; } }
-
-.tracking-chart-legend { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; list-style: none; padding: 0; font-size: .85rem; }
-.tracking-chart-legend i { display: inline-block; width: .8rem; height: .8rem; border-radius: 2px; margin-right: .4rem; }
-.tracking-chart { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .25rem; }
-.tracking-chart-day { display: flex; flex-direction: column; align-items: center; min-width: 3.5rem; }
-.tracking-chart-bars { display: flex; align-items: flex-end; gap: 2px; height: 10rem; width: 100%; border-bottom: 1px solid var(--tracking-border); }
-.tracking-chart-bars span { flex: 1; min-height: 2px; border-radius: 2px 2px 0 0; }
 .bar-effective { background: #2e7d32; }
 .bar-total { background: #1d6fd1; }
 .bar-idle { background: #d32f2f; }
-.tracking-chart-day { min-width: 6rem; text-align: center; } .tracking-daily-summary h3 { margin-top: 1.25rem; }
-
-.tracking-bar-track { height: .75rem; margin-top: .5rem; background: var(--tracking-border); border-radius: 3px; overflow: hidden; }
-.tracking-bar-track span { display: block; height: 100%; }
-
 .tracking-storage { display: flex; gap: 2px; height: 1.1rem; margin-top: 1rem; border-radius: .6rem; overflow: hidden; background: var(--tracking-border); }
 .tracking-storage span { min-width: 3px; }
 .tracking-storage .storage-free { background: var(--tracking-border); }
 .tracking-dot { display: inline-block; width: .7rem; height: .7rem; border-radius: 50%; margin-right: .45rem; }
-.tracking-source-summary ul { margin: .5rem 0 0; }
-.tracking-source-summary li { margin: 0; line-height: 1.7; }
