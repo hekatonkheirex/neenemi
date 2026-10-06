@@ -14,14 +14,6 @@ html[data-theme='light'] .error-message {
   color: var(--ds-danger);
 }
 
-html[data-theme='light'] .price-cell,
-html[data-theme='light'] .import-summary strong,
-html[data-theme='light'] .analytics-equipment-value strong {
+html[data-theme='light'] .import-summary strong {
   color: var(--ds-success);
-}
-
-html[data-theme='light'] .analytics-equipment-row {
-  color: var(--ds-ink);
-  background: transparent;
-  box-shadow: none;
 }

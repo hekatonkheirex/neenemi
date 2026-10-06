@@ -37,9 +37,3 @@
   background: linear-gradient(135deg, rgba(255, 107, 0, 0.9), rgba(222, 79, 0, 0.78));
   box-shadow: 0 0.35rem 0.9rem rgba(255, 107, 0, 0.18);
 }
-
-.consumables-tab-content {
-  display: grid;
-  min-width: 0;
-  gap: 1.25rem;
-}

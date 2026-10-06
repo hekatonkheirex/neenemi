@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { cn } from '../../core/cn';
+import { Muted } from '../../core/ui/card';
 
 export type LegacyChartSeries = {
   label: string;
@@ -11,6 +13,12 @@ export type LegacyChartSegment = {
   color: string;
   value: number;
 };
+
+// Estilos de los gráficos: utilidades Tailwind sobre los elementos SVG. data-role queda como gancho para las pruebas de geometría.
+const svgClass = 'block h-auto min-h-[220px] w-full overflow-visible text-ink-2 dark:text-[#9fb2d1]';
+const axisLabelClass = 'fill-current text-[11px] font-semibold';
+const legendClass = 'flex min-w-0 flex-wrap gap-x-4 gap-y-2 text-[0.7rem] text-ink-2 dark:text-[#9fb2d1]';
+const legendItemClass = 'inline-flex min-w-0 items-center gap-1.5';
 
 const chartNumber = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const CHART_WIDTH = 760;
@@ -48,7 +56,7 @@ export function LegacyLineChart({
 
   return (
     <LegacyChartFigure ariaLabel={ariaLabel} series={series} valueFormatter={valueFormatter}>
-      <svg className="legacy-chart-svg" viewBox={`0 0 ${CHART_WIDTH} ${height}`} role="img" aria-label={ariaLabel}>
+      <svg className={svgClass} viewBox={`0 0 ${CHART_WIDTH} ${height}`} role="img" aria-label={ariaLabel}>
         <ChartGrid margin={margin} plotHeight={plotHeight} maximum={maximum} valueFormatter={valueFormatter} />
         {series.map((item) => {
           const points = labels.map((_, index) => `${xAt(index)},${yAt(item.values[index] ?? 0)}`).join(' ');
@@ -89,7 +97,7 @@ export function LegacyStackedBarChart({
 
   return (
     <LegacyChartFigure ariaLabel={ariaLabel} series={series} valueFormatter={valueFormatter}>
-      <svg className="legacy-chart-svg" viewBox={`0 0 ${CHART_WIDTH} ${height}`} role="img" aria-label={ariaLabel}>
+      <svg className={svgClass} viewBox={`0 0 ${CHART_WIDTH} ${height}`} role="img" aria-label={ariaLabel}>
         <ChartGrid margin={margin} plotHeight={plotHeight} maximum={maximum} valueFormatter={valueFormatter} />
         {labels.map((label, index) => {
           let accumulated = 0;
@@ -104,7 +112,7 @@ export function LegacyStackedBarChart({
                 <title>{`${label} · ${item.label}: ${valueFormatter(value)}`}</title>
               </rect> : null;
             })}
-            <text className="legacy-chart-axis-label" x={x + barWidth / 2} y={height - 28} textAnchor="middle">{truncate(label, 16)}</text>
+            <text className={axisLabelClass} data-role="axis-label" x={x + barWidth / 2} y={height - 28} textAnchor="middle">{truncate(label, 16)}</text>
           </g>;
         })}
       </svg>
@@ -138,13 +146,13 @@ export function LegacyHorizontalStackedBars({
 
   return (
     <LegacyChartFigure ariaLabel={ariaLabel} series={series} valueFormatter={valueFormatter}>
-      <svg className="legacy-chart-svg legacy-chart-svg-tall" viewBox={`0 0 ${CHART_WIDTH} ${height}`} role="img" aria-label={ariaLabel}>
+      <svg className={cn(svgClass, 'min-h-[260px]')} viewBox={`0 0 ${CHART_WIDTH} ${height}`} role="img" aria-label={ariaLabel}>
         {labels.map((label, index) => {
           const y = margin.top + index * rowHeight;
           let accumulated = 0;
           return <g key={label}>
-            <text className="legacy-chart-axis-label legacy-chart-axis-label-left" x={margin.left - 12} y={y + 16} textAnchor="end">{truncate(label, 25)}</text>
-            <rect className="legacy-chart-track" x={margin.left} y={y + 5} width={plotWidth} height="18" rx="5" />
+            <text className="fill-current text-[10px] font-semibold" data-role="axis-label" x={margin.left - 12} y={y + 16} textAnchor="end">{truncate(label, 25)}</text>
+            <rect className="fill-navy/10 dark:fill-white/10" x={margin.left} y={y + 5} width={plotWidth} height="18" rx="5" />
             {series.map((item) => {
               const value = item.values[index] ?? 0;
               const x = margin.left + (accumulated / maximum) * barWidth;
@@ -154,7 +162,7 @@ export function LegacyHorizontalStackedBars({
                 <title>{`${label} · ${item.label}: ${valueFormatter(value)}`}</title>
               </rect> : null;
             })}
-            <text className="legacy-chart-axis-label legacy-chart-axis-label-value" x={margin.left + (totals[index] / maximum) * barWidth + 8} y={y + 18}>{valueFormatter(totals[index])}</text>
+            <text className="fill-current text-[10px] font-bold" data-role="axis-label-value" x={margin.left + (totals[index] / maximum) * barWidth + 8} y={y + 18}>{valueFormatter(totals[index])}</text>
           </g>;
         })}
       </svg>
@@ -182,9 +190,9 @@ export function LegacyDonutChart({
   let offset = 0;
 
   return (
-    <div className="legacy-donut-layout">
-      <svg className="legacy-donut-svg" viewBox="0 0 240 240" role="img" aria-label={ariaLabel}>
-        <circle className="legacy-donut-track" cx="120" cy="120" r={radius} fill="none" strokeWidth="28" />
+    <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,11rem),1fr))] items-center gap-4">
+      <svg className="mx-auto block h-auto w-full max-w-60" viewBox="0 0 240 240" role="img" aria-label={ariaLabel}>
+        <circle className="stroke-navy/10 dark:stroke-white/10" cx="120" cy="120" r={radius} fill="none" strokeWidth="28" />
         {visibleSegments.map((segment) => {
           const length = (segment.value / total) * circumference;
           const dashOffset = -offset;
@@ -193,21 +201,21 @@ export function LegacyDonutChart({
             <title>{`${segment.label}: ${valueFormatter(segment.value)}`}</title>
           </circle>;
         })}
-        <text className="legacy-donut-total" x="120" y="116" textAnchor="middle" style={{ fontSize: donutTotalFontSize(valueFormatter(total)) }}>{valueFormatter(total)}</text>
-        <text className="legacy-donut-label" x="120" y="138" textAnchor="middle">{centerLabel ?? 'total'}</text>
+        <text className="fill-navy font-extrabold dark:fill-white" x="120" y="116" textAnchor="middle" style={{ fontSize: donutTotalFontSize(valueFormatter(total)) }}>{valueFormatter(total)}</text>
+        <text className="fill-ink-2 text-[10px] font-bold dark:fill-[#9fb2d1]" x="120" y="138" textAnchor="middle">{centerLabel ?? 'total'}</text>
       </svg>
-      <div className="legacy-chart-legend">
-        {visibleSegments.map((segment) => <div key={segment.label} className="legacy-chart-legend-item"><i style={{ backgroundColor: segment.color }} /><span>{segment.label}</span><strong>{valueFormatter(segment.value)}</strong></div>)}
+      <div className={legendClass}>
+        {visibleSegments.map((segment) => <div key={segment.label} className={legendItemClass}><i className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: segment.color }} /><span className="min-w-0 truncate">{segment.label}</span><strong className="text-[0.68rem] font-bold text-navy dark:text-[#d6e2f5]">{valueFormatter(segment.value)}</strong></div>)}
       </div>
     </div>
   );
 }
 
 function LegacyChartFigure({ children, ariaLabel, series, valueFormatter }: { children: ReactNode; ariaLabel: string; series: readonly LegacyChartSeries[]; valueFormatter: (value: number) => string }) {
-  return <figure className="legacy-chart-figure">
+  return <figure className="m-0 grid min-w-0 gap-3">
     {children}
-    <figcaption className="legacy-chart-legend" aria-label={`Leyenda de ${ariaLabel}`}>
-      {series.map((item) => <span className="legacy-chart-legend-item" key={item.label}><i style={{ backgroundColor: item.color }} /><span>{item.label}</span><strong>{valueFormatter(Math.max(...item.values, 0))} máx.</strong></span>)}
+    <figcaption className={legendClass} aria-label={`Leyenda de ${ariaLabel}`}>
+      {series.map((item) => <span className={legendItemClass} key={item.label}><i className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: item.color }} /><span className="min-w-0 truncate">{item.label}</span><strong className="text-[0.68rem] font-bold text-navy dark:text-[#d6e2f5]">{valueFormatter(Math.max(...item.values, 0))} máx.</strong></span>)}
     </figcaption>
   </figure>;
 }
@@ -217,15 +225,17 @@ function ChartGrid({ margin, plotHeight, maximum, valueFormatter }: { margin: { 
     {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
       const y = margin.top + plotHeight - ratio * plotHeight;
       return <g key={ratio}>
-        <line className="legacy-chart-gridline" x1={margin.left} x2={CHART_WIDTH - margin.right} y1={y} y2={y} />
-        <text className="legacy-chart-axis-label" x={margin.left - 10} y={y + 4} textAnchor="end">{valueFormatter(maximum * ratio)}</text>
+        <line className="stroke-current opacity-20 [stroke-dasharray:3_5]" x1={margin.left} x2={CHART_WIDTH - margin.right} y1={y} y2={y} />
+        <text className={axisLabelClass} data-role="axis-label" x={margin.left - 10} y={y + 4} textAnchor="end">{valueFormatter(maximum * ratio)}</text>
       </g>;
     })}
   </>;
 }
 
 function ChartXAxis({ labels, xAt, height, margin }: { labels: readonly string[]; xAt: (index: number) => number; height: number; margin: { bottom: number } }) {
-  return <>{labels.map((label, index) => <text className="legacy-chart-axis-label" key={`${label}-${index}`} x={xAt(index)} y={height - margin.bottom + 22} textAnchor="middle">{truncate(label, 12)}</text>)}</>;
+  // Con muchos puntos las marcas se pisaban: se muestra una de cada `step` (como mucho 12 marcas).
+  const step = Math.max(1, Math.ceil(labels.length / 12));
+  return <>{labels.map((label, index) => index % step === 0 ? <text className={axisLabelClass} data-role="axis-label" key={`${label}-${index}`} x={xAt(index)} y={height - margin.bottom + 22} textAnchor="middle">{truncate(label, 12)}</text> : null)}</>;
 }
 
 /** El total va dentro del anillo (unos 120 px libres): achica la letra en vez de dejarlo pisar el trazo. */
@@ -234,7 +244,7 @@ export function donutTotalFontSize(text: string): number {
 }
 
 function LegacyChartEmpty() {
-  return <p className="legacy-chart-empty">No hay datos suficientes para construir este gráfico.</p>;
+  return <Muted className="grid min-h-48 place-items-center text-center">No hay datos suficientes para construir este gráfico.</Muted>;
 }
 
 function formatChartNumber(value: number): string {

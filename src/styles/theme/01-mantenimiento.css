@@ -278,8 +278,6 @@ html[data-theme='light'] .app-shell :where(
   box-shadow: 0 0.65rem 1.6rem var(--ds-shadow);
 }
 
-html[data-theme='light'] .summary-card,
-html[data-theme='light'] .detail-card,
-html[data-theme='light'] .sales-card {
+html[data-theme='light'] .detail-card {
   background: var(--ds-surface);
 }

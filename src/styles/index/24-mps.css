@@ -8,12 +8,6 @@
     min-height: auto;
   }
 
-  .catalog-table-wrap {
-    overflow: visible;
-    border-color: var(--ds-border);
-    background: #ffffff;
-  }
-
 }
 
 .mps-print-report {

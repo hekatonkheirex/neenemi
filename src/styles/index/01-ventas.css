@@ -236,10 +236,6 @@ button {
   max-width: 740px;
 }
 
-.hero-block + .summary-grid {
-  margin-top: 2rem;
-}
-
 .eyebrow {
   margin: 0 0 1rem;
   color: #79aaff;
@@ -278,50 +274,7 @@ h2 {
   line-height: 1.65;
 }
 
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin: 1.25rem 0;
-}
-
-.summary-card {
-  display: flex;
-  min-height: 7.5rem;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 1.2rem 1.25rem;
-  border: 1px solid var(--dk-line);
-  border-radius: var(--ds-radius-2xl);
-  background: rgba(18, 31, 54, 0.58);
-}
-
-.summary-card.accent {
-  border-color: rgba(93, 143, 255, 0.35);
-  background: linear-gradient(135deg, rgba(44, 84, 171, 0.43), rgba(19, 33, 59, 0.62));
-}
-
-.summary-value {
-  color: var(--dk-edf4ff);
-  font-size: 2.5rem;
-  font-weight: 800;
-  letter-spacing: -0.07em;
-}
-
 /* Las tarjetas de resumen en rejilla escalan el valor con su ancho: un monto completo en guaraníes (₲ 2.723.113.406) a 2.5rem se salía de la tarjeta. */
-.summary-grid > .summary-card {
-  container-type: inline-size;
-}
-
-.summary-grid > .summary-card .summary-value {
-  font-size: clamp(1.1rem, 12cqi, 2.5rem);
-  white-space: nowrap;
-}
-
-.summary-label {
-  color: #91a6c8;
-  font-size: 0.75rem;
-}
 
 .section-heading {
   display: flex;

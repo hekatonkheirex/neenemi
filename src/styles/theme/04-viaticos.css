@@ -1,11 +1,7 @@
 
 
-html[data-theme='light'] .summary-label,
 html[data-theme='light'] .detail-label,
 html[data-theme='light'] .module-section,
-html[data-theme='light'] .muted-note,
-html[data-theme='light'] .empty-cell,
-html[data-theme='light'] .analysis-meta,
 html[data-theme='light'] .overview-import-meta {
   color: var(--ds-muted);
 }

@@ -14,7 +14,7 @@ describe('LegacyHorizontalStackedBars', () => {
         valueFormatter={fmt}
       />,
     );
-    const xs = [...html.matchAll(/legacy-chart-axis-label-value" x="([\d.]+)"/g)].map((m) => Number(m[1]));
+    const xs = [...html.matchAll(/data-role="axis-label-value" x="([\d.]+)"/g)].map((m) => Number(m[1]));
     expect(xs).toHaveLength(2);
     const widest = fmt(33_379_358).length * 6.8;
     expect(Math.max(...xs) + widest).toBeLessThanOrEqual(760);
@@ -27,7 +27,7 @@ describe('LegacyHorizontalStackedBars', () => {
       <LegacyStackedBarChart key="s" ariaLabel="t" labels={['a', 'b']} series={series} valueFormatter={fmt} />,
     ]) {
       const html = renderToStaticMarkup(chart);
-      const xs = [...html.matchAll(/legacy-chart-axis-label" x="([\d.]+)" y="[\d.]+" text-anchor="end"/g)].map((m) => Number(m[1]));
+      const xs = [...html.matchAll(/data-role="axis-label" x="([\d.]+)" y="[\d.]+" text-anchor="end"/g)].map((m) => Number(m[1]));
       expect(xs.length).toBeGreaterThan(0);
       expect(Math.min(...xs) - fmt(2_723_113_406).length * 6.6).toBeGreaterThanOrEqual(0);
     }
@@ -45,7 +45,15 @@ describe('donutTotalFontSize', () => {
   it('Línea: la última marca del eje X (2026-07) cabe en el lienzo', () => {
     const labels = ['2026-01', '2026-02', '2026-07'];
     const html = renderToStaticMarkup(<LegacyLineChart ariaLabel="t" labels={labels} series={[{ label: 's', color: '#000', values: [1, 2, 3] }]} />);
-    const x = Number([...html.matchAll(/legacy-chart-axis-label" x="([\d.]+)" y="[\d.]+" text-anchor="middle">2026-07/g)][0][1]);
+    const x = Number([...html.matchAll(/data-role="axis-label" x="([\d.]+)" y="[\d.]+" text-anchor="middle">2026-07/g)][0][1]);
     expect(x + (7 * 6.6) / 2).toBeLessThanOrEqual(760);
+  });
+
+  it('Línea: con muchos meses se muestran como mucho 12 marcas del eje X para que no se pisen', () => {
+    const labels = Array.from({ length: 24 }, (_, index) => `2025-${String(index + 1).padStart(2, '0')}`);
+    const html = renderToStaticMarkup(<LegacyLineChart ariaLabel="t" labels={labels} series={[{ label: 's', color: '#000', values: labels.map((_, index) => index) }]} />);
+    const xLabels = [...html.matchAll(/data-role="axis-label" x="[\d.]+" y="[\d.]+" text-anchor="middle"/g)];
+    expect(xLabels.length).toBeLessThanOrEqual(12);
+    expect(xLabels.length).toBeGreaterThan(0);
   });
 });

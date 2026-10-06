@@ -25,7 +25,6 @@ html[data-theme='dark'] .topbar {
   backdrop-filter: blur(0.5rem);
 }
 
-html[data-theme='dark'] .sales-card,
 html[data-theme='dark'] .module-card {
   border-color: var(--dk-line);
   background: var(--ds-panel);
@@ -45,7 +44,6 @@ html[data-theme='dark'] .eyebrow {
 }
 
 /* Formas compartidas (ambos temas). */
-.sales-card,
 .module-card {
   padding: 1.5rem;
   border-radius: var(--ds-radius-2xl);
@@ -53,7 +51,6 @@ html[data-theme='dark'] .eyebrow {
 }
 
 .nav-item,
-.search-field input,
 .anim-tabs {
   border-radius: var(--ds-radius-xl);
 }

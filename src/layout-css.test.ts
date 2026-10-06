@@ -34,28 +34,18 @@ describe('layout entre 960 y 1350 px', () => {
     expect(css).toMatch(/html body\[data-print-mode='mps-analysis'\] \.mps-print-meta-card\s*{\s*border:\s*0;\s*background:\s*transparent;\s*box-shadow:\s*none/);
   });
 
-  describe('min-width de las tablas de catálogo (medido a 960-1440 px)', () => {
-    const minWidth = (selector: string): string | undefined => {
-      const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      return css.match(new RegExp(`(?:^|\\n)${escaped}\\s*{[^}]*?min-width:\\s*([^;]+);`))?.[1];
-    };
+  describe('tablas de Consumibles (medido a 960-1440 px)', () => {
+    const panels = fs.readFileSync('src/modules/consumibles/LegacyAnalysisPanels.tsx', 'utf8');
+    const module = fs.readFileSync('src/modules/consumibles/ConsumiblesModule.tsx', 'utf8');
 
-    it('la base ya no fija 780 px: el contenido impone su piso', () => {
-      expect(minWidth('.catalog-table')).toBe('0');
+    it('las tablas desplazan dentro de su tarjeta y son contenedor para que el detalle ocupe el ancho visible', () => {
+      expect(panels).toContain('wrapperClassName="@container max-h-[40rem]"');
+      expect(panels).toContain('sticky left-0 box-border w-[100cqw]');
+      expect(module.match(/<Table className="min-w-\[/g)?.length).toBeGreaterThanOrEqual(5);
     });
 
-    it.each([
-      '.contract-analytics-table', '.dispatch-equipment-table', '.outputs-table', '.consumables-table',
-      '.legacy-ficha-table', '.legacy-equipment-table', 
-    ])('%s no fuerza scroll por encima de su contenido', (selector) => {
-      expect(minWidth(selector)).toBe('0');
-    });
-
-    it('conserva los mínimos donde bajarlos agranda las filas más de lo que ahorra scroll', () => {
-      // legacy-contract: 0 -> filas de 142 a 217 px; 900 deja 143 px. consumables-code: 0 -> 47 a 78 px.
-      expect(minWidth('.legacy-contract-table')).toBe('900px');
-      expect(minWidth('.consumables-code-table')).toBe('1120px');
-      expect(minWidth('.legacy-ranking-table')).toBe('1160px');
+    it('el CSS de las tablas heredadas ya no existe', () => {
+      expect(css).not.toMatch(/\.(catalog-table|consumables-table|outputs-table|legacy-[a-z-]*table|contract-analytics-table|dispatch-equipment-table)/);
     });
   });
 
@@ -72,8 +62,9 @@ describe('layout entre 960 y 1350 px', () => {
     expect(module).toContain('whitespace-nowrap font-semibold tabular-nums');
   });
 
-  it('Consumibles: la columna de fecha tiene ancho mínimo para que el origen no se parta en 2-3 líneas', () => {
-    expect(css).toMatch(/\.consumables-table td:first-child\s*{\s*min-width:\s*9rem/);
+  it('Consumibles: la columna de fecha no parte el origen en 2-3 líneas', () => {
+    const module = fs.readFileSync('src/modules/consumibles/ConsumiblesModule.tsx', 'utf8');
+    expect(module).toContain('<TableCell className="min-w-[9rem]">');
   });
 });
 

@@ -1,16 +1,3 @@
 
 
-html[data-theme='light'] .analytics-bar-track {
-  border-color: var(--ds-border);
-  background: var(--ds-surface-alt);
-}
-
-html[data-theme='light'] .analytics-bar-track span {
-  background: linear-gradient(90deg, var(--ds-sky), #6bc9e7);
-}
-
-html[data-theme='light'] .analytics-rank {
-  color: #007ea8;
-}
-
 

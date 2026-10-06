@@ -42,36 +42,3 @@
   color: var(--dk-8298ba);
   font-size: 0.72rem;
 }
-
-
-.search-field {
-  display: grid;
-  gap: 0.45rem;
-  color: var(--dk-7890b8);
-  font-size: 0.67rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.search-field input {
-  width: 100%;
-  padding: 0.7rem 0.8rem;
-  border: 1px solid var(--dk-line-strong);
-  border-radius: var(--ds-radius-xl);
-  outline: 0;
-  color: var(--dk-dce8fc);
-  background: rgba(18, 31, 54, 0.7);
-  font-size: 0.8rem;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.search-field input:focus {
-  border-color: rgba(116, 166, 255, 0.7);
-  box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.22);
-}
-
-.search-field input::placeholder {
-  color: #536887;
-}

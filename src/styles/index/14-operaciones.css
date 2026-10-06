@@ -1,16 +1,5 @@
 
 
-.analysis-meta {
-  margin: -0.45rem 0 1rem;
-  color: var(--dk-7187aa);
-  font-size: 0.72rem;
-}
-
-.analysis-meta strong {
-  color: #b5c9e8;
-  font-weight: 700;
-}
-
 .badge.neutral {
   color: #aabbd7;
   background: rgba(144, 174, 229, 0.14);

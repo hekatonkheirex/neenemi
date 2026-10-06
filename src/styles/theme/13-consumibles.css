@@ -1,71 +1,13 @@
 
 
-html[data-theme='light'] .legacy-detail-row > td,
-html[data-theme='light'] .legacy-timeline-event {
-  background: var(--ds-surface-alt);
-}
-
-html[data-theme='light'] .legacy-expandable-row:hover,
-html[data-theme='light'] .legacy-expandable-row.expanded {
-  background: var(--ds-blue-wash);
-}
-
-html[data-theme='light'] .legacy-detail-panel,
-html[data-theme='light'] .legacy-timeline,
 html[data-theme='light'] .legacy-trend {
   border-color: var(--ds-border);
   background: var(--ds-surface);
 }
 
-html[data-theme='light'] .legacy-timeline-event.service-event {
-  background: #fff4ed;
-}
-
-html[data-theme='light'] .legacy-detail-heading span,
-html[data-theme='light'] .legacy-timeline-event small,
 html[data-theme='light'] .legacy-trend-label span,
 html[data-theme='light'] .legacy-trend-legend {
   color: var(--ds-muted);
-}
-
-html[data-theme='light'] .legacy-analysis-note {
-  border-color: #a8d8e9;
-  color: var(--ds-muted);
-  background: var(--ds-blue-wash);
-}
-
-html[data-theme='light'] .legacy-analysis-note strong,
-html[data-theme='light'] .legacy-chart-inset-heading strong {
-  color: var(--ds-navy);
-}
-
-html[data-theme='light'] .legacy-analysis-note.warning {
-  border-color: #e7c68b;
-  background: #fff8e8;
-}
-
-html[data-theme='light'] .legacy-chart-inset {
-  border-color: var(--ds-border);
-  background: var(--ds-surface-alt);
-}
-
-html[data-theme='light'] .legacy-chart-svg {
-  color: var(--ds-muted);
-}
-
-html[data-theme='light'] .legacy-chart-legend-item strong,
-html[data-theme='light'] .legacy-donut-total {
-  color: var(--ds-navy);
-}
-
-html[data-theme='light'] .legacy-donut-track,
-html[data-theme='light'] .legacy-chart-track {
-  fill: var(--ds-surface);
-  stroke: var(--ds-border);
-}
-
-html[data-theme='light'] .legacy-donut-label {
-  fill: var(--ds-muted);
 }
 
 html[data-theme='light'] .source-data-remove-button {

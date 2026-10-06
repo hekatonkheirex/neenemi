@@ -64,19 +64,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
 
 @media (max-width: 1050px) {
 
-  .legacy-summary {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .legacy-analysis-toolbar,
-  .legacy-service-toolbar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .legacy-chart-row {
-    grid-template-columns: 1fr;
-  }
-
   .operations-layout {
     grid-template-columns: 1fr;
   }
@@ -88,23 +75,9 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
 
 @media (max-width: 720px) {
 
-  .legacy-summary,
-  .legacy-analysis-toolbar,
-  .legacy-service-toolbar {
-    grid-template-columns: 1fr;
-  }
-
-  .legacy-chart-row {
-    grid-template-columns: 1fr;
-  }
-
   .legacy-trend-row {
     grid-template-columns: 1fr;
     gap: 0.35rem;
-  }
-
-  .legacy-donut-layout {
-    grid-template-columns: 1fr;
   }
 
   .service-controls {
@@ -113,14 +86,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
 
   .form-actions {
     justify-content: stretch;
-  }
-
-  .consumables-analytics-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .output-summary-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .operations-heading-actions {
@@ -144,12 +109,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
 
   .uniflow-page {
     padding: 0;
-  }
-
-  .sales-card {
-    border-color: var(--ds-border);
-    color: var(--ds-ink);
-    background: #ffffff;
   }
 }
 

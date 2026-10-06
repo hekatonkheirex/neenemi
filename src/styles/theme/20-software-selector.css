@@ -36,6 +36,6 @@ html[data-theme] .app-shell .proforma-page :is(input, textarea)::placeholder {
 }
 
 /* Los ítems que llenan contenedores con overflow llevan el anillo hacia dentro. */
-html[data-theme] :is(.module-nav .nav-item, .anim-tabs button, .catalog-table th button):focus-visible {
+html[data-theme] :is(.module-nav .nav-item, .anim-tabs button):focus-visible {
   outline-offset: -3px;
 }

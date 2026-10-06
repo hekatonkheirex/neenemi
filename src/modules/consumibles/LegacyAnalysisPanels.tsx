@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import type { ConsumablesFamily, ConsumablesOutputRecord, ConsumablesRecord } from './types';
 import type { ServiceRecord } from '../servicios/types';
 import { usdToPyg } from './analysis';
@@ -7,16 +7,26 @@ import { LegacyDonutChart, LegacyHorizontalStackedBars, LegacyLineChart, LegacyS
 import { outputOperationalDetail } from './output-display';
 import { buildClientHistory, type ClientHistoryEntry } from './client-history';
 import { sourceOperationalValues } from '../../core/source-details';
+import { cn } from '../../core/cn';
+import { Badge } from '../../core/ui/badge';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Input } from '../../core/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
 
 type SortDirection = 'asc' | 'desc';
 type ClassificationFilter = '' | 'original' | 'compatible';
 type FamilyFilter = '' | 'T03' | 'T06' | 'GPR53';
 
+const cardClass = 'min-w-0 grid-cols-1 [overflow-wrap:anywhere]';
+const fieldClass = 'grid min-w-0 gap-1.5 text-xs font-semibold text-navy dark:text-white';
+const selectClass = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky disabled:opacity-50 dark:border-sky/30 dark:bg-navy/50 dark:text-white';
+const summaryGridClass = 'grid min-w-0 grid-cols-2 gap-3 min-[1180px]:grid-cols-3';
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const decimalFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1 });
 
 const FAMILY_COLORS = {
-  original: '#1a2c4c',
+  // Azul medio: el azul marino de la marca desaparecía sobre el panel oscuro.
+  original: '#4f7bc4',
   compatible: '#ff6b00',
   other: '#00a3e0',
   parts: '#7c3aed',
@@ -34,8 +44,8 @@ export function ConsumablesFamilyAnalysisPanel({ records, family }: { records: C
   const monthLabels = analysis.monthly.map((row) => row.month);
 
   return (
-    <div className="legacy-analysis">
-      <section className="summary-grid legacy-summary" aria-label={`Indicadores de ${family}`}>
+    <div className="@container grid min-w-0 gap-4">
+      <section className={summaryGridClass}>
         <SummaryMetric value={integerFormat.format(analysis.records)} label="total de despachos" />
         <SummaryMetric value={integerFormat.format(analysis.originalQuantity)} label="tóner original" />
         <SummaryMetric value={integerFormat.format(analysis.compatibleQuantity)} label="tóner compatible" />
@@ -44,29 +54,29 @@ export function ConsumablesFamilyAnalysisPanel({ records, family }: { records: C
         <SummaryMetric value={`${compatibleShare}%`} label="proporción compatible" />
       </section>
 
-      {analysis.records === 0 ? <p className="analytics-empty">No hay registros para la familia seleccionada.</p> : (
+      {analysis.records === 0 ? <Muted className="text-sm">No hay registros para la familia seleccionada.</Muted> : (
         <>
-          <section className="legacy-analysis-note" aria-label="Lectura de la familia">
+          <Note label="Lectura de la familia">
             <strong>{familyLabel(family)}:</strong>{' '}
             {analysis.compatibleQuantity > 0
               ? `el ${compatibleShare}% de los tóners son compatibles${savings !== null ? `, con un ahorro estimado del ${savings}% por unidad frente al original` : ''}. `
               : 'no hay tóners compatibles registrados. '}
             Precio promedio original: <strong>{formatPyg(averageOriginalCostUsd)}</strong>{' '}
             {analysis.compatibleQuantity > 0 ? `· compatible: ${formatPyg(averageCompatibleCostUsd)}.` : '.'}
-          </section>
+          </Note>
 
-          <div className="legacy-chart-row">
-            <section className="sales-card legacy-chart-card">
-              <div className="card-heading"><div><div className="eyebrow">COSTO UNITARIO</div><h2>Precio promedio de tóner</h2></div><span className="muted-note">PYG por unidad</span></div>
+          <div className="grid min-w-0 gap-4 @[44rem]:grid-cols-2">
+            <Card className={cardClass}>
+              <CardHeader eyebrow="COSTO UNITARIO" title="Precio promedio de tóner" aside={<Badge>PYG por unidad</Badge>} />
               <LegacyStackedBarChart
                 labels={['Original', 'Compatible']}
                 series={[{ label: 'Precio promedio', color: FAMILY_COLORS.original, values: [averageOriginalCostUsd ? usdToPyg(averageOriginalCostUsd) : 0, averageCompatibleCostUsd ? usdToPyg(averageCompatibleCostUsd) : 0] }]}
                 valueFormatter={formatPygValue}
                 ariaLabel={`Precio promedio de tóner original y compatible para ${familyLabel(family)}`}
               />
-            </section>
-            <section className="sales-card legacy-chart-card">
-              <div className="card-heading"><div><div className="eyebrow">VOLUMEN</div><h2>Volumen por tipo</h2></div><span className="muted-note">unidades registradas</span></div>
+            </Card>
+            <Card className={cardClass}>
+              <CardHeader eyebrow="VOLUMEN" title="Volumen por tipo" aside={<Badge>unidades registradas</Badge>} />
               <LegacyDonutChart
                 segments={[
                   { label: 'Tóner original', color: FAMILY_COLORS.original, value: analysis.originalQuantity },
@@ -77,11 +87,11 @@ export function ConsumablesFamilyAnalysisPanel({ records, family }: { records: C
                 centerLabel="unidades"
                 ariaLabel={`Distribución de unidades por tipo para ${familyLabel(family)}`}
               />
-            </section>
+            </Card>
           </div>
 
-          <section className="sales-card legacy-chart-card">
-            <div className="card-heading"><div><div className="eyebrow">EVOLUCIÓN</div><h2>Tendencia mensual · cantidades</h2></div><span className="muted-note">líneas por familia</span></div>
+          <Card className={cardClass}>
+            <CardHeader eyebrow="EVOLUCIÓN" title="Tendencia mensual · cantidades" aside={<Badge>líneas por familia</Badge>} />
             <LegacyLineChart
               labels={monthLabels}
               series={[
@@ -92,10 +102,10 @@ export function ConsumablesFamilyAnalysisPanel({ records, family }: { records: C
               valueFormatter={numberFormat}
               ariaLabel={`Tendencia mensual de cantidades para ${familyLabel(family)}`}
             />
-          </section>
+          </Card>
 
-          <section className="sales-card legacy-chart-card">
-            <div className="card-heading"><div><div className="eyebrow">EVOLUCIÓN</div><h2>Tendencia mensual · costos</h2></div><span className="muted-note">importes en guaraníes</span></div>
+          <Card className={cardClass}>
+            <CardHeader eyebrow="EVOLUCIÓN" title="Tendencia mensual · costos" aside={<Badge>importes en guaraníes</Badge>} />
             <LegacyLineChart
               labels={monthLabels}
               series={[
@@ -106,7 +116,7 @@ export function ConsumablesFamilyAnalysisPanel({ records, family }: { records: C
               valueFormatter={formatPygValue}
               ariaLabel={`Tendencia mensual de costos para ${familyLabel(family)}`}
             />
-          </section>
+          </Card>
         </>
       )}
     </div>
@@ -124,21 +134,21 @@ export function ConsumablesContractsPanel({ records }: { records: ConsumablesRec
   const compatibleContractShare = rows.length > 0 ? Math.round((compatibleContracts / rows.length) * 100) : 0;
 
   return (
-    <div className="legacy-analysis">
-      <section className="summary-grid legacy-summary" aria-label="Resumen de contratos">
+    <div className="@container grid min-w-0 gap-4">
+      <section className={summaryGridClass} aria-label="Resumen de contratos">
         <SummaryMetric value={integerFormat.format(rows.length)} label="contratos con consumo" />
         <SummaryMetric value={formatPyg(totalOriginal)} label="costo originales" />
         <SummaryMetric value={formatPyg(totalCompatible)} label="costo compatibles" />
         <SummaryMetric value={formatPyg(totalParts)} label="costo repuestos" />
         <SummaryMetric value={`${compatibleContractShare}%`} label="contratos con compatibles" />
       </section>
-      {compatibleContracts > 0 ? <section className="legacy-analysis-note" aria-label="Lectura de contratos">
+      {compatibleContracts > 0 ? <Note label="Lectura de contratos">
         <strong>{integerFormat.format(compatibleContracts)} de {integerFormat.format(rows.length)} contratos</strong> ({compatibleContractShare}%) utilizan consumibles compatibles. El costo compatible representa{' '}
         <strong>{totalOriginal + totalCompatible > 0 ? `${Math.round((totalCompatible / (totalOriginal + totalCompatible)) * 100)}%` : '0%'}</strong> del gasto en consumibles de estos contratos.
-      </section> : null}
-      {typeGroups.length > 0 ? <div className="legacy-chart-row">
-        <section className="sales-card legacy-chart-card">
-          <div className="card-heading"><div><div className="eyebrow">TIPO DE CONTRATO</div><h2>Costo por tipo</h2></div><span className="muted-note">PYG · apilado por origen</span></div>
+      </Note> : null}
+      {typeGroups.length > 0 ? <div className="grid min-w-0 gap-4 @[44rem]:grid-cols-2">
+        <Card className={cardClass}>
+          <CardHeader eyebrow="TIPO DE CONTRATO" title="Costo por tipo" aside={<Badge>PYG · apilado por origen</Badge>} />
           <LegacyStackedBarChart
             labels={typeGroups.map((group) => group.label)}
             series={[
@@ -149,9 +159,9 @@ export function ConsumablesContractsPanel({ records }: { records: ConsumablesRec
             valueFormatter={formatPygValue}
             ariaLabel="Costo de consumibles y repuestos por tipo de contrato"
           />
-        </section>
-        <section className="sales-card legacy-chart-card">
-          <div className="card-heading"><div><div className="eyebrow">DISTRIBUCIÓN</div><h2>Distribución de costos</h2></div><span className="muted-note">total consolidado</span></div>
+        </Card>
+        <Card className={cardClass}>
+          <CardHeader eyebrow="DISTRIBUCIÓN" title="Distribución de costos" aside={<Badge>total consolidado</Badge>} />
           <LegacyDonutChart
             segments={[
               { label: 'Originales', color: FAMILY_COLORS.original, value: usdToPyg(totalOriginal) },
@@ -162,34 +172,29 @@ export function ConsumablesContractsPanel({ records }: { records: ConsumablesRec
             centerLabel="PYG"
             ariaLabel="Distribución del costo entre originales, compatibles y repuestos"
           />
-        </section>
+        </Card>
       </div> : null}
-      <section className="sales-card">
-        <div className="card-heading">
-          <div><div className="eyebrow">IMPACTO EN CONTRATOS</div><h2>Detalle por contrato</h2></div>
-          <span className="muted-note">{integerFormat.format(rows.length)} contratos · total {formatPyg(totalCost)}</span>
-        </div>
-        {rows.length === 0 ? <p className="analytics-empty">No hay registros de consumo para los filtros seleccionados.</p> : (
-          <div className="catalog-table-wrap">
-            <table className="catalog-table legacy-contract-table">
-              <thead><tr>
-                <th>Contrato / cliente</th><th>Tipo</th><th className="align-right">Equipos</th>
-                <th className="align-right">Originales</th><th className="align-right">Compatibles</th>
-                <th className="align-right">Repuestos</th><th className="align-right">Total</th>
-              </tr></thead>
-              <tbody>{rows.map((row) => <tr key={row.key}>
-                <td><span className="code-cell">{row.reference}</span>{formatContractDetails(row.reference, row.orderReference, row.division, row.contractCommercialArea).map((detail) => <small className="table-secondary-text" key={detail}>{detail}</small>)}<small className="table-secondary-text">{row.customerName}</small><small className="table-secondary-text">{formatCustomerClassification(row.customerType, row.commercialArea) || 'Sector y área sin clasificar'}</small></td>
-                <td>{row.contractType || 'Sin tipo'}</td>
-                <td className="align-right">{integerFormat.format(row.equipment)}</td>
-                <td className="align-right">{integerFormat.format(row.originalQuantity)}<small className="table-secondary-text">{formatPyg(row.originalCostUsd)}</small></td>
-                <td className="align-right">{integerFormat.format(row.compatibleQuantity)}<small className="table-secondary-text">{formatPyg(row.compatibleCostUsd)}</small></td>
-                <td className="align-right">{integerFormat.format(row.partQuantity)}<small className="table-secondary-text">{formatPyg(row.partCostUsd)}</small></td>
-                <td className="align-right price-cell">{formatPyg(row.totalCostUsd)}<small className="table-secondary-text">{integerFormat.format(row.records)} líneas</small></td>
-              </tr>)}</tbody>
-            </table>
-          </div>
+      <Card className={cardClass}>
+        <CardHeader eyebrow="IMPACTO EN CONTRATOS" title="Detalle por contrato" aside={<Badge>{integerFormat.format(rows.length)} contratos · total {formatPyg(totalCost)}</Badge>} />
+        {rows.length === 0 ? <Muted className="text-sm">No hay registros de consumo para los filtros seleccionados.</Muted> : (
+          <Table className="min-w-[48rem] [overflow-wrap:normal]" wrapperClassName="@container max-h-[40rem]">
+              <TableHeader><TableRow>
+                <TableHead>Contrato / cliente</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right tabular-nums">Equipos</TableHead>
+                <TableHead className="text-right tabular-nums">Originales</TableHead><TableHead className="text-right tabular-nums">Compatibles</TableHead>
+                <TableHead className="text-right tabular-nums">Repuestos</TableHead><TableHead className="text-right tabular-nums">Total</TableHead>
+              </TableRow></TableHeader>
+              <TableBody>{rows.map((row) => <TableRow key={row.key}>
+                <TableCell><Code>{row.reference}</Code>{formatContractDetails(row.reference, row.orderReference, row.division, row.contractCommercialArea).map((detail) => <Sub key={detail}>{detail}</Sub>)}<Sub>{row.customerName}</Sub><Sub>{formatCustomerClassification(row.customerType, row.commercialArea) || 'Sector y área sin clasificar'}</Sub></TableCell>
+                <TableCell>{row.contractType || 'Sin tipo'}</TableCell>
+                <TableCell className="text-right tabular-nums">{integerFormat.format(row.equipment)}</TableCell>
+                <TableCell className="text-right tabular-nums">{integerFormat.format(row.originalQuantity)}<Sub>{formatPyg(row.originalCostUsd)}</Sub></TableCell>
+                <TableCell className="text-right tabular-nums">{integerFormat.format(row.compatibleQuantity)}<Sub>{formatPyg(row.compatibleCostUsd)}</Sub></TableCell>
+                <TableCell className="text-right tabular-nums">{integerFormat.format(row.partQuantity)}<Sub>{formatPyg(row.partCostUsd)}</Sub></TableCell>
+                <TableCell className="whitespace-nowrap text-right font-semibold tabular-nums">{formatPyg(row.totalCostUsd)}<Sub>{integerFormat.format(row.records)} líneas</Sub></TableCell>
+              </TableRow>)}</TableBody>
+            </Table>
         )}
-      </section>
+      </Card>
     </div>
   );
 }
@@ -231,8 +236,8 @@ export function ConsumablesFichasPanel({ outputs }: { outputs: ConsumablesOutput
   }
 
   return (
-    <div className="legacy-analysis">
-      <section className="summary-grid legacy-summary" aria-label="Resumen de fichas">
+    <div className="@container grid min-w-0 gap-4">
+      <section className={summaryGridClass} aria-label="Resumen de fichas">
         <SummaryMetric value={integerFormat.format(consumableRows.length)} label="equipos con consumibles" />
         <SummaryMetric value={integerFormat.format(partRows.length)} label="equipos con repuestos" />
         <SummaryMetric value={integerFormat.format(bothRows.length)} label="con ambas fuentes" />
@@ -240,40 +245,35 @@ export function ConsumablesFichasPanel({ outputs }: { outputs: ConsumablesOutput
         <SummaryMetric value={integerFormat.format(totalPartLines)} label="líneas de repuestos" />
         <SummaryMetric value={globalRatio} label="ratio consumibles / rep." />
       </section>
-      {bothRows.length > 0 ? <section className="legacy-analysis-note" aria-label="Cobertura de fichas">
+      {bothRows.length > 0 ? <Note label="Cobertura de fichas">
         <strong>{integerFormat.format(bothRows.length)} equipos</strong> ({percentage(bothRows.length, consumableRows.length)}) tienen registros en ambas fuentes, lo que permite correlacionar entregas de insumos con repuestos. Ratio global: <strong>{globalRatio}</strong> consumibles por repuesto.
-      </section> : null}
-      <section className="sales-card">
-        <div className="card-heading">
-          <div><div className="eyebrow">CONSUMIBLES VS REPUESTOS</div><h2>Fichas por equipo</h2></div>
-          <span className="muted-note">Abrí una fila para ver el historial cronológico</span>
+      </Note> : null}
+      <Card className={cardClass}>
+        <CardHeader eyebrow="CONSUMIBLES VS REPUESTOS" title="Fichas por equipo" aside={<Badge>Abrí una fila para ver el historial cronológico</Badge>} />
+        <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,13rem),1fr))] items-end gap-4">
+          <label className={fieldClass}>Buscar equipo<Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Serie, modelo, cliente…" /></label>
+          <label className={fieldClass}>Familia<select className={selectClass} value={family} onChange={(event) => setFamily(event.target.value as FamilyFilter)}><option value="">Todas</option><option value="T03">T03</option><option value="T06">T06</option><option value="GPR53">GPR-53</option></select></label>
+          <label className={fieldClass}>Tipo dentro del historial<select className={selectClass} value={classification} onChange={(event) => setClassification(event.target.value as ClassificationFilter)}><option value="">Todos</option><option value="original">Originales</option><option value="compatible">Compatibles</option></select></label>
         </div>
-        <div className="legacy-analysis-toolbar">
-          <label className="search-field"><span>Buscar equipo</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Serie, modelo, cliente…" /></label>
-          <label className="compact-field"><span>Familia</span><select value={family} onChange={(event) => setFamily(event.target.value as FamilyFilter)}><option value="">Todas</option><option value="T03">T03</option><option value="T06">T06</option><option value="GPR53">GPR-53</option></select></label>
-          <label className="compact-field"><span>Tipo dentro del historial</span><select value={classification} onChange={(event) => setClassification(event.target.value as ClassificationFilter)}><option value="">Todos</option><option value="original">Originales</option><option value="compatible">Compatibles</option></select></label>
-        </div>
-        <p className="analysis-meta">{integerFormat.format(filteredRows.length)} equipos visibles · {integerFormat.format(familyRows.reduce((sum, row) => sum + row.totalRecords, 0))} líneas en la selección</p>
-        {filteredRows.length === 0 ? <p className="analytics-empty">No hay salidas para los filtros seleccionados.</p> : (
-          <div className="catalog-table-wrap">
-            <table className="catalog-table legacy-ficha-table">
-              <thead><tr>
-                <th aria-label="Abrir" />
+        <Muted className="text-sm">{integerFormat.format(filteredRows.length)} equipos visibles · {integerFormat.format(familyRows.reduce((sum, row) => sum + row.totalRecords, 0))} líneas en la selección</Muted>
+        {filteredRows.length === 0 ? <Muted className="text-sm">No hay salidas para los filtros seleccionados.</Muted> : (
+          <Table className="min-w-[48rem] [overflow-wrap:normal]" wrapperClassName="@container max-h-[40rem]">
+              <TableHeader><TableRow>
+                <TableHead aria-label="Abrir" />
                 <LegacySortableHeader label="N° serie" active={sortKey === 'serial'} direction={sortDirection} onClick={() => changeSort('serial')} />
                 <LegacySortableHeader label="Modelo" active={sortKey === 'model'} direction={sortDirection} onClick={() => changeSort('model')} />
                 <LegacySortableHeader label="Cliente" active={sortKey === 'customer'} direction={sortDirection} onClick={() => changeSort('customer')} />
                 <LegacySortableHeader label="Consumibles" active={sortKey === 'consumables'} direction={sortDirection} onClick={() => changeSort('consumables')} alignRight />
                 <LegacySortableHeader label="Repuestos" active={sortKey === 'parts'} direction={sortDirection} onClick={() => changeSort('parts')} alignRight />
                 <LegacySortableHeader label="Ratio" active={sortKey === 'ratio'} direction={sortDirection} onClick={() => changeSort('ratio')} alignRight />
-              </tr></thead>
-              <tbody>{filteredRows.map((row) => {
+              </TableRow></TableHeader>
+              <TableBody>{filteredRows.map((row) => {
                 const isOpen = selectedSerial === row.serialNumber;
                 return <FichaRow key={row.serialNumber} row={row} isOpen={isOpen} classification={classification} onToggle={() => setSelectedSerial(isOpen ? null : row.serialNumber)} />;
-              })}</tbody>
-            </table>
-          </div>
+              })}</TableBody>
+            </Table>
         )}
-      </section>
+      </Card>
     </div>
   );
 }
@@ -332,8 +332,8 @@ export function ConsumablesServicePanel({ serviceRecords, outputs, query }: { se
   }
 
   return (
-    <div className="legacy-analysis">
-      <section className="summary-grid legacy-summary" aria-label="Resumen de servicios">
+    <div className="@container grid min-w-0 gap-4">
+      <section className={summaryGridClass} aria-label="Resumen de servicios">
         <SummaryMetric value={integerFormat.format(filteredServices.length)} label="servicios visibles" />
         <SummaryMetric value={integerFormat.format(new Set(filteredServices.map((record) => record.serialNumber)).size)} label="equipos con servicio" />
         <SummaryMetric value={integerFormat.format(shared)} label="equipos con ambas fuentes" />
@@ -341,26 +341,23 @@ export function ConsumablesServicePanel({ serviceRecords, outputs, query }: { se
         <SummaryMetric value={topTask ? integerFormat.format(topTask[1]) : '—'} label={topTask ? `tarea principal · ${topTask[0]}` : 'tarea principal'} />
         <SummaryMetric value={integerFormat.format(swapFlags.flaggedSerials.size)} label="posibles reemplazos" />
       </section>
-      {shared > 0 ? <section className="legacy-analysis-note" aria-label="Cobertura de servicios">
+      {shared > 0 ? <Note label="Cobertura de servicios">
         <strong>{integerFormat.format(shared)} equipos</strong> tienen servicios y consumibles en la selección. El cruce mensual cuenta servicios solo cuando pertenecen a un equipo con salida de tóner o cilindro en ese mismo mes.
-      </section> : null}
-      {swapFlags.flaggedSerials.size > 0 ? <section className="legacy-analysis-note warning" aria-label="Posibles reemplazos detectados">
+      </Note> : null}
+      {swapFlags.flaggedSerials.size > 0 ? <Note warning label="Posibles reemplazos detectados">
         <strong>{integerFormat.format(swapFlags.flaggedSerials.size)} equipos</strong> muestran una señal compatible → original dentro de tres días. Es una alerta de revisión, no una conclusión automática.
-      </section> : null}
-      <section className="sales-card">
-        <div className="card-heading">
-          <div><div className="eyebrow">SERVICIOS VS CONSUMIBLES</div><h2>Relación operativa</h2></div>
-          <span className="muted-note">Origen: Servicios LAM · salidas de consumibles</span>
+      </Note> : null}
+      <Card className={cardClass}>
+        <CardHeader eyebrow="SERVICIOS VS CONSUMIBLES" title="Relación operativa" aside={<Badge>Origen: Servicios LAM · salidas de consumibles</Badge>} />
+        <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,13rem),1fr))] items-end gap-4">
+          <label className={fieldClass}>Buscar equipo o servicio<Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Serie, cliente, técnico, tarea…" /></label>
+          <label className={fieldClass}>Familia<select className={selectClass} value={family} onChange={(event) => setFamily(event.target.value as FamilyFilter)}><option value="">Todas</option><option value="T03">T03</option><option value="T06">T06</option><option value="GPR53">GPR-53</option></select></label>
+          <label className={fieldClass}>Tipo de tarea<select className={selectClass} value={taskType} onChange={(event) => setTaskType(event.target.value)}><option value="">Todas</option>{taskTypes.map((value) => <option value={value} key={value}>{value}</option>)}</select></label>
+          <label className={fieldClass}>Consumible<select className={selectClass} value={classification} onChange={(event) => setClassification(event.target.value as ClassificationFilter)}><option value="">Todos</option><option value="original">Originales</option><option value="compatible">Compatibles</option></select></label>
         </div>
-        <div className="legacy-analysis-toolbar legacy-service-toolbar">
-          <label className="search-field"><span>Buscar equipo o servicio</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Serie, cliente, técnico, tarea…" /></label>
-          <label className="compact-field"><span>Familia</span><select value={family} onChange={(event) => setFamily(event.target.value as FamilyFilter)}><option value="">Todas</option><option value="T03">T03</option><option value="T06">T06</option><option value="GPR53">GPR-53</option></select></label>
-          <label className="compact-field"><span>Tipo de tarea</span><select value={taskType} onChange={(event) => setTaskType(event.target.value)}><option value="">Todas</option>{taskTypes.map((value) => <option value={value} key={value}>{value}</option>)}</select></label>
-          <label className="compact-field"><span>Consumible</span><select value={classification} onChange={(event) => setClassification(event.target.value as ClassificationFilter)}><option value="">Todos</option><option value="original">Originales</option><option value="compatible">Compatibles</option></select></label>
-        </div>
-        <div className="legacy-chart-row legacy-service-charts">
-          <section className="legacy-chart-inset">
-            <div className="legacy-chart-inset-heading"><strong>Tendencia mensual · servicios vs. consumibles</strong><span>solo equipos relacionados en el mes</span></div>
+        <div className="grid min-w-0 gap-4 @[44rem]:grid-cols-2">
+          <section className="min-w-0 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
+            <div className="mb-2 grid gap-0.5"><div className="text-sm font-bold text-navy dark:text-white">Tendencia mensual · servicios vs. consumibles</div><Muted>solo equipos relacionados en el mes</Muted></div>
             <LegacyLineChart
               labels={monthly.map((row) => row.month)}
               series={[
@@ -371,8 +368,8 @@ export function ConsumablesServicePanel({ serviceRecords, outputs, query }: { se
               ariaLabel="Tendencia mensual de servicios y consumibles relacionados"
             />
           </section>
-          <section className="legacy-chart-inset">
-            <div className="legacy-chart-inset-heading"><strong>Originales vs. compatibles vs. servicios</strong><span>líneas registradas por mes</span></div>
+          <section className="min-w-0 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
+            <div className="mb-2 grid gap-0.5"><div className="text-sm font-bold text-navy dark:text-white">Originales vs. compatibles vs. servicios</div><Muted>líneas registradas por mes</Muted></div>
             <LegacyLineChart
               labels={monthly.map((row) => row.month)}
               series={[
@@ -385,26 +382,24 @@ export function ConsumablesServicePanel({ serviceRecords, outputs, query }: { se
             />
           </section>
         </div>
-        <p className="analysis-meta">{integerFormat.format(sortedRows.length)} equipos visibles · seleccioná una fila para ver servicios y consumibles juntos</p>
-        {sortedRows.length === 0 ? <p className="analytics-empty">No hay servicios o consumibles que coincidan con los filtros.</p> : (
-          <div className="catalog-table-wrap">
-            <table className="catalog-table legacy-service-table">
-              <thead><tr>
-                <th aria-label="Abrir" />
+        <Muted className="text-sm">{integerFormat.format(sortedRows.length)} equipos visibles · seleccioná una fila para ver servicios y consumibles juntos</Muted>
+        {sortedRows.length === 0 ? <Muted className="text-sm">No hay servicios o consumibles que coincidan con los filtros.</Muted> : (
+          <Table className="min-w-[48rem] [overflow-wrap:normal]" wrapperClassName="@container max-h-[40rem]">
+              <TableHeader><TableRow>
+                <TableHead aria-label="Abrir" />
                 <LegacySortableHeader label="N° serie" active={sortKey === 'serial'} direction={sortDirection} onClick={() => changeSort('serial')} />
                 <LegacySortableHeader label="Modelo" active={sortKey === 'model'} direction={sortDirection} onClick={() => changeSort('model')} />
                 <LegacySortableHeader label="Cliente" active={sortKey === 'customer'} direction={sortDirection} onClick={() => changeSort('customer')} />
                 <LegacySortableHeader label="Servicios" active={sortKey === 'services'} direction={sortDirection} onClick={() => changeSort('services')} alignRight />
                 <LegacySortableHeader label="Consumibles" active={sortKey === 'consumables'} direction={sortDirection} onClick={() => changeSort('consumables')} alignRight />
-              </tr></thead>
-              <tbody>{sortedRows.map((row) => {
+              </TableRow></TableHeader>
+              <TableBody>{sortedRows.map((row) => {
                 const isOpen = selectedSerial === row.serialNumber;
                 return <ServiceRow key={row.serialNumber} row={row} isOpen={isOpen} classification={classification} swapFlags={swapFlags} onToggle={() => setSelectedSerial(isOpen ? null : row.serialNumber)} />;
-              })}</tbody>
-            </table>
-          </div>
+              })}</TableBody>
+            </Table>
         )}
-      </section>
+      </Card>
     </div>
   );
 }
@@ -435,28 +430,25 @@ export function ConsumablesRankingPanel({ records, query }: { records: Consumabl
   }
 
   return (
-    <div className="legacy-analysis">
-      <section className="summary-grid legacy-summary" aria-label="Resumen del ranking">
+    <div className="@container grid min-w-0 gap-4">
+      <section className={summaryGridClass} aria-label="Resumen del ranking">
         <SummaryMetric value={integerFormat.format(clientRows.length)} label="clientes únicos" />
         <SummaryMetric value={integerFormat.format(equipmentRows.length)} label="equipos únicos" />
         <SummaryMetric value={integerFormat.format(compatibleEquipment)} label="equipos con compatibles" />
         <SummaryMetric value={topClient?.clientName || '—'} label="cliente principal" />
         <SummaryMetric value={formatPyg(totalCost)} label="costo acumulado" />
       </section>
-      {topClient && totalCost > 0 ? <section className="legacy-analysis-note" aria-label="Concentración del ranking">
+      {topClient && totalCost > 0 ? <Note label="Concentración del ranking">
         <strong>{topClient.clientName}</strong> representa {percentage(topClient.totalCostUsd, totalCost)} del costo total ({formatPyg(topClient.totalCostUsd)}).{rankedClients.length >= 3 ? ` Los tres principales acumulan ${percentage(topThreeCost, totalCost)}.` : ''}
-      </section> : null}
-      <section className="sales-card">
-        <div className="card-heading">
-          <div><div className="eyebrow">RANKING</div><h2>Clientes y equipos con mayor costo</h2></div>
-          <span className="muted-note">Los encabezados permiten ordenar ambas tablas</span>
+      </Note> : null}
+      <Card className={cardClass}>
+        <CardHeader eyebrow="RANKING" title="Clientes y equipos con mayor costo" aside={<Badge>Los encabezados permiten ordenar ambas tablas</Badge>} />
+        <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,13rem),1fr))] items-end gap-4">
+          <label className={fieldClass}>Buscar<Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cliente, modelo, serie, OV…" /></label>
         </div>
-        <div className="legacy-analysis-toolbar">
-          <label className="search-field"><span>Buscar</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cliente, modelo, serie, OV…" /></label>
-        </div>
-        <div className="legacy-chart-row legacy-ranking-charts">
-          <section className="legacy-chart-inset">
-            <div className="legacy-chart-inset-heading"><strong>Top 10 clientes por costo</strong><span>originales, compatibles y repuestos</span></div>
+        <div className="grid min-w-0 gap-4 @[44rem]:grid-cols-2">
+          <section className="min-w-0 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
+            <div className="mb-2 grid gap-0.5"><div className="text-sm font-bold text-navy dark:text-white">Top 10 clientes por costo</div><Muted>originales, compatibles y repuestos</Muted></div>
             <LegacyHorizontalStackedBars
               labels={rankedClients.slice(0, 10).map((row) => row.clientName)}
               series={[
@@ -468,8 +460,8 @@ export function ConsumablesRankingPanel({ records, query }: { records: Consumabl
               ariaLabel="Top 10 clientes por costo de consumibles y repuestos"
             />
           </section>
-          <section className="legacy-chart-inset">
-            <div className="legacy-chart-inset-heading"><strong>Top 10 equipos por costo</strong><span>ordenados por total acumulado</span></div>
+          <section className="min-w-0 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
+            <div className="mb-2 grid gap-0.5"><div className="text-sm font-bold text-navy dark:text-white">Top 10 equipos por costo</div><Muted>ordenados por total acumulado</Muted></div>
             <LegacyHorizontalStackedBars
               labels={rankedEquipment.slice(0, 10).map((row) => row.serialNumber || row.modelLabel)}
               series={[
@@ -482,53 +474,49 @@ export function ConsumablesRankingPanel({ records, query }: { records: Consumabl
             />
           </section>
         </div>
-        <h3 className="legacy-subheading">Ranking de clientes</h3>
-        <div className="catalog-table-wrap">
-          <table className="catalog-table legacy-ranking-table">
-            <thead><tr>
+        <h3 className="m-0 mt-2 text-base font-bold text-navy dark:text-white">Ranking de clientes</h3>
+        <Table className="min-w-[48rem] [overflow-wrap:normal]" wrapperClassName="@container max-h-[40rem]">
+            <TableHeader><TableRow>
               <LegacySortableHeader label="Cliente" active={sortKey === 'client'} direction={sortDirection} onClick={() => changeSort('client')} />
               <LegacySortableHeader label="Equipos" active={sortKey === 'equipment'} direction={sortDirection} onClick={() => changeSort('equipment')} alignRight />
               <LegacySortableHeader label="Originales" active={sortKey === 'original'} direction={sortDirection} onClick={() => changeSort('original')} alignRight />
               <LegacySortableHeader label="Compatibles" active={sortKey === 'compatible'} direction={sortDirection} onClick={() => changeSort('compatible')} alignRight />
               <LegacySortableHeader label="Repuestos" active={sortKey === 'parts'} direction={sortDirection} onClick={() => changeSort('parts')} alignRight />
               <LegacySortableHeader label="Total" active={sortKey === 'cost'} direction={sortDirection} onClick={() => changeSort('cost')} alignRight />
-            </tr></thead>
-            <tbody>{sortedClients.map((row) => <tr key={row.key}>
-              <td><span className="code-cell">{row.clientName}</span><small className="table-secondary-text">{formatCustomerClassification(row.customerType, row.commercialArea) || 'Sector y área sin clasificar'}</small></td>
-              <td className="align-right">{integerFormat.format(row.equipment)}</td>
-              <td className="align-right">{integerFormat.format(row.originalQuantity)}<small className="table-secondary-text">{formatPyg(row.originalCostUsd)}</small></td>
-              <td className="align-right">{integerFormat.format(row.compatibleQuantity)}<small className="table-secondary-text">{formatPyg(row.compatibleCostUsd)}</small></td>
-              <td className="align-right">{integerFormat.format(row.partQuantity)}<small className="table-secondary-text">{formatPyg(row.partCostUsd)}</small></td>
-              <td className="align-right price-cell">{formatPyg(row.totalCostUsd)}</td>
-            </tr>)}</tbody>
-          </table>
-        </div>
-        <h3 className="legacy-subheading">Ranking de equipos</h3>
-        <div className="catalog-table-wrap">
-          <table className="catalog-table legacy-ranking-table legacy-equipment-ranking-table">
-            <thead><tr>
+            </TableRow></TableHeader>
+            <TableBody>{sortedClients.map((row) => <TableRow key={row.key}>
+              <TableCell><Code>{row.clientName}</Code><Sub>{formatCustomerClassification(row.customerType, row.commercialArea) || 'Sector y área sin clasificar'}</Sub></TableCell>
+              <TableCell className="text-right tabular-nums">{integerFormat.format(row.equipment)}</TableCell>
+              <TableCell className="text-right tabular-nums">{integerFormat.format(row.originalQuantity)}<Sub>{formatPyg(row.originalCostUsd)}</Sub></TableCell>
+              <TableCell className="text-right tabular-nums">{integerFormat.format(row.compatibleQuantity)}<Sub>{formatPyg(row.compatibleCostUsd)}</Sub></TableCell>
+              <TableCell className="text-right tabular-nums">{integerFormat.format(row.partQuantity)}<Sub>{formatPyg(row.partCostUsd)}</Sub></TableCell>
+              <TableCell className="whitespace-nowrap text-right font-semibold tabular-nums">{formatPyg(row.totalCostUsd)}</TableCell>
+            </TableRow>)}</TableBody>
+          </Table>
+        <h3 className="m-0 mt-2 text-base font-bold text-navy dark:text-white">Ranking de equipos</h3>
+        <Table className="min-w-[48rem] [overflow-wrap:normal]" wrapperClassName="@container max-h-[40rem]">
+            <TableHeader><TableRow>
               <LegacySortableHeader label="Equipo" active={sortKey === 'model'} direction={sortDirection} onClick={() => changeSort('model')} />
               <LegacySortableHeader label="Serie" active={sortKey === 'serial'} direction={sortDirection} onClick={() => changeSort('serial')} />
-              <th>Cliente / contrato</th><th>Familia</th>
+              <TableHead>Cliente / contrato</TableHead><TableHead>Familia</TableHead>
               <LegacySortableHeader label="Originales" active={sortKey === 'original'} direction={sortDirection} onClick={() => changeSort('original')} alignRight />
               <LegacySortableHeader label="Compatibles" active={sortKey === 'compatible'} direction={sortDirection} onClick={() => changeSort('compatible')} alignRight />
               <LegacySortableHeader label="Repuestos" active={sortKey === 'parts'} direction={sortDirection} onClick={() => changeSort('parts')} alignRight />
               <LegacySortableHeader label="Total" active={sortKey === 'cost'} direction={sortDirection} onClick={() => changeSort('cost')} alignRight />
-            </tr></thead>
-            <tbody>{sortedEquipment.map((row) => <tr key={row.key}>
-              <td><span className="code-cell">{row.modelLabel}</span></td>
-              <td><span className="code-cell">{row.serialNumber}</span></td>
-              <td><span className="table-secondary-text">{row.clientName}</span>{formatContractDetails(row.contractReference, row.orderReference, row.division, row.contractCommercialArea).map((detail) => <small className="table-secondary-text" key={detail}>{detail}</small>)}<small className="table-secondary-text">{formatCustomerClassification(row.customerType, row.commercialArea) || 'Sector y área sin clasificar'}</small></td>
-              <td>{row.family}</td>
-              <td className="align-right">{integerFormat.format(row.originalQuantity)}<small className="table-secondary-text">{formatPyg(row.originalCostUsd)}</small></td>
-              <td className="align-right">{integerFormat.format(row.compatibleQuantity)}<small className="table-secondary-text">{formatPyg(row.compatibleCostUsd)}</small></td>
-              <td className="align-right">{integerFormat.format(row.partQuantity)}<small className="table-secondary-text">{formatPyg(row.partCostUsd)}</small></td>
-              <td className="align-right price-cell">{formatPyg(row.totalCostUsd)}</td>
-            </tr>)}</tbody>
-          </table>
-        </div>
-        {sortedClients.length === 0 && sortedEquipment.length === 0 ? <p className="analytics-empty">No hay resultados para la búsqueda.</p> : null}
-      </section>
+            </TableRow></TableHeader>
+            <TableBody>{sortedEquipment.map((row) => <TableRow key={row.key}>
+              <TableCell><Code>{row.modelLabel}</Code></TableCell>
+              <TableCell><Code>{row.serialNumber}</Code></TableCell>
+              <TableCell><Sub>{row.clientName}</Sub>{formatContractDetails(row.contractReference, row.orderReference, row.division, row.contractCommercialArea).map((detail) => <Sub key={detail}>{detail}</Sub>)}<Sub>{formatCustomerClassification(row.customerType, row.commercialArea) || 'Sector y área sin clasificar'}</Sub></TableCell>
+              <TableCell>{row.family}</TableCell>
+              <TableCell className="text-right tabular-nums">{integerFormat.format(row.originalQuantity)}<Sub>{formatPyg(row.originalCostUsd)}</Sub></TableCell>
+              <TableCell className="text-right tabular-nums">{integerFormat.format(row.compatibleQuantity)}<Sub>{formatPyg(row.compatibleCostUsd)}</Sub></TableCell>
+              <TableCell className="text-right tabular-nums">{integerFormat.format(row.partQuantity)}<Sub>{formatPyg(row.partCostUsd)}</Sub></TableCell>
+              <TableCell className="whitespace-nowrap text-right font-semibold tabular-nums">{formatPyg(row.totalCostUsd)}</TableCell>
+            </TableRow>)}</TableBody>
+          </Table>
+        {sortedClients.length === 0 && sortedEquipment.length === 0 ? <Muted className="text-sm">No hay resultados para la búsqueda.</Muted> : null}
+      </Card>
     </div>
   );
 }
@@ -554,83 +542,87 @@ export function ConsumablesEquipmentPanel({ records, query }: { records: Consuma
   }
 
   return (
-    <div className="legacy-analysis">
-      <section className="summary-grid legacy-summary" aria-label="Resumen de equipos">
+    <div className="@container grid min-w-0 gap-4">
+      <section className={summaryGridClass} aria-label="Resumen de equipos">
         <SummaryMetric value={integerFormat.format(allRows.length)} label="total de equipos" />
         <SummaryMetric value={formatPyg(totalOriginal)} label="costo originales" />
         <SummaryMetric value={formatPyg(totalCompatible)} label="costo compatibles" />
         <SummaryMetric value={formatPyg(totalParts)} label="costo repuestos" />
         <SummaryMetric value={integerFormat.format(compatibleEquipment)} label="equipos con compatibles" />
       </section>
-      <section className="sales-card">
-        <div className="card-heading">
-          <div><div className="eyebrow">EQUIPOS</div><h2>Equipos con consumo</h2></div>
-          <span className="muted-note">{integerFormat.format(sortedRows.length)} equipos visibles</span>
+      <Card className={cardClass}>
+        <CardHeader eyebrow="EQUIPOS" title="Equipos con consumo" aside={<Badge>{integerFormat.format(sortedRows.length)} equipos visibles</Badge>} />
+        <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,13rem),1fr))] items-end gap-4">
+          <label className={fieldClass}>Buscar equipo<Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Serie, modelo o cliente…" /></label>
         </div>
-        <div className="legacy-analysis-toolbar">
-          <label className="search-field"><span>Buscar equipo</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Serie, modelo o cliente…" /></label>
-        </div>
-        <div className="catalog-table-wrap">
-          <table className="catalog-table legacy-equipment-table">
-            <thead><tr>
+        <Table className="min-w-[48rem] [overflow-wrap:normal]" wrapperClassName="@container max-h-[40rem]">
+            <TableHeader><TableRow>
               <LegacySortableHeader label="N° serie" active={sortKey === 'serial'} direction={sortDirection} onClick={() => changeSort('serial')} />
               <LegacySortableHeader label="Modelo" active={sortKey === 'model'} direction={sortDirection} onClick={() => changeSort('model')} />
               <LegacySortableHeader label="Cliente" active={sortKey === 'client'} direction={sortDirection} onClick={() => changeSort('client')} />
-              <th>OV / contrato</th><th>Familia</th>
+              <TableHead>OV / contrato</TableHead><TableHead>Familia</TableHead>
               <LegacySortableHeader label="Originales" active={sortKey === 'original'} direction={sortDirection} onClick={() => changeSort('original')} alignRight />
               <LegacySortableHeader label="Compatibles" active={sortKey === 'compatible'} direction={sortDirection} onClick={() => changeSort('compatible')} alignRight />
               <LegacySortableHeader label="Repuestos" active={sortKey === 'parts'} direction={sortDirection} onClick={() => changeSort('parts')} alignRight />
               <LegacySortableHeader label="Total" active={sortKey === 'cost'} direction={sortDirection} onClick={() => changeSort('cost')} alignRight />
-            </tr></thead>
-            <tbody>{sortedRows.map((row) => <tr key={row.key}>
-              <td><span className="code-cell">{row.serialNumber}</span></td>
-              <td>{row.modelLabel}</td>
-              <td>{row.clientName}</td>
-              <td><span>{formatContractLabel(row.contractReference, row.orderReference) || '—'}</span>{row.contractCommercialArea ? <small className="table-secondary-text">Área contrato: {row.contractCommercialArea}</small> : null}{row.division ? <small className="table-secondary-text">División: {row.division}</small> : null}</td>
-              <td>{row.family}</td>
-              <td className="align-right">{integerFormat.format(row.originalQuantity)}<small className="table-secondary-text">{formatPyg(row.originalCostUsd)}</small></td>
-              <td className="align-right">{integerFormat.format(row.compatibleQuantity)}<small className="table-secondary-text">{formatPyg(row.compatibleCostUsd)}</small></td>
-              <td className="align-right">{integerFormat.format(row.partQuantity)}<small className="table-secondary-text">{formatPyg(row.partCostUsd)}</small></td>
-              <td className="align-right price-cell">{formatPyg(row.totalCostUsd)}</td>
-            </tr>)}</tbody>
-          </table>
-        </div>
-      </section>
+            </TableRow></TableHeader>
+            <TableBody>{sortedRows.map((row) => <TableRow key={row.key}>
+              <TableCell><Code>{row.serialNumber}</Code></TableCell>
+              <TableCell>{row.modelLabel}</TableCell>
+              <TableCell>{row.clientName}</TableCell>
+              <TableCell><span>{formatContractLabel(row.contractReference, row.orderReference) || '—'}</span>{row.contractCommercialArea ? <Sub>Área contrato: {row.contractCommercialArea}</Sub> : null}{row.division ? <Sub>División: {row.division}</Sub> : null}</TableCell>
+              <TableCell>{row.family}</TableCell>
+              <TableCell className="text-right tabular-nums">{integerFormat.format(row.originalQuantity)}<Sub>{formatPyg(row.originalCostUsd)}</Sub></TableCell>
+              <TableCell className="text-right tabular-nums">{integerFormat.format(row.compatibleQuantity)}<Sub>{formatPyg(row.compatibleCostUsd)}</Sub></TableCell>
+              <TableCell className="text-right tabular-nums">{integerFormat.format(row.partQuantity)}<Sub>{formatPyg(row.partCostUsd)}</Sub></TableCell>
+              <TableCell className="whitespace-nowrap text-right font-semibold tabular-nums">{formatPyg(row.totalCostUsd)}</TableCell>
+            </TableRow>)}</TableBody>
+          </Table>
+      </Card>
     </div>
   );
 }
 
 function FichaRow({ row, isOpen, classification, onToggle }: { row: FichaRowData; isOpen: boolean; classification: ClassificationFilter; onToggle: () => void }) {
   return <>
-    <tr className={`legacy-expandable-row ${isOpen ? 'expanded' : ''}`} onClick={onToggle}>
-      <td className="legacy-expand-toggle" aria-label={isOpen ? 'Cerrar detalle' : 'Abrir detalle'}>{isOpen ? '⌄' : '›'}</td>
-      <td><span className="code-cell">{row.serialNumber}</span></td>
-      <td>{row.modelLabel}</td>
-      <td><span>{row.customerName || 'Sin cliente'}</span>{formatContractLabel(row.contractReference, row.orderReference) ? <small className="table-secondary-text">{formatContractLabel(row.contractReference, row.orderReference)}</small> : null}{formatContractDetails(row.contractReference, row.orderReference, row.division, row.contractCommercialArea).map((detail) => <small className="table-secondary-text" key={detail}>{detail}</small>)}</td>
-      <td className="align-right">{integerFormat.format(row.consumables)}</td>
-      <td className="align-right">{integerFormat.format(row.parts)}</td>
-      <td className="align-right">{row.parts > 0 ? `${decimalFormat.format(row.consumables / row.parts)}x` : '—'}</td>
-    </tr>
-    {isOpen ? <tr className="legacy-detail-row"><td colSpan={7}><OutputTimeline serialNumber={row.serialNumber} outputs={row.outputs} classification={classification} /></td></tr> : null}
+    <TableRow className={cn('cursor-pointer', isOpen && 'bg-sky/10')} onClick={onToggle}>
+      <TableCell className="w-8 text-center text-lg" aria-label={isOpen ? 'Cerrar detalle' : 'Abrir detalle'}>{isOpen ? '⌄' : '›'}</TableCell>
+      <TableCell className="whitespace-nowrap"><Code>{row.serialNumber}</Code></TableCell>
+      <TableCell>{row.modelLabel}</TableCell>
+      <TableCell className="min-w-[12rem]"><div>{row.customerName || 'Sin cliente'}</div>{formatContractLabel(row.contractReference, row.orderReference) ? <Sub>{formatContractLabel(row.contractReference, row.orderReference)}</Sub> : null}{formatContractDetails(row.contractReference, row.orderReference, row.division, row.contractCommercialArea).map((detail) => <Sub key={detail}>{detail}</Sub>)}</TableCell>
+      <TableCell className="text-right tabular-nums">{integerFormat.format(row.consumables)}</TableCell>
+      <TableCell className="text-right tabular-nums">{integerFormat.format(row.parts)}</TableCell>
+      <TableCell className="text-right tabular-nums">{row.parts > 0 ? `${decimalFormat.format(row.consumables / row.parts)}x` : '—'}</TableCell>
+    </TableRow>
+    {isOpen ? <DetailRow colSpan={7}><OutputTimeline serialNumber={row.serialNumber} outputs={row.outputs} classification={classification} /></DetailRow> : null}
   </>;
 }
 
 function ServiceRow({ row, isOpen, classification, swapFlags, onToggle }: { row: ServiceRowData; isOpen: boolean; classification: ClassificationFilter; swapFlags: ReturnType<typeof buildSwapFlags>; onToggle: () => void }) {
   return <>
-    <tr className={`legacy-expandable-row ${isOpen ? 'expanded' : ''}`} onClick={onToggle}>
-      <td className="legacy-expand-toggle" aria-label={isOpen ? 'Cerrar detalle' : 'Abrir detalle'}>{isOpen ? '⌄' : '›'}</td>
-      <td><span className="code-cell">{row.serialNumber}</span>{swapFlags.flaggedSerials.has(row.serialNumber) ? <SwapFlag /> : null}</td>
-      <td>{row.modelLabel}</td>
-      <td><span>{row.customerName || 'Sin cliente'}</span>{row.clientHistory.length > 0 ? <small className="table-secondary-text">Historial de cliente</small> : null}</td>
-      <td className="align-right">{integerFormat.format(row.services)}</td>
-      <td className="align-right">{integerFormat.format(row.consumables)}</td>
-    </tr>
-    {isOpen ? <tr className="legacy-detail-row"><td colSpan={6}><ServiceTimeline serialNumber={row.serialNumber} currentCustomerName={row.customerName} clientHistory={row.clientHistory} services={row.serviceRecords} outputs={row.outputs} classification={classification} swapFlags={swapFlags} /></td></tr> : null}
+    <TableRow className={cn('cursor-pointer', isOpen && 'bg-sky/10')} onClick={onToggle}>
+      <TableCell className="w-8 text-center text-lg" aria-label={isOpen ? 'Cerrar detalle' : 'Abrir detalle'}>{isOpen ? '⌄' : '›'}</TableCell>
+      <TableCell className="whitespace-nowrap"><span className="inline-flex items-center gap-2"><Code>{row.serialNumber}</Code>{swapFlags.flaggedSerials.has(row.serialNumber) ? <SwapFlag /> : null}</span></TableCell>
+      <TableCell>{row.modelLabel}</TableCell>
+      <TableCell className="min-w-[12rem]"><div>{row.customerName || 'Sin cliente'}</div>{row.clientHistory.length > 0 ? <Sub>Historial de cliente</Sub> : null}</TableCell>
+      <TableCell className="text-right tabular-nums">{integerFormat.format(row.services)}</TableCell>
+      <TableCell className="text-right tabular-nums">{integerFormat.format(row.consumables)}</TableCell>
+    </TableRow>
+    {isOpen ? <DetailRow colSpan={6}><ServiceTimeline serialNumber={row.serialNumber} currentCustomerName={row.customerName} clientHistory={row.clientHistory} services={row.serviceRecords} outputs={row.outputs} classification={classification} swapFlags={swapFlags} /></DetailRow> : null}
   </>;
 }
 
+/** Fila de detalle: ocupa el ancho visible de la tarjeta aunque la tabla desplace en horizontal (la tabla es un contenedor). */
+function DetailRow({ colSpan, children }: { colSpan: number; children: ReactNode }) {
+  return <TableRow className="bg-paper hover:bg-paper dark:bg-navy/30"><TableCell colSpan={colSpan} className="p-0"><div className="sticky left-0 box-border w-[100cqw] max-w-full p-4 [overflow-wrap:anywhere]">{children}</div></TableCell></TableRow>;
+}
+
 function SwapFlag() {
-  return <span className="legacy-swap-flag" title="Posible reemplazo: compatible seguido de original en tres días" aria-label="Posible reemplazo detectado">!</span>;
+  return <span className="inline-grid size-5 place-items-center rounded-full bg-[#e08a00] text-xs font-extrabold text-navy" title="Posible reemplazo: compatible seguido de original en tres días" aria-label="Posible reemplazo detectado">!</span>;
+}
+
+function TimelineEvent({ children }: { children: ReactNode }) {
+  return <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 border-t border-navy/10 pt-2 text-sm text-ink-2 first:border-0 first:pt-0 dark:border-sky/15 dark:text-[#d6e2f5]">{children}</div>;
 }
 
 function OutputTimeline({ serialNumber, outputs, classification }: { serialNumber: string; outputs: ConsumablesOutputRecord[]; classification: ClassificationFilter }) {
@@ -638,17 +630,17 @@ function OutputTimeline({ serialNumber, outputs, classification }: { serialNumbe
     .filter((record) => record.recordKind === 'consumable' || record.recordKind === 'part')
     .filter((record) => !classification || record.recordKind !== 'consumable' || record.classification === classification)
     .sort((left, right) => left.recordedAt.localeCompare(right.recordedAt) || left.id.localeCompare(right.id));
-  return <div className="legacy-detail-panel">
-    <div className="legacy-detail-heading"><strong>Historial del equipo</strong><span>{serialNumber} · {integerFormat.format(events.length)} líneas</span></div>
-    {events.length === 0 ? <p className="analytics-empty">No hay eventos para el tipo seleccionado.</p> : <div className="legacy-timeline">{events.map((record) => <div className="legacy-timeline-event" key={record.id}>
-      <span className={`badge ${record.recordKind === 'consumable' ? 'ok' : 'warning'}`}>{record.recordKind === 'consumable' ? record.category : 'Repuesto'}</span>
-      <strong>{record.recordedAt || record.month || 'Sin fecha'}</strong>
-      <span className="code-cell">{record.partCode || 'Sin código'}</span>
-      <span className="legacy-timeline-description">{record.description || 'Sin descripción'}</span>
+  return <div className="grid min-w-0 gap-3">
+    <div className="flex flex-wrap items-baseline justify-between gap-2"><div className="font-bold text-navy dark:text-white">Historial del equipo</div><Muted>{serialNumber} · {integerFormat.format(events.length)} líneas</Muted></div>
+    {events.length === 0 ? <Muted className="text-sm">No hay eventos para el tipo seleccionado.</Muted> : <div className="grid max-h-96 gap-2 overflow-y-auto pr-1">{events.map((record) => <TimelineEvent key={record.id}>
+      <Badge className="whitespace-nowrap" tone={record.recordKind === 'consumable' ? 'success' : 'warning'}>{record.recordKind === 'consumable' ? record.category : 'Repuesto'}</Badge>
+      <b className="text-navy dark:text-white">{record.recordedAt || record.month || 'Sin fecha'}</b>
+      <Code>{record.partCode || 'Sin código'}</Code>
+      <span className="min-w-0 flex-1 basis-48">{record.description || 'Sin descripción'}</span>
       <span>×{numberFormat(record.quantity)}</span>
       {record.yieldPages > 0 ? <span>{numberFormat(record.yieldPages)} pág.</span> : null}
-      <small>{formatOutputTimelineMeta(record)}</small>
-    </div>)}</div>}
+      <Muted>{formatOutputTimelineMeta(record)}</Muted>
+    </TimelineEvent>)}</div>}
   </div>;
 }
 
@@ -659,34 +651,50 @@ function ServiceTimeline({ serialNumber, currentCustomerName, clientHistory, ser
       .filter((record) => !classification || record.classification === classification)
       .map((record) => ({ date: record.recordedAt || record.month, kind: 'output' as const, record })),
   ].sort((left, right) => left.date.localeCompare(right.date));
-  return <div className="legacy-detail-panel">
-    <div className="legacy-detail-heading"><strong>Historial de servicios y consumibles</strong><span>{serialNumber} · {integerFormat.format(events.length)} eventos</span></div>
+  return <div className="grid min-w-0 gap-3">
+    <div className="flex flex-wrap items-baseline justify-between gap-2"><div className="font-bold text-navy dark:text-white">Historial de servicios y consumibles</div><Muted>{serialNumber} · {integerFormat.format(events.length)} eventos</Muted></div>
     {clientHistory.length > 0 ? <ClientHistoryAlert currentCustomerName={currentCustomerName} entries={clientHistory} /> : null}
-    {events.length === 0 ? <p className="analytics-empty">No hay eventos para el tipo seleccionado.</p> : <div className="legacy-timeline">{events.map((event, index) => event.kind === 'service' ? <div className="legacy-timeline-event service-event" key={`${event.kind}-${event.record.id}-${index}`}>
-      {swapFlags.flaggedServiceIds.has(event.record.id) ? <SwapFlag /> : null}<span className="badge ok">Servicio</span><strong>{event.date || 'Sin fecha'}</strong><span className="code-cell">IS {event.record.serviceNumber || 'sin número'}</span><span className="legacy-timeline-description">{event.record.taskCompleted || 'Sin descripción de tarea'}</span><small>{event.record.taskType || 'Sin tipo'}{event.record.technician ? ` · ${event.record.technician}` : ''}{event.record.orderReference ? ` · OV ${event.record.orderReference}` : ''}</small>
-    </div> : <div className="legacy-timeline-event" key={`${event.kind}-${event.record.id}-${index}`}>
-      {swapFlags.flaggedOutputIds.has(event.record.id) ? <SwapFlag /> : null}<span className={`badge ${event.record.classification === 'original' ? 'ok' : 'warning'}`}>{event.record.category}</span><strong>{event.date || 'Sin fecha'}</strong><span className="code-cell">{event.record.partCode || 'Sin código'}</span><span className="legacy-timeline-description">{event.record.description || 'Sin descripción'}</span><span>×{numberFormat(event.record.quantity)}</span><small>{formatOutputTimelineMeta(event.record)}</small>
-    </div>)}</div>}
+    {events.length === 0 ? <Muted className="text-sm">No hay eventos para el tipo seleccionado.</Muted> : <div className="grid max-h-96 gap-2 overflow-y-auto pr-1">{events.map((event, index) => event.kind === 'service' ? <TimelineEvent key={`${event.kind}-${event.record.id}-${index}`}>
+      {swapFlags.flaggedServiceIds.has(event.record.id) ? <SwapFlag /> : null}<Badge tone="success">Servicio</Badge><b className="text-navy dark:text-white">{event.date || 'Sin fecha'}</b><Code>IS {event.record.serviceNumber || 'sin número'}</Code><span className="min-w-0 flex-1 basis-48">{event.record.taskCompleted || 'Sin descripción de tarea'}</span><Muted>{event.record.taskType || 'Sin tipo'}{event.record.technician ? ` · ${event.record.technician}` : ''}{event.record.orderReference ? ` · OV ${event.record.orderReference}` : ''}</Muted>
+    </TimelineEvent> : <TimelineEvent key={`${event.kind}-${event.record.id}-${index}`}>
+      {swapFlags.flaggedOutputIds.has(event.record.id) ? <SwapFlag /> : null}<Badge className="whitespace-nowrap" tone={event.record.classification === 'original' ? 'success' : 'warning'}>{event.record.category}</Badge><b className="text-navy dark:text-white">{event.date || 'Sin fecha'}</b><Code>{event.record.partCode || 'Sin código'}</Code><span className="min-w-0 flex-1 basis-48">{event.record.description || 'Sin descripción'}</span><span>×{numberFormat(event.record.quantity)}</span><Muted>{formatOutputTimelineMeta(event.record)}</Muted>
+    </TimelineEvent>)}</div>}
   </div>;
 }
 
 function ClientHistoryAlert({ currentCustomerName, entries }: { currentCustomerName: string; entries: ClientHistoryEntry[] }) {
-  return <section className="legacy-analysis-note warning" aria-label="Historial de clientes anteriores">
-    <strong>Historial de cliente</strong>
-    <span>Este equipo actualmente figura en <strong>{currentCustomerName || 'la cartera actual'}</strong>, pero también tiene registros de clientes anteriores.</span>
-    {entries.map((entry) => <small key={`${entry.customerName}-${entry.from}-${entry.to}`}>
-      <strong>{entry.customerName}</strong> · registros entre {entry.from} y {entry.to}
-      {entry.orderReferences.length > 0 ? ` · OV: ${entry.orderReferences.join(', ')}` : ''}
-    </small>)}
-  </section>;
+  return <Note warning label="Historial de clientes anteriores">
+    <div className="grid gap-1">
+      <strong>Historial de cliente</strong>
+      <span>Este equipo actualmente figura en <strong>{currentCustomerName || 'la cartera actual'}</strong>, pero también tiene registros de clientes anteriores.</span>
+      {entries.map((entry) => <Muted key={`${entry.customerName}-${entry.from}-${entry.to}`}>
+        <strong>{entry.customerName}</strong> · registros entre {entry.from} y {entry.to}
+        {entry.orderReferences.length > 0 ? ` · OV: ${entry.orderReferences.join(', ')}` : ''}
+      </Muted>)}
+    </div>
+  </Note>;
 }
 
 function SummaryMetric({ value, label }: { value: string; label: string }) {
-  return <div className="summary-card"><span className="summary-value" title={value}>{value}</span><span className="summary-label">{label}</span></div>;
+  // El nombre de un cliente o una cifra larga se ajustan al ancho de la ficha; el título completo queda en el tooltip.
+  return <Card className="@container min-w-0 gap-1 p-4"><div className="truncate whitespace-nowrap text-[clamp(1.1rem,10cqw,1.875rem)] font-bold tabular-nums text-navy dark:text-white" title={value}>{value}</div><Muted>{label}</Muted></Card>;
+}
+
+/** Lectura destacada de una vista (en amarillo cuando es una alerta de revisión). */
+function Note({ children, label, warning = false }: { children: ReactNode; label: string; warning?: boolean }) {
+  return <section className={cn('rounded-xl border p-4 text-sm leading-relaxed text-ink-2 dark:text-[#d6e2f5]', warning ? 'border-[#e08a00]/40 bg-[#e08a00]/10' : 'border-sky/40 bg-sky/10')} aria-label={label}>{children}</section>;
+}
+
+function Sub({ children, className }: { children: ReactNode; className?: string }) {
+  return <Muted className={cn('mt-0.5', className)}>{children}</Muted>;
+}
+
+function Code({ children }: { children: ReactNode }) {
+  return <span className="font-mono text-xs font-semibold text-navy dark:text-white">{children}</span>;
 }
 
 function LegacySortableHeader({ label, active, direction, onClick, alignRight = false }: { label: string; active: boolean; direction: SortDirection; onClick: () => void; alignRight?: boolean }) {
-  return <th className={`${alignRight ? 'align-right ' : ''}legacy-sortable-th`} aria-sort={active ? direction === 'asc' ? 'ascending' : 'descending' : 'none'}><button type="button" onClick={onClick}>{label}<span aria-hidden="true">{active ? direction === 'asc' ? ' ↑' : ' ↓' : ''}</span></button></th>;
+  return <TableHead className={alignRight ? 'text-right' : undefined} aria-sort={active ? direction === 'asc' ? 'ascending' : 'descending' : 'none'}><button className="inline-flex cursor-pointer items-center gap-1 border-0 bg-transparent p-0 text-xs font-bold text-navy focus-visible:outline-2 focus-visible:outline-sky dark:text-white" type="button" onClick={onClick}>{label}<span aria-hidden="true">{active ? direction === 'asc' ? ' ↑' : ' ↓' : ''}</span></button></TableHead>;
 }
 
 type FichaSortKey = 'activity' | 'serial' | 'model' | 'customer' | 'consumables' | 'parts' | 'ratio';

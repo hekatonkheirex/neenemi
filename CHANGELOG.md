@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.75 · 2026-10-06
+
+Segunda entrega del rediseño de Analítica de consumibles, que completa el rediseño de todos los módulos de la suite. Los indicadores, la analítica agregada, los despachos, las tablas por código y por registro, y las pestañas T03, T06, GPR-53, Impacto en contratos, Repuestos, Consumibles vs Repuestos, Servicios vs Consumibles, Ranking y Equipos adoptan los componentes compartidos. Las listas agregadas desplazan dentro de su tarjeta: el Resumen General bajó de unos 54.000 px de alto a unos 23.000. Los registros normalizados de cada familia se muestran de a 50, ya ordenados por la columna elegida. Las filas expandibles (fichas, servicios) ocupan el ancho visible de la tarjeta y su historial desplaza por dentro. Los gráficos usan utilidades Tailwind: la serie «Originales» tiene un azul visible en el tema oscuro y las marcas del eje de meses se espacian para no pisarse. Se retiran las últimas clases globales heredadas (tarjetas, tablas, botones, campos y fichas de resumen) y una prueba falla si vuelven a usarse.
+
 ## 0.1.74 · 2026-10-06
 
 Primera entrega del rediseño de Analítica de consumibles: el encabezado, los filtros globales, las fichas de resumen, la tabla de registros normalizados, las fuentes de importación, la pestaña Datos y la carga coordinada de las nueve fuentes adoptan los componentes compartidos. Los montos largos en guaraníes se ajustan al ancho de la ficha. La columna lateral de importaciones pasa bajo la tabla por debajo de 1500 px. Conserva las importaciones, la carga coordinada atómica, el recálculo desde los originales y la limpieza de cargas. Los paneles de análisis, los despachos y las pestañas T03, T06, GPR-53, contratos, repuestos, ranking y equipos siguen con el diseño anterior hasta la segunda entrega. La etiqueta de origen compartida usa el texto secundario del rediseño y se retira el CSS que dejó de usarse, incluido el botón primario heredado.

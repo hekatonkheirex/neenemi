@@ -25,10 +25,6 @@ html[data-theme='light'] .consumables-tabs button.active {
   background: var(--ds-orange);
 }
 
-html[data-theme='light'] .legacy-subheading,
-html[data-theme='light'] .legacy-detail-heading strong,
-html[data-theme='light'] .legacy-timeline-event strong,
-html[data-theme='light'] .legacy-timeline-description,
 html[data-theme='light'] .legacy-trend-label strong {
   color: var(--ds-navy);
 }

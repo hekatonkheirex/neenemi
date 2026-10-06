@@ -11,9 +11,6 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
     expect(r).toMatch(/max-height:\s*22rem/);
     expect(r).toMatch(/overflow-y:\s*auto/);
   });
-  it('Campos compactos: la pista de la rejilla no crece más que la celda (input type=month a 1280 px)', () => {
-    expect(rule('.compact-field')).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\)/);
-  });
   it('Mantenimiento: las fichas KPI y el gráfico de tendencia pueden encogerse en celdas estrechas', () => {
     const summary = fs.readFileSync('src/modules/mantenimiento/MaintenanceExecutiveSummary.tsx', 'utf8');
     expect(summary).toContain('grid-cols-2 gap-3 sm:grid-cols-3 min-[1180px]:grid-cols-6');
@@ -40,6 +37,6 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
     expect(rule('.anim-tabs.has-hint button')).toMatch(/white-space:\s*normal/);
   });
   it('encabezados de tarjeta: el contador pasa a otra línea si no cabe (SLA, badge "5" a 960 px)', () => {
-    expect(rule('.card-heading')).toMatch(/flex-wrap:\s*wrap/);
+    expect(fs.readFileSync('src/core/ui/card.tsx', 'utf8')).toContain('flex flex-wrap items-start justify-between gap-3');
   });
 });

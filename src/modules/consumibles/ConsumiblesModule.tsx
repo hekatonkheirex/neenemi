@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
 import type {
   ConsumablesAggregate,
   ConsumablesAnalytics,
@@ -19,6 +19,7 @@ import { submitImportJob } from '../../core/import-job-client';
 import type { OperationalFilters } from '../../core/operational-filters';
 import PaginationControls from '../../core/PaginationControls';
 import { buildPaginatedUrl, type PaginatedResult } from '../../core/pagination';
+import { usePagedList } from '../../core/usePagedList';
 import { SOURCE_CATALOG } from '../../core/source-catalog';
 import SourceDetails from '../../core/SourceDetails';
 import SourceLocationLabel from '../../core/SourceLocationLabel';
@@ -669,9 +670,9 @@ export default function ConsumiblesModule() {
   );
 }
 
-function SummaryStat({ value, label, accent = false }: { value: string; label: string; accent?: boolean }) {
+function SummaryStat({ value, label, accent = false, note }: { value: string; label: string; accent?: boolean; note?: string }) {
   // El monto en guaraníes puede tener 13 dígitos: el tamaño sigue el ancho de la ficha y no parte la cifra.
-  return <Card className={cn('@container min-w-0 gap-1 p-4', accent && 'border-l-4 border-l-brand')}><div className="whitespace-nowrap text-[clamp(1.1rem,10cqw,1.875rem)] font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{label}</Muted></Card>;
+  return <Card className={cn('@container min-w-0 gap-1 p-4', accent && 'border-l-4 border-l-brand')}><div className="whitespace-nowrap text-[clamp(1.1rem,10cqw,1.875rem)] font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{label}</Muted>{note ? <Muted>{note}</Muted> : null}</Card>;
 }
 
 function MethodFact({ label, value }: { label: string; value: string }) {
@@ -712,7 +713,7 @@ function ConsumablesLegacyTab({
   if (activeTab === 'T03' || activeTab === 'T06' || activeTab === 'GPR53') {
     const familyRecords = records.filter((record) => record.family === activeTab && record.recordKind === 'consumable');
     return (
-      <div className="consumables-tab-content">
+      <div className="grid min-w-0 gap-4">
         <ConsumablesFamilyAnalysisPanel family={activeTab} records={familyRecords} />
         <ConsumablesCodeTable title={`Detalle por código · ${activeTab === 'GPR53' ? 'GPR-53' : activeTab}`} records={familyRecords} />
         <ConsumablesRecordTable title={`Registros ${activeTab === 'GPR53' ? 'GPR-53' : activeTab}`} records={familyRecords} query={query} />
@@ -722,7 +723,7 @@ function ConsumablesLegacyTab({
 
   if (activeTab === 'contracts') {
     return (
-      <div className="consumables-tab-content">
+      <div className="grid min-w-0 gap-4">
         <ConsumablesContractsPanel records={records} />
       </div>
     );
@@ -737,19 +738,19 @@ function ConsumablesLegacyTab({
     const originalCost = originalRecords.reduce((total, record) => total + record.costUsd, 0);
     const compatibleCost = compatibleRecords.reduce((total, record) => total + record.costUsd, 0);
     return (
-      <div className="consumables-tab-content">
-        <section className="summary-grid consumables-detail-summary" aria-label="Resumen de repuestos">
-          <div className="summary-card"><span className="summary-value">{numberFormat(partRecords.length)}</span><span className="summary-label">líneas de repuestos</span></div>
-          <div className="summary-card"><span className="summary-value">{numberFormat(originalQuantity)}</span><span className="summary-label">unidades originales</span><small className="summary-card-note">{formatPyg(originalCost)}</small></div>
-          <div className="summary-card"><span className="summary-value">{numberFormat(compatibleQuantity)}</span><span className="summary-label">unidades compatibles</span><small className="summary-card-note">{formatPyg(compatibleCost)}</small></div>
-          <div className="summary-card"><span className="summary-value">{formatPyg(originalCost + compatibleCost)}</span><span className="summary-label">costo acumulado</span></div>
-          <div className="summary-card"><span className="summary-value">{compatibleQuantity > 0 ? formatPyg(compatibleCost / compatibleQuantity) : '₲ 0'}</span><span className="summary-label">precio prom. compatible</span></div>
-          <div className="summary-card"><span className="summary-value">{originalQuantity + compatibleQuantity > 0 ? `${Math.round((compatibleQuantity / (originalQuantity + compatibleQuantity)) * 100)}%` : '0%'}</span><span className="summary-label">proporción compatible</span></div>
+      <div className="grid min-w-0 gap-4">
+        <section className="grid min-w-0 grid-cols-2 gap-3 min-[1180px]:grid-cols-3" aria-label="Resumen de repuestos">
+          <SummaryStat value={numberFormat(partRecords.length)} label="líneas de repuestos" />
+          <SummaryStat value={numberFormat(originalQuantity)} label="unidades originales" note={formatPyg(originalCost)} />
+          <SummaryStat value={numberFormat(compatibleQuantity)} label="unidades compatibles" note={formatPyg(compatibleCost)} />
+          <SummaryStat value={formatPyg(originalCost + compatibleCost)} label="costo acumulado" />
+          <SummaryStat value={compatibleQuantity > 0 ? formatPyg(compatibleCost / compatibleQuantity) : '₲ 0'} label="precio prom. compatible" />
+          <SummaryStat value={originalQuantity + compatibleQuantity > 0 ? `${Math.round((compatibleQuantity / (originalQuantity + compatibleQuantity)) * 100)}%` : '0%'} label="proporción compatible" />
         </section>
-        <section className="sales-card">
-          <div className="card-heading"><div><div className="eyebrow">REPUESTOS</div><h2>Repuestos normalizados</h2></div><span className="muted-note">Piezas que no fueron clasificadas como consumibles</span></div>
+        <Card className={cardClass}>
+          <CardHeader eyebrow="Repuestos" title="Repuestos normalizados" aside={<Badge>Piezas que no fueron clasificadas como consumibles</Badge>} />
           <AggregateList rows={analytics.categories.filter((row) => partRecords.some((record) => record.category === row.key))} />
-        </section>
+        </Card>
         <ConsumablesCodeTable title="Detalle por código" records={partRecords} />
         <ConsumablesRecordTable title="Detalle de repuestos" records={partRecords} query={query} />
       </div>
@@ -758,7 +759,7 @@ function ConsumablesLegacyTab({
 
   if (activeTab === 'fichas') {
     return (
-      <div className="consumables-tab-content">
+      <div className="grid min-w-0 gap-4">
         {outputsSummary ? <ConsumablesOutputsPanel
           summary={outputsSummary}
           records={outputPageData?.items ?? []}
@@ -787,6 +788,15 @@ function ConsumablesLegacyTab({
 type RecordSortKey = 'date' | 'model' | 'serial' | 'part' | 'kind' | 'quantity' | 'cost';
 type SortDirection = 'asc' | 'desc';
 
+/** Línea de texto secundario dentro de una celda. */
+function Sub({ children, className }: { children: ReactNode; className?: string }) {
+  return <Muted className={cn('mt-0.5', className)}>{children}</Muted>;
+}
+
+function Code({ children }: { children: ReactNode }) {
+  return <div className="font-mono text-xs font-semibold text-navy dark:text-white">{children}</div>;
+}
+
 function ConsumablesCodeTable({ title, records }: { title: string; records: ConsumablesRecord[] }) {
   const rows = useMemo(() => {
     const byCode = new Map<string, { code: string; description: string; classification: string; category: string; quantity: number; costUsd: number; records: number }>();
@@ -811,27 +821,25 @@ function ConsumablesCodeTable({ title, records }: { title: string; records: Cons
   }, [records]);
 
   return (
-    <section className="sales-card">
-      <div className="card-heading"><div><div className="eyebrow">CÓDIGOS AGRUPADOS</div><h2>{title}</h2></div><span className="muted-note">{numberFormat(rows.length)} códigos · ordenados por costo</span></div>
-      <div className="catalog-table-wrap">
-        <table className="catalog-table consumables-code-table">
-          <thead><tr><th>Código</th><th>Descripción</th><th>Tipo</th><th>Categoría</th><th className="align-right">Líneas</th><th className="align-right">Unidades</th><th className="align-right">Costo PYG</th><th className="align-right">Precio prom.</th></tr></thead>
-          <tbody>
-            {rows.map((row) => <tr key={row.code}>
-              <td><span className="code-cell">{row.code}</span></td>
-              <td>{row.description || 'Sin descripción'}</td>
-              <td><span className={`badge ${row.classification === 'original' ? 'ok' : 'warning'}`}>{row.classification === 'original' ? 'Original' : row.classification === 'compatible' ? 'Compatible' : 'Mixto'}</span></td>
-              <td>{row.category}</td>
-              <td className="align-right">{numberFormat(row.records)}</td>
-              <td className="align-right">{numberFormat(row.quantity)}</td>
-              <td className="align-right price-cell">{formatPyg(row.costUsd)}</td>
-              <td className="align-right">{formatPyg(row.costUsd / Math.max(row.quantity, 1))}</td>
-            </tr>)}
-            {rows.length === 0 ? <tr><td colSpan={8} className="empty-cell">No hay registros para esta familia.</td></tr> : null}
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <Card className={cardClass}>
+      <CardHeader eyebrow="Códigos agrupados" title={title} aside={<Badge>{numberFormat(rows.length)} códigos · ordenados por costo</Badge>} />
+      <Table className="min-w-[48rem] [overflow-wrap:normal]" wrapperClassName="max-h-[40rem]">
+        <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Descripción</TableHead><TableHead>Tipo</TableHead><TableHead>Categoría</TableHead><TableHead className="text-right">Líneas</TableHead><TableHead className="text-right">Unidades</TableHead><TableHead className="text-right">Costo PYG</TableHead><TableHead className="text-right">Precio prom.</TableHead></TableRow></TableHeader>
+        <TableBody>
+          {rows.map((row) => <TableRow key={row.code}>
+            <TableCell><Code>{row.code}</Code></TableCell>
+            <TableCell className="min-w-[12rem]">{row.description || 'Sin descripción'}</TableCell>
+            <TableCell><Badge className="whitespace-nowrap" tone={row.classification === 'original' ? 'success' : 'warning'}>{row.classification === 'original' ? 'Original' : row.classification === 'compatible' ? 'Compatible' : 'Mixto'}</Badge></TableCell>
+            <TableCell>{row.category}</TableCell>
+            <TableCell className="text-right tabular-nums">{numberFormat(row.records)}</TableCell>
+            <TableCell className="text-right tabular-nums">{numberFormat(row.quantity)}</TableCell>
+            <TableCell className="whitespace-nowrap text-right font-semibold tabular-nums">{formatPyg(row.costUsd)}</TableCell>
+            <TableCell className="whitespace-nowrap text-right tabular-nums">{formatPyg(row.costUsd / Math.max(row.quantity, 1))}</TableCell>
+          </TableRow>)}
+          {rows.length === 0 ? <TableRow><TableCell colSpan={8} className="py-8 text-center">No hay registros para esta familia.</TableCell></TableRow> : null}
+        </TableBody>
+      </Table>
+    </Card>
   );
 }
 
@@ -848,6 +856,8 @@ function ConsumablesRecordTable({ title, records, query }: { title: string; reco
     cost: (record) => record.costUsd,
   };
   const sortedRecords = useMemo(() => sortRows(records, sorters[sortKey], sortDirection), [records, sortDirection, sortKey]);
+  // Miles de filas con detalle de origen congelan la ventana: se muestran de a 50, ya ordenadas.
+  const paged = usePagedList(sortedRecords, 50);
   const changeSort = (nextKey: RecordSortKey) => {
     if (nextKey === sortKey) setSortDirection((value) => value === 'asc' ? 'desc' : 'asc');
     else {
@@ -857,39 +867,38 @@ function ConsumablesRecordTable({ title, records, query }: { title: string; reco
   };
 
   return (
-    <section className="sales-card">
-      <div className="card-heading"><div><div className="eyebrow">DATOS NORMALIZADOS</div><h2>{title}</h2></div><span className="muted-note">{query ? `Filtro: ${query}` : `${numberFormat(records.length)} filas visibles`}</span></div>
-      <div className="catalog-table-wrap">
-        <table className="catalog-table consumables-table">
-          <thead><tr>
-            <SortableHeader label="Fecha" active={sortKey === 'date'} direction={sortDirection} onClick={() => changeSort('date')} />
-            <SortableHeader label="Cliente / equipo" active={sortKey === 'model'} direction={sortDirection} onClick={() => changeSort('model')} />
-            <SortableHeader label="Serie" active={sortKey === 'serial'} direction={sortDirection} onClick={() => changeSort('serial')} />
-            <SortableHeader label="Parte" active={sortKey === 'part'} direction={sortDirection} onClick={() => changeSort('part')} />
-            <SortableHeader label="Tipo" active={sortKey === 'kind'} direction={sortDirection} onClick={() => changeSort('kind')} />
-            <SortableHeader label="Cantidad" active={sortKey === 'quantity'} direction={sortDirection} onClick={() => changeSort('quantity')} alignRight />
-            <SortableHeader label="Costo PYG" active={sortKey === 'cost'} direction={sortDirection} onClick={() => changeSort('cost')} alignRight />
-          </tr></thead>
-          <tbody>
-            {sortedRecords.map((record) => <tr key={record.id}>
-              <td>{record.recordedAt || record.month || 'Sin fecha'}<SourceLocationLabel fileName={record.sourceFileName} sheetName={record.sourceSheetName} rowNumber={record.sourceRowNumber} />{record.sourceType ? <small className="table-secondary-text">{formatConsumablesSourceType(record.sourceType)}</small> : null}{formatConsumablesOperationalSummary(record.sourceOperational).map((detail) => <small className="table-secondary-text" key={detail}>{detail}</small>)}<SourceDetails details={record.sourceDetails} /></td>
-              <td><span className="code-cell">{record.modelLabel}</span><small className="table-secondary-text">{record.customerName}{formatContractLabel(record.contractReference, record.orderReference)}</small>{formatContractDetails(record.contractReference, record.orderReference, record.division, record.contractCommercialArea).map((detail) => <small className="table-secondary-text" key={detail}>{detail}</small>)}{formatCustomerClassification(record.customerType, record.commercialArea) ? <small className="table-secondary-text">{formatCustomerClassification(record.customerType, record.commercialArea)}</small> : null}{formatConsumablesOperationalNarrative(record.sourceOperational).map((detail) => <small className="table-secondary-text" key={detail}>{detail}</small>)}</td>
-              <td>{record.serialNumber}</td>
-              <td><span className="code-cell">{record.partCode}</span><small className="table-secondary-text">{record.description || 'Sin descripción'}</small></td>
-              <td><span className={`badge ${record.recordKind === 'consumable' ? 'ok' : 'warning'}`}>{record.recordKind === 'consumable' ? 'Consumible' : 'Repuesto'}</span><small className="table-secondary-text">{record.family} · {record.classification}</small></td>
-              <td className="align-right">{numberFormat(record.quantity)}</td>
-              <td className="align-right price-cell">{formatPyg(record.costUsd)}</td>
-            </tr>)}
-            {records.length === 0 ? <tr><td colSpan={7} className="empty-cell">No hay registros para esta vista.</td></tr> : null}
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <Card className={cardClass}>
+      <CardHeader eyebrow="Datos normalizados" title={title} aside={<Badge>{query ? `Filtro: ${query}` : `${numberFormat(records.length)} filas visibles`}</Badge>} />
+      <Table className="min-w-[56rem] [overflow-wrap:normal]">
+        <TableHeader><TableRow>
+          <SortableHeader label="Fecha" active={sortKey === 'date'} direction={sortDirection} onClick={() => changeSort('date')} />
+          <SortableHeader label="Cliente / equipo" active={sortKey === 'model'} direction={sortDirection} onClick={() => changeSort('model')} />
+          <SortableHeader label="Serie" active={sortKey === 'serial'} direction={sortDirection} onClick={() => changeSort('serial')} />
+          <SortableHeader label="Parte" active={sortKey === 'part'} direction={sortDirection} onClick={() => changeSort('part')} />
+          <SortableHeader label="Tipo" active={sortKey === 'kind'} direction={sortDirection} onClick={() => changeSort('kind')} />
+          <SortableHeader label="Cantidad" active={sortKey === 'quantity'} direction={sortDirection} onClick={() => changeSort('quantity')} alignRight />
+          <SortableHeader label="Costo PYG" active={sortKey === 'cost'} direction={sortDirection} onClick={() => changeSort('cost')} alignRight />
+        </TableRow></TableHeader>
+        <TableBody>
+          {paged.items.map((record) => <TableRow key={record.id}>
+            <TableCell className="min-w-[9rem]"><div className="whitespace-nowrap">{record.recordedAt || record.month || 'Sin fecha'}</div><SourceLocationLabel fileName={record.sourceFileName} sheetName={record.sourceSheetName} rowNumber={record.sourceRowNumber} />{record.sourceType ? <Sub>{formatConsumablesSourceType(record.sourceType)}</Sub> : null}{formatConsumablesOperationalSummary(record.sourceOperational).map((detail) => <Sub key={detail}>{detail}</Sub>)}<SourceDetails details={record.sourceDetails} /></TableCell>
+            <TableCell className="min-w-[14rem]"><Code>{record.modelLabel}</Code><Sub>{record.customerName}{formatContractLabel(record.contractReference, record.orderReference)}</Sub>{formatContractDetails(record.contractReference, record.orderReference, record.division, record.contractCommercialArea).map((detail) => <Sub key={detail}>{detail}</Sub>)}{formatCustomerClassification(record.customerType, record.commercialArea) ? <Sub>{formatCustomerClassification(record.customerType, record.commercialArea)}</Sub> : null}{formatConsumablesOperationalNarrative(record.sourceOperational).map((detail) => <Sub key={detail}>{detail}</Sub>)}</TableCell>
+            <TableCell className="whitespace-nowrap">{record.serialNumber}</TableCell>
+            <TableCell className="min-w-[10rem]"><Code>{record.partCode}</Code><Sub>{record.description || 'Sin descripción'}</Sub></TableCell>
+            <TableCell><Badge className="whitespace-nowrap" tone={record.recordKind === 'consumable' ? 'success' : 'warning'}>{record.recordKind === 'consumable' ? 'Consumible' : 'Repuesto'}</Badge><Sub className="mt-1">{record.family} · {record.classification}</Sub></TableCell>
+            <TableCell className="text-right tabular-nums">{numberFormat(record.quantity)}</TableCell>
+            <TableCell className="whitespace-nowrap text-right font-semibold tabular-nums">{formatPyg(record.costUsd)}</TableCell>
+          </TableRow>)}
+          {records.length === 0 ? <TableRow><TableCell colSpan={7} className="py-8 text-center">No hay registros para esta vista.</TableCell></TableRow> : null}
+        </TableBody>
+      </Table>
+      {paged.totalPages > 1 && <PaginationControls label={`Paginación de ${title}`} page={paged.page} pageSize={paged.pageSize} total={paged.total} pageSizeOptions={[25, 50, 100]} onPageChange={paged.setPage} onPageSizeChange={paged.setPageSize} />}
+    </Card>
   );
 }
 
 function SortableHeader({ label, active, direction, onClick, alignRight = false }: { label: string; active: boolean; direction: SortDirection; onClick: () => void; alignRight?: boolean }) {
-  return <th className={`${alignRight ? 'align-right ' : ''}sortable-th`} aria-sort={active ? direction === 'asc' ? 'ascending' : 'descending' : 'none'}><button type="button" onClick={onClick}>{label}<span aria-hidden="true">{active ? direction === 'asc' ? ' ↑' : ' ↓' : ''}</span></button></th>;
+  return <TableHead className={alignRight ? 'text-right' : undefined} aria-sort={active ? direction === 'asc' ? 'ascending' : 'descending' : 'none'}><button className="inline-flex cursor-pointer items-center gap-1 border-0 bg-transparent p-0 text-xs font-bold text-navy focus-visible:outline-2 focus-visible:outline-sky dark:text-white" type="button" onClick={onClick}>{label}<span aria-hidden="true">{active ? direction === 'asc' ? ' ↑' : ' ↓' : ''}</span></button></TableHead>;
 }
 
 function formatConsumablesOperationalSummary(operational?: ConsumablesSourceOperational): string[] {
@@ -949,34 +958,29 @@ function ConsumablesOutputsPanel({
   onPageSizeChange: (pageSize: number) => void;
 }) {
   return (
-    <section className="sales-card consumables-outputs-panel" aria-label="Salidas de consumibles y repuestos">
-      <div className="card-heading">
-        <div><div className="eyebrow">DESPACHOS NORMALIZADOS</div><h2>Salidas registradas</h2></div>
-        <span className="muted-note">{summary.firstMonth && summary.lastMonth ? `${summary.firstMonth} → ${summary.lastMonth}` : 'Sin período'}</span>
+    <Card className={cardClass} aria-label="Salidas de consumibles y repuestos">
+      <CardHeader eyebrow="Despachos normalizados" title="Salidas registradas" aside={<Badge>{summary.firstMonth && summary.lastMonth ? `${summary.firstMonth} → ${summary.lastMonth}` : 'Sin período'}</Badge>} />
+      <div className="grid min-w-0 grid-cols-2 gap-3 min-[1180px]:grid-cols-4">
+        <MiniStat value={integerFormat.format(summary.records)} label="líneas despachadas" />
+        <MiniStat value={integerFormat.format(summary.totalQuantity)} label="unidades" />
+        <MiniStat value={integerFormat.format(summary.equipment)} label="equipos asociados" />
+        <MiniStat value={`${integerFormat.format(summary.consumables)} / ${integerFormat.format(summary.parts)}`} label="consumibles / repuestos" />
       </div>
-      <div className="output-summary-grid">
-        <div><strong>{integerFormat.format(summary.records)}</strong><span>líneas despachadas</span></div>
-        <div><strong>{integerFormat.format(summary.totalQuantity)}</strong><span>unidades</span></div>
-        <div><strong>{integerFormat.format(summary.equipment)}</strong><span>equipos asociados</span></div>
-        <div><strong>{integerFormat.format(summary.consumables)} / {integerFormat.format(summary.parts)}</strong><span>consumibles / repuestos</span></div>
-      </div>
-      <div className="catalog-table-wrap">
-        <table className="catalog-table consumables-table outputs-table">
-          <thead><tr><th>Fecha</th><th>Documento</th><th>Cliente / equipo</th><th>Parte</th><th>Tipo</th><th className="align-right">Cantidad</th><th className="align-right">Rendimiento</th></tr></thead>
-          <tbody>
-            {records.map((record) => <tr key={record.id}>
-              <td>{record.recordedAt || record.month || 'Sin fecha'}<SourceLocationLabel fileName={record.sourceFileName} sheetName={record.sourceSheetName} rowNumber={record.sourceRowNumber} />{record.sourceType ? <small className="table-secondary-text">{formatConsumablesSourceType(record.sourceType)}</small> : null}<SourceDetails details={record.sourceDetails} /></td>
-              <td>#{record.documentNumber}{record.serviceReportNumber > 0 ? <small className="table-secondary-text">Inf. {record.serviceReportNumber}</small> : null}{record.recordKind === 'part' ? <small className="table-secondary-text">{outputOperationalDetail(record, 'sourceContract', ['Contrato (fuente)', 'Contrato']) || 'Contrato de origen sin informar'}</small> : null}</td>
-              <td><span className="code-cell">{record.modelLabel}</span><small className="table-secondary-text">{record.customerName}{formatContractLabel(record.contractReference, record.orderReference)}{record.sourceCustomerName && record.sourceCustomerName !== record.customerName ? ` · fuente: ${record.sourceCustomerName}` : ''}</small>{formatContractDetails(record.contractReference, record.orderReference, record.division, record.contractCommercialArea).map((detail) => <small className="table-secondary-text" key={detail}>{detail}</small>)}{formatCustomerClassification(record.customerType, record.commercialArea) ? <small className="table-secondary-text">{formatCustomerClassification(record.customerType, record.commercialArea)}</small> : null}{formatOutputSourceClassification(record).map((detail) => <small className="table-secondary-text" key={detail}>{detail}</small>)}{outputOperationalDetail(record, 'observations', ['Observaciones']) ? <small className="table-secondary-text">Obs.: {outputOperationalDetail(record, 'observations', ['Observaciones'])}</small> : null}{outputOperationalDetail(record, 'contact', ['Contacto']) ? <small className="table-secondary-text">Contacto: {outputOperationalDetail(record, 'contact', ['Contacto'])}</small> : null}</td>
-              <td><span className="code-cell">{record.partCode || 'Sin código'}</span><small className="table-secondary-text">{record.description || 'Sin descripción'}</small>{record.sourceOperational?.yieldPerUnit ? <small className="table-secondary-text">Rend. unit.: {record.sourceOperational.yieldPerUnit}</small> : null}{record.sourceUnitPricePyg !== null || record.sourceTotalPyg !== null ? <small className="table-secondary-text">{record.sourceUnitPricePyg !== null ? `₲ ${integerFormat.format(record.sourceUnitPricePyg)} unit.` : ''}{record.sourceTotalPyg !== null ? ` · ₲ ${integerFormat.format(record.sourceTotalPyg)} total` : ''}</small> : null}</td>
-              <td><span className={`badge ${record.recordKind === 'consumable' ? 'ok' : 'warning'}`}>{record.recordKind === 'consumable' ? 'Consumible' : 'Repuesto'}</span><small className="table-secondary-text">{record.family}{record.technician ? ` · ${record.technician}` : ''}</small></td>
-              <td className="align-right">{numberFormat(record.quantity)}</td>
-              <td className="align-right">{record.yieldPages ? numberFormat(record.yieldPages) : '—'}</td>
-            </tr>)}
-            {records.length === 0 && <tr><td colSpan={7} className="empty-cell">{loading ? 'Cargando salidas…' : requestError && pageData === null ? 'No se pudieron cargar las salidas.' : summary.records ? 'No hay salidas para los filtros seleccionados.' : 'Importa una salida de consumibles o repuestos para ver los despachos.'}</td></tr>}
-          </tbody>
-        </table>
-      </div>
+      <Table className="min-w-[56rem] [overflow-wrap:normal]">
+        <TableHeader><TableRow><TableHead>Fecha</TableHead><TableHead>Documento</TableHead><TableHead>Cliente / equipo</TableHead><TableHead>Parte</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Cantidad</TableHead><TableHead className="text-right">Rendimiento</TableHead></TableRow></TableHeader>
+        <TableBody>
+          {records.map((record) => <TableRow key={record.id}>
+            <TableCell className="min-w-[9rem]"><div className="whitespace-nowrap">{record.recordedAt || record.month || 'Sin fecha'}</div><SourceLocationLabel fileName={record.sourceFileName} sheetName={record.sourceSheetName} rowNumber={record.sourceRowNumber} />{record.sourceType ? <Sub>{formatConsumablesSourceType(record.sourceType)}</Sub> : null}<SourceDetails details={record.sourceDetails} /></TableCell>
+            <TableCell className="min-w-[9rem]"><div className="whitespace-nowrap font-semibold">#{record.documentNumber}</div>{record.serviceReportNumber > 0 ? <Sub>Inf. {record.serviceReportNumber}</Sub> : null}{record.recordKind === 'part' ? <Sub>{outputOperationalDetail(record, 'sourceContract', ['Contrato (fuente)', 'Contrato']) || 'Contrato de origen sin informar'}</Sub> : null}</TableCell>
+            <TableCell className="min-w-[14rem]"><Code>{record.modelLabel}</Code><Sub>{record.customerName}{formatContractLabel(record.contractReference, record.orderReference)}{record.sourceCustomerName && record.sourceCustomerName !== record.customerName ? ` · fuente: ${record.sourceCustomerName}` : ''}</Sub>{formatContractDetails(record.contractReference, record.orderReference, record.division, record.contractCommercialArea).map((detail) => <Sub key={detail}>{detail}</Sub>)}{formatCustomerClassification(record.customerType, record.commercialArea) ? <Sub>{formatCustomerClassification(record.customerType, record.commercialArea)}</Sub> : null}{formatOutputSourceClassification(record).map((detail) => <Sub key={detail}>{detail}</Sub>)}{outputOperationalDetail(record, 'observations', ['Observaciones']) ? <Sub>Obs.: {outputOperationalDetail(record, 'observations', ['Observaciones'])}</Sub> : null}{outputOperationalDetail(record, 'contact', ['Contacto']) ? <Sub>Contacto: {outputOperationalDetail(record, 'contact', ['Contacto'])}</Sub> : null}</TableCell>
+            <TableCell className="min-w-[10rem]"><Code>{record.partCode || 'Sin código'}</Code><Sub>{record.description || 'Sin descripción'}</Sub>{record.sourceOperational?.yieldPerUnit ? <Sub>Rend. unit.: {record.sourceOperational.yieldPerUnit}</Sub> : null}{record.sourceUnitPricePyg !== null || record.sourceTotalPyg !== null ? <Sub>{record.sourceUnitPricePyg !== null ? `₲ ${integerFormat.format(record.sourceUnitPricePyg)} unit.` : ''}{record.sourceTotalPyg !== null ? ` · ₲ ${integerFormat.format(record.sourceTotalPyg)} total` : ''}</Sub> : null}</TableCell>
+            <TableCell><Badge className="whitespace-nowrap" tone={record.recordKind === 'consumable' ? 'success' : 'warning'}>{record.recordKind === 'consumable' ? 'Consumible' : 'Repuesto'}</Badge><Sub className="mt-1">{record.family}{record.technician ? ` · ${record.technician}` : ''}</Sub></TableCell>
+            <TableCell className="text-right tabular-nums">{numberFormat(record.quantity)}</TableCell>
+            <TableCell className="text-right tabular-nums">{record.yieldPages ? numberFormat(record.yieldPages) : '—'}</TableCell>
+          </TableRow>)}
+          {records.length === 0 && <TableRow><TableCell colSpan={7} className="py-8 text-center">{loading ? 'Cargando salidas…' : requestError && pageData === null ? 'No se pudieron cargar las salidas.' : summary.records ? 'No hay salidas para los filtros seleccionados.' : 'Importa una salida de consumibles o repuestos para ver los despachos.'}</TableCell></TableRow>}
+        </TableBody>
+      </Table>
       {pageData ? <PaginationControls
         label="Paginación de salidas"
         page={pageData.page}
@@ -986,8 +990,12 @@ function ConsumablesOutputsPanel({
         onPageChange={onPageChange}
         onPageSizeChange={onPageSizeChange}
       /> : null}
-    </section>
+    </Card>
   );
+}
+
+function MiniStat({ value, label }: { value: string; label: string }) {
+  return <div className={cn(subCardClass, 'grid gap-0.5 p-3')}><div className="text-xl font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{label}</Muted></div>;
 }
 
 function ConsumablesAnalyticsPanel({ analytics, summary, quantitySummary }: {
@@ -1002,149 +1010,139 @@ function ConsumablesAnalyticsPanel({ analytics, summary, quantitySummary }: {
 
   return (
     <>
-      <section className="summary-grid legacy-summary" aria-label="Indicadores del resumen de consumibles">
-        <div className="summary-card"><span className="summary-value">{integerFormat.format(summary?.consumables ?? 0)}</span><span className="summary-label">líneas de consumibles</span></div>
-        <div className="summary-card"><span className="summary-value">{integerFormat.format(summary?.parts ?? 0)}</span><span className="summary-label">líneas de repuestos</span></div>
-        <div className="summary-card"><span className="summary-value">{formatPyg(summary?.totalCostUsd ?? 0)}</span><span className="summary-label">costo acumulado</span></div>
-        <div className="summary-card"><span className="summary-value">{integerFormat.format(summary?.equipment ?? 0)}</span><span className="summary-label">equipos con registros</span></div>
-        <div className="summary-card"><span className="summary-value">{integerFormat.format(originalQuantity)}</span><span className="summary-label">unidades originales</span></div>
-        <div className="summary-card"><span className="summary-value">{compatibleShare}%</span><span className="summary-label">proporción compatible</span></div>
+      <section className="grid min-w-0 grid-cols-2 gap-3 min-[1180px]:grid-cols-3" aria-label="Indicadores del resumen de consumibles">
+        <SummaryStat value={integerFormat.format(summary?.consumables ?? 0)} label="líneas de consumibles" />
+        <SummaryStat value={integerFormat.format(summary?.parts ?? 0)} label="líneas de repuestos" />
+        <SummaryStat value={formatPyg(summary?.totalCostUsd ?? 0)} label="costo acumulado" />
+        <SummaryStat value={integerFormat.format(summary?.equipment ?? 0)} label="equipos con registros" />
+        <SummaryStat value={integerFormat.format(originalQuantity)} label="unidades originales" />
+        <SummaryStat value={`${compatibleShare}%`} label="proporción compatible" />
       </section>
-      <section className="consumables-analytics-grid" aria-label="Analítica agregada de consumibles">
-      <section className="sales-card analytics-panel">
-        <div className="card-heading">
-          <div><div className="eyebrow">EVOLUCIÓN</div><h2>Costo por mes</h2></div>
-          <span className="muted-note">{monthly.length} meses visibles</span>
-        </div>
-        <MonthlyAggregateList rows={monthly} />
-      </section>
+      <section className="@container min-w-0" aria-label="Analítica agregada de consumibles">
+        <div className="grid min-w-0 items-start gap-4 @[44rem]:grid-cols-2">
+          <Card className={cardClass}>
+            <CardHeader eyebrow="Evolución" title="Costo por mes" aside={<Badge>{monthly.length} meses visibles</Badge>} />
+            <MonthlyAggregateList rows={monthly} />
+          </Card>
 
-      <section className="sales-card analytics-panel">
-        <div className="card-heading">
-          <div><h2>Por familia</h2><span className="muted-note">Costo y volumen normalizado</span></div>
-        </div>
-        <AggregateList rows={analytics.families} />
-      </section>
+          <Card className={cardClass}>
+            <CardHeader title="Por familia" aside={<Badge>Costo y volumen normalizado</Badge>} />
+            <AggregateList rows={analytics.families} />
+          </Card>
 
-      <section className="sales-card analytics-panel">
-        <div className="card-heading">
-          <div><h2>Por categoría</h2><span className="muted-note">Consumibles migrados y repuestos</span></div>
-        </div>
-        <AggregateList rows={analytics.categories} />
-      </section>
+          <Card className={cardClass}>
+            <CardHeader title="Por categoría" aside={<Badge>Consumibles migrados y repuestos</Badge>} />
+            <AggregateList rows={analytics.categories} />
+          </Card>
 
-      <section className="sales-card analytics-panel">
-        <div className="card-heading">
-          <div><h2>Equipos con mayor costo</h2><span className="muted-note">Ordenado por costo acumulado</span></div>
-        </div>
-        <EquipmentAggregateList rows={analytics.topEquipment} />
-      </section>
+          <Card className={cardClass}>
+            <CardHeader title="Equipos con mayor costo" aside={<Badge>Ordenado por costo acumulado</Badge>} />
+            <EquipmentAggregateList rows={analytics.topEquipment} />
+          </Card>
 
-      <section className="sales-card analytics-panel contract-analytics-panel">
-        <div className="card-heading">
-          <div><h2>Impacto por contrato</h2><span className="muted-note">Costo de consumibles y repuestos enlazado a la cartera</span></div>
-        </div>
-        <ContractAggregateList rows={analytics.contracts} />
-      </section>
+          <Card className={cn(cardClass, '@[44rem]:col-span-2')}>
+            <CardHeader title="Impacto por contrato" aside={<Badge>Costo de consumibles y repuestos enlazado a la cartera</Badge>} />
+            <ContractAggregateList rows={analytics.contracts} />
+          </Card>
 
-      <section className="sales-card analytics-panel dispatch-equipment-panel">
-        <div className="card-heading">
-          <div><h2>Fichas por equipo</h2><span className="muted-note">Relación entre salidas de consumibles y repuestos por número de serie</span></div>
-          <span className="muted-note">Hasta 100 equipos más activos</span>
+          <Card className={cn(cardClass, '@[44rem]:col-span-2')}>
+            <CardHeader title="Fichas por equipo" aside={<Badge>Hasta 100 equipos más activos</Badge>} />
+            <Muted className="text-sm">Relación entre salidas de consumibles y repuestos por número de serie.</Muted>
+            <DispatchEquipmentTable rows={analytics.dispatchEquipment} />
+          </Card>
         </div>
-        <DispatchEquipmentTable rows={analytics.dispatchEquipment} />
-      </section>
       </section>
     </>
   );
 }
 
+// Las listas agregadas pueden tener cientos de filas: se desplazan dentro de su tarjeta en vez de alargar la página.
+const listScrollClass = 'grid max-h-96 gap-3 overflow-y-auto pr-1';
+
 function MonthlyAggregateList({ rows }: { rows: ConsumablesAggregate[] }) {
-  if (rows.length === 0) return <p className="analytics-empty">Todavía no hay meses con registros aceptados.</p>;
+  if (rows.length === 0) return <Muted className="text-sm">Todavía no hay meses con registros aceptados.</Muted>;
   const maxCost = Math.max(...rows.map((row) => row.costUsd), 0);
 
   return (
-    <div className="analytics-bars">
-      {rows.map((row) => <div className="analytics-bar-row" key={row.key}>
-        <div className="analytics-row-top"><span>{row.label}</span><strong>{formatPyg(row.costUsd)}</strong></div>
-        <div className="analytics-bar-track" aria-hidden="true"><span style={{ width: barWidth(row.costUsd, maxCost) }} /></div>
-        <small>{numberFormat(row.quantity)} unidades · {numberFormat(row.records)} líneas · {numberFormat(row.equipment)} equipos</small>
-      </div>)}
+    <div className={listScrollClass}>
+      {rows.map((row) => <BarRow key={row.key} label={row.label} value={formatPyg(row.costUsd)} width={barWidth(row.costUsd, maxCost)} detail={`${numberFormat(row.quantity)} unidades · ${numberFormat(row.records)} líneas · ${numberFormat(row.equipment)} equipos`} />)}
     </div>
   );
 }
 
 function AggregateList({ rows }: { rows: ConsumablesAggregate[] }) {
-  if (rows.length === 0) return <p className="analytics-empty">Sin datos suficientes para agrupar.</p>;
+  if (rows.length === 0) return <Muted className="text-sm">Sin datos suficientes para agrupar.</Muted>;
   const maxCost = Math.max(...rows.map((row) => row.costUsd), 0);
 
   return (
-    <div className="analytics-bars">
-      {rows.map((row) => <div className="analytics-bar-row" key={row.key}>
-        <div className="analytics-row-top"><span>{row.label || 'Sin categoría'}</span><strong>{formatPyg(row.costUsd)}</strong></div>
-        <div className="analytics-bar-track" aria-hidden="true"><span style={{ width: barWidth(row.costUsd, maxCost) }} /></div>
-        <small>{numberFormat(row.records)} líneas · {numberFormat(row.quantity)} unidades · {numberFormat(row.originalRecords)} originales · {numberFormat(row.compatibleRecords)} compatibles</small>
-      </div>)}
+    <div className={listScrollClass}>
+      {rows.map((row) => <BarRow key={row.key} label={row.label || 'Sin categoría'} value={formatPyg(row.costUsd)} width={barWidth(row.costUsd, maxCost)} detail={`${numberFormat(row.records)} líneas · ${numberFormat(row.quantity)} unidades · ${numberFormat(row.originalRecords)} originales · ${numberFormat(row.compatibleRecords)} compatibles`} />)}
+    </div>
+  );
+}
+
+function BarRow({ label, value, width, detail }: { label: string; value: string; width: string; detail: string }) {
+  return (
+    <div className="grid min-w-0 gap-1">
+      <div className="flex items-baseline justify-between gap-3 text-sm"><div className="min-w-0 text-ink-2 dark:text-[#d6e2f5]">{label}</div><b className="whitespace-nowrap tabular-nums text-navy dark:text-white">{value}</b></div>
+      <div className="h-2 overflow-hidden rounded-full bg-navy/10 dark:bg-white/10" aria-hidden="true"><div className="h-full rounded-full bg-sky" style={{ width }} /></div>
+      <Muted>{detail}</Muted>
     </div>
   );
 }
 
 function EquipmentAggregateList({ rows }: { rows: ConsumablesEquipmentAggregate[] }) {
-  if (rows.length === 0) return <p className="analytics-empty">Importa un detalle asociado a un equipo para ver el ranking.</p>;
+  if (rows.length === 0) return <Muted className="text-sm">Importa un detalle asociado a un equipo para ver el ranking.</Muted>;
 
   return (
-    <div className="analytics-equipment-list">
-      {rows.map((row, index) => <div className="analytics-equipment-row" key={row.equipmentId}>
-        <span className="analytics-rank">{String(index + 1).padStart(2, '0')}</span>
-        <div className="analytics-equipment-name"><strong>{row.modelLabel}</strong><small>{row.customerName} · {row.serialNumber}</small></div>
-        <div className="analytics-equipment-value"><strong>{formatPyg(row.costUsd)}</strong><small>{numberFormat(row.records)} líneas</small></div>
+    <div className={listScrollClass}>
+      {rows.map((row, index) => <div className="grid min-w-0 grid-cols-[1.75rem_minmax(0,1fr)_auto] items-start gap-3 border-t border-navy/10 pt-3 first:border-0 first:pt-0 dark:border-sky/15" key={row.equipmentId}>
+        <div className="font-mono text-xs text-ink-2 dark:text-[#9fb2d1]">{String(index + 1).padStart(2, '0')}</div>
+        <div className="min-w-0"><div className="font-bold text-navy dark:text-white">{row.modelLabel}</div><Muted>{row.customerName} · {row.serialNumber}</Muted></div>
+        <div className="text-right"><div className="whitespace-nowrap font-bold tabular-nums text-navy dark:text-white">{formatPyg(row.costUsd)}</div><Muted>{numberFormat(row.records)} líneas</Muted></div>
       </div>)}
     </div>
   );
 }
 
 function ContractAggregateList({ rows }: { rows: ConsumablesContractAggregate[] }) {
-  if (rows.length === 0) return <p className="analytics-empty">Importa un detalle asociado a contratos para ver este cruce.</p>;
+  if (rows.length === 0) return <Muted className="text-sm">Importa un detalle asociado a contratos para ver este cruce.</Muted>;
 
   return (
-    <div className="catalog-table-wrap contract-analytics-table-wrap">
-      <table className="catalog-table contract-analytics-table">
-        <thead><tr><th>Contrato / cliente</th><th>Tipo</th><th className="align-right">Equipos</th><th className="align-right">Consumibles</th><th className="align-right">Repuestos</th><th className="align-right">Total</th></tr></thead>
-        <tbody>
-          {rows.map((row) => <tr key={row.key}>
-            <td><span className="code-cell">{row.reference}</span>{formatContractDetails(row.reference, row.orderReference, row.division, row.contractCommercialArea).map((detail) => <small className="table-secondary-text" key={detail}>{detail}</small>)}<small className="table-secondary-text">{row.customerName}</small></td>
-            <td>{row.contractType}</td>
-            <td className="align-right">{integerFormat.format(row.equipment)}</td>
-            <td className="align-right">{formatPyg(row.consumableCostUsd)}<small className="table-secondary-text">{integerFormat.format(row.consumableRecords)} líneas</small></td>
-            <td className="align-right">{formatPyg(row.partCostUsd)}<small className="table-secondary-text">{integerFormat.format(row.partRecords)} líneas</small></td>
-            <td className="align-right price-cell">{formatPyg(row.costUsd)}<small className="table-secondary-text">{integerFormat.format(row.records)} líneas</small></td>
-          </tr>)}
-        </tbody>
-      </table>
-    </div>
+    <Table className="min-w-[44rem] [overflow-wrap:normal]" wrapperClassName="max-h-[32rem]">
+      <TableHeader><TableRow><TableHead>Contrato / cliente</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Equipos</TableHead><TableHead className="text-right">Consumibles</TableHead><TableHead className="text-right">Repuestos</TableHead><TableHead className="text-right">Total</TableHead></TableRow></TableHeader>
+      <TableBody>
+        {rows.map((row) => <TableRow key={row.key}>
+          <TableCell className="min-w-[14rem]"><Code>{row.reference}</Code>{formatContractDetails(row.reference, row.orderReference, row.division, row.contractCommercialArea).map((detail) => <Sub key={detail}>{detail}</Sub>)}<Sub>{row.customerName}</Sub></TableCell>
+          <TableCell>{row.contractType}</TableCell>
+          <TableCell className="text-right tabular-nums">{integerFormat.format(row.equipment)}</TableCell>
+          <TableCell className="whitespace-nowrap text-right tabular-nums">{formatPyg(row.consumableCostUsd)}<Sub>{integerFormat.format(row.consumableRecords)} líneas</Sub></TableCell>
+          <TableCell className="whitespace-nowrap text-right tabular-nums">{formatPyg(row.partCostUsd)}<Sub>{integerFormat.format(row.partRecords)} líneas</Sub></TableCell>
+          <TableCell className="whitespace-nowrap text-right font-semibold tabular-nums">{formatPyg(row.costUsd)}<Sub>{integerFormat.format(row.records)} líneas</Sub></TableCell>
+        </TableRow>)}
+      </TableBody>
+    </Table>
   );
 }
 
 function DispatchEquipmentTable({ rows }: { rows: ConsumablesDispatchEquipmentAggregate[] }) {
-  if (rows.length === 0) return <p className="analytics-empty">Importa salidas de consumibles o repuestos para construir las fichas por equipo.</p>;
+  if (rows.length === 0) return <Muted className="text-sm">Importa salidas de consumibles o repuestos para construir las fichas por equipo.</Muted>;
 
   return (
-    <div className="catalog-table-wrap dispatch-equipment-table-wrap">
-      <table className="catalog-table dispatch-equipment-table">
-        <thead><tr><th>Equipo / cliente</th><th>Serie</th><th>Contrato</th><th className="align-right">Consumibles</th><th className="align-right">Repuestos</th><th className="align-right">Ratio</th><th>Última salida</th></tr></thead>
-        <tbody>
-          {rows.map((row) => <tr key={row.key}>
-            <td><span className="code-cell">{row.modelLabel}</span><small className="table-secondary-text">{row.customerName}</small></td>
-            <td><span className="code-cell">{row.serialNumber}</span></td>
-            <td><span className="code-cell">{row.contractReference || 'Sin referencia'}</span>{formatContractDetails(row.contractReference, row.orderReference, row.division, row.contractCommercialArea).map((detail) => <small className="table-secondary-text" key={detail}>{detail}</small>)}<small className="table-secondary-text">{row.contractType}</small></td>
-            <td className="align-right">{numberFormat(row.consumableRecords)} líneas<small className="table-secondary-text">{numberFormat(row.consumableQuantity)} unidades · {numberFormat(row.originalRecords)} orig. / {numberFormat(row.compatibleRecords)} comp.</small></td>
-            <td className="align-right">{numberFormat(row.partRecords)} líneas<small className="table-secondary-text">{numberFormat(row.partQuantity)} unidades</small></td>
-            <td className="align-right">{row.partRecords > 0 ? `${(row.consumableRecords / row.partRecords).toFixed(1)}x` : '—'}</td>
-            <td>{row.lastRecordedAt || 'Sin fecha'}</td>
-          </tr>)}
-        </tbody>
-      </table>
-    </div>
+    <Table className="min-w-[52rem] [overflow-wrap:normal]" wrapperClassName="max-h-[32rem]">
+      <TableHeader><TableRow><TableHead>Equipo / cliente</TableHead><TableHead>Serie</TableHead><TableHead>Contrato</TableHead><TableHead className="text-right">Consumibles</TableHead><TableHead className="text-right">Repuestos</TableHead><TableHead className="text-right">Ratio</TableHead><TableHead>Última salida</TableHead></TableRow></TableHeader>
+      <TableBody>
+        {rows.map((row) => <TableRow key={row.key}>
+          <TableCell className="min-w-[12rem]"><Code>{row.modelLabel}</Code><Sub>{row.customerName}</Sub></TableCell>
+          <TableCell className="whitespace-nowrap"><Code>{row.serialNumber}</Code></TableCell>
+          <TableCell className="min-w-[11rem]"><Code>{row.contractReference || 'Sin referencia'}</Code>{formatContractDetails(row.contractReference, row.orderReference, row.division, row.contractCommercialArea).map((detail) => <Sub key={detail}>{detail}</Sub>)}<Sub>{row.contractType}</Sub></TableCell>
+          <TableCell className="text-right tabular-nums">{numberFormat(row.consumableRecords)} líneas<Sub>{numberFormat(row.consumableQuantity)} unidades · {numberFormat(row.originalRecords)} orig. / {numberFormat(row.compatibleRecords)} comp.</Sub></TableCell>
+          <TableCell className="text-right tabular-nums">{numberFormat(row.partRecords)} líneas<Sub>{numberFormat(row.partQuantity)} unidades</Sub></TableCell>
+          <TableCell className="whitespace-nowrap text-right tabular-nums">{row.partRecords > 0 ? `${(row.consumableRecords / row.partRecords).toFixed(1)}x` : '—'}</TableCell>
+          <TableCell className="whitespace-nowrap">{row.lastRecordedAt || 'Sin fecha'}</TableCell>
+        </TableRow>)}
+      </TableBody>
+    </Table>
   );
 }
 
