@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { readJson, toErrorMessage } from './http';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { getSharedJson, readJson, toErrorMessage } from './http';
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
 
@@ -61,5 +61,37 @@ describe('sin copias locales', () => {
     const found = execSync("grep -rlE 'function readJson' src --include=*.ts --include=*.tsx || true").toString()
       .split('\n').filter((file) => file && file !== 'src/core/http.ts' && !file.endsWith('.test.ts'));
     expect(found).toEqual([]);
+  });
+});
+
+describe('getSharedJson', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('dos peticiones simultáneas a la misma URL descargan una sola vez y comparten el resultado', async () => {
+    const fetchMock = vi.fn(async () => json([1, 2, 3]));
+    vi.stubGlobal('fetch', fetchMock);
+    const [first, second] = await Promise.all([getSharedJson<number[]>('/api/x'), getSharedJson<number[]>('/api/x')]);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(first).toBe(second);
+  });
+
+  it('URLs distintas no se comparten y, al terminar, una nueva petición vuelve a descargar', async () => {
+    const fetchMock = vi.fn(async () => json({ ok: true }));
+    vi.stubGlobal('fetch', fetchMock);
+    await Promise.all([getSharedJson('/api/a'), getSharedJson('/api/b')]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    await getSharedJson('/api/a');
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+  });
+
+  it('un error se propaga a todos y no queda en memoria: el siguiente intento vuelve a pedir', async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(json({ error: 'Falló.' }, 500))
+      .mockResolvedValueOnce(json({ ok: 1 }));
+    vi.stubGlobal('fetch', fetchMock);
+    const results = await Promise.allSettled([getSharedJson('/api/e'), getSharedJson('/api/e')]);
+    expect(results.map((result) => result.status)).toEqual(['rejected', 'rejected']);
+    await expect(getSharedJson('/api/e')).resolves.toEqual({ ok: 1 });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });

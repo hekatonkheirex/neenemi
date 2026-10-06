@@ -3,11 +3,12 @@ import { importCatalogFile } from '../catalogo/import-file';
 import { loadLegacyPriceListSeed } from '../catalogo/legacy-seed';
 import { normalizeModelName, type CatalogFamilySummary, type CatalogModelNote, type CatalogServiceItem, type CatalogSourceFile } from '../catalogo/repository';
 import { exportPriceList } from './export';
+import { countItemsByModel } from './model-counts';
 import { selectionNeedsSave } from './selection-sync';
 import type { PricingSettings, SalesPricePart } from './types';
 import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
-import { readJson, toErrorMessage } from '../../core/http';
+import { getSharedJson, readJson, toErrorMessage } from '../../core/http';
 import { memoizeString } from '../../core/memoize';
 import PaginationControls from '../../core/PaginationControls';
 import { usePagedList } from '../../core/usePagedList';
@@ -62,17 +63,12 @@ export default function ListadoPreciosModule() {
   useEffect(() => {
     const controller = new AbortController();
     setAllItemsLoading(true);
-    fetch('/api/sales/price-list', { signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('No se pudo cargar el catálogo completo de precios.');
-        return (await response.json()) as SalesPricePart[];
-      })
-      .then(setAllItems)
+    getSharedJson<SalesPricePart[]>('/api/sales/price-list')
+      .then((value) => { if (!controller.signal.aborted) setAllItems(value); })
       .catch((requestError: unknown) => {
-        if (requestError instanceof DOMException && requestError.name === 'AbortError') return;
-        setError(toErrorMessage(requestError));
+        if (!controller.signal.aborted) setError(`No se pudo cargar el catálogo completo de precios. ${toErrorMessage(requestError)}`);
       })
-      .finally(() => setAllItemsLoading(false));
+      .finally(() => { if (!controller.signal.aborted) setAllItemsLoading(false); });
 
     return () => controller.abort();
   }, [refreshVersion]);
@@ -155,17 +151,14 @@ export default function ListadoPreciosModule() {
     if (stockOnly) params.set('stockOnly', 'true');
 
     setLoading(true);
-    fetch(`/api/sales/price-list?${params.toString()}`, { signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('No se pudo consultar el listado de precios.');
-        return (await response.json()) as SalesPricePart[];
-      })
-      .then(setItems)
+    const queryString = params.toString();
+    // Sin filtros es la misma URL que pide el catálogo completo: se comparte una sola descarga.
+    getSharedJson<SalesPricePart[]>(queryString ? `/api/sales/price-list?${queryString}` : '/api/sales/price-list')
+      .then((value) => { if (!controller.signal.aborted) setItems(value); })
       .catch((requestError: unknown) => {
-        if (requestError instanceof DOMException && requestError.name === 'AbortError') return;
-        setError(toErrorMessage(requestError));
+        if (!controller.signal.aborted) setError(`No se pudo consultar el listado de precios. ${toErrorMessage(requestError)}`);
       })
-      .finally(() => setLoading(false));
+      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
 
     return () => controller.abort();
   }, [familyName, query, modelName, stockOnly, refreshVersion]);
@@ -214,7 +207,17 @@ export default function ListadoPreciosModule() {
     () => new Set(selectedModels.map((model) => normalizeModelText(model))),
     [selectedModels],
   );
+  const partCountByModel = useMemo(
+    () => countItemsByModel(allItems.length > 0 ? allItems : items, (item) => item.models, normalizeModelText),
+    [allItems, items],
+  );
+  const serviceCountByModel = useMemo(
+    () => countItemsByModel(serviceItems, (item) => [item.modelName], normalizeModelText),
+    [serviceItems],
+  );
   const displayedItems = useMemo(() => {
+    // Sin familia ni "solo seleccionados" no se descarta nada: evita recorrer ~10 mil ítems normalizando sus modelos.
+    if (!familyModelKeys && !(onlySelected && selectedModels.length > 0)) return items;
     return items.filter((item) => {
       const itemModelKeys = item.models.map(normalizeModelText);
       if (familyModelKeys && !itemModelKeys.some((model) => familyModelKeys.has(model))) return false;
@@ -613,9 +616,10 @@ export default function ListadoPreciosModule() {
         </div>
         <div className="price-list-model-grid" role="list" aria-label="Modelos disponibles para exportar">
           {visibleModelOptions.map((model) => {
-            const selected = selectedModelKeys.has(normalizeModelText(model));
-            const partCount = (allItems.length > 0 ? allItems : items).filter((item) => item.models.some((itemModel) => normalizeModelText(itemModel) === normalizeModelText(model))).length;
-            const serviceCount = serviceItems.filter((item) => normalizeModelText(item.modelName) === normalizeModelText(model)).length;
+            const modelKey = normalizeModelText(model);
+            const selected = selectedModelKeys.has(modelKey);
+            const partCount = partCountByModel.get(modelKey) ?? 0;
+            const serviceCount = serviceCountByModel.get(modelKey) ?? 0;
             return (
               <label key={model} className={`price-list-model-option${selected ? ' selected' : ''}`}>
                 <input type="checkbox" checked={selected} onChange={() => toggleModel(model)} />
