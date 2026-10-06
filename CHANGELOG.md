@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.68 · 2026-10-06
+
+Retira la ficha «Familias del catálogo» del resumen de Listado de precios. Las dos fichas restantes, partes visibles y modelos disponibles, comparten el ancho de forma equilibrada. Conserva las familias como filtro y mantiene la separación entre las acciones y la descarga del original.
+
 ## 0.1.67 · 2026-10-06
 
 Separa verticalmente la barra de acciones de Listado de precios y el enlace «Descargar original», evitando que quede pegado a «Exportar listado XLSX» en ambos temas. El resumen muestra partes visibles, modelos disponibles y familias del catálogo en lugar de servicios y modelos seleccionados; la selección conserva su contador en su propio panel. No modifica las importaciones ni las descargas.

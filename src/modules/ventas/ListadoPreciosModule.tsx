@@ -493,10 +493,9 @@ export default function ListadoPreciosModule() {
         {sourceFile && <Button variant="export" size="sm" className="mb-4" asChild><a href={`/api/imports/${encodeURIComponent(sourceFile.batchId)}/files/${encodeURIComponent(sourceFile.fileId)}`} download={sourceFile.fileName}><DownloadIcon />Descargar original</a></Button>}
       </div>
       <div className="grid min-w-0 gap-6">
-        <section className="grid min-w-0 gap-4 sm:grid-cols-3" aria-label="Resumen del listado">
+        <section className="grid min-w-0 gap-4 sm:grid-cols-2" aria-label="Resumen del listado">
           <PriceListSummary label="Partes visibles" value={displayedItems.length} />
           <PriceListSummary label="Modelos disponibles" value={availableModels.length} />
-          <PriceListSummary label="Familias del catálogo" value={families.length} />
         </section>
         <Card className="min-w-0 grid-cols-1">
           <CardHeader eyebrow="REGLAS COMERCIALES" title="Precio calculado" aside={

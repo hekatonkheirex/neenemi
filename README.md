@@ -334,8 +334,8 @@ comerciales, filtros y selección separados. La selección se guarda automática
 los repuestos mantienen la paginación y las tablas desplazan dentro de sus tarjetas. Los nombres
 largos de familias, modelos y notas se ajustan sin invadir otras columnas. Guardar las reglas
 actualiza los precios visibles; los cambios pendientes siguen advirtiéndose antes de salir.
-El resumen muestra las partes visibles y los conteos de modelos disponibles y familias del catálogo;
-el número de modelos seleccionados permanece en su panel de selección.
+El resumen muestra las partes visibles y el conteo de modelos disponibles; las familias se conservan como filtro.
+El número de modelos seleccionados permanece en su panel de selección.
 
 Proformas tiene su **paridad operativa aprobada (2026-09-24)** tras verificarse que el XLSX exportado
 coincide con el legado. Ya permite importar un informe de servicio PDF con lectura local: muestra cliente,
