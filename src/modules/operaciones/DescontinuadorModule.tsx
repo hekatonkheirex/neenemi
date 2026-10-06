@@ -28,6 +28,7 @@ import { confirmAction } from '../../core/confirm';
 import { readJson, toErrorMessage } from '../../core/http';
 import PaginationControls from '../../core/PaginationControls';
 import { usePagedList } from '../../core/usePagedList';
+import { UploadButton, ExportButton } from '../../core/ActionButtons';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const customerTypes: readonly CustomerType[] = ['Publico', 'Privado'];
@@ -141,16 +142,14 @@ function DiscontinuationSourceCard({
           </ul>
         ) : null}
       </div>
-      <label className="file-input-button">
-        <span>{busy ? 'Importando…' : actionLabel}</span>
-        <input
-          type="file"
-          accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          multiple={multiple}
-          onChange={onChange}
-          disabled={disabled || busy}
-        />
-      </label>
+      <UploadButton
+        busy={busy}
+        label={actionLabel}
+        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        multiple={multiple}
+        onChange={onChange}
+        disabled={disabled}
+      />
     </article>
   );
 }
@@ -733,7 +732,7 @@ export default function DescontinuadorModule() {
           <div><div className="eyebrow">FILTRO GENERAL</div><h2>Segmentar cartera</h2><p className="analysis-meta">Combina tipo de contrato, cliente y área comercial para priorizar los equipos afectados.</p></div>
           <div className="discontinuation-portfolio-heading-actions">
           <label className="search-field compact-search"><span>Buscar cartera</span><input value={customerQuery} onChange={(event) => { setCustomerQuery(event.target.value); setVisibleCustomerCount(customerPageSize); }} placeholder="Cliente, contrato, OV, serie…" /></label>
-            <button className="secondary-button" type="button" onClick={() => void exportPortfolio()} disabled={exportingPortfolio || exportCustomers.length === 0}>{exportingPortfolio ? 'Exportando…' : 'Exportar cartera XLSX'}</button>
+            <ExportButton busy={exportingPortfolio} onClick={() => void exportPortfolio()} disabled={exportCustomers.length === 0}>Exportar cartera XLSX</ExportButton>
           </div>
         </div>
 
@@ -1010,7 +1009,7 @@ function CustomerPortfolioDetail({
     <div>
       <div className="discontinuation-customer-detail-header">
         <div><div className="eyebrow">CLIENTE SELECCIONADO</div><h3>{customer.name}</h3><p>{customer.customerType ?? 'Sin tipo'} · {customer.commercialArea ?? 'Sin área comercial'}</p><SourceDetails details={customer.sourceDetails} /></div>
-        <button className="secondary-button" type="button" onClick={onExport} disabled={exporting}>{exporting ? 'Exportando…' : 'Exportar cliente XLSX'}</button>
+        <ExportButton busy={exporting} onClick={onExport}>Exportar cliente XLSX</ExportButton>
       </div>
       <div className="discontinuation-customer-meta"><span><strong>{numberFormat.format(contracts.length)}</strong> contratos</span><span><strong>{numberFormat.format(equipmentCount)}</strong> equipos</span><span className={alertCount > 0 ? 'has-alert' : ''}><strong>{numberFormat.format(alertCount)}</strong> alertas de soporte</span></div>
       <div className="discontinuation-contract-detail-list">

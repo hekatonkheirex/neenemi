@@ -123,10 +123,6 @@
   font-size: 0.65rem;
 }
 
-.discontinuation-source-card .file-input-button {
-  align-self: end;
-}
-
 .discontinuation-source-actions {
   display: flex;
   flex-wrap: wrap;

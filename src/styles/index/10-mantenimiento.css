@@ -169,21 +169,6 @@
   white-space: nowrap;
 }
 
-.maintenance-panel-heading-actions .maintenance-download-button {
-  min-width: auto;
-  padding: 0.42rem 0.68rem;
-  border-color: rgba(0, 163, 224, 0.42);
-  color: #006e95;
-  background: rgba(233, 245, 251, 0.9);
-  box-shadow: none;
-  font-size: 0.68rem;
-}
-
-.maintenance-panel-heading-actions .maintenance-download-button:hover:not(:disabled) {
-  border-color: rgba(0, 163, 224, 0.7);
-  background: #d9f0f8;
-}
-
 .maintenance-priority-list {
   display: grid;
   max-height: 18rem;

@@ -7,6 +7,7 @@ import { formatSourceLocation } from '../../core/source-location';
 import { travelSourceOperationalEntries } from './source-operational';
 import type { HistoricalSummary, TravelStatus, TravelTrip } from './types';
 import { readJson, toErrorMessage as describeError } from '../../core/http';
+import { DownloadIcon } from '../../core/ActionButtons';
 
 export type TravelView = 'resumen' | 'viajes' | 'rendiciones' | 'historico';
 
@@ -567,10 +568,11 @@ function TravelSourceArchive({ batchId, sourceName }: { batchId: string | null; 
         {batchId && selectedSheet ? <div className="travel-source-heading-actions">
           <span className="muted-note">{integerFormat.format(selectedSheet.rowCount)} filas</span>
           <a
-            className="secondary-button source-data-download-button"
+            className="secondary-button export-button"
             href={`/api/imports/${encodeURIComponent(batchId ?? '')}/files/${encodeURIComponent(selectedSheet.importFileId)}`}
             download={selectedSheet.fileName}
           >
+            <DownloadIcon />
             Descargar original
           </a>
         </div> : null}

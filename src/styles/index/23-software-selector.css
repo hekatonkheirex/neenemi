@@ -48,10 +48,6 @@
   margin-left: auto;
 }
 
-.software-input-actions .file-input-button {
-  min-height: 2.7rem;
-}
-
 .software-input-card .form-hint strong {
   color: #a7c8ff;
   font-weight: 700;
@@ -408,7 +404,7 @@
 
   .software-actions button,
   .software-input-actions button,
-  .software-input-actions .file-input-button {
+  .software-input-actions .upload-button {
     flex: 1;
     min-width: 0;
   }

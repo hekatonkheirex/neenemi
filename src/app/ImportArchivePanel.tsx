@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { findSourceHeaderRow } from '../core/source-header-row';
 import { confirmAction } from '../core/confirm';
 import { readJson, toErrorMessage as describeError } from '../core/http';
+import { DownloadIcon } from '../core/ActionButtons';
 
 type ImportBatchSummary = {
   id: string;
@@ -319,10 +320,11 @@ function ImportArchiveViewer({
               <span className={`source-data-status status-${batch.status}`}>{formatImportStatus(batch.status)}</span>
               {selectedSheet ? (
                 <a
-                  className="secondary-button source-data-download-button"
+                  className="secondary-button export-button"
                   href={`/api/imports/${encodeURIComponent(batch.id)}/files/${encodeURIComponent(selectedSheet.importFileId)}`}
                   download={selectedSheet.fileName}
                 >
+                  <DownloadIcon />
                   Descargar original
                 </a>
               ) : null}

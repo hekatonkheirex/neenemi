@@ -103,17 +103,6 @@ html[data-theme='dark'] .maintenance-panel-heading-actions > span {
   color: #dce8fc;
 }
 
-html[data-theme='dark'] .maintenance-panel-heading-actions .maintenance-download-button {
-  border-color: rgba(0, 163, 224, 0.5);
-  color: #c4efff;
-  background: rgba(0, 163, 224, 0.14);
-}
-
-html[data-theme='dark'] .maintenance-panel-heading-actions .maintenance-download-button:hover:not(:disabled) {
-  border-color: rgba(0, 163, 224, 0.82);
-  background: rgba(0, 163, 224, 0.24);
-}
-
 html[data-theme='dark'] .maintenance-insight-panel {
   border-color: rgba(144, 174, 229, 0.2);
   background: rgba(18, 31, 54, 0.58);

@@ -6,6 +6,7 @@ import { renderCoveragePrintReportMarkup } from './coverage-print-report';
 import type { PdfPageFailure, PdfProgressEvent } from './pdf-analysis';
 import type { CanonColorType, CanonModel, CanonModelDraft, CoverageAnalysis, PageCoverage, YieldEstimate } from './types';
 import { readJson, toErrorMessage } from '../../core/http';
+import { UploadIcon } from '../../core/ActionButtons';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1, minimumFractionDigits: 1 });
 const pageFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
@@ -341,7 +342,7 @@ export default function CoberturaModule() {
               <div className="coverage-upload-copy">
                 <strong>{uploadStatus === 'analyzing' ? 'Analizando el PDF…' : uploadStatus === 'saving' ? 'Guardando el análisis…' : uploadStatus === 'complete' ? 'Análisis completado' : 'Suelta aquí tu archivo PDF'}</strong>
                 <span>Se calculará la cobertura de negro, cian, magenta y amarillo para cada página.</span>
-                <button className="primary-button" type="button" onClick={() => fileInputRef.current?.click()} disabled={uploadBusy}>Seleccionar PDF</button>
+                <button className="secondary-button upload-button" type="button" onClick={() => fileInputRef.current?.click()} disabled={uploadBusy}><UploadIcon /><span>Seleccionar PDF</span></button>
               </div>
             </div>
 

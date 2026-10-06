@@ -143,13 +143,6 @@ html[data-theme='light'] .software-recommendation summary {
 }
 
 /* Barrido de contraste en tema claro (WCAG AA): texto naranja, blanco sobre naranja y colores del tema oscuro sin variante clara. */
-/* El botón de carga es naranja en los dos temas. */
-/* html[data-theme] (0,1,1) está en los dos temas y gana a las reglas claras existentes, que llevan prefijo. */
-html[data-theme] .maintenance-source-upload-primary,
-html[data-theme] .maintenance-source-upload-primary span {
-  color: var(--ds-navy);
-}
-
 html[data-theme='light'] .consumables-tabs button.active {
   color: var(--ds-navy);
 }

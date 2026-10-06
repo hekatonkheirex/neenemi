@@ -32,6 +32,7 @@ import TravelDrawer from './TravelDrawer';
 import { pendingNotice } from './pendingNotice';
 import { paginateItems } from '../../core/pagination';
 import { readJson, toErrorMessage } from '../../core/http';
+import { UploadButton, ExportButton } from '../../core/ActionButtons';
 
 function tripToForm(trip: TravelTrip): TravelTripInput {
   return {
@@ -401,8 +402,8 @@ export default function ViaticosModule() {
           <p className="lead">Registra viajes técnicos, conserva el histórico de la planilla y sigue las rendiciones desde la misma SQLite local.</p>
         </div>
         <div className="travel-actions">
-          <label className="secondary-button file-button"><span>{importing ? 'Importando…' : 'Importar planilla'}</span><input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(event) => void importFile(event)} disabled={importing} /></label>
-          <button className="secondary-button" type="button" onClick={() => void exportTrips()} disabled={exporting || trips.length === 0}>{exporting ? 'Exportando…' : 'Exportar XLSX'}</button>
+          <UploadButton busy={importing} label="Importar planilla" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(event) => void importFile(event)} />
+          <ExportButton busy={exporting} onClick={() => void exportTrips()} disabled={trips.length === 0}>Exportar XLSX</ExportButton>
           <button className="primary-button" type="button" onClick={openNewTrip}>Nuevo viaje</button>
         </div>
       </section>

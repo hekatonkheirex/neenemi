@@ -39,8 +39,13 @@ describe('contraste del tema claro', () => {
     expect(theme).toMatch(/\.coverage-upload-dropzone\s*{[^}]*background:\s*var\(--ds-blue-wash\)/);
   });
 
-  it('Mantenimiento: las reglas válidas en los dos temas llevan html[data-theme] (sin él pierden frente a las claras)', () => {
-    expect(theme).toMatch(/html\[data-theme\] \.maintenance-source-upload-primary,/);
+  it('botones por intencion (cargar celeste, exportar verde): texto >= 4,5:1 en los dos temas', () => {
+    expect(ratio('#8bd6f2', '#1b2d47')).toBeGreaterThanOrEqual(4.5);   // oscuro: cargar
+    expect(ratio('#86e0b0', '#1b3342')).toBeGreaterThanOrEqual(4.5);   // oscuro: exportar
+    expect(ratio('#006e95', '#e9f5fb')).toBeGreaterThanOrEqual(4.5);   // claro: cargar
+    expect(ratio('#176b45', '#eaf7f0')).toBeGreaterThanOrEqual(4.5);   // claro: exportar
+    expect(theme).toMatch(/html\[data-theme='light'\] \.secondary-button\.upload-button\s*{[^}]*#006e95/);
+    expect(theme).toMatch(/html\[data-theme='light'\] \.secondary-button\.export-button\s*{[^}]*#176b45/);
   });
 
   it('pestañas animadas (.anim-tabs): texto y activo cumplen 4,5:1 sobre página, píldora y fondo oscuro', () => {

@@ -328,7 +328,7 @@
 
   .sla-actions button,
   .sla-input-actions button,
-  .sla-input-actions .file-input-button {
+  .sla-input-actions .upload-button {
     flex: 1;
     min-width: 0;
   }

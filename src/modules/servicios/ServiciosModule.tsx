@@ -14,6 +14,7 @@ import type { ConsumablesOutputRecord } from '../consumibles/types';
 import { ConsumablesServicePanel } from '../consumibles/LegacyAnalysisPanels';
 import type { ServiceImportResult, ServiceRecord, ServiceSourceOperational, ServiceSummary } from './types';
 import { readJson, toErrorMessage } from '../../core/http';
+import { UploadButton } from '../../core/ActionButtons';
 
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 
@@ -278,7 +279,7 @@ export default function ServiciosModule() {
             <div className="eyebrow">FUENTE HISTÓRICA</div>
             <h2>Servicios LAM</h2>
             <p className="form-hint import-description">Acepta exportaciones con columnas agregadas o desplazadas: el parser busca los campos por encabezado y usa índices antiguos como respaldo.</p>
-            <label className="file-input-button"><span>{importing ? 'Importando…' : 'Seleccionar XLSX'}</span><input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFiles(event)} disabled={importing} /></label>
+            <UploadButton busy={importing} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFiles(event)} disabled={importing} />
           </section>
 
           <section className="sales-card form-card service-method-card">

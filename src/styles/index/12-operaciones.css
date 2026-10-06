@@ -305,40 +305,6 @@
   flex-wrap: wrap;
 }
 
-.maintenance-source-upload {
-  position: relative;
-  display: flex;
-  min-height: 2.65rem;
-  flex: 1 1 11rem;
-  align-items: center;
-  justify-content: center;
-  padding: 0.7rem 0.8rem;
-  border: 1px solid transparent;
-  border-radius: 0.55rem;
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-align: center;
-  cursor: pointer;
-}
-
-.maintenance-source-upload input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.maintenance-source-upload-primary {
-  color: #ffffff;
-  background: var(--ds-orange);
-  box-shadow: 0 0.55rem 1.3rem rgba(255, 107, 0, 0.2);
-}
-
-.maintenance-source-upload-primary:hover {
-  background: #e85e00;
-}
-
 .maintenance-source-file-actions {
   padding-top: 0.7rem;
   border-top: 1px solid var(--dk-line);

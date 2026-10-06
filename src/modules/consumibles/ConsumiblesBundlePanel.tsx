@@ -7,6 +7,7 @@ import {
   type ConsumablesBundleSourceId,
 } from './bundle';
 import { confirmAction } from '../../core/confirm';
+import { UploadButton } from '../../core/ActionButtons';
 
 type ConsumablesBundlePanelProps = {
   importing: boolean;
@@ -68,20 +69,18 @@ export default function ConsumablesBundlePanel({ importing, busy, files, onFiles
                 <small>{definition?.origin ?? 'Origen documentado en la matriz de fuentes.'}</small>
                 {selectedFile ? <em>{selectedFile.name} · {formatFileSize(selectedFile.size)}</em> : null}
               </div>
-              <label className="file-input-button source-data-bundle-file-button">
-                <span>{selectedFile ? 'Cambiar' : 'Seleccionar'}</span>
-                <input
-                  type="file"
-                  accept={spreadsheetAccept}
-                  onChange={(event) => {
-                    const file = event.currentTarget.files?.[0];
-                    event.currentTarget.value = '';
-                    if (!file) return;
-                    onFilesChange({ ...files, [source.id]: file });
-                  }}
-                  disabled={busy}
-                />
-              </label>
+              <UploadButton
+                className="source-data-bundle-file-button"
+                label={selectedFile ? 'Cambiar' : 'Seleccionar'}
+                accept={spreadsheetAccept}
+                onChange={(event) => {
+                  const file = event.currentTarget.files?.[0];
+                  event.currentTarget.value = '';
+                  if (!file) return;
+                  onFilesChange({ ...files, [source.id]: file });
+                }}
+                disabled={busy}
+              />
             </div>
           );
         })}

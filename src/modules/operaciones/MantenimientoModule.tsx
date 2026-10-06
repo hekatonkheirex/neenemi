@@ -21,6 +21,7 @@ import {
   Settings02Icon,
 } from '@hugeicons/core-free-icons';
 import { readJson, toErrorMessage } from '../../core/http';
+import { UploadButton, ExportButton, DownloadIcon } from '../../core/ActionButtons';
 
 type CounterImportResponse = MaintenanceImportSummary & {
   duplicate: boolean;
@@ -387,17 +388,15 @@ export default function MantenimientoModule() {
             <span>Arrastra aquí el export o selecciona una opción</span>
           </div>
           <div className="maintenance-source-upload-actions">
-            <label className="maintenance-source-upload maintenance-source-upload-primary">
-              <span>{importingCounters ? 'Importando…' : 'Cargar CSV / XLSX'}</span>
-              <input type="file" accept=".csv,text/csv,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleCounterFileChange} disabled={importingCounters || clearingImport} />
-            </label>
+            <UploadButton busy={importingCounters} label="Cargar CSV / XLSX" accept=".csv,text/csv,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleCounterFileChange} disabled={clearingImport} />
           </div>
           {maintenanceSummary?.batchId ? <div className="maintenance-source-file-actions">
             {maintenanceSummary.sourceFileId ? <a
-              className="secondary-button source-data-download-button"
+              className="secondary-button export-button"
               href={`/api/imports/${encodeURIComponent(maintenanceSummary.batchId)}/files/${encodeURIComponent(maintenanceSummary.sourceFileId)}`}
               download={maintenanceSummary.sourceName ?? undefined}
             >
+              <DownloadIcon />
               Descargar original
             </a> : null}
             <button className="secondary-button maintenance-clear-import-button" type="button" onClick={() => void clearMaintenanceImport()} disabled={clearingImport || importingCounters}>
@@ -436,7 +435,7 @@ export default function MantenimientoModule() {
                 <span className="muted-note">Mostrando {visibleAnalyses.length.toLocaleString('es-PY')} de {analyses.length.toLocaleString('es-PY')} equipos</span>
                 <label className="compact-field"><span>Período</span><select value={analysisMonths} onChange={(event) => { const months = Number(event.target.value); setAnalysisMonths(months); void loadAnalyses(months); }}><option value={1}>Último mes</option><option value={3}>Últimos 3 meses</option><option value={6}>Últimos 6 meses</option><option value={12}>Últimos 12 meses</option></select></label>
                 <button className="secondary-button" type="button" onClick={() => void printAnalysis()} disabled={visibleAnalyses.length === 0}>Imprimir / PDF</button>
-                <button className="primary-button" type="button" onClick={() => void exportAnalysis()} disabled={exportingAnalysis || visibleAnalyses.length === 0}>{exportingAnalysis ? 'Exportando…' : 'Exportar XLSX'}</button>
+                <ExportButton busy={exportingAnalysis} onClick={() => void exportAnalysis()} disabled={visibleAnalyses.length === 0}>Exportar XLSX</ExportButton>
               </div>
             </div>
             {maintenanceSummary?.batchId ? <p className="analysis-meta">Fuente: <strong>{maintenanceSummary.sourceName}</strong> · {maintenanceSummary.records.toLocaleString('es-PY')} lecturas · {maintenanceSummary.matchedRecords.toLocaleString('es-PY')} modelos reconocidos</p> : null}
@@ -527,7 +526,7 @@ function MaintenanceInspectionRow({ analysis, onPrint }: { analysis: Maintenance
           </div>
           {sourceDetails.length > 0 ? <p className="maintenance-inspection-source">Origen: {sourceDetails.join(' · ')}</p> : null}
           <div className="maintenance-inspection-actions">
-            <button className="primary-button" type="button" onClick={onPrint}>Descargar informe técnico PDF</button>
+            <ExportButton onClick={onPrint}>Descargar informe técnico PDF</ExportButton>
           </div>
         </div>
       </div>

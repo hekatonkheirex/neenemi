@@ -1,5 +1,6 @@
 import type { MaintenanceAnalysis } from './analysis';
 import { buildMaintenanceExecutiveSummary } from './maintenance-summary';
+import { ExportButton } from '../../core/ActionButtons';
 
 export type MaintenanceExportKind = 'critical' | 'attention' | 'unrecognized' | 'zero' | 'recommended';
 
@@ -146,7 +147,7 @@ function PriorityList({
   return <div className={`maintenance-priority-panel ${tone}`}>
     <div className="maintenance-priority-heading">
       <div><h3>{title}</h3><p>{description}</p></div>
-      <div className="maintenance-panel-heading-actions"><span>{analyses.length}</span>{onExport && analyses.length > 0 ? <button className="secondary-button maintenance-download-button" type="button" onClick={() => onExport(analyses, exportKind)}>Descargar XLSX</button> : null}</div>
+      <div className="maintenance-panel-heading-actions"><span>{analyses.length}</span>{onExport && analyses.length > 0 ? <ExportButton onClick={() => onExport(analyses, exportKind)}>Descargar XLSX</ExportButton> : null}</div>
     </div>
     {analyses.length === 0 ? <p className="maintenance-priority-empty">{empty}</p> : <div className="maintenance-priority-list">{analyses.map((analysis, index) => <div className="maintenance-priority-row" key={`${analysis.serialNumber}-${analysis.modelLabel}-${index}`}>
       <span className="maintenance-priority-index">{String(index + 1).padStart(2, '0')}</span>
@@ -180,7 +181,7 @@ function MaintenanceSubsetPanel({
   return <div className={`maintenance-subset-panel ${tone}`}>
     <div className="maintenance-priority-heading">
       <div><h3>{title}</h3><p>{description}</p></div>
-      <div className="maintenance-panel-heading-actions"><span>{analyses.length}</span>{onExport && analyses.length > 0 ? <button className="secondary-button maintenance-download-button" type="button" onClick={() => onExport(analyses, exportKind)}>Descargar XLSX</button> : null}</div>
+      <div className="maintenance-panel-heading-actions"><span>{analyses.length}</span>{onExport && analyses.length > 0 ? <ExportButton onClick={() => onExport(analyses, exportKind)}>Descargar XLSX</ExportButton> : null}</div>
     </div>
     {analyses.length === 0 ? <p className="maintenance-priority-empty">{empty}</p> : <div className="maintenance-subset-list">{analyses.map((analysis, index) => <div className="maintenance-subset-row" key={`${analysis.serialNumber}-${analysis.modelLabel}-${index}`}>
       <span className="maintenance-priority-index">{String(index + 1).padStart(2, '0')}</span>

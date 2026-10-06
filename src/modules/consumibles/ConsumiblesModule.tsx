@@ -55,6 +55,7 @@ import {
   ConsumablesServicePanel,
 } from './LegacyAnalysisPanels';
 import { readJson, toErrorMessage } from '../../core/http';
+import { UploadButton } from '../../core/ActionButtons';
 
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 
@@ -580,35 +581,35 @@ export default function ConsumiblesModule() {
             <div className="eyebrow">FUENTE PRINCIPAL</div>
             <h2>Detalle de consumibles</h2>
             <p className="form-hint import-description">Origen: <code>Superset &gt; SGS Cliente 360 &gt; Consumibles &gt; Consumibles, Detalles</code>. Se filtran papel y modelos fuera de las familias analizadas.</p>
-            <label className="file-input-button"><span>{importing === 'consumibles' ? 'Importando…' : 'Seleccionar XLSX'}</span><input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('consumibles', event)} disabled={importing !== null} /></label>
+            <UploadButton busy={importing === 'consumibles'} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('consumibles', event)} disabled={importing !== null} />
           </section>
 
           <section className="sales-card form-card">
             <div className="eyebrow">FUENTE COMPLEMENTARIA</div>
             <h2>Detalle de repuestos</h2>
             <p className="form-hint import-description">Origen: <code>Superset &gt; SGS Cliente 360 &gt; Repuestos &gt; Repuestos, Detalles</code>. También puede producir consumibles migrados, como rodillos y cilindros.</p>
-            <label className="file-input-button"><span>{importing === 'repuestos' ? 'Importando…' : 'Seleccionar XLSX'}</span><input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('repuestos', event)} disabled={importing !== null} /></label>
+            <UploadButton busy={importing === 'repuestos'} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('repuestos', event)} disabled={importing !== null} />
           </section>
 
           <section className="sales-card form-card">
             <div className="eyebrow">FUENTE HISTÓRICA</div>
             <h2>Uso de repuestos</h2>
             <p className="form-hint import-description">Origen: <code>Superset &gt; SGS Uso de Repuestos &gt; Consolidados y selectores &gt; Detalle de Repuestos</code>. Totales en PYG; se muestran en guaraníes usando la tasa referencial {PYG_USD_RATE_DATE}.</p>
-            <label className="file-input-button"><span>{importing === 'uso-repuestos' ? 'Importando…' : 'Seleccionar XLSX'}</span><input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('uso-repuestos', event)} disabled={importing !== null} /></label>
+            <UploadButton busy={importing === 'uso-repuestos'} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('uso-repuestos', event)} disabled={importing !== null} />
           </section>
 
           <section className="sales-card form-card">
             <div className="eyebrow">DESPACHOS</div>
             <h2>Salida de consumibles</h2>
             <p className="form-hint import-description">Origen: <code>SGS &gt; REPORTES &gt; Consumibles &gt; Rango de fechas</code>. Importa remisiones de tóner, cilindros y rodillos como entregas separadas.</p>
-            <label className="file-input-button"><span>{importing === 'salida-consumibles' ? 'Importando…' : 'Seleccionar XLSX'}</span><input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('salida-consumibles', event)} disabled={importing !== null} /></label>
+            <UploadButton busy={importing === 'salida-consumibles'} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('salida-consumibles', event)} disabled={importing !== null} />
           </section>
 
           <section className="sales-card form-card">
             <div className="eyebrow">DESPACHOS</div>
             <h2>Salida de repuestos</h2>
             <p className="form-hint import-description">Origen: <code>SGS &gt; REPORTES &gt; Consumibles &gt; Rango de fechas</code>. Rodillos y cilindros se clasifican como consumibles; las demás piezas quedan como repuestos.</p>
-            <label className="file-input-button"><span>{importing === 'salida-repuestos' ? 'Importando…' : 'Seleccionar XLSX'}</span><input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('salida-repuestos', event)} disabled={importing !== null} /></label>
+            <UploadButton busy={importing === 'salida-repuestos'} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('salida-repuestos', event)} disabled={importing !== null} />
           </section>
 
           <section className="sales-card form-card consumables-legacy-sources-card">
@@ -622,7 +623,7 @@ export default function ConsumiblesModule() {
                   <div className="legacy-fleet-source" key={source.type}>
                     <div className="legacy-fleet-source-heading"><strong>{source.title}</strong><span>{definition?.expectedFiles[0] ?? 'Archivo XLSX'}</span></div>
                     <small>{definition?.origin}</small>
-                    <label className="file-input-button"><span>{importing === source.type ? 'Importando…' : 'Seleccionar XLSX'}</span><input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importLegacySource(source.type, event)} disabled={importing !== null} /></label>
+                    <UploadButton busy={importing === source.type} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importLegacySource(source.type, event)} disabled={importing !== null} />
                   </div>
                 );
               })}

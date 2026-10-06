@@ -12,6 +12,7 @@ import { getSharedJson, readJson, toErrorMessage } from '../../core/http';
 import { memoizeString } from '../../core/memoize';
 import PaginationControls from '../../core/PaginationControls';
 import { usePagedList } from '../../core/usePagedList';
+import { UploadButton, ExportButton } from '../../core/ActionButtons';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const decimalFormat = new Intl.NumberFormat('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
@@ -463,26 +464,24 @@ export default function ListadoPreciosModule() {
           <p className="lead">Consulta el catálogo común y calcula el precio comercial con reglas guardadas localmente.</p>
         </div>
         <div className="catalog-header-actions">
-          <label className="secondary-button">
-            {importingCatalog ? 'Importando listado…' : 'Cargar listado'}
-            <input
-              type="file"
-              accept=".xlsx,.json"
-              hidden
-              disabled={importingCatalog || restoringSeed}
-              onChange={(event) => {
-                const file = event.target.files?.[0];
-                event.target.value = '';
-                if (file) void handleImportCatalog(file);
-              }}
-            />
-          </label>
+          <UploadButton
+            busy={importingCatalog}
+            busyLabel="Importando listado…"
+            label="Cargar listado"
+            accept=".xlsx,.json"
+            disabled={restoringSeed}
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = '';
+              if (file) void handleImportCatalog(file);
+            }}
+          />
           <button className="secondary-button" type="button" onClick={() => void handleRestoreSeed()} disabled={restoringSeed || importingCatalog || allItemsLoading || legacyCatalogLoading}>
             {restoringSeed ? 'Restaurando semilla…' : 'Restaurar semilla heredada'}
           </button>
-          <button className="primary-button" type="button" onClick={() => void handleExport()} disabled={!pricing || selectedModels.length === 0 || allItemsLoading || legacyCatalogLoading || importingCatalog}>
+          <ExportButton onClick={() => void handleExport()} disabled={!pricing || selectedModels.length === 0 || allItemsLoading || legacyCatalogLoading || importingCatalog}>
             Exportar listado XLSX
-          </button>
+          </ExportButton>
         </div>
       </section>
 

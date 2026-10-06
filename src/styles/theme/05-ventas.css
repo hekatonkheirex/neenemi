@@ -123,18 +123,6 @@ html[data-theme='light'] .pagination-loading {
   color: var(--ds-muted);
 }
 
-html[data-theme='light'] .maintenance-panel-heading-actions .maintenance-download-button {
-  border-color: #7cc8e3;
-  color: #006e95;
-  background: var(--ds-blue-wash);
-  box-shadow: none;
-}
-
-html[data-theme='light'] .maintenance-panel-heading-actions .maintenance-download-button:hover:not(:disabled) {
-  border-color: var(--ds-sky);
-  background: #d9f0f8;
-}
-
 html[data-theme='light'] .maintenance-insight-panel {
   border-color: var(--ds-border);
   background: var(--ds-surface-alt);

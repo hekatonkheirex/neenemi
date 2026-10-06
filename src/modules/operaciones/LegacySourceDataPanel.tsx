@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { readJson, toErrorMessage as describeError } from '../../core/http';
+import { DownloadIcon } from '../../core/ActionButtons';
 
 type ImportBatchStatus = 'staged' | 'applied' | 'failed';
 
@@ -194,10 +195,11 @@ export default function LegacySourceDataPanel() {
                 <div className="source-data-viewer-actions">
                   <span className={`source-data-status status-${selectedBatch.status}`}>{formatImportStatus(selectedBatch.status)}</span>
                   {selectedSheet ? <a
-                    className="secondary-button source-data-download-button"
+                    className="secondary-button export-button"
                     href={`/api/imports/${encodeURIComponent(selectedBatch.id)}/files/${encodeURIComponent(selectedSheet.importFileId)}`}
                     download={selectedSheet.fileName}
                   >
+                    <DownloadIcon />
                     Descargar original
                   </a> : null}
                 </div>

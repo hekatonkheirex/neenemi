@@ -22,6 +22,7 @@ import type {
   SalesCatalogs,
 } from './types';
 import { readJson, toErrorMessage } from '../../core/http';
+import { ExportButton } from '../../core/ActionButtons';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const usdNumberFormat = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -635,7 +636,7 @@ export default function ProformasModule() {
           <button className="secondary-button" type="button" onClick={() => setReportImportOpen(true)}>Importar informe PDF</button>
           <button className="secondary-button" type="button" onClick={() => setSalesCatalogImportOpen(true)}>Actualizar catálogos</button>
           <button className="secondary-button" type="button" onClick={() => setContractImportOpen(true)}>Importar contrato</button>
-          <button className="primary-button" type="button" onClick={() => void handleExport()} disabled={!savedProforma}>Exportar XLSX</button>
+          <ExportButton onClick={() => void handleExport()} disabled={!savedProforma}>Exportar XLSX</ExportButton>
         </div>
       </section>
 

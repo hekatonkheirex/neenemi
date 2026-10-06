@@ -10,6 +10,7 @@ import type { MpsAnalysis } from './analysis';
 import type { MpsImportSummary, MpsModel, MpsProjection, SaveMpsModelInput } from './repository';
 import { confirmAction } from '../../core/confirm';
 import { readJson, toErrorMessage } from '../../core/http';
+import { UploadButton, DownloadIcon } from '../../core/ActionButtons';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1 });
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
@@ -331,16 +332,17 @@ export default function MpsModule() {
             <div className="eyebrow">MIGRACIÓN DE LEGADO</div>
             <h2>Importar perfiles</h2>
             <p className="form-hint import-description">Selecciona el archivo SQLite <code>canon_mps.db</code> de la calculadora anterior. Se conserva el original y sus modelos pasan a la base unificada.</p>
-            <label className="file-input-button"><span>{importing ? 'Importando…' : 'Seleccionar base SQLite'}</span><input id="mps-legacy-database" name="mpsLegacyDatabase" type="file" accept=".db,.sqlite,.sqlite3,application/vnd.sqlite3" onChange={(event) => void importLegacyFile(event)} disabled={importing} /></label>
+            <UploadButton id="mps-legacy-database" name="mpsLegacyDatabase" busy={importing} label="Seleccionar base SQLite" accept=".db,.sqlite,.sqlite3,application/vnd.sqlite3" onChange={(event) => void importLegacyFile(event)} />
             <div className="import-summary">
               {summary && summary.models > 0 ? <>
                 <strong>{summary.models.toLocaleString('es-PY')} modelos activos</strong>
                 <span>{summary.sourceName ? `${summary.sourceName} · ` : 'Incluye perfiles manuales · '}{summary.linkedEquipmentModels.toLocaleString('es-PY')} enlazados con equipos</span>
                 {summary.batchId && summary.sourceFileId ? <a
-                  className="secondary-button source-data-download-button"
+                  className="secondary-button export-button"
                   href={`/api/imports/${encodeURIComponent(summary.batchId)}/files/${encodeURIComponent(summary.sourceFileId)}`}
                   download={summary.sourceName ?? undefined}
                 >
+                  <DownloadIcon />
                   Descargar base original
                 </a> : null}
               </> : <span>Aún no hay una carga MPS en la suite.</span>}

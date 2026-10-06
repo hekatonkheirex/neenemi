@@ -7,6 +7,7 @@ import { DEMO_SLA_TEXT, SLA_BASELINE_NOTE, SLA_REFERENCE_SECTIONS } from './cons
 import { buildSlaHtmlReport } from './html-report';
 import type { SlaAnalysis, SlaComplianceItem, SlaReferenceSection, SlaStatus } from './types';
 import { readJson, toErrorMessage } from '../../core/http';
+import { UploadButton, ExportButton } from '../../core/ActionButtons';
 
 const MAX_TEXT_LENGTH = 250_000;
 const numberFormat = new Intl.NumberFormat('es-PY');
@@ -186,8 +187,8 @@ export default function SlaModule() {
         </div>
         <div className="sla-actions">
           <button className="secondary-button" type="button" onClick={() => void printReport()} disabled={!analysis}>Imprimir / PDF</button>
-          <button className="secondary-button" type="button" onClick={exportHtmlReport} disabled={!analysis}>Exportar HTML</button>
-          <button className="primary-button" type="button" onClick={exportReport} disabled={!analysis}>Exportar JSON</button>
+          <ExportButton onClick={exportHtmlReport} disabled={!analysis}>Exportar HTML</ExportButton>
+          <ExportButton onClick={exportReport} disabled={!analysis}>Exportar JSON</ExportButton>
         </div>
       </section>
 
@@ -209,7 +210,7 @@ export default function SlaModule() {
                 <textarea value={text} maxLength={MAX_TEXT_LENGTH} rows={10} onChange={(event) => { setText(event.target.value); setAnalysis(null); }} placeholder="Pega aquí horarios, tiempos, consumibles, contadores y demás cláusulas del cliente…" />
               </label>
               <div className="sla-input-actions">
-                <label className="file-input-button"><span>Cargar TXT / PDF</span><input type="file" accept=".txt,.md,.csv,.json,.pdf,text/plain,text/markdown,text/csv,application/json,application/pdf" onChange={(event) => void loadDocumentFile(event)} /></label>
+                <UploadButton label="Cargar TXT / PDF" accept=".txt,.md,.csv,.json,.pdf,text/plain,text/markdown,text/csv,application/json,application/pdf" onChange={(event) => void loadDocumentFile(event)} />
                 <button className="secondary-button" type="button" onClick={loadDemo}>Cargar ejemplo</button>
                 <button className="secondary-button" type="submit" id="btn-local" disabled={analyzing || !text.trim()}>{analyzing ? 'Procesando…' : 'Ejecutar análisis local'}</button>
                 <button className="primary-button" type="submit" id="btn-ai" disabled={analyzing || !text.trim()}>Analizar con IA</button>

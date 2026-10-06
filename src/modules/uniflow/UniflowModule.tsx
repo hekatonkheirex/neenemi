@@ -20,6 +20,7 @@ import { UNIFLOW_PRICE_TABS } from './types';
 import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
 import { readJson, toErrorMessage } from '../../core/http';
+import { ExportButton } from '../../core/ActionButtons';
 
 const INITIAL_DEVICE: UniflowAddedDevice = { id: 'row-1', modelName: '', quantity: 1, withCIP: false };
 const PRICE_TAB_LABELS: Record<UniflowPriceTabId, string> = {
@@ -238,7 +239,7 @@ export default function UniflowModule() {
         <div className="uniflow-actions">
           <button className="secondary-button" type="button" onClick={() => void copySummary()} disabled={!results}>Copiar resumen</button>
           <button className="secondary-button" type="button" onClick={printReport} disabled={!results || printableReport !== null}>{printableReport ? 'Preparando…' : 'Imprimir / PDF'}</button>
-          <button className="primary-button" type="button" onClick={() => void exportExcel()} disabled={!results}>Exportar XLSX</button>
+          <ExportButton onClick={() => void exportExcel()} disabled={!results}>Exportar XLSX</ExportButton>
         </div>
       </section>
 

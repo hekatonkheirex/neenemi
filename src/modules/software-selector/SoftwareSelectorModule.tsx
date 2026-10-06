@@ -18,6 +18,7 @@ import type { IconSvgElement } from '@hugeicons/react';
 import { ChartBarLineIcon, GridViewIcon, PrinterIcon, ServerStack01Icon, ShieldEnergyIcon, Wrench01Icon, WorkflowSquare01Icon } from '@hugeicons/core-free-icons';
 import AnimatedTabs from '../../core/AnimatedTabs';
 import { readJson, toErrorMessage } from '../../core/http';
+import { UploadButton, ExportButton } from '../../core/ActionButtons';
 
 const MAX_TEXT_LENGTH = 250_000;
 const DEMO_TEXT = 'El pliego requiere liberación Follow-Me, autenticación con tarjeta, integración con Active Directory, escaneo a SharePoint y continuidad operativa mediante un servidor de impresión local.';
@@ -310,7 +311,7 @@ export default function SoftwareSelectorModule() {
         </div>
         <div className="software-actions">
           <button className="secondary-button" type="button" onClick={() => void printReport()} disabled={selectedFeatures.length === 0}>Imprimir / PDF</button>
-          <button className="primary-button" type="button" onClick={exportReport} disabled={selectedFeatures.length === 0}>Exportar JSON</button>
+          <ExportButton onClick={exportReport} disabled={selectedFeatures.length === 0}>Exportar JSON</ExportButton>
         </div>
       </section>
 
@@ -332,10 +333,7 @@ export default function SoftwareSelectorModule() {
                 <textarea id="software-requirements" name="requirements" value={text} maxLength={MAX_TEXT_LENGTH} rows={9} onChange={(event) => { setText(event.target.value); setAnalysis(null); }} placeholder="Pega aquí los requisitos técnicos del cliente…" />
               </label>
               <div className="software-input-actions">
-                <label className="file-input-button">
-                  <span>Cargar TXT / PDF / DOCX</span>
-                  <input id="software-source-file" name="sourceFile" type="file" accept=".txt,.md,.csv,.json,.pdf,.docx,text/plain,text/markdown,text/csv,application/json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(event) => void loadDocumentFile(event)} />
-                </label>
+                <UploadButton id="software-source-file" name="sourceFile" label="Cargar TXT / PDF / DOCX" accept=".txt,.md,.csv,.json,.pdf,.docx,text/plain,text/markdown,text/csv,application/json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(event) => void loadDocumentFile(event)} />
                 <button className="secondary-button" type="button" onClick={loadDemo}>Cargar ejemplo</button>
                 <button className="secondary-button" type="submit" id="btn-local" disabled={analyzing || !text.trim()}>{analyzing ? 'Procesando…' : 'Analizar localmente'}</button>
                 <button className="primary-button" type="submit" id="btn-ai" disabled={analyzing || !text.trim()}>Analizar con IA</button>

@@ -320,17 +320,6 @@ html[data-theme='light'] .text-button:hover {
   color: var(--ds-navy);
 }
 
-html[data-theme='light'] .file-input-button {
-  border-color: #7cc8e3;
-  color: #006e95;
-  background: var(--ds-blue-wash);
-}
-
-html[data-theme='light'] .file-input-button:hover {
-  border-color: var(--ds-sky);
-  background: #d8f0f8;
-}
-
 html[data-theme='light'] .app-shell :where(
   .catalog-table,
   .proforma-table,

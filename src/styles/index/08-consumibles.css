@@ -39,11 +39,6 @@
   text-align: right;
 }
 
-.legacy-fleet-source .file-input-button {
-  min-height: 2.25rem;
-  padding: 0.55rem 0.7rem;
-}
-
 .form-hint {
   margin: 0.25rem 0 0;
   color: var(--dk-7187aa);

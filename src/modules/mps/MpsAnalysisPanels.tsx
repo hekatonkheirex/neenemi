@@ -1,5 +1,6 @@
 import type { MpsAnalysis } from './analysis';
 import type { MpsModel } from './repository';
+import { ExportButton } from '../../core/ActionButtons';
 
 type MpsAnalysisPanelsProps = {
   model: MpsModel;
@@ -46,9 +47,7 @@ export default function MpsAnalysisPanels({ model, analysis, exporting, exportin
           <p className="mps-card-subtitle">Datos del perfil actual y rendimiento declarado de sus componentes.</p>
         </div>
         <div className="mps-analysis-actions">
-          <button className="secondary-button" type="button" onClick={onExportConsumables} disabled={exportingConsumables || model.consumables.length === 0}>
-            {exportingConsumables ? 'Preparando…' : 'Exportar XLSX'}
-          </button>
+          <ExportButton busy={exportingConsumables} busyLabel="Preparando…" onClick={onExportConsumables} disabled={model.consumables.length === 0}>Exportar XLSX</ExportButton>
           <span className={`mps-profile-source ${model.isEditable ? 'manual' : 'imported'}`}>
             {model.isEditable ? 'Perfil manual' : 'Fuente importada'}
           </span>
@@ -83,9 +82,7 @@ export default function MpsAnalysisPanels({ model, analysis, exporting, exportin
         </div>
         <div className="mps-analysis-actions">
           <button className="secondary-button" type="button" onClick={onPrint} disabled={!analysis || printing}>{printing ? 'Preparando…' : 'Imprimir / PDF'}</button>
-          <button className="secondary-button" type="button" onClick={onExport} disabled={!analysis || exporting}>
-            {exporting ? 'Preparando…' : 'Exportar Excel'}
-          </button>
+          <ExportButton busy={exporting} busyLabel="Preparando…" onClick={onExport} disabled={!analysis}>Exportar Excel</ExportButton>
         </div>
       </div>
 
