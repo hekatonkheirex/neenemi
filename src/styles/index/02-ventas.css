@@ -27,7 +27,7 @@
 
 .catalog-empty-state h2 {
   margin: 0;
-  color: #e5eeff;
+  color: var(--dk-e5eeff);
   font-size: clamp(1.25rem, 2vw, 1.7rem);
 }
 
@@ -39,7 +39,7 @@
 }
 
 .catalog-empty-state small {
-  color: #8298ba;
+  color: var(--dk-8298ba);
   font-size: 0.72rem;
 }
 
@@ -80,7 +80,7 @@
 .price-list-model-selection-heading p {
   max-width: 48rem;
   margin: 0;
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   font-size: 0.75rem;
   line-height: 1.5;
 }
@@ -88,7 +88,7 @@
 .price-list-model-selection-heading > strong {
   flex: 0 0 auto;
   padding-top: 1.15rem;
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   font-size: 0.75rem;
   white-space: nowrap;
 }
@@ -134,7 +134,7 @@
   padding: 0.65rem 0.7rem;
   border: 1px solid rgba(144, 174, 229, 0.13);
   border-radius: 0.6rem;
-  color: #c8d6ed;
+  color: var(--dk-c8d6ed);
   background: rgba(18, 31, 54, 0.55);
   cursor: pointer;
   transition: border-color 140ms ease, background 140ms ease;
@@ -151,7 +151,7 @@
   height: 1rem;
   flex: 0 0 auto;
   margin-top: 0.12rem;
-  accent-color: #ff6b00;
+  accent-color: var(--ds-orange);
 }
 
 .price-list-model-option span {
@@ -168,19 +168,19 @@
 }
 
 .price-list-model-option strong {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.74rem;
 }
 
 .price-list-model-option small {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.66rem;
 }
 
 .search-field {
   display: grid;
   gap: 0.45rem;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.67rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -193,7 +193,7 @@
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
   outline: 0;
-  color: #e7efff;
+  color: var(--dk-e7efff);
   background: rgba(18, 31, 54, 0.7);
   font-size: 0.8rem;
   letter-spacing: 0;

@@ -58,7 +58,7 @@
     margin: 0;
     padding: 0;
     page: mps-report;
-    color: #18243a;
+    color: var(--ds-ink);
   }
 
   .mps-page > .catalog-header {
@@ -86,10 +86,10 @@
 
   .mps-main > .sales-card {
     margin: 0 0 10mm;
-    border-color: #d6deea;
+    border-color: var(--ds-border);
     border-radius: 0.35rem;
     box-shadow: none;
-    color: #18243a;
+    color: var(--ds-ink);
     background: #ffffff;
     break-inside: auto;
   }
@@ -108,8 +108,8 @@
   .mps-analysis-kpi,
   .mps-ranking-panel,
   .mps-analysis-note-panel {
-    border-color: #d6deea;
-    color: #18243a;
+    border-color: var(--ds-border);
+    color: var(--ds-ink);
     background: #ffffff;
   }
 
@@ -121,7 +121,7 @@
   .mps-analysis-note-list strong,
   .mps-ranking-label strong,
   .mps-volume-insight strong {
-    color: #18243a;
+    color: var(--ds-ink);
   }
 
   .mps-profile-facts span,
@@ -153,21 +153,21 @@
 
   .catalog-table-wrap {
     overflow: visible;
-    border-color: #d6deea;
+    border-color: var(--ds-border);
     background: #ffffff;
   }
 
   .mps-projection-table {
     width: 100%;
     min-width: 0;
-    color: #18243a;
+    color: var(--ds-ink);
     font-size: 0.68rem;
   }
 
   .mps-projection-table th,
   .mps-projection-table td {
     padding: 0.5rem 0.55rem;
-    border-color: #d6deea;
+    border-color: var(--ds-border);
   }
 
   .mps-projection-table th {
@@ -178,7 +178,7 @@
   .mps-projection-table .code-cell,
   .mps-year-cell strong,
   .mps-year-cell small {
-    color: #18243a;
+    color: var(--ds-ink);
   }
 
   .mps-projection-table .table-secondary-text,
@@ -191,7 +191,7 @@
   }
 
   .mps-ranking-track span {
-    background: #00a3e0;
+    background: var(--ds-sky);
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
@@ -236,14 +236,14 @@
     display: block !important;
     page: mps-analysis-report;
     padding: 0;
-    color: #18243a;
+    color: var(--ds-ink);
     font-family: var(--ds-font-ui);
   }
 
   body[data-print-mode='mps-analysis'] .mps-print-accent {
     height: 6px;
     margin-bottom: 9mm;
-    background: #ff6b00;
+    background: var(--ds-orange);
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
@@ -268,7 +268,7 @@
   body[data-print-mode='mps-analysis'] .mps-print-title-row h1 {
     max-width: none;
     margin: 0;
-    color: #1a2c4c;
+    color: var(--ds-navy);
     font-size: 1.65rem;
     line-height: 1.08;
     letter-spacing: -0.01em;
@@ -282,7 +282,7 @@
 
   body[data-print-mode='mps-analysis'] .mps-print-brand {
     flex: 0 0 auto;
-    color: #1a2c4c;
+    color: var(--ds-navy);
     font-size: 1.2rem;
     font-weight: 800;
     letter-spacing: 0.16em;
@@ -291,7 +291,7 @@
   body[data-print-mode='mps-analysis'] .mps-print-divider {
     height: 1px;
     margin: 5mm 0 4mm;
-    background: #d6deea;
+    background: var(--ds-border);
   }
 
   body[data-print-mode='mps-analysis'] .mps-print-meta-grid {
@@ -313,7 +313,7 @@
 
   body[data-print-mode='mps-analysis'] .mps-print-meta-card h2 {
     margin: 0 0 2.5mm;
-    color: #1a2c4c;
+    color: var(--ds-navy);
     font-size: 0.72rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -343,7 +343,7 @@
   }
 
   body[data-print-mode='mps-analysis'] .mps-print-meta-card dd {
-    color: #18243a;
+    color: var(--ds-ink);
     font-weight: 700;
   }
 
@@ -351,21 +351,21 @@
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
-    color: #18243a;
+    color: var(--ds-ink);
     font-size: 0.65rem;
   }
 
   body[data-print-mode='mps-analysis'] .mps-print-table th,
   body[data-print-mode='mps-analysis'] .mps-print-table td {
     padding: 2.2mm 1.8mm;
-    border: 1px solid #d6deea;
+    border: 1px solid var(--ds-border);
     text-align: left;
     vertical-align: top;
   }
 
   body[data-print-mode='mps-analysis'] .mps-print-table th {
     color: #ffffff;
-    background: #1a2c4c;
+    background: var(--ds-navy);
     font-size: 0.61rem;
     font-weight: 700;
     letter-spacing: 0.03em;
@@ -396,7 +396,7 @@
   }
 
   body[data-print-mode='mps-analysis'] .mps-print-table td strong {
-    color: #18243a;
+    color: var(--ds-ink);
     font-weight: 700;
   }
 
@@ -433,7 +433,7 @@
   body[data-print-mode='mps-analysis'] .mps-print-report > footer {
     margin-top: 5mm;
     padding-top: 2mm;
-    border-top: 1px solid #d6deea;
+    border-top: 1px solid var(--ds-border);
     color: #94a3b8;
     font-size: 0.58rem;
     text-align: right;

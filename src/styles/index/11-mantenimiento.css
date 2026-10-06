@@ -10,12 +10,12 @@
   justify-content: space-between;
   gap: 1.5rem;
   padding: 1rem 0 0.9rem;
-  border-bottom: 2px solid #ff6b00;
+  border-bottom: 2px solid var(--ds-orange);
 }
 
 .maintenance-executive-print-title-row h1 {
   margin: 0;
-  color: #18243a;
+  color: var(--ds-ink);
   font-size: 1.65rem;
   line-height: 1.05;
 }
@@ -27,7 +27,7 @@
 }
 
 .maintenance-executive-print-brand {
-  color: #1a2c4c;
+  color: var(--ds-navy);
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.12em;
@@ -50,7 +50,7 @@
   display: grid;
   gap: 0.2rem;
   padding: 0.6rem;
-  border: 1px solid #d6deea;
+  border: 1px solid var(--ds-border);
   border-radius: 0.25rem;
   background: #f8fafc;
 }
@@ -71,7 +71,7 @@
 
 .maintenance-executive-print-meta strong {
   overflow-wrap: anywhere;
-  color: #18243a;
+  color: var(--ds-ink);
   font-size: 0.72rem;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .maintenance-executive-print-kpi strong {
-  color: #18243a;
+  color: var(--ds-ink);
   font-size: 1.25rem;
   line-height: 1;
 }
@@ -100,7 +100,7 @@
   margin: 0 0 0.55rem;
   padding-bottom: 0.35rem;
   border-bottom: 1px solid #b7c8da;
-  color: #18243a;
+  color: var(--ds-ink);
   font-size: 0.98rem;
 }
 
@@ -123,7 +123,7 @@
 
 .maintenance-executive-print-list {
   break-inside: avoid;
-  border: 1px solid #d6deea;
+  border: 1px solid var(--ds-border);
   border-radius: 0.25rem;
   overflow: hidden;
 }
@@ -139,7 +139,7 @@
 
 .maintenance-executive-print-list-heading h3 {
   margin: 0;
-  color: #18243a;
+  color: var(--ds-ink);
   font-size: 0.78rem;
 }
 
@@ -159,7 +159,7 @@
 .maintenance-executive-print-list table {
   width: 100%;
   border-collapse: collapse;
-  color: #18243a;
+  color: var(--ds-ink);
   font-size: 0.68rem;
 }
 
@@ -208,7 +208,7 @@
 .maintenance-executive-print-footer {
   margin-top: 1.4rem;
   padding-top: 0.5rem;
-  border-top: 1px solid #d6deea;
+  border-top: 1px solid var(--ds-border);
   color: #718096;
   font-size: 0.64rem;
 }

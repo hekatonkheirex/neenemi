@@ -1,6 +1,23 @@
 :root {
   --ds-font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --ds-font-code: ui-monospace, SFMono-Regular, Consolas, monospace;
+  /* Paleta del tema oscuro: un token por valor exacto (sin cambio visual). Los tonos casi iguales se fusionarán tras revisión visual. */
+  --dk-7187aa: #7187aa;
+  --dk-dce8fc: #dce8fc;
+  --dk-8fa5c7: #8fa5c7;
+  --dk-7890b8: #7890b8;
+  --dk-8fe5b5: #8fe5b5;
+  --dk-e7efff: #e7efff;
+  --dk-dce9ff: #dce9ff;
+  --dk-e5eeff: #e5eeff;
+  --dk-c8d6ed: #c8d6ed;
+  --dk-d8e7ff: #d8e7ff;
+  --dk-93a8ca: #93a8ca;
+  --dk-8298ba: #8298ba;
+  --dk-edf4ff: #edf4ff;
+  --dk-0f1b30: #0f1b30;
+  --dk-9ab0d0: #9ab0d0;
+  --dk-f2c279: #f2c279;
   font-family: var(--ds-font-ui);
   font-variant-numeric: tabular-nums;
   color: #edf3ff;
@@ -132,7 +149,7 @@ button {
 }
 
 .nav-item.active {
-  color: #edf4ff;
+  color: var(--dk-edf4ff);
   background: linear-gradient(90deg, rgba(61, 111, 230, 0.28), rgba(61, 111, 230, 0.08));
   box-shadow: inset 2px 0 #77a7ff;
 }
@@ -202,7 +219,7 @@ button {
 
 .breadcrumb {
   overflow: hidden;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.75rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -285,7 +302,7 @@ h2 {
 }
 
 .summary-value {
-  color: #edf4ff;
+  color: var(--dk-edf4ff);
   font-size: 2.5rem;
   font-weight: 800;
   letter-spacing: -0.07em;
@@ -342,7 +359,7 @@ h2 {
   padding: 1.15rem;
   border: 1px solid rgba(144, 174, 229, 0.15);
   border-radius: 0.8rem;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   background: rgba(15, 27, 48, 0.72);
   text-align: left;
   transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
@@ -408,7 +425,7 @@ h2 {
 
 .scope-note {
   margin: 2rem 0 0;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.76rem;
   line-height: 1.55;
 }
@@ -448,7 +465,7 @@ h2 {
 }
 
 .detail-card strong {
-  color: #e5eeff;
+  color: var(--dk-e5eeff);
   font-size: 0.92rem;
   overflow-wrap: anywhere;
 }
@@ -490,7 +507,7 @@ h2 {
 .overview-import-meta {
   display: block;
   margin-top: 0.15rem;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.66rem;
 }
 
@@ -629,7 +646,7 @@ h2 {
 
 .io-panel p {
   margin-bottom: 0;
-  color: #93a8ca;
+  color: var(--dk-93a8ca);
   font-size: 0.82rem;
   line-height: 1.55;
 }
@@ -755,7 +772,7 @@ li::before {
   align-items: center;
   flex-wrap: wrap;
   margin-bottom: 1.25rem;
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   font-size: 0.76rem;
 }
 

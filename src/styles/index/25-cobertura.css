@@ -30,7 +30,7 @@
 
 .coverage-upload-description {
   margin: 0.35rem 0 0;
-  color: #93a8ca;
+  color: var(--dk-93a8ca);
   font-size: 0.84rem;
   line-height: 1.6;
 }
@@ -74,12 +74,12 @@
 }
 
 .coverage-upload-copy strong {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.9rem;
 }
 
 .coverage-upload-copy span {
-  color: #93a8ca;
+  color: var(--dk-93a8ca);
   font-size: 0.74rem;
   line-height: 1.5;
 }
@@ -100,13 +100,13 @@
 
 .coverage-upload-file span,
 .coverage-upload-progress small {
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   font-size: 0.68rem;
 }
 
 .coverage-upload-file strong {
   overflow: hidden;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.74rem;
   font-weight: 600;
   text-overflow: ellipsis;
@@ -192,7 +192,7 @@
   width: 100%;
   min-width: 680px;
   border-collapse: collapse;
-  color: #c8d6ed;
+  color: var(--dk-c8d6ed);
   font-size: 0.88rem;
   table-layout: fixed;
 }
@@ -215,7 +215,7 @@
 }
 
 .coverage-table thead th {
-  background: #1a2c4c;
+  background: var(--ds-navy);
 }
 
 .coverage-table thead th:not(:first-child) {
@@ -245,7 +245,7 @@
 }
 
 .coverage-table tbody th {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.88rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -283,7 +283,7 @@
 
 .coverage-empty {
   padding: 2rem 1rem;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.74rem;
   text-align: center;
 }
@@ -316,14 +316,14 @@
 
 .coverage-model-editor-heading h3 {
   margin: 0;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.9rem;
 }
 
 .coverage-catalog-hint,
 .coverage-catalog-empty {
   margin: 0.8rem 0 0;
-  color: #93a8ca;
+  color: var(--dk-93a8ca);
   font-size: 0.74rem;
   line-height: 1.5;
 }
@@ -361,14 +361,14 @@
 
 .coverage-model-row strong {
   overflow: hidden;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.72rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .coverage-model-row small {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.63rem;
 }
 
@@ -388,7 +388,7 @@
 
 .coverage-note {
   margin: 0;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.72rem;
   line-height: 1.55;
 }
@@ -436,7 +436,7 @@
 .coverage-yield-table {
   width: 100%;
   border-collapse: collapse;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.78rem;
   table-layout: fixed;
 }
@@ -450,7 +450,7 @@
 
 .coverage-yield-table thead th {
   color: rgba(255, 255, 255, 0.6);
-  background: #1a2c4c;
+  background: var(--ds-navy);
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -491,7 +491,7 @@
 }
 
 .coverage-color-dot.black { background: #f4f7fc; }
-.coverage-color-dot.cyan { background: #00a3e0; }
+.coverage-color-dot.cyan { background: var(--ds-sky); }
 .coverage-color-dot.magenta { background: #e879f9; }
 .coverage-color-dot.yellow { background: #facc15; }
 

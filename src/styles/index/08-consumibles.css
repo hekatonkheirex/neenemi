@@ -23,13 +23,13 @@
 
 .legacy-fleet-source-heading strong {
   min-width: 0;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.76rem;
 }
 
 .legacy-fleet-source-heading span,
 .legacy-fleet-source small {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.66rem;
   line-height: 1.45;
 }
@@ -46,7 +46,7 @@
 
 .form-hint {
   margin: 0.25rem 0 0;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.7rem;
   line-height: 1.45;
 }

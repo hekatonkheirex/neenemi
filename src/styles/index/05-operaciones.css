@@ -46,6 +46,6 @@
 }
 
 .discontinuation-import-progress small {
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   font-size: 0.67rem;
 }

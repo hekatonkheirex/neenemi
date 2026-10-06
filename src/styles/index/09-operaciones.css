@@ -21,7 +21,7 @@
 
 .table-secondary-text,
 .impact-label small {
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.68rem;
 }
 
@@ -67,7 +67,7 @@
 }
 
 .source-detail-item span {
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.6rem;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -76,7 +76,7 @@
 
 .source-detail-item strong {
   overflow-wrap: anywhere;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.68rem;
   font-weight: 500;
   line-height: 1.35;
@@ -131,7 +131,7 @@
 .source-cell {
   display: block;
   max-width: 230px;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.7rem;
   line-height: 1.45;
 }
@@ -191,20 +191,20 @@
 }
 
 .maintenance-inspector-button:hover:not(:disabled) {
-  border-color: #ff6b00;
+  border-color: var(--ds-orange);
   color: #ffffff;
-  background: #ff6b00;
+  background: var(--ds-orange);
 }
 
 .maintenance-inspector-button.is-open {
-  border-color: #ff6b00;
+  border-color: var(--ds-orange);
   color: #ffffff;
-  background: #ff6b00;
+  background: var(--ds-orange);
 }
 
 .maintenance-inspection-row td {
   padding: 0;
-  border-top: 2px solid #18243a;
+  border-top: 2px solid var(--ds-ink);
   background: rgba(12, 23, 41, 0.16);
 }
 
@@ -247,7 +247,7 @@
   font-weight: 900;
 }
 
-.maintenance-wear-gauge.normal { color: #00a3e0; }
+.maintenance-wear-gauge.normal { color: var(--ds-sky); }
 .maintenance-wear-gauge.attention { color: #d18a00; }
 .maintenance-wear-gauge.critical { color: #d13b48; }
 .maintenance-wear-gauge.unrecognized { color: #7468c8; }
@@ -256,7 +256,7 @@
 .maintenance-inspection-readings h4,
 .maintenance-inspection-overview h4 {
   margin: 0;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.04em;
@@ -272,7 +272,7 @@
 .maintenance-inspection-copy,
 .maintenance-inspection-note,
 .maintenance-inspection-source {
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.68rem;
   line-height: 1.45;
 }
@@ -292,7 +292,7 @@
 }
 
 .maintenance-history-chart line {
-  stroke: #ff6b00;
+  stroke: var(--ds-orange);
   stroke-dasharray: 3 3;
   stroke-width: 1;
 }
@@ -310,7 +310,7 @@
 }
 
 .maintenance-history-chart text {
-  fill: #ff6b00;
+  fill: var(--ds-orange);
   font-size: 0.42rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -320,7 +320,7 @@
   padding: 1.2rem;
   border: 1px solid rgba(144, 174, 229, 0.16);
   border-radius: 0.45rem;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.68rem;
 }
 
@@ -335,7 +335,7 @@
   width: 100%;
   min-width: 35rem;
   border-collapse: collapse;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.65rem;
 }
 
@@ -347,7 +347,7 @@
 }
 
 .maintenance-readings-table th {
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.56rem;
   letter-spacing: 0.04em;
   text-align: left;

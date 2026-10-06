@@ -44,7 +44,7 @@
 
 .destination-combobox-menu li:hover,
 .destination-combobox-menu li.highlighted {
-  color: #edf4ff;
+  color: var(--dk-edf4ff);
   background: rgba(65, 130, 224, 0.2);
 }
 

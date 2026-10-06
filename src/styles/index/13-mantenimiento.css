@@ -31,7 +31,7 @@
 
 .maintenance-rule-row small {
   margin-top: 0.2rem;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.64rem;
 }
 

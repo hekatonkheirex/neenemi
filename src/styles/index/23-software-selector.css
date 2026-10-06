@@ -82,7 +82,7 @@
   gap: 0.8rem;
   align-items: center;
   margin: -0.35rem 0 1rem;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.68rem;
 }
 
@@ -119,12 +119,12 @@
 
 .software-group-heading h3 {
   margin: 0 0 0.22rem;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.88rem;
 }
 
 .software-group-heading span {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.68rem;
 }
 
@@ -164,13 +164,13 @@
 }
 
 .software-feature-row strong {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.77rem;
   line-height: 1.35;
 }
 
 .software-feature-row small {
-  color: #8298ba;
+  color: var(--dk-8298ba);
   font-size: 0.7rem;
   line-height: 1.45;
 }
@@ -181,7 +181,7 @@
   padding: 1.8rem 1rem;
   border: 1px dashed rgba(117, 166, 255, 0.26);
   border-radius: 0.6rem;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.74rem;
   line-height: 1.45;
   text-align: center;
@@ -215,12 +215,12 @@
 }
 
 .software-shortcut strong {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.72rem;
 }
 
 .software-shortcut span {
-  color: #8298ba;
+  color: var(--dk-8298ba);
   font-size: 0.66rem;
   line-height: 1.4;
 }
@@ -263,7 +263,7 @@
 
 .software-recommendation-head > b {
   flex: 0 0 auto;
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   font-size: 1rem;
 }
 
@@ -292,7 +292,7 @@
   gap: 0.5rem;
   justify-content: space-between;
   margin-top: 0.7rem;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.65rem;
 }
 
@@ -336,7 +336,7 @@
 
 .software-reason span,
 .software-note {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.68rem;
   line-height: 1.5;
 }
@@ -353,7 +353,7 @@
   display: grid;
   gap: 0.55rem;
   padding-left: 1rem;
-  color: #f2c279;
+  color: var(--dk-f2c279);
   font-size: 0.7rem;
   line-height: 1.4;
 }
@@ -385,7 +385,7 @@
 }
 
 .software-product-row span {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.65rem;
 }
 
@@ -460,7 +460,7 @@
   }
 
   .software-analysis-card {
-    border-color: #d6deea;
+    border-color: var(--ds-border);
     background: #ffffff;
   }
 }

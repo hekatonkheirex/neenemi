@@ -19,7 +19,7 @@
 }
 
 .source-data-viewer-heading h3 {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 1rem;
 }
 
@@ -28,7 +28,7 @@
   padding: 0.35rem 0.55rem;
   border: 1px solid rgba(94, 230, 168, 0.22);
   border-radius: 999px;
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   background: rgba(94, 230, 168, 0.1);
   font-size: 0.65rem;
   font-weight: 800;
@@ -42,7 +42,7 @@
 
 .source-data-status.status-staged {
   border-color: rgba(242, 194, 121, 0.3);
-  color: #f2c279;
+  color: var(--dk-f2c279);
   background: rgba(137, 90, 35, 0.14);
 }
 
@@ -51,7 +51,7 @@
   max-width: 42rem;
   gap: 0.35rem;
   margin-bottom: 0.65rem;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -64,7 +64,7 @@
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
   outline: 0;
-  color: #e7efff;
+  color: var(--dk-e7efff);
   background: rgba(18, 31, 54, 0.7);
   font-size: 0.75rem;
   letter-spacing: 0;
@@ -103,13 +103,13 @@
   position: sticky;
   left: 0;
   z-index: 2;
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   background: #0c1729;
   font-weight: 800;
 }
 
 .source-data-table .source-header-row td {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   background: rgba(0, 163, 224, 0.08);
   font-weight: 700;
 }

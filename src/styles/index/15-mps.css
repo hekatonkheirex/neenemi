@@ -102,14 +102,14 @@
 }
 
 .mps-model-option strong {
-  color: #e5eeff;
+  color: var(--dk-e5eeff);
   font-size: 0.8rem;
 }
 
 .mps-model-option small,
 .mps-model-volume,
 .mps-model-meta {
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.67rem;
 }
 
@@ -149,7 +149,7 @@
   padding: 2.2rem 1rem;
   border: 1px dashed rgba(117, 166, 255, 0.26);
   border-radius: 0.6rem;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.76rem;
   text-align: center;
 }
@@ -174,21 +174,21 @@
   padding: 0.65rem 0.75rem;
   border: 1px solid rgba(144, 174, 229, 0.14);
   border-radius: 0.45rem;
-  color: #8298ba;
+  color: var(--dk-8298ba);
   background: rgba(10, 19, 34, 0.42);
   font-size: 0.72rem;
 }
 
 .mps-volume-status.good {
   border-color: rgba(94, 230, 168, 0.28);
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   background: rgba(39, 126, 87, 0.12);
 }
 
 .mps-volume-status.low,
 .mps-volume-status.high {
   border-color: rgba(242, 194, 121, 0.28);
-  color: #f2c279;
+  color: var(--dk-f2c279);
   background: rgba(137, 90, 35, 0.14);
 }
 
@@ -200,7 +200,7 @@
   margin-top: 1rem;
   padding-top: 0.9rem;
   border-top: 1px solid rgba(144, 174, 229, 0.1);
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.7rem;
 }
 
@@ -216,7 +216,7 @@
 .mps-presets button:hover,
 .mps-presets button.active {
   border-color: rgba(117, 166, 255, 0.54);
-  color: #e5eeff;
+  color: var(--dk-e5eeff);
   background: rgba(57, 101, 190, 0.24);
 }
 
@@ -251,12 +251,12 @@
 }
 
 .mps-year-cell strong {
-  color: #dce9ff;
+  color: var(--dk-dce9ff);
 }
 
 .mps-year-cell small {
   margin-top: 0.25rem;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.64rem;
 }
 
@@ -282,7 +282,7 @@
 }
 
 .mps-facts span {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.68rem;
 }
 
@@ -293,7 +293,7 @@
 
 .mps-card-subtitle {
   margin: 0.5rem 0 0;
-  color: #8298ba;
+  color: var(--dk-8298ba);
   font-size: 0.72rem;
   line-height: 1.5;
 }
@@ -346,7 +346,7 @@
 .mps-analysis-kpi span,
 .mps-analysis-kpi small,
 .mps-analysis-note-list span {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.67rem;
 }
 
@@ -356,7 +356,7 @@
 .mps-analysis-note-list strong {
   min-width: 0;
   overflow-wrap: anywhere;
-  color: #dce9ff;
+  color: var(--dk-dce9ff);
   font-size: 0.78rem;
 }
 
@@ -376,13 +376,13 @@
 
 .mps-profile-section-heading h3 {
   margin: 0;
-  color: #dce9ff;
+  color: var(--dk-dce9ff);
   font-size: 0.9rem;
 }
 
 .mps-profile-section-heading p {
   margin: 0.25rem 0 0;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.68rem;
 }
 
@@ -413,14 +413,14 @@
 
 .mps-profile-consumable-name strong {
   overflow-wrap: anywhere;
-  color: #dce9ff;
+  color: var(--dk-dce9ff);
   font-size: 0.76rem;
 }
 
 .mps-profile-consumable-name small,
 .mps-profile-consumable-value small {
   overflow-wrap: anywhere;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.66rem;
 }
 
@@ -463,7 +463,7 @@
 }
 
 .mps-analysis-kpi strong {
-  color: #dce9ff;
+  color: var(--dk-dce9ff);
   font-size: 1.18rem;
 }
 
@@ -540,7 +540,7 @@
 .mps-ranking-label strong {
   min-width: 0;
   overflow: hidden;
-  color: #dce9ff;
+  color: var(--dk-dce9ff);
   font-size: 0.74rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -586,7 +586,7 @@
 .mps-volume-insight.low,
 .mps-volume-insight.high {
   border-color: rgba(242, 194, 121, 0.28);
-  color: #f2c279;
+  color: var(--dk-f2c279);
   background: rgba(137, 90, 35, 0.14);
 }
 
@@ -617,7 +617,7 @@
   padding: 1.25rem;
   border: 1px dashed rgba(117, 166, 255, 0.26);
   border-radius: 0.55rem;
-  color: #8298ba;
+  color: var(--dk-8298ba);
   font-size: 0.74rem;
   text-align: center;
 }
@@ -647,8 +647,8 @@
   overflow: hidden;
   border: 1px solid rgba(117, 166, 255, 0.32);
   border-radius: 0.9rem;
-  color: #dce8fc;
-  background: #0f1b30;
+  color: var(--dk-dce8fc);
+  background: var(--dk-0f1b30);
   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.42);
 }
 
@@ -677,7 +677,7 @@
 .mps-copy-row small,
 .mps-consumables-heading p {
   margin: 0;
-  color: #9ab0d0;
+  color: var(--dk-9ab0d0);
   font-size: 0.72rem;
   line-height: 1.45;
 }
@@ -740,7 +740,7 @@
 }
 
 .mps-copy-row strong {
-  color: #e5eeff;
+  color: var(--dk-e5eeff);
   font-size: 0.76rem;
 }
 
@@ -763,7 +763,7 @@
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
   outline: 0;
-  color: #e7efff;
+  color: var(--dk-e7efff);
   background: rgba(18, 31, 54, 0.7);
   font-size: 0.76rem;
 }
@@ -810,7 +810,7 @@
 
 .mps-consumables-heading h3 {
   margin: 0;
-  color: #e5eeff;
+  color: var(--dk-e5eeff);
   font-size: 1rem;
 }
 

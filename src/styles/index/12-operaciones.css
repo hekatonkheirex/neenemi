@@ -20,7 +20,7 @@
   display: grid;
   gap: 0.25rem;
   padding: 0.7rem;
-  border: 1px solid #d6deea;
+  border: 1px solid var(--ds-border);
   border-radius: 0.35rem;
 }
 
@@ -35,13 +35,13 @@
 
 .maintenance-print-facts strong,
 .maintenance-print-kpis strong {
-  color: #18243a;
+  color: var(--ds-ink);
   font-size: 0.86rem;
 }
 
 .maintenance-print-report h2 {
   margin: 1.2rem 0 0.65rem;
-  color: #18243a;
+  color: var(--ds-ink);
   font-size: 1rem;
 }
 
@@ -54,14 +54,14 @@
 .maintenance-print-table {
   width: 100%;
   border-collapse: collapse;
-  color: #18243a;
+  color: var(--ds-ink);
   font-size: 0.72rem;
 }
 
 .maintenance-print-table th,
 .maintenance-print-table td {
   padding: 0.5rem 0.4rem;
-  border: 1px solid #d6deea;
+  border: 1px solid var(--ds-border);
   text-align: left;
   vertical-align: top;
 }
@@ -106,7 +106,7 @@
 
   .maintenance-page .maintenance-table .action-cell {
     max-width: none;
-    color: #18243a;
+    color: var(--ds-ink);
   }
 
   @page maintenance-analysis-report {
@@ -148,7 +148,7 @@
     display: block !important;
     page: maintenance-analysis-report;
     padding: 0;
-    color: #18243a;
+    color: var(--ds-ink);
   }
 
   body[data-print-mode='maintenance-executive'] {
@@ -180,7 +180,7 @@
     display: block !important;
     page: maintenance-executive-report;
     padding: 0;
-    color: #18243a;
+    color: var(--ds-ink);
   }
 
   body[data-print-mode='maintenance-executive'] .maintenance-executive-print-list thead {
@@ -229,7 +229,7 @@
 .maintenance-source-title strong {
   display: block;
   overflow-wrap: anywhere;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.78rem;
   line-height: 1.35;
 }
@@ -237,7 +237,7 @@
 .maintenance-source-title p,
 .maintenance-source-origin {
   margin: 0.25rem 0 0;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.7rem;
   line-height: 1.45;
 }
@@ -295,7 +295,7 @@
 }
 
 .maintenance-source-dropzone-copy span {
-  color: #7187aa;
+  color: var(--dk-7187aa);
 }
 
 .maintenance-source-upload-actions,
@@ -377,7 +377,7 @@ html[data-theme='dark'] .anim-tabs {
   --tab-border: #405574;
   --tab-shadow: rgba(0, 0, 0, 0.2);
   --tab-count-bg: rgba(144, 174, 229, 0.16);
-  --tab-count-fg: #dce8fc;
+  --tab-count-fg: var(--dk-dce8fc);
 }
 
 .anim-tabs button {
@@ -535,7 +535,7 @@ html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
   padding: 0.12rem 0.28rem;
   border: 1px solid rgba(144, 174, 229, 0.22);
   border-radius: 0.25rem;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0;
@@ -553,7 +553,7 @@ html[data-theme='dark'] .anim-tabs button > .anim-tabs-icon {
 }
 
 .maintenance-normal-toggle input {
-  accent-color: #ff6b00;
+  accent-color: var(--ds-orange);
 }
 
 .maintenance-rules-card .card-heading {

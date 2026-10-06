@@ -17,7 +17,7 @@
   margin-top: 0.9rem;
   padding-top: 0.85rem;
   border-top: 1px solid rgba(144, 174, 229, 0.2);
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   font-size: 0.75rem;
 }
 
@@ -55,7 +55,7 @@
 
 .pagination-loading {
   padding: 1rem 1.2rem;
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
 }
 
 .service-table {

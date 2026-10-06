@@ -55,7 +55,7 @@
 
 .discontinuation-source-card > div > strong {
   display: block;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.72rem;
   overflow-wrap: anywhere;
   white-space: normal;
@@ -99,7 +99,7 @@
   min-width: 0;
   gap: 0.3rem;
   align-items: baseline;
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   font-size: 0.65rem;
 }
 
@@ -111,7 +111,7 @@
 .discontinuation-source-loaded-list strong {
   min-width: 0;
   overflow: hidden;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.65rem;
   font-weight: 700;
   overflow-wrap: anywhere;
@@ -119,7 +119,7 @@
 }
 
 .discontinuation-source-loaded-empty {
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   font-size: 0.65rem;
 }
 
@@ -167,7 +167,7 @@
 .discontinuation-customer-detail-header p,
 .discontinuation-customer-meta,
 .discontinuation-contract-meta {
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.67rem;
 }
 
@@ -246,12 +246,12 @@
 
 .discontinuation-portfolio-stats span,
 .discontinuation-portfolio-stats small {
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.65rem;
 }
 
 .discontinuation-portfolio-stats strong {
-  color: #e5eeff;
+  color: var(--dk-e5eeff);
   font-size: 1.3rem;
 }
 
@@ -323,7 +323,7 @@
 }
 
 .discontinuation-model-count strong {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 1rem;
 }
 
@@ -353,7 +353,7 @@
 }
 
 .discontinuation-model-card-heading strong {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.7rem;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -363,7 +363,7 @@
   min-width: 0;
   margin: 0;
   overflow-wrap: anywhere;
-  color: #e5eeff;
+  color: var(--dk-e5eeff);
   font-size: 0.9rem;
 }
 
@@ -397,14 +397,14 @@
 
 .discontinuation-insight-heading p {
   margin: 0.25rem 0 0;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.66rem;
   line-height: 1.45;
 }
 
 .discontinuation-insight-heading > span {
   flex: 0 0 auto;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.65rem;
   white-space: nowrap;
 }
@@ -448,7 +448,7 @@
 
 .discontinuation-donut span {
   margin-top: 0.16rem;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.58rem;
 }
 
@@ -531,7 +531,7 @@
 }
 
 .discontinuation-breakdown-fill.alquiler {
-  background: #ff6b00;
+  background: var(--ds-orange);
 }
 
 .discontinuation-breakdown-fill.abierto {
@@ -539,7 +539,7 @@
 }
 
 .discontinuation-breakdown-fill.mantenimiento {
-  background: #00a3e0;
+  background: var(--ds-sky);
 }
 
 .discontinuation-breakdown-fill.leasing {
@@ -581,7 +581,7 @@
 }
 
 .discontinuation-directory-heading strong {
-  color: #e5eeff;
+  color: var(--dk-e5eeff);
   font-size: 0.72rem;
 }
 
@@ -623,7 +623,7 @@
 
 .discontinuation-customer strong {
   overflow: hidden;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.75rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -631,7 +631,7 @@
 
 .discontinuation-customer small,
 .discontinuation-customer > b {
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.64rem;
   font-weight: 600;
 }
@@ -683,7 +683,7 @@
 
 .discontinuation-customer-meta strong {
   margin-right: 0.25rem;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.82rem;
 }
 
@@ -723,13 +723,13 @@
 
 .discontinuation-contract-detail summary b {
   overflow-wrap: anywhere;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.77rem;
 }
 
 .discontinuation-contract-detail summary small,
 .discontinuation-contract-detail summary em {
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.65rem;
   font-style: normal;
 }

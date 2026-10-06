@@ -87,7 +87,7 @@
 
 .analytics-row-top strong {
   flex: 0 0 auto;
-  color: #d8e7ff;
+  color: var(--dk-d8e7ff);
 }
 
 .analytics-bar-track {
@@ -102,20 +102,20 @@
   height: 100%;
   min-width: 0.2rem;
   border-radius: inherit;
-  background: linear-gradient(90deg, #00a3e0, #73c8ff);
+  background: linear-gradient(90deg, var(--ds-sky), #73c8ff);
   transition: width 180ms ease;
 }
 
 .analytics-bar-row small,
 .analytics-equipment-row small {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.66rem;
   line-height: 1.4;
 }
 
 .analytics-empty {
   margin: 0;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.75rem;
   line-height: 1.5;
 }
@@ -140,7 +140,7 @@
 }
 
 .analytics-rank {
-  color: #00a3e0;
+  color: var(--ds-sky);
   font-size: 0.68rem;
   font-weight: 850;
 }
@@ -166,7 +166,7 @@
 }
 
 .analytics-equipment-value strong {
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   font-size: 0.75rem;
 }
 
@@ -193,7 +193,7 @@
 
 .output-summary-grid strong {
   overflow: hidden;
-  color: #d8e7ff;
+  color: var(--dk-d8e7ff);
   font-size: 1.1rem;
   letter-spacing: -0.04em;
   text-overflow: ellipsis;
@@ -201,7 +201,7 @@
 }
 
 .output-summary-grid span {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.65rem;
 }
 
@@ -228,7 +228,7 @@
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
   outline: 0;
-  color: #e7efff;
+  color: var(--dk-e7efff);
   background: rgba(18, 31, 54, 0.7);
   font-size: 0.8rem;
   letter-spacing: 0;
@@ -299,7 +299,7 @@
 .summary-card-note {
   display: block;
   margin-top: 0.35rem;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.62rem;
 }
 
@@ -336,7 +336,7 @@
 }
 
 .legacy-analysis-note strong {
-  color: #d8e7ff;
+  color: var(--dk-d8e7ff);
 }
 
 .legacy-analysis-note.warning {
@@ -369,12 +369,12 @@
 }
 
 .legacy-chart-inset-heading strong {
-  color: #d8e7ff;
+  color: var(--dk-d8e7ff);
   font-size: 0.82rem;
 }
 
 .legacy-chart-inset-heading span {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.67rem;
 }
 
@@ -391,7 +391,7 @@
   height: auto;
   min-height: 220px;
   overflow: visible;
-  color: #7187aa;
+  color: var(--dk-7187aa);
 }
 
 .legacy-chart-svg-tall {
@@ -428,7 +428,7 @@
   flex-wrap: wrap;
   gap: 0.65rem 1rem;
   min-width: 0;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.66rem;
 }
 
@@ -463,7 +463,7 @@
   min-height: 12rem;
   margin: 0;
   place-items: center;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.75rem;
   text-align: center;
 }
@@ -488,13 +488,13 @@
 }
 
 .legacy-donut-total {
-  fill: #d8e7ff;
+  fill: var(--dk-d8e7ff);
   font-size: 17px;
   font-weight: 850;
 }
 
 .legacy-donut-label {
-  fill: #7187aa;
+  fill: var(--dk-7187aa);
   font-size: 10px;
   font-weight: 700;
 }
@@ -537,7 +537,7 @@
 
 .legacy-subheading {
   margin: 1.2rem 0 0.65rem;
-  color: #d8e7ff;
+  color: var(--dk-d8e7ff);
   font-size: 0.95rem;
 }
 
@@ -577,7 +577,7 @@
 
 .legacy-expand-toggle {
   width: 2rem;
-  color: #00a3e0;
+  color: var(--ds-sky);
   font-size: 1.1rem;
   font-weight: 850;
   text-align: center;
@@ -621,13 +621,13 @@
 }
 
 .legacy-detail-heading strong {
-  color: #d8e7ff;
+  color: var(--dk-d8e7ff);
   font-size: 0.8rem;
 }
 
 .legacy-detail-heading span,
 .legacy-timeline-event small {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.66rem;
 }
 
@@ -655,14 +655,14 @@
 }
 
 .legacy-timeline-event strong {
-  color: #d8e7ff;
+  color: var(--dk-d8e7ff);
   font-size: 0.68rem;
 }
 
 .legacy-timeline-description {
   flex: 1 1 14rem;
   min-width: 10rem;
-  color: #d8e7ff;
+  color: var(--dk-d8e7ff);
 }
 
 .legacy-timeline-event.service-event {
@@ -693,12 +693,12 @@
 }
 
 .legacy-trend-label strong {
-  color: #d8e7ff;
+  color: var(--dk-d8e7ff);
   font-size: 0.68rem;
 }
 
 .legacy-trend-label span {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.62rem;
 }
 
@@ -721,7 +721,7 @@
 }
 
 .legacy-trend-consumable {
-  background: #00a3e0;
+  background: var(--ds-sky);
 }
 
 .legacy-trend-legend {
@@ -729,7 +729,7 @@
   flex-wrap: wrap;
   gap: 0.8rem;
   margin-top: 0.25rem;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.62rem;
 }
 

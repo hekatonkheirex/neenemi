@@ -69,7 +69,7 @@
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
   outline: 0;
-  color: #e7efff;
+  color: var(--dk-e7efff);
   background: rgba(18, 31, 54, 0.7);
   font-size: 0.8rem;
   letter-spacing: 0;
@@ -255,7 +255,7 @@
 }
 
 .travel-catalog-details > summary:hover {
-  color: #dce9ff;
+  color: var(--dk-dce9ff);
 }
 
 .travel-catalog-list {
@@ -279,7 +279,7 @@
 }
 
 .travel-catalog-list-heading span {
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.65rem;
 }
 
@@ -301,7 +301,7 @@
 .travel-catalog-row strong,
 .travel-catalog-row b {
   display: block;
-  color: #dce9ff;
+  color: var(--dk-dce9ff);
   font-size: 0.7rem;
 }
 
@@ -330,7 +330,7 @@
 .travel-total strong {
   min-width: 0;
   overflow-wrap: anywhere;
-  color: #dce9ff;
+  color: var(--dk-dce9ff);
   font-size: 1rem;
 }
 
@@ -364,7 +364,7 @@
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
   outline: 0;
-  color: #e7efff;
+  color: var(--dk-e7efff);
   background: rgba(18, 31, 54, 0.7);
   font-size: 0.8rem;
 }
@@ -401,7 +401,7 @@
 }
 
 .travel-bar-column > small {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.64rem;
 }
 
@@ -493,7 +493,7 @@
 .travel-overview-row-heading strong,
 .travel-overview-destination-content strong {
   overflow: hidden;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.75rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -502,13 +502,13 @@
 .travel-overview-row-heading small,
 .travel-overview-destination-content small {
   flex: 0 0 auto;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.64rem;
 }
 
 .travel-overview-row > b,
 .travel-overview-destination > b {
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   font-size: 0.75rem;
   white-space: nowrap;
 }
@@ -524,7 +524,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #00a3e0, #63c7e3);
+  background: linear-gradient(90deg, var(--ds-sky), #63c7e3);
 }
 
 .travel-overview-destination {
@@ -568,7 +568,7 @@
 .travel-subpage-header p {
   max-width: 52rem;
   margin: 0;
-  color: #93a8ca;
+  color: var(--dk-93a8ca);
   font-size: 0.78rem;
   line-height: 1.55;
 }
@@ -634,13 +634,13 @@
 
 .travel-rendition-stat span:not(.travel-rendition-stat-dot),
 .travel-history-metric > span {
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   font-size: 0.68rem;
   font-weight: 700;
 }
 
 .travel-rendition-stat strong {
-  color: #edf4ff;
+  color: var(--dk-edf4ff);
   font-size: 1.5rem;
   line-height: 1;
 }
@@ -723,7 +723,7 @@
 
 .travel-rendition-detail-heading h3 {
   margin: 0.25rem 0;
-  color: #edf4ff;
+  color: var(--dk-edf4ff);
   font-size: 0.95rem;
 }
 
@@ -732,7 +732,7 @@
 .travel-rendition-detail-source,
 .travel-rendition-detail-notes p {
   margin: 0;
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   font-size: 0.7rem;
   line-height: 1.5;
 }
@@ -761,7 +761,7 @@
 .travel-rendition-detail-section h4,
 .travel-rendition-detail-notes strong {
   margin: 0 0 0.65rem;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.69rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -780,7 +780,7 @@
 }
 
 .travel-rendition-detail-list dt {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.61rem;
   font-weight: 800;
   letter-spacing: 0.05em;
@@ -790,7 +790,7 @@
 .travel-rendition-detail-list dd {
   overflow: hidden;
   margin: 0.2rem 0 0;
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.72rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -811,19 +811,19 @@
 
 .travel-rendition-cost-line span,
 .travel-rendition-cost-total span {
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   font-size: 0.7rem;
 }
 
 .travel-rendition-cost-line strong {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.72rem;
   font-variant-numeric: tabular-nums;
 }
 
 .travel-rendition-cost-line small {
   margin-left: 0.35rem;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.58rem;
 }
 
@@ -839,19 +839,19 @@
 }
 
 .travel-rendition-cost-total span {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-weight: 800;
 }
 
 .travel-rendition-cost-total strong {
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   font-size: 0.88rem;
   font-variant-numeric: tabular-nums;
 }
 
 .travel-rendition-detail-note {
   margin-top: 0.65rem;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.62rem;
 }
 
@@ -861,12 +861,12 @@
 }
 
 .travel-rendition-detail-source {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.62rem;
 }
 
 .travel-rendition-detail-source strong {
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
 }
 
 .travel-status-badge {
@@ -887,7 +887,7 @@
 }
 
 .travel-status-badge.approved {
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   background: rgba(94, 230, 168, 0.12);
 }
 
@@ -899,12 +899,12 @@
 }
 
 .travel-empty-state strong {
-  color: #e7efff;
+  color: var(--dk-e7efff);
   font-size: 0.82rem;
 }
 
 .travel-empty-state span {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.72rem;
 }
 
@@ -914,19 +914,19 @@
 }
 
 .travel-history-metric strong {
-  color: #edf4ff;
+  color: var(--dk-edf4ff);
   font-size: clamp(1.35rem, 2.6vw, 2rem);
   letter-spacing: -0.05em;
   line-height: 1;
 }
 
 .travel-history-metric small {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.68rem;
 }
 
 .travel-history-metric.positive strong {
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
 }
 
 .travel-history-metric.warning strong {
@@ -994,15 +994,15 @@
   width: min(1.25rem, 38%);
   min-height: 0.2rem;
   border-radius: 0.3rem 0.3rem 0 0;
-  background: #00a3e0;
+  background: var(--ds-sky);
 }
 
 .travel-history-bar.services {
-  background: #00a3e0;
+  background: var(--ds-sky);
 }
 
 .travel-history-bar.trips {
-  background: #ff6b00;
+  background: var(--ds-orange);
 }
 
 .travel-history-bar.cost {
@@ -1011,13 +1011,13 @@
 }
 
 .travel-history-year strong {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.72rem;
 }
 
 .travel-history-year small,
 .travel-history-value {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.62rem;
 }
 
@@ -1032,7 +1032,7 @@
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 1rem;
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   font-size: 0.68rem;
   font-weight: 700;
 }
@@ -1048,11 +1048,11 @@
   width: 0.55rem;
   height: 0.55rem;
   border-radius: 999px;
-  background: #00a3e0;
+  background: var(--ds-sky);
 }
 
 .travel-chart-legend i.trips {
-  background: #ff6b00;
+  background: var(--ds-orange);
 }
 
 .travel-segmented-control {
@@ -1067,14 +1067,14 @@
   padding: 0.4rem 0.6rem;
   border: 0;
   border-radius: 0.3rem;
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   background: transparent;
   font-size: 0.66rem;
   font-weight: 800;
 }
 
 .travel-segmented-control button.active {
-  color: #18243a;
+  color: var(--ds-ink);
   background: #ffffff;
   box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.12);
 }
@@ -1105,12 +1105,12 @@
 }
 
 .travel-monthly-card > div:first-child strong {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.72rem;
 }
 
 .travel-monthly-card > div:first-child span {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.58rem;
 }
 
@@ -1123,13 +1123,13 @@
 
 .travel-monthly-row span,
 .travel-monthly-row b {
-  color: #8fa5c7;
+  color: var(--dk-8fa5c7);
   font-size: 0.6rem;
   font-weight: 800;
 }
 
 .travel-monthly-row b {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   text-align: right;
 }
 
@@ -1145,7 +1145,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #00a3e0;
+  background: var(--ds-sky);
 }
 
 .travel-variation {
@@ -1157,7 +1157,7 @@
 }
 
 .travel-variation.lower {
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
 }
 
 .travel-source-archive {
@@ -1203,7 +1203,7 @@
 }
 
 .travel-source-sheet-list button small {
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.6rem;
 }
 
@@ -1237,7 +1237,7 @@
 .travel-source-table .source-row-number {
   position: sticky;
   left: 0;
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   background: rgba(18, 31, 54, 0.96);
   font-weight: 800;
 }
@@ -1248,7 +1248,7 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 0.75rem;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.66rem;
 }
 
@@ -1282,8 +1282,8 @@
   padding: 1.5rem;
   border: 1px solid rgba(144, 174, 229, 0.22);
   border-radius: 0.9rem;
-  color: #dce8fc;
-  background: #0f1b30;
+  color: var(--dk-dce8fc);
+  background: var(--dk-0f1b30);
   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.34);
 }
 
@@ -1300,7 +1300,7 @@
 
 .travel-import-dialog-heading p {
   margin: 0;
-  color: #93a8ca;
+  color: var(--dk-93a8ca);
   font-size: 0.75rem;
   line-height: 1.5;
 }
@@ -1317,7 +1317,7 @@
 
 .travel-import-file span,
 .travel-import-metrics span {
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.6rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -1326,14 +1326,14 @@
 
 .travel-import-file strong {
   overflow: hidden;
-  color: #edf4ff;
+  color: var(--dk-edf4ff);
   font-size: 0.82rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .travel-import-file small {
-  color: #93a8ca;
+  color: var(--dk-93a8ca);
   font-size: 0.68rem;
 }
 
@@ -1356,7 +1356,7 @@
 
 .travel-import-metrics strong {
   overflow: hidden;
-  color: #edf4ff;
+  color: var(--dk-edf4ff);
   font-size: 0.9rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1369,7 +1369,7 @@
   padding: 0.85rem 1rem;
   border: 1px solid rgba(94, 230, 168, 0.25);
   border-radius: 0.6rem;
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   background: rgba(32, 101, 77, 0.14);
 }
 

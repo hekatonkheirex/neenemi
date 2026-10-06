@@ -54,7 +54,7 @@
   gap: 0.45rem;
   padding: 2.4rem 1.5rem;
   border-style: dashed;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.76rem;
   line-height: 1.5;
   text-align: center;
@@ -100,7 +100,7 @@
 .sla-risk-card > span:last-child,
 .sla-count-card > span:last-child {
   overflow: hidden;
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.67rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -123,11 +123,11 @@
 }
 
 .sla-risk-card.low strong {
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
 }
 
 .sla-risk-card.medium strong {
-  color: #f2c279;
+  color: var(--dk-f2c279);
 }
 
 .sla-risk-card.high strong,
@@ -153,14 +153,14 @@
   width: 100%;
   min-width: 600px;
   border-collapse: collapse;
-  color: #c8d6ed;
+  color: var(--dk-c8d6ed);
   font-size: 0.72rem;
 }
 
 .sla-table th {
   padding: 0.75rem;
   border-bottom: 1px solid rgba(144, 174, 229, 0.16);
-  color: #7890b8;
+  color: var(--dk-7890b8);
   font-size: 0.61rem;
   font-weight: 850;
   letter-spacing: 0.09em;
@@ -197,7 +197,7 @@
 
 .sla-table td > small {
   margin-top: 0.45rem;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.63rem;
 }
 
@@ -216,13 +216,13 @@
 
 .sla-status.complies {
   border-color: rgba(94, 230, 168, 0.28);
-  color: #8fe5b5;
+  color: var(--dk-8fe5b5);
   background: rgba(39, 126, 87, 0.14);
 }
 
 .sla-status.partial {
   border-color: rgba(242, 194, 121, 0.28);
-  color: #f2c279;
+  color: var(--dk-f2c279);
   background: rgba(137, 90, 35, 0.14);
 }
 
@@ -248,13 +248,13 @@
 }
 
 .sla-advice-card li::before {
-  color: #f2c279;
+  color: var(--dk-f2c279);
   content: '→';
 }
 
 .sla-note {
   margin: 0;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.7rem;
   line-height: 1.5;
 }
@@ -283,13 +283,13 @@
 }
 
 .sla-reference-item strong {
-  color: #dce8fc;
+  color: var(--dk-dce8fc);
   font-size: 0.75rem;
 }
 
 .sla-reference-item p {
   margin: 0;
-  color: #7187aa;
+  color: var(--dk-7187aa);
   font-size: 0.68rem;
   line-height: 1.45;
 }
@@ -387,11 +387,11 @@
 
   .sla-table {
     min-width: 0;
-    color: #18243a;
+    color: var(--ds-ink);
   }
 
   .sla-table th,
   .sla-table td {
-    color: #18243a;
+    color: var(--ds-ink);
   }
 }
