@@ -1,16 +1,19 @@
+import { Download, Upload } from 'lucide-react';
 import type { ButtonHTMLAttributes, ChangeEvent, ReactNode, Ref } from 'react';
+import { cn } from './cn';
+import { buttonVariants } from './ui/button';
 
 // Botones por intencion: cargar (UploadButton, acento celeste), exportar (ExportButton, acento verde),
-// procesar (.primary-button) y neutro (.secondary-button). Ver src/styles/index/27-action-buttons.css.
-
-const iconProps = { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true, focusable: false } as const;
+// procesar (Button default, naranja) y neutro (Button outline). Los ganchos .upload-button y .export-button se conservan:
+// el CSS de algunos módulos (src/styles/index/26-action-buttons.css) los usa para ubicarlos.
+// ponytail: el texto va sin <span>; el CSS heredado del tema claro colorea los <span> con más especificidad.
 
 export function UploadIcon() {
-  return <svg {...iconProps}><path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" /></svg>;
+  return <Upload className="size-4" aria-hidden="true" focusable="false" />;
 }
 
 export function DownloadIcon() {
-  return <svg {...iconProps}><path d="M12 4v12m0 0-4-4m4 4 4-4M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" /></svg>;
+  return <Download className="size-4" aria-hidden="true" focusable="false" />;
 }
 
 export interface UploadButtonProps {
@@ -31,12 +34,15 @@ export interface UploadButtonProps {
 }
 
 /** Unico lugar con `<input type="file">` visible para el usuario: el input queda transparente sobre el boton. */
-export function UploadButton({ label, busy = false, busyLabel = 'Importando…', accept, multiple, disabled = false, onChange, className = '', inputRef, ...input }: UploadButtonProps) {
+export function UploadButton({ label, busy = false, busyLabel = 'Importando…', accept, multiple, disabled = false, onChange, className, inputRef, ...input }: UploadButtonProps) {
   const off = disabled || busy;
   return (
-    <label className={`secondary-button upload-button${off ? ' is-disabled' : ''}${className ? ` ${className}` : ''}`} title={input.title}>
+    <label
+      className={cn(buttonVariants({ variant: 'upload' }), 'upload-button relative cursor-pointer focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-sky', off && 'is-disabled cursor-not-allowed opacity-55', className)}
+      title={input.title}
+    >
       <UploadIcon />
-      <span>{busy ? busyLabel : label}</span>
+      {busy ? busyLabel : label}
       <input
         ref={inputRef}
         type="file"
@@ -59,11 +65,11 @@ export interface ExportButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonE
   children: ReactNode;
 }
 
-export function ExportButton({ busy = false, busyLabel = 'Exportando…', className = '', children, disabled, ...rest }: ExportButtonProps) {
+export function ExportButton({ busy = false, busyLabel = 'Exportando…', className, children, disabled, ...rest }: ExportButtonProps) {
   return (
-    <button {...rest} type="button" className={`secondary-button export-button${className ? ` ${className}` : ''}`} disabled={disabled || busy} aria-busy={busy || undefined}>
+    <button {...rest} type="button" className={cn(buttonVariants({ variant: 'export' }), 'export-button', className)} disabled={disabled || busy} aria-busy={busy || undefined}>
       <DownloadIcon />
-      <span>{busy ? busyLabel : children}</span>
+      {busy ? busyLabel : children}
     </button>
   );
 }
@@ -71,11 +77,11 @@ export function ExportButton({ busy = false, busyLabel = 'Exportando…', classN
 export type UploadTriggerProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'children'> & { children: ReactNode };
 
 /** Boton "cargar" que no abre el selector de archivos: abre un dialogo con su propia zona de carga. */
-export function UploadTriggerButton({ className = '', children, ...rest }: UploadTriggerProps) {
+export function UploadTriggerButton({ className, children, ...rest }: UploadTriggerProps) {
   return (
-    <button {...rest} type="button" className={`secondary-button upload-button${className ? ` ${className}` : ''}`}>
+    <button {...rest} type="button" className={cn(buttonVariants({ variant: 'upload' }), 'upload-button', className)}>
       <UploadIcon />
-      <span>{children}</span>
+      {children}
     </button>
   );
 }

@@ -42,33 +42,6 @@
   outline-offset: 2px;
 }
 
-.secondary-button.upload-button {
-  border-color: rgba(0, 163, 224, 0.55);
-  color: #8bd6f2;
-  background: rgba(0, 163, 224, 0.12);
-}
-
-.secondary-button.upload-button:hover:not(.is-disabled) {
-  border-color: rgba(0, 163, 224, 0.85);
-  background: rgba(0, 163, 224, 0.22);
-}
-
-.secondary-button.upload-button.is-disabled:hover {
-  border-color: rgba(0, 163, 224, 0.55);
-  background: rgba(0, 163, 224, 0.12);
-}
-
-.secondary-button.export-button {
-  border-color: rgba(52, 199, 124, 0.5);
-  color: #86e0b0;
-  background: rgba(52, 199, 124, 0.1);
-}
-
-.secondary-button.export-button:hover:not(:disabled) {
-  border-color: rgba(52, 199, 124, 0.8);
-  background: rgba(52, 199, 124, 0.2);
-}
-
 .operations-page .sales-actions .upload-button {
   flex: 1 1 10rem;
 }

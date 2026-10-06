@@ -732,8 +732,7 @@ li::before {
 }
 
 /* Las acciones de la cabecera pasan a otra línea en vez de empujar la página fuera de la ventana. */
-.catalog-header .sales-actions,
-.catalog-header .sla-actions {
+.catalog-header .sales-actions {
   flex-wrap: wrap;
   justify-content: flex-end;
 }

@@ -1,4 +1,9 @@
 import { useEffect, useState, type FormEvent } from 'react';
+import { cn } from './cn';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Card, Muted } from './ui/card';
+import { Input } from './ui/input';
 
 type AiConfig = { configured: boolean; source: 'installation' | 'environment' | 'none'; model: string };
 
@@ -54,28 +59,37 @@ export default function AiKeyPanel() {
   }
 
   return (
-    <details className="sales-card ai-key-panel" open={config !== null && !config.configured}>
-      <summary>
-        <strong>Configuración de IA (OpenRouter)</strong>
-        <span className={`ai-key-status ${config?.configured ? 'ready' : 'missing'}`}>{config ? `IA: ${SOURCE_LABEL[config.source]}` : 'Consultando…'}</span>
+    <Card as="details" className="group" open={config !== null && !config.configured}>
+      <summary className="flex cursor-pointer flex-wrap items-center justify-between gap-3 text-navy dark:text-white">
+        <div className="font-bold">Configuración de IA (OpenRouter)</div>
+        <Badge tone={config?.configured ? 'success' : 'warning'}>{config ? `IA: ${SOURCE_LABEL[config.source]}` : 'Consultando…'}</Badge>
       </summary>
-      <form onSubmit={save}>
-        <p className="form-hint">
+      <form className="mt-4 grid gap-3" onSubmit={save}>
+        <Muted className="text-sm leading-relaxed">
           El análisis con IA usa OpenRouter. ¿No tienes cuenta?{' '}
-          <a href={OPENROUTER_SIGNUP_URL} target="_blank" rel="noreferrer">Crea una cuenta en OpenRouter</a> y{' '}
-          <a href={OPENROUTER_KEYS_URL} target="_blank" rel="noreferrer">genera una clave de API</a>. El texto del pliego se envía al proveedor del modelo; los modelos gratuitos pueden tener políticas de privacidad distintas.
-        </p>
-        <label className="search-field">
-          <span>Clave de API</span>
-          <input type="password" autoComplete="off" spellCheck={false} placeholder="sk-or-v1-…" value={apiKey} onChange={(event) => setApiKey(event.target.value)} />
+          <a className="font-bold text-[#00698f] underline dark:text-sky" href={OPENROUTER_SIGNUP_URL} target="_blank" rel="noreferrer">Crea una cuenta en OpenRouter</a> y{' '}
+          <a className="font-bold text-[#00698f] underline dark:text-sky" href={OPENROUTER_KEYS_URL} target="_blank" rel="noreferrer">genera una clave de API</a>. El texto del pliego se envía al proveedor del modelo; los modelos gratuitos pueden tener políticas de privacidad distintas.
+        </Muted>
+        <label className="grid max-w-xl gap-1.5 text-xs font-bold text-ink-2! dark:text-[#9fb2d1]!">
+          Clave de API
+          <Input type="password" autoComplete="off" spellCheck={false} placeholder="sk-or-v1-…" value={apiKey} onChange={(event) => setApiKey(event.target.value)} />
         </label>
-        <div className="ai-key-actions">
-          <button className="primary-button" type="submit" disabled={busy || !apiKey.trim()}>Guardar clave</button>
-          <button className="secondary-button" type="button" disabled={busy || config?.source !== 'installation'} onClick={() => void send('DELETE', 'Clave quitada de este equipo.')}>Quitar clave guardada</button>
-          {config && <span className="muted-note">Modelo: {config.model}</span>}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Button type="submit" disabled={busy || !apiKey.trim()}>Guardar clave</Button>
+          <Button variant="outline" disabled={busy || config?.source !== 'installation'} onClick={() => void send('DELETE', 'Clave quitada de este equipo.')}>Quitar clave guardada</Button>
+          {config && <Muted>Modelo: {config.model}</Muted>}
         </div>
-        {message && <p className={`form-hint ai-key-message ${message.kind}`} role={message.kind === 'error' ? 'alert' : 'status'}>{message.text}</p>}
+        {message && (
+          <div
+            role={message.kind === 'error' ? 'alert' : 'status'}
+            className={cn('rounded-xl border px-4 py-2.5 text-sm', message.kind === 'error'
+              ? 'border-[#d92d20]/40 bg-[#d92d20]/10 text-[#912018] dark:text-[#ffb4ab]'
+              : 'border-[#2f8f5b]/40 bg-[#2f8f5b]/10 text-[#14532d] dark:text-[#9be3b9]')}
+          >
+            {message.text}
+          </div>
+        )}
       </form>
-    </details>
+    </Card>
   );
 }

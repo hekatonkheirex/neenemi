@@ -7,7 +7,7 @@ const css = readCssBundle('src/index.css');
 
 describe('layout entre 960 y 1350 px', () => {
   it('las acciones de la cabecera pueden pasar a otra línea', () => {
-    expect(css).toMatch(/\.catalog-header \.sales-actions,\s*\.catalog-header \.sla-actions\s*{[^}]*flex-wrap:\s*wrap/);
+    expect(css).toMatch(/\.catalog-header \.sales-actions\s*{[^}]*flex-wrap:\s*wrap/);
   });
 
   it('el filtro de Mantenimiento no fuerza una columna que no encoge', () => {
@@ -23,10 +23,6 @@ describe('layout entre 960 y 1350 px', () => {
     for (const index of overrides) expect(index).toBeGreaterThan(base);
   });
 
-  it('SLA: la tabla de resultados no obliga a scroll horizontal y la columna lateral baja en ventanas medianas', () => {
-    expect(css).toMatch(/\.sla-table\s*{[^}]*min-width:\s*600px/);
-    expect(css).toMatch(/@media \(max-width: 1400px\)\s*{\s*\.sla-layout\s*{\s*grid-template-columns:\s*1fr/);
-  });
 
   it('Proformas: bajo 1500 px el lateral pasa a celdas del grid y el Resumen es una barra fija inferior', () => {
     const block = css.match(/@media \(max-width: 1500px\)\s*{\s*\.proforma-layout[\s\S]*?\n}\n/)?.[0] ?? '';

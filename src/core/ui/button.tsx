@@ -17,6 +17,8 @@ export const buttonVariants = cva(
         outline:
           'border border-navy/20 bg-white text-navy! hover:bg-sky/10 dark:border-sky/30 dark:bg-transparent dark:text-white! dark:hover:bg-sky/15',
         ghost: 'border border-transparent bg-transparent text-navy! hover:bg-sky/10 dark:text-white! dark:hover:bg-sky/15',
+        upload: 'border border-sky/55 bg-sky/10 text-[#00587a]! hover:bg-sky/20 dark:text-[#8bd6f2]!',
+        export: 'border border-[#2f8f5b]/50 bg-[#2f8f5b]/10 text-[#14532d]! hover:bg-[#2f8f5b]/20 dark:text-[#86e0b0]!',
         destructive: 'border border-transparent bg-[#b42318] text-white! shadow-md hover:bg-[#912018]',
       },
       size: {

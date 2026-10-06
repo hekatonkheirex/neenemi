@@ -110,7 +110,6 @@ html[data-theme='dark'] .primary-button:disabled {
 .catalog-header h1,
 .discontinuation-page-header h1,
 .coverage-page h1,
-.sla-page h1,
 .software-page h1,
 .uniflow-page > .catalog-header h1 {
   max-width: none;

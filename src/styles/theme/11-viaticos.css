@@ -85,29 +85,3 @@ html[data-theme='light'] .software-recommendation-head > b {
   color: var(--ds-success);
 }
 
-html[data-theme='light'] .sla-score-card {
-  border-color: #a8cde1;
-  background: linear-gradient(145deg, #eef8fc, #ffffff);
-}
-
-html[data-theme='light'] .sla-risk-card.low,
-html[data-theme='light'] .sla-status.complies {
-  border-color: #a8d9bf;
-  color: var(--ds-success);
-  background: #f0fbf5;
-}
-
-html[data-theme='light'] .sla-risk-card.medium,
-html[data-theme='light'] .sla-status.partial {
-  border-color: #e7c68b;
-  color: var(--ds-warning);
-  background: #fff8e8;
-}
-
-html[data-theme='light'] .sla-risk-card.high,
-html[data-theme='light'] .sla-risk-card.critical,
-html[data-theme='light'] .sla-status.gap {
-  border-color: #efb3b0;
-  color: var(--ds-danger);
-  background: #fff1f0;
-}

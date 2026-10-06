@@ -15,12 +15,13 @@ function sourceFiles(dir: string): string[] {
 describe('UploadButton', () => {
   it('es un label con el icono, el texto y el input transparente (accesible por nombre)', () => {
     const html = renderToStaticMarkup(<UploadButton label="Importar planilla" accept=".xlsx" onChange={() => {}} />);
-    expect(html).toContain('class="secondary-button upload-button"');
+    expect(html).toMatch(/<label class="[^"]*\bupload-button\b[^"]*"/);
+    expect(html).not.toContain('secondary-button');
     expect(html).toContain('<svg');
     expect(html).toContain('Importar planilla');
     expect(html).toContain('type="file"');
     expect(html).toContain('accept=".xlsx"');
-    expect(html).not.toContain('disabled');
+    expect(html).not.toMatch(/<input[^>]*disabled/);
   });
 
   it('ocupado: muestra el texto de espera y deshabilita el input', () => {
@@ -43,7 +44,8 @@ describe('ExportButton', () => {
   it('es un button type=button con el icono de descarga', () => {
     const html = renderToStaticMarkup(<ExportButton onClick={() => {}}>Exportar XLSX</ExportButton>);
     expect(html).toContain('type="button"');
-    expect(html).toContain('secondary-button export-button');
+    expect(html).toMatch(/class="[^"]*\bexport-button\b/);
+    expect(html).not.toContain('secondary-button');
     expect(html).toContain('Exportar XLSX');
     expect(html).toContain('<svg');
   });

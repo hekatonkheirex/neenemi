@@ -8,6 +8,14 @@ import { buildSlaHtmlReport } from './html-report';
 import type { SlaAnalysis, SlaComplianceItem, SlaReferenceSection, SlaStatus } from './types';
 import { readJson, toErrorMessage } from '../../core/http';
 import { UploadButton, ExportButton } from '../../core/ActionButtons';
+import { cn } from '../../core/cn';
+import { Badge, type BadgeTone } from '../../core/ui/badge';
+import { Button } from '../../core/ui/button';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { PageHeader } from '../../core/ui/page-header';
+import { StatusLine } from '../../core/ui/status-line';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
+import { Textarea } from '../../core/ui/textarea';
 
 const MAX_TEXT_LENGTH = 250_000;
 const numberFormat = new Intl.NumberFormat('es-PY');
@@ -178,99 +186,177 @@ export default function SlaModule() {
   }
 
   return (
-    <div className="page-content sla-page">
-      <section className="catalog-header">
-        <div>
-          <div className="eyebrow">SOPORTE / COMPLIANCE</div>
-          <h1>SLA Compliance Analyzer</h1>
-          <p className="lead">Compara requisitos de un pliego con el SLA estándar de Data Systems y separa cumplimiento, condiciones parciales y brechas negociables.</p>
-        </div>
-        <div className="sla-actions">
-          <button className="secondary-button" type="button" onClick={() => void printReport()} disabled={!analysis}>Imprimir / PDF</button>
-          <ExportButton onClick={exportHtmlReport} disabled={!analysis}>Exportar HTML</ExportButton>
-          <ExportButton onClick={exportReport} disabled={!analysis}>Exportar JSON</ExportButton>
-        </div>
-      </section>
+    <div className="page-content">
+      <PageHeader
+        eyebrow="SOPORTE / COMPLIANCE"
+        title="SLA Compliance Analyzer"
+        lead="Compara requisitos de un pliego con el SLA estándar de Data Systems y separa cumplimiento, condiciones parciales y brechas negociables."
+        actions={(
+          <>
+            <Button variant="outline" onClick={() => void printReport()} disabled={!analysis}>Imprimir / PDF</Button>
+            <ExportButton onClick={exportHtmlReport} disabled={!analysis}>Exportar HTML</ExportButton>
+            <ExportButton onClick={exportReport} disabled={!analysis}>Exportar JSON</ExportButton>
+          </>
+        )}
+      />
 
-      <section className="sales-status" aria-live="polite">
-        <span className={`status-dot ${error ? 'error' : loading || analyzing ? 'pending' : 'ready'}`} />
-        <span>{error || message || (loading ? 'Cargando SLA de referencia…' : 'Pega un pliego para comenzar.')}</span>
-      </section>
+      <StatusLine state={error ? 'error' : loading || analyzing ? 'pending' : 'ready'}>
+        {error || message || (loading ? 'Cargando SLA de referencia…' : 'Pega un pliego para comenzar.')}
+      </StatusLine>
 
-      <section className="sla-layout">
-        <main className="sla-main">
-          <section className="sales-card sla-input-card">
-            <div className="card-heading">
-              <div><div className="eyebrow">PASO 1 / DOCUMENTO</div><h2>Pliego del cliente</h2></div>
-              <span className="muted-note">{numberFormat.format(text.length)} / {numberFormat.format(MAX_TEXT_LENGTH)} caracteres</span>
-            </div>
-            <form onSubmit={analyze}>
-              <label className="search-field sla-text-field">
-                <span>Texto del documento</span>
-                <textarea value={text} maxLength={MAX_TEXT_LENGTH} rows={10} onChange={(event) => { setText(event.target.value); setAnalysis(null); }} placeholder="Pega aquí horarios, tiempos, consumibles, contadores y demás cláusulas del cliente…" />
+      <div className="grid items-start gap-5 min-[1401px]:grid-cols-[minmax(0,1fr)_21rem] print:block">
+        <div className="grid min-w-0 gap-5">
+          <Card className="print:hidden">
+            <CardHeader
+              eyebrow="PASO 1 / DOCUMENTO"
+              title="Pliego del cliente"
+              aside={<Muted>{numberFormat.format(text.length)} / {numberFormat.format(MAX_TEXT_LENGTH)} caracteres</Muted>}
+            />
+            <form className="grid gap-3" onSubmit={analyze}>
+              <label className="grid gap-1.5 text-xs font-bold text-ink-2! dark:text-[#9fb2d1]!">
+                Texto del documento
+                <Textarea
+                  className="min-h-56 font-normal"
+                  value={text}
+                  maxLength={MAX_TEXT_LENGTH}
+                  rows={10}
+                  onChange={(event) => { setText(event.target.value); setAnalysis(null); }}
+                  placeholder="Pega aquí horarios, tiempos, consumibles, contadores y demás cláusulas del cliente…"
+                />
               </label>
-              <div className="sla-input-actions">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <UploadButton label="Cargar TXT / PDF" accept=".txt,.md,.csv,.json,.pdf,text/plain,text/markdown,text/csv,application/json,application/pdf" onChange={(event) => void loadDocumentFile(event)} />
-                <button className="secondary-button" type="button" onClick={loadDemo}>Cargar ejemplo</button>
-                <button className="secondary-button" type="submit" id="btn-local" disabled={analyzing || !text.trim()}>{analyzing ? 'Procesando…' : 'Ejecutar análisis local'}</button>
-                <button className="primary-button" type="submit" id="btn-ai" disabled={analyzing || !text.trim()}>Analizar con IA</button>
+                <Button variant="outline" onClick={loadDemo}>Cargar ejemplo</Button>
+                <Button variant="outline" type="submit" id="btn-local" disabled={analyzing || !text.trim()}>{analyzing ? 'Procesando…' : 'Ejecutar análisis local'}</Button>
+                <Button type="submit" id="btn-ai" className="ml-auto max-[720px]:ml-0" disabled={analyzing || !text.trim()}>Analizar con IA</Button>
               </div>
-              <p className="form-hint">{SLA_BASELINE_NOTE} Los PDF con capa de texto se extraen localmente; los PDF escaneados como imagen todavía requieren OCR externo o pegar el texto.</p>
+              <Muted>{SLA_BASELINE_NOTE} Los PDF con capa de texto se extraen localmente; los PDF escaneados como imagen todavía requieren OCR externo o pegar el texto.</Muted>
             </form>
-          </section>
+          </Card>
 
-          <AiKeyPanel />
+          <div className="print:hidden"><AiKeyPanel /></div>
 
-          {analysis ? <SlaResults analysis={analysis} statusCounts={statusCounts} /> : <section className="sales-card sla-empty-card"><strong>El informe aparecerá aquí.</strong><span>Carga el ejemplo o pega un fragmento del pliego para calcular el nivel de riesgo y las cláusulas a negociar.</span></section>}
-        </main>
+          {analysis ? <SlaResults analysis={analysis} statusCounts={statusCounts} /> : (
+            <Card className="justify-items-center gap-1.5 border-dashed py-10 text-center">
+              <div className="font-bold text-navy dark:text-white">El informe aparecerá aquí.</div>
+              <Muted className="max-w-md text-sm">Carga el ejemplo o pega un fragmento del pliego para calcular el nivel de riesgo y las cláusulas a negociar.</Muted>
+            </Card>
+          )}
+        </div>
 
-        <aside className="sla-sidebar">
-          <section className="sales-card sla-reference-card">
-            <div className="card-heading"><div><div className="eyebrow">SLA BASE / REFERENCIA</div><h2>Cláusulas vigentes</h2></div><span className="muted-note">{reference.length} secciones</span></div>
-            <div className="sla-reference-list">{reference.map((section) => <article className="sla-reference-item" key={`${section.section}-${section.title}`}><span>§ {section.section}</span><strong>{section.title}</strong><p>{section.coverage}</p></article>)}</div>
-          </section>
-          {analysis && <button className="text-button sla-clear-saved" type="button" onClick={() => void clearSavedAnalysis()}>Borrar análisis guardado</button>}
+        <aside aria-label="Referencia del SLA base" className="grid gap-4 print:hidden">
+          <Card>
+            <CardHeader eyebrow="SLA BASE / REFERENCIA" title="Cláusulas vigentes" aside={<Muted>{reference.length} secciones</Muted>} />
+            <div className="grid gap-3">
+              {reference.map((section) => (
+                <article className="grid gap-1 rounded-xl border border-navy/10 p-3 dark:border-sky/20" key={`${section.section}-${section.title}`}>
+                  <div className="text-xs font-bold text-[#00698f] dark:text-sky">§ {section.section}</div>
+                  <div className="text-sm font-bold text-navy dark:text-white">{section.title}</div>
+                  <Muted className="text-sm leading-snug">{section.coverage}</Muted>
+                </article>
+              ))}
+            </div>
+          </Card>
+          {analysis && <Button variant="ghost" size="sm" className="justify-self-start underline" onClick={() => void clearSavedAnalysis()}>Borrar análisis guardado</Button>}
         </aside>
-      </section>
+      </div>
     </div>
   );
 }
 
-function SlaResults({ analysis, statusCounts }: { analysis: SlaAnalysis; statusCounts: { complies: number; partial: number; gap: number } }) {
+const riskTone: Record<SlaAnalysis['overallRisk'], string> = {
+  low: 'border-[#2f8f5b]/50 bg-[#2f8f5b]/10',
+  medium: 'border-[#e08a00]/50 bg-[#e08a00]/10',
+  high: 'border-[#d92d20]/50 bg-[#d92d20]/10',
+  critical: 'border-[#d92d20]/70 bg-[#d92d20]/15',
+};
+
+const statusTone: Record<SlaStatus, BadgeTone> = { complies: 'success', partial: 'warning', gap: 'danger', na: 'neutral' };
+
+function Stat({ label, value, note, tone }: { label: string; value: string | number; note: string; tone?: string }) {
+  // El tono reemplaza (no se suma a) el fondo y borde base: las variantes dark: de la base ganarían al tono en el tema oscuro.
   return (
-    <section className="sla-results">
-      <section className="sla-overview-grid" aria-label="Resumen de cumplimiento SLA">
-        <div className="sla-score-card"><span className="detail-label">Cumplimiento estimado</span><strong>{percentage.format(analysis.complianceScore / 100)}</strong><span>{analysis.fileName}</span></div>
-        <div className={`sla-risk-card ${analysis.overallRisk}`}><span className="detail-label">Riesgo general</span><strong>{riskLabel(analysis.overallRisk)}</strong><span>{analysis.items.length} cláusulas revisadas</span></div>
-        <div className="sla-count-card"><span className="detail-label">Brechas</span><strong>{statusCounts.gap}</strong><span>requieren aclaración</span></div>
-        <div className="sla-count-card"><span className="detail-label">Parciales</span><strong>{statusCounts.partial}</strong><span>requieren condición</span></div>
+    <div className={cn('grid gap-1 rounded-2xl border p-4 shadow-md', tone ?? 'border-navy/10 bg-white dark:border-sky/20 dark:bg-panel')}>
+      <div className="text-[0.7rem] font-extrabold uppercase tracking-wider text-ink-2 dark:text-[#9fb2d1]">{label}</div>
+      <div className="text-3xl font-extrabold tracking-tight text-navy dark:text-white">{value}</div>
+      <Muted>{note}</Muted>
+    </div>
+  );
+}
+
+export function SlaResults({ analysis, statusCounts }: { analysis: SlaAnalysis; statusCounts: { complies: number; partial: number; gap: number } }) {
+  return (
+    <div className="grid gap-5">
+      <section aria-label="Resumen de cumplimiento SLA" className="grid gap-3 sm:grid-cols-2 min-[1101px]:grid-cols-4">
+        <Stat label="Cumplimiento estimado" value={percentage.format(analysis.complianceScore / 100)} note={analysis.fileName} />
+        <Stat label="Riesgo general" value={riskLabel(analysis.overallRisk)} note={`${analysis.items.length} cláusulas revisadas`} tone={riskTone[analysis.overallRisk]} />
+        <Stat label="Brechas" value={statusCounts.gap} note="requieren aclaración" />
+        <Stat label="Parciales" value={statusCounts.partial} note="requieren condición" />
       </section>
 
-      <section className="sales-card sla-summary-card">
-        <div className="card-heading"><div><div className="eyebrow">LECTURA EJECUTIVA</div><h2>{analysis.usedFallback ? 'Revisión manual requerida' : 'Resultado del cruce'}</h2></div><span className="badge neutral">{analysis.source}</span></div>
-        <p className="sla-summary-text">{analysis.summary}</p>
-      </section>
+      <Card>
+        <CardHeader eyebrow="LECTURA EJECUTIVA" title={analysis.usedFallback ? 'Revisión manual requerida' : 'Resultado del cruce'} aside={<Badge>{analysis.source}</Badge>} />
+        <div className="text-sm leading-relaxed text-navy dark:text-[#d6e2f5]">{analysis.summary}</div>
+      </Card>
 
-      <section className="sales-card sla-items-card">
-        <div className="card-heading"><div><div className="eyebrow">DETALLE / TRAZABILIDAD</div><h2>Cláusulas comparadas</h2></div><span className="muted-note">{statusCounts.complies} cumplen</span></div>
-        <div className="sla-table-wrap"><table className="sla-table"><thead><tr><th>Estado</th><th>Requisito del cliente</th><th>Posición Data Systems</th><th>Acción sugerida</th></tr></thead><tbody>{analysis.items.map((item) => <SlaItemRow item={item} key={item.id} />)}</tbody></table></div>
-      </section>
+      <Card>
+        <CardHeader eyebrow="DETALLE / TRAZABILIDAD" title="Cláusulas comparadas" aside={<Muted>{statusCounts.complies} cumplen</Muted>} />
+        <Table className="min-w-[600px]" wrapperClassName="print:overflow-visible">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Estado</TableHead>
+              <TableHead>Requisito del cliente</TableHead>
+              <TableHead>Posición Data Systems</TableHead>
+              <TableHead>Acción sugerida</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>{analysis.items.map((item) => <SlaItemRow item={item} key={item.id} />)}</TableBody>
+        </Table>
+      </Card>
 
-      <div className="sla-advice-grid">
+      <div className="grid gap-5 min-[1101px]:grid-cols-3 print:hidden">
         <AdviceList title="Brechas críticas" items={analysis.criticalGaps} empty="No se detectaron brechas críticas." />
         <AdviceList title="Recomendaciones" items={analysis.recommendations} empty="No hay recomendaciones adicionales." />
         <AdviceList title="Puntos de negociación" items={analysis.negotiationPoints} empty="No hay puntos pendientes de negociación." />
       </div>
-    </section>
+    </div>
   );
 }
 
 function SlaItemRow({ item }: { item: SlaComplianceItem }) {
-  return <tr><td><span className={`sla-status ${item.status}`}>{statusLabel(item.status)}</span><small>{item.clientSource}</small></td><td><strong>{item.category}</strong><span>{item.clientRequirement}</span></td><td><span>{item.ourPosition}</span><small>{item.ourSource}</small></td><td>{item.advice}</td></tr>;
+  return (
+    <TableRow>
+      <TableCell className="min-w-28">
+        <Badge tone={statusTone[item.status]}>{statusLabel(item.status)}</Badge>
+        <Muted className="mt-1">{item.clientSource}</Muted>
+      </TableCell>
+      <TableCell>
+        <div className="font-bold text-navy dark:text-white">{item.category}</div>
+        <div>{item.clientRequirement}</div>
+      </TableCell>
+      <TableCell>
+        <div>{item.ourPosition}</div>
+        <Muted className="mt-1">{item.ourSource}</Muted>
+      </TableCell>
+      <TableCell>{item.advice}</TableCell>
+    </TableRow>
+  );
 }
 
 function AdviceList({ title, items, empty }: { title: string; items: string[]; empty: string }) {
-  return <section className="sales-card sla-advice-card"><div className="card-heading"><h2>{title}</h2><span className="badge neutral">{items.length}</span></div>{items.length > 0 ? <ul>{items.map((item, index) => <li key={`${title}-${index}`}>{item}</li>)}</ul> : <p className="sla-note">{empty}</p>}</section>;
+  return (
+    <Card>
+      <CardHeader title={title} aside={<Badge>{items.length}</Badge>} />
+      {items.length > 0 ? (
+        // ponytail: <div> con viñeta propia; el CSS global de <li> añade un ✓ (index/01-ventas.css:671).
+        <div className="grid gap-2">
+          {items.map((item, index) => (
+            <div className="border-l-4 border-sky pl-3 text-sm leading-snug text-navy dark:text-[#d6e2f5]" key={`${title}-${index}`}>{item}</div>
+          ))}
+        </div>
+      ) : <Muted className="text-sm">{empty}</Muted>}
+    </Card>
+  );
 }
 
 function statusLabel(status: SlaStatus): string {
@@ -280,4 +366,3 @@ function statusLabel(status: SlaStatus): string {
 function riskLabel(risk: SlaAnalysis['overallRisk']): string {
   return { low: 'Bajo', medium: 'Medio', high: 'Alto', critical: 'Crítico' }[risk];
 }
-

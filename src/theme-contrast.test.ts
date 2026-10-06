@@ -40,12 +40,13 @@ describe('contraste del tema claro', () => {
   });
 
   it('botones por intencion (cargar celeste, exportar verde): texto >= 4,5:1 en los dos temas', () => {
-    expect(ratio('#8bd6f2', '#1b2d47')).toBeGreaterThanOrEqual(4.5);   // oscuro: cargar
-    expect(ratio('#86e0b0', '#1b3342')).toBeGreaterThanOrEqual(4.5);   // oscuro: exportar
-    expect(ratio('#006e95', '#e9f5fb')).toBeGreaterThanOrEqual(4.5);   // claro: cargar
-    expect(ratio('#176b45', '#eaf7f0')).toBeGreaterThanOrEqual(4.5);   // claro: exportar
-    expect(theme).toMatch(/html\[data-theme='light'\] \.secondary-button\.upload-button\s*{[^}]*#006e95/);
-    expect(theme).toMatch(/html\[data-theme='light'\] \.secondary-button\.export-button\s*{[^}]*#176b45/);
+    // Colores de src/core/ui/button.tsx (variantes upload y export) sobre su fondo: acento al 10 % sobre blanco o sobre #0e1b31.
+    const button = fs.readFileSync('src/core/ui/button.tsx', 'utf8');
+    for (const token of ['text-[#00587a]!', 'dark:text-[#8bd6f2]!', 'text-[#14532d]!', 'dark:text-[#86e0b0]!']) expect(button).toContain(token);
+    expect(ratio('#8bd6f2', '#0d2942')).toBeGreaterThanOrEqual(4.5);   // oscuro: cargar
+    expect(ratio('#86e0b0', '#112735')).toBeGreaterThanOrEqual(4.5);   // oscuro: exportar
+    expect(ratio('#00587a', '#e6f6fc')).toBeGreaterThanOrEqual(4.5);   // claro: cargar
+    expect(ratio('#14532d', '#eaf4ee')).toBeGreaterThanOrEqual(4.5);   // claro: exportar
   });
 
   it('pestañas animadas (.anim-tabs): texto y activo cumplen 4,5:1 sobre página, píldora y fondo oscuro', () => {

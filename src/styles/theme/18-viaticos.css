@@ -178,7 +178,7 @@ html[data-theme='light'] .page-content .maintenance-priority-row b {
    :not([data-theme='light']) los limita al oscuro; en claro siguen los valores existentes. */
 html:not([data-theme='light']) :is(
   .detail-label, .overview-import-meta, .scope-note, .summary-card-note, .travel-history-metric small,
-  .database-recovery-copy small, .sla-score-card span, .maintenance-source-dropzone-copy span, .mps-model-volume,
+  .database-recovery-copy small, .maintenance-source-dropzone-copy span, .mps-model-volume,
   .mps-model-select small, .maintenance-priority-row small, .maintenance-subset-row small,
   .travel-overview-row-heading small, .pricing-panel .search-field > span,
   .travel-source-sheet-list small, .travel-source-heading-actions .muted-note, .travel-source-pagination span

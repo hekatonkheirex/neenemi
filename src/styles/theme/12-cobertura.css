@@ -63,7 +63,7 @@ html[data-theme='light'] .badge.neutral {
   background: var(--ds-surface-alt);
 }
 
-html[data-theme='light'] .app-shell :where(.form-card, .analytics-panel, .coverage-sidebar, .sla-input-card) {
+html[data-theme='light'] .app-shell :where(.form-card, .analytics-panel, .coverage-sidebar) {
   color: var(--ds-ink);
 }
 
