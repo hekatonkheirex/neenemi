@@ -33,6 +33,7 @@ import { installFieldErrors } from '../core/fieldErrors';
 import { installEllipsisTitles } from '../core/ellipsisTitles';
 import { buildPaletteEntries } from './commandPaletteModel';
 import { readJson } from '../core/http';
+import { HEALTH_TIMEOUT_MS, nextFailureCount, shouldAlert, type HealthCheckResult } from './health-monitor';
 
 const MantenimientoModule = lazy(() => import('../modules/operaciones/MantenimientoModule'));
 const DescontinuadorModule = lazy(() => import('../modules/operaciones/DescontinuadorModule'));
@@ -171,15 +172,28 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false;
+    let inFlight = false;
+    let failures = 0;
     async function checkHealth() {
+      if (inFlight) return;
+      inFlight = true;
+      let result: HealthCheckResult = { kind: 'unreachable' };
+      let value: Health | null = null;
       try {
-        const response = await fetch('/api/health', { signal: AbortSignal.timeout(3000) });
-        if (!response.ok) throw new Error('health check failed');
-        const value = (await response.json()) as Health;
-        if (!cancelled) setHealth(value);
+        const response = await fetch('/api/health', { signal: AbortSignal.timeout(HEALTH_TIMEOUT_MS) });
+        if (response.ok) {
+          value = (await response.json()) as Health;
+          result = value.ok ? { kind: 'ok' } : { kind: 'reported-down' };
+        }
       } catch {
-        if (!cancelled) setHealth({ ok: false, database: 'error' });
+        // Sin respuesta a tiempo: puede ser solo una consulta pesada; se decide por fallos seguidos.
+      } finally {
+        inFlight = false;
       }
+      failures = nextFailureCount(failures, result);
+      if (cancelled) return;
+      if (value && result.kind !== 'unreachable') setHealth(value);
+      else if (shouldAlert(failures, result)) setHealth({ ok: false, database: 'error' });
     }
     void checkHealth();
     const interval = window.setInterval(() => void checkHealth(), 5000);
