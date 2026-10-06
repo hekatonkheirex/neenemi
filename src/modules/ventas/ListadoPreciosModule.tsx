@@ -4,7 +4,7 @@ import { loadLegacyPriceListSeed } from '../catalogo/legacy-seed';
 import { normalizeModelName, type CatalogFamilySummary, type CatalogModelNote, type CatalogServiceItem, type CatalogSourceFile } from '../catalogo/repository';
 import { exportPriceList } from './export';
 import { countItemsByModel } from './model-counts';
-import { selectionNeedsSave } from './selection-sync';
+import { addToSelection, MAX_PRICE_LIST_SELECTION, selectionNeedsSave } from './selection-sync';
 import type { PricingSettings, SalesPricePart } from './types';
 import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
@@ -433,26 +433,30 @@ export default function ListadoPreciosModule() {
     }
   }
 
+  function limitMessage(skipped: number) {
+    return `La selección admite hasta ${numberFormat.format(MAX_PRICE_LIST_SELECTION)} modelos${skipped > 1 ? `; ${numberFormat.format(skipped)} quedaron fuera` : ''}. Filtra y selecciona por tandas.`;
+  }
+
   function toggleModel(model: string) {
-    setSelectedModels((current) => {
-      const next = new Map(current.map((value) => [normalizeModelText(value), value]));
-      const key = normalizeModelText(model);
-      if (next.has(key)) next.delete(key);
-      else next.set(key, model);
-      return [...next.values()].sort((left, right) => left.localeCompare(right));
-    });
+    const key = normalizeModelText(model);
+    if (selectedModels.some((value) => normalizeModelText(value) === key)) {
+      setSelectedModels((current) => current.filter((value) => normalizeModelText(value) !== key));
+      return;
+    }
+    const { selection, skipped } = addToSelection(selectedModels, [model], normalizeModelText);
+    setSelectedModels(selection);
+    if (skipped > 0) setError(limitMessage(skipped));
   }
 
   function toggleVisibleModels(select: boolean) {
-    setSelectedModels((current) => {
-      const next = new Map(current.map((value) => [normalizeModelText(value), value]));
-      for (const model of visibleModelOptions) {
-        const key = normalizeModelText(model);
-        if (select) next.set(key, model);
-        else next.delete(key);
-      }
-      return [...next.values()].sort((left, right) => left.localeCompare(right));
-    });
+    if (!select) {
+      const hidden = new Set(visibleModelOptions.map(normalizeModelText));
+      setSelectedModels((current) => current.filter((value) => !hidden.has(normalizeModelText(value))));
+      return;
+    }
+    const { selection, skipped } = addToSelection(selectedModels, visibleModelOptions, normalizeModelText);
+    setSelectedModels(selection);
+    if (skipped > 0) setError(limitMessage(skipped));
   }
 
   return (

@@ -2,6 +2,7 @@ import type { Express } from 'express';
 import type { SuiteDatabase } from '../../db/database';
 import { ImportRepository } from '../../db/repositories';
 import { isNonEmptyString, isNonNegativeInteger, isNonNegativeNumber, isOptionalNonNegativeNumber, isPositiveInteger, isPositiveNumber, isRecord, queryString } from '../../core/validation';
+import { MAX_PRICE_LIST_SELECTION } from './selection-sync';
 import { SalesRepository, type SaveProformaInput } from './repository';
 import type {
   ContractPriceCurrency,
@@ -33,7 +34,7 @@ function parsePricing(value: unknown): PricingSettings | null {
 
 
 function parsePriceListSelection(value: unknown): string[] | null {
-  if (!Array.isArray(value) || value.length > 500) return null;
+  if (!Array.isArray(value) || value.length > MAX_PRICE_LIST_SELECTION) return null;
   const modelNames: string[] = [];
   for (const item of value) {
     if (!isNonEmptyString(item) || item.trim().length > 160) return null;
