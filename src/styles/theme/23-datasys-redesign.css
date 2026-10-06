@@ -1,0 +1,85 @@
+/* Rediseño Datasys: paleta de marca, esquinas xl/2xl, sombra md, modales con blur.
+   Última capa de la cascada: solo cambia superficies, formas y énfasis. No toca layout ni lógica. */
+:root {
+  --ds-panel: #0e1b31;
+  --ds-radius-xl: 0.75rem;
+  --ds-radius-2xl: 1rem;
+  --ds-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* Tema oscuro: base navy de marca, paneles #0e1b31, activo celeste. */
+html[data-theme='dark'] body {
+  background:
+    radial-gradient(circle at 70% -10%, rgba(0, 163, 224, 0.12), transparent 34rem),
+    var(--ds-navy);
+}
+
+html[data-theme='dark'] .sidebar {
+  border-right-color: rgba(0, 163, 224, 0.18);
+  background: var(--ds-panel);
+}
+
+html[data-theme='dark'] .topbar {
+  border-bottom-color: rgba(0, 163, 224, 0.16);
+  background: rgba(14, 27, 49, 0.55);
+  backdrop-filter: blur(0.5rem);
+}
+
+html[data-theme='dark'] .sales-card,
+html[data-theme='dark'] .total-card,
+html[data-theme='dark'] .module-card {
+  border-color: var(--dk-line);
+  background: var(--ds-panel);
+}
+
+html[data-theme='dark'] .nav-item.active {
+  background: linear-gradient(90deg, rgba(0, 163, 224, 0.24), rgba(0, 163, 224, 0.06));
+  box-shadow: inset 3px 0 var(--ds-sky);
+}
+
+html[data-theme='dark'] .nav-item:hover {
+  background: rgba(0, 163, 224, 0.1);
+}
+
+html[data-theme='dark'] .eyebrow {
+  color: var(--ds-sky);
+}
+
+/* Formas compartidas (ambos temas). */
+.sales-card,
+.total-card,
+.module-card {
+  padding: 1.5rem;
+  border-radius: var(--ds-radius-2xl);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.nav-item,
+.secondary-button,
+.search-field input,
+.anim-tabs {
+  border-radius: var(--ds-radius-xl);
+}
+
+.nav-item.active {
+  border-radius: var(--ds-radius-xl);
+}
+
+.service-report-overlay,
+.sales-catalog-overlay,
+.open-contract-overlay,
+.mps-editor-overlay,
+.travel-import-backdrop {
+  backdrop-filter: blur(0.5rem);
+}
+
+.travel-import-dialog {
+  border-radius: var(--ds-radius-2xl);
+  box-shadow: var(--ds-shadow-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topbar {
+    backdrop-filter: none;
+  }
+}
