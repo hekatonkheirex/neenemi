@@ -101,27 +101,6 @@
   color: #94a9ca;
 }
 
-.catalog-part-details {
-  display: block;
-  margin-top: 0.25rem;
-  color: var(--dk-8298ba);
-  font-size: 0.68rem;
-  line-height: 1.35;
-}
-
-.catalog-reference-price {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.15rem;
-}
-
-.catalog-reference-price small {
-  color: var(--dk-8298ba);
-  font-size: 0.62rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
 
 .align-right {
   text-align: right !important;
@@ -139,97 +118,6 @@
   text-align: center;
 }
 
-.catalog-model-notes,
-.catalog-service-items {
-  display: grid;
-  gap: 1rem;
-  margin-top: 1.25rem;
-  padding: 1.25rem 1.35rem;
-  border: 1px solid var(--dk-line);
-  border-radius: var(--ds-radius-2xl);
-  background: rgba(15, 27, 48, 0.62);
-}
-
-.catalog-model-notes h2,
-.catalog-service-items h2 {
-  margin: 0.35rem 0 0;
-  font-size: 1.35rem;
-}
-
-.catalog-model-notes-list {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.catalog-model-notes-list article {
-  display: grid;
-  gap: 0.2rem;
-  padding: 0.75rem 0.85rem;
-  border: 1px solid var(--dk-line);
-  border-radius: var(--ds-radius-xl);
-  background: rgba(18, 31, 54, 0.45);
-}
-
-.catalog-model-notes-list strong {
-  color: var(--dk-dce8fc);
-  font-size: 0.76rem;
-}
-
-.catalog-model-notes-list span,
-.catalog-service-items-heading p {
-  margin: 0;
-  color: #9dafcc;
-  font-size: 0.74rem;
-  line-height: 1.5;
-}
-
-.catalog-service-items-heading {
-  display: flex;
-  gap: 1rem;
-  align-items: start;
-  justify-content: space-between;
-}
-
-.catalog-service-items-heading > strong {
-  flex: 0 0 auto;
-  color: var(--dk-8fe5b5);
-  font-size: 0.75rem;
-  white-space: nowrap;
-}
-
-.catalog-service-items .catalog-table-wrap {
-  margin: 0;
-}
-
-.catalog-service-table {
-  min-width: 980px;
-}
-
-.catalog-service-kind {
-  display: inline-flex;
-  padding: 0.22rem 0.45rem;
-  border-radius: 999px;
-  font-size: 0.63rem;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.catalog-service-kind.labor {
-  color: #9bdcf0;
-  background: rgba(0, 163, 224, 0.14);
-}
-
-.catalog-service-kind.fixed {
-  color: #ffc18d;
-  background: rgba(255, 107, 0, 0.14);
-}
-
-.catalog-source-cell {
-  max-width: 18rem;
-  color: var(--dk-8298ba);
-  font-size: 0.68rem;
-  overflow-wrap: anywhere;
-}
 
 .sales-page {
   padding-top: 3.8rem;

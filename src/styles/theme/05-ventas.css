@@ -1,16 +1,5 @@
 
 
-html[data-theme='light'] .family-pricing-choice {
-  border-top-color: var(--ds-border);
-}
-
-html[data-theme='light'] .family-pricing-choice strong {
-  color: var(--ds-ink);
-}
-
-html[data-theme='light'] .family-pricing-choice span {
-  color: var(--ds-muted);
-}
 
 html[data-theme='light'] .overview-backup,
 html[data-theme='light'] .database-recovery,

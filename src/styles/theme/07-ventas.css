@@ -452,9 +452,6 @@ html[data-theme='light'] .app-shell .proforma-line-status.neutral {
   background: var(--ds-surface-alt);
 }
 
-html[data-theme='light'] .app-shell .catalog-part-details {
-  color: var(--ds-muted);
-}
 
 html[data-theme='light'] .app-shell .catalog-empty-state {
   border-color: var(--ds-border);
@@ -471,9 +468,6 @@ html[data-theme='light'] .app-shell .catalog-empty-state small {
   color: var(--ds-muted);
 }
 
-html[data-theme='light'] .app-shell .catalog-reference-price small {
-  color: var(--ds-muted);
-}
 
 html[data-theme='light'] .status-dot {
   background: var(--ds-subtle);

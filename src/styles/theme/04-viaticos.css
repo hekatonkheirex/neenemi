@@ -98,7 +98,6 @@ html[data-theme='light'] .data-tag {
 }
 
 html[data-theme='light'] .io-panel,
-html[data-theme='light'] .pricing-panel,
 html[data-theme='light'] .total-card {
   border-color: #b9d5e5;
   background: linear-gradient(135deg, #f7fbfd, #ffffff);

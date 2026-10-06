@@ -1,70 +1,11 @@
 
 
-.pricing-panel {
-  display: grid;
-  grid-template-columns: minmax(220px, 0.75fr) minmax(0, 1.25fr);
-  gap: 2rem;
-  align-items: end;
-  margin-bottom: 1.25rem;
-  padding: 1.35rem 1.5rem;
-  border: 1px solid rgba(117, 166, 255, 0.2);
-  border-radius: var(--ds-radius-2xl);
-  background: linear-gradient(135deg, rgba(28, 53, 98, 0.58), rgba(15, 27, 48, 0.76));
-}
-
-.pricing-panel h2,
 .sales-card h2,
 .total-card h2 {
   margin-bottom: 0.55rem;
   font-size: 1.4rem;
 }
 
-.pricing-panel p {
-  max-width: 34rem;
-  margin: 0;
-  color: var(--dk-8fa5c7);
-  font-size: 0.78rem;
-  line-height: 1.55;
-}
-
-.pricing-fields {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
-  gap: 0.65rem;
-  align-items: end;
-}
-
-.pricing-fields .secondary-button {
-  min-width: 8rem;
-}
-
-.family-pricing-choice {
-  grid-column: 1 / -1;
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 0.2rem;
-  padding-top: 0.85rem;
-  border-top: 1px solid var(--dk-line);
-}
-
-.family-pricing-choice > div {
-  display: grid;
-  gap: 0.2rem;
-  min-width: 0;
-}
-
-.family-pricing-choice strong {
-  color: var(--dk-dce8fc);
-  font-size: 0.78rem;
-}
-
-.family-pricing-choice span {
-  color: var(--dk-8fa5c7);
-  font-size: 0.72rem;
-  line-height: 1.45;
-}
 
 .search-field textarea,
 .search-field select,
@@ -1714,15 +1655,11 @@
     grid-template-columns: minmax(0, 1fr) minmax(180px, 0.75fr);
   }
 
-  .price-list-controls {
-    grid-template-columns: minmax(0, 1fr) minmax(180px, 0.75fr);
-  }
 
   .checkbox-field {
     grid-column: 1 / -1;
   }
 
-  .pricing-panel,
   .proforma-layout {
     grid-template-columns: 1fr;
   }
@@ -1758,22 +1695,6 @@
     grid-template-columns: 1fr;
   }
 
-  .pricing-fields {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .pricing-fields .secondary-button {
-    grid-column: 1 / -1;
-  }
-
-  .family-pricing-choice {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .family-pricing-choice .secondary-button {
-    align-self: flex-start;
-  }
 }
 
 @media (max-width: 720px) {
@@ -1885,17 +1806,11 @@
     flex: 1;
   }
 
-  .pricing-panel {
-    display: block;
-  }
-
-  .pricing-fields,
   .form-grid {
     grid-template-columns: 1fr;
     margin-top: 1.25rem;
   }
 
-  .pricing-fields .secondary-button,
   .form-wide {
     grid-column: auto;
   }

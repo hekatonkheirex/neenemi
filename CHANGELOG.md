@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.66 · 2026-10-06
+
+Listado de precios adopta el encabezado, las tarjetas, los campos, las tablas y los botones compartidos del rediseño. Separa el resumen, las reglas comerciales, los filtros y la selección de modelos; conserva las importaciones XLSX/JSON, la restauración de las 13 familias, las notas, los servicios, la selección persistida y la exportación multihoja. Las tablas desplazan dentro de sus tarjetas y los nombres largos se ajustan en ambos temas. Guardar las reglas actualiza inmediatamente los precios visibles. Se retira el CSS anterior exclusivo del módulo.
+
 ## 0.1.65 · 2026-10-06
 
 Cobertura de tóner adopta el encabezado, las tarjetas, los campos, las tablas y los botones compartidos del rediseño. La carga PDF distingue el procesamiento, el guardado y los errores; conserva el progreso por página, la restauración desde SQLite, el catálogo color/monocromo y el rendimiento estimado. Los nombres largos se ajustan a sus tarjetas y las tablas desplazan dentro de su contenedor. Se retira el CSS anterior de pantalla, conservando el cálculo local a 300 DPI y el informe PDF ejecutivo.

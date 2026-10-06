@@ -150,7 +150,7 @@ html:not([data-theme='light']) :is(
   .detail-label, .overview-import-meta, .scope-note, .summary-card-note, .travel-history-metric small,
   .database-recovery-copy small, .maintenance-source-dropzone-copy span,
   .maintenance-priority-row small, .maintenance-subset-row small,
-  .travel-overview-row-heading small, .pricing-panel .search-field > span,
+  .travel-overview-row-heading small,
   .travel-source-sheet-list small, .travel-source-heading-actions .muted-note, .travel-source-pagination span
 ) {
   color: #9fb3d4;

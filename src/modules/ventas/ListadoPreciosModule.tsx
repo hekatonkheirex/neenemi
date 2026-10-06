@@ -13,6 +13,18 @@ import { memoizeString } from '../../core/memoize';
 import PaginationControls from '../../core/PaginationControls';
 import { usePagedList } from '../../core/usePagedList';
 import { DownloadIcon, ExportButton, UploadButton } from '../../core/ActionButtons';
+import { Check, Minus, RotateCcw, Save } from 'lucide-react';
+import { Button } from '../../core/ui/button';
+import { Badge } from '../../core/ui/badge';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Input } from '../../core/ui/input';
+import { PageHeader } from '../../core/ui/page-header';
+import { StatusLine } from '../../core/ui/status-line';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
+
+const fieldClassName = 'grid min-w-0 gap-2 text-sm font-semibold text-navy dark:text-white';
+const selectClassName = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy dark:border-sky/30 dark:bg-navy/50 dark:text-white';
+const checkboxClassName = 'flex min-w-0 items-center gap-2 text-sm text-navy dark:text-white';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const decimalFormat = new Intl.NumberFormat('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
@@ -27,7 +39,8 @@ export default function ListadoPreciosModule() {
   const [sourceFile, setSourceFile] = useState<CatalogSourceFile | null>(null);
   const [pricing, setPricing] = useState<PricingSettings | null>(null);
   const [draftPricing, setDraftPricing] = useState<PricingSettings | null>(null);
-  useUnsavedChanges(draftPricing !== null && JSON.stringify(draftPricing) !== JSON.stringify(pricing));
+  const pricingDirty = draftPricing !== null && JSON.stringify(draftPricing) !== JSON.stringify(pricing);
+  useUnsavedChanges(pricingDirty);
   const [query, setQuery] = useState('');
   const [modelName, setModelName] = useState('');
   const [familyName, setFamilyName] = useState('');
@@ -299,6 +312,7 @@ export default function ListadoPreciosModule() {
       setPricing(body);
       setDraftPricing(body);
       setMessage('Reglas comerciales guardadas en SQLite.');
+      setRefreshVersion((version) => version + 1);
     } catch (saveError: unknown) {
       setError(toErrorMessage(saveError));
     } finally {
@@ -320,7 +334,6 @@ export default function ListadoPreciosModule() {
     setPricing(nextPricing);
     setDraftPricing(nextPricing);
     await persistPricing(nextPricing);
-    setRefreshVersion((version) => version + 1);
   }
 
   async function handleImportCatalog(file: File) {
@@ -460,307 +473,142 @@ export default function ListadoPreciosModule() {
   }
 
   return (
-    <div className="page-content sales-page">
-      <section className="catalog-header">
-        <div>
-          <div className="eyebrow">VENTAS / CATÁLOGO CALCULADO</div>
-          <h1>Listado de precios</h1>
-          <p className="lead">Consulta el catálogo común y calcula el precio comercial con reglas guardadas localmente.</p>
-        </div>
-        <div className="catalog-header-actions">
-          <UploadButton
-            busy={importingCatalog}
-            busyLabel="Importando listado…"
-            label="Cargar listado"
-            accept=".xlsx,.json"
-            disabled={restoringSeed}
-            onChange={(event) => {
-              const file = event.target.files?.[0];
-              event.target.value = '';
-              if (file) void handleImportCatalog(file);
-            }}
-          />
-          <button className="secondary-button" type="button" onClick={() => void handleRestoreSeed()} disabled={restoringSeed || importingCatalog || allItemsLoading || legacyCatalogLoading}>
-            {restoringSeed ? 'Restaurando semilla…' : 'Restaurar semilla heredada'}
-          </button>
-          <ExportButton onClick={() => void handleExport()} disabled={!pricing || selectedModels.length === 0 || allItemsLoading || legacyCatalogLoading || importingCatalog}>
-            Exportar listado XLSX
-          </ExportButton>
-        </div>
-      </section>
-
-      <section className="sales-status" aria-live="polite">
-        <span className={`status-dot ${error ? 'error' : savingSelection || loading || legacyCatalogLoading ? 'pending' : 'ready'}`} />
-        <span>{error || (savingSelection ? 'Guardando selección…' : message || (loading || legacyCatalogLoading ? 'Consultando catálogo…' : `${numberFormat.format(displayedItems.length)} precios y ${numberFormat.format(displayedServiceItems.length)} opciones visibles${selectedFamily?.exchangeRate ? ` · T.C. ${numberFormat.format(selectedFamily.exchangeRate)} de ${selectedFamily.familyName}` : ''}`))}</span>
-        {sourceFile ? (
-          <a
-            className="secondary-button export-button catalog-source-link"
-            href={`/api/imports/${encodeURIComponent(sourceFile.batchId)}/files/${encodeURIComponent(sourceFile.fileId)}`}
-            download={sourceFile.fileName}
-          >
-            <DownloadIcon />
-            Descargar original
-          </a>
-        ) : null}
-      </section>
-
-      <section className="pricing-panel">
-        <div>
-          <div className="eyebrow">REGLAS COMERCIALES</div>
-          <h2>Precio calculado</h2>
-          <p>
-            Venta USD = costo USD × factor. Precio Gs. = venta USD × tipo de cambio, redondeado a la centena.
+    <div className="page-content sales-page price-list-page">
+      <PageHeader eyebrow="VENTAS / CATÁLOGO CALCULADO" title="Listado de precios"
+        lead="Consulta el catálogo común y calcula el precio comercial con reglas guardadas localmente."
+        actions={<div className="flex min-w-0 flex-wrap gap-2">
+          <UploadButton busy={importingCatalog} busyLabel="Importando listado…" label="Cargar listado" accept=".xlsx,.json" disabled={restoringSeed} onChange={(event) => {
+            const file = event.target.files?.[0];
+            event.target.value = '';
+            if (file) void handleImportCatalog(file);
+          }} />
+          <Button variant="outline" onClick={() => void handleRestoreSeed()} disabled={restoringSeed || importingCatalog || allItemsLoading || legacyCatalogLoading} aria-busy={restoringSeed}><RotateCcw />{restoringSeed ? 'Restaurando semilla…' : 'Restaurar semilla heredada'}</Button>
+          <ExportButton onClick={() => void handleExport()} disabled={!pricing || selectedModels.length === 0 || allItemsLoading || legacyCatalogLoading || importingCatalog}>Exportar listado XLSX</ExportButton>
+        </div>}
+      />
+      <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-4">
+        <StatusLine state={error ? 'error' : savingSelection || loading || legacyCatalogLoading || importingCatalog || restoringSeed ? 'pending' : 'ready'}>
+          <div className="[overflow-wrap:anywhere]">{error || (savingSelection ? 'Guardando selección…' : message || (loading || legacyCatalogLoading ? 'Consultando catálogo…' : `${numberFormat.format(displayedItems.length)} precios y ${numberFormat.format(displayedServiceItems.length)} opciones visibles${selectedFamily?.exchangeRate ? ` · T.C. ${numberFormat.format(selectedFamily.exchangeRate)} de ${selectedFamily.familyName}` : ''}`))}</div>
+        </StatusLine>
+        {sourceFile && <Button variant="export" size="sm" className="mb-4" asChild><a href={`/api/imports/${encodeURIComponent(sourceFile.batchId)}/files/${encodeURIComponent(sourceFile.fileId)}`} download={sourceFile.fileName}><DownloadIcon />Descargar original</a></Button>}
+      </div>
+      <div className="grid min-w-0 gap-6">
+        <section className="grid min-w-0 gap-4 sm:grid-cols-3" aria-label="Resumen del listado">
+          <PriceListSummary label="Partes visibles" value={displayedItems.length} />
+          <PriceListSummary label="Opciones comerciales" value={displayedServiceItems.length} />
+          <PriceListSummary label="Modelos incluidos" value={selectedModels.length} />
+        </section>
+        <Card className="min-w-0 grid-cols-1">
+          <CardHeader eyebrow="REGLAS COMERCIALES" title="Precio calculado" aside={
+            pricingDirty ? <Badge tone="warning">Cambios sin guardar</Badge> : null
+          } />
+          <Muted className="[overflow-wrap:anywhere]">Venta USD = costo USD × factor. Precio Gs. = venta USD × tipo de cambio, redondeado a la centena.
             {selectedFamily?.exchangeRate ? ` Para ${selectedFamily.familyName} se aplica el T.C. de la planilla (${numberFormat.format(selectedFamily.exchangeRate)}).` : ''}
-          </p>
-        </div>
-        <div className="pricing-fields">
-          <label className="search-field">
-            <span>Tipo de cambio</span>
-            <input
-              type="number"
-              min="1"
-              step="1"
-              value={draftPricing?.exchangeRate ?? ''}
-              onChange={(event) => setDraftPricing((current) => current ? { ...current, exchangeRate: Number(event.target.value) } : current)}
-            />
-          </label>
-          <label className="search-field">
-            <span>Factor</span>
-            <input
-              type="number"
-              min="0.01"
-              step="0.01"
-              value={draftPricing?.factor ?? ''}
-              onChange={(event) => setDraftPricing((current) => current ? { ...current, factor: Number(event.target.value) } : current)}
-            />
-          </label>
-          <label className="search-field">
-            <span>Mano de obra Gs.</span>
-            <input
-              type="number"
-              min="0"
-              step="1000"
-              value={draftPricing?.laborPrice ?? ''}
-              onChange={(event) => setDraftPricing((current) => current ? { ...current, laborPrice: Number(event.target.value) } : current)}
-            />
-          </label>
-          <button className="secondary-button" type="button" onClick={() => void saveCommercialSettings()} disabled={!draftPricing || saving}>
-            {saving ? 'Guardando…' : 'Guardar reglas'}
-          </button>
-        </div>
-        {selectedFamily?.exchangeRate && pricing && selectedFamily.exchangeRate !== pricing.exchangeRate ? (
-          <div className="family-pricing-choice">
-            <div>
-              <strong>Tipo de cambio de {selectedFamily.familyName}</strong>
-              <span>La planilla trae Gs. {numberFormat.format(selectedFamily.exchangeRate)}. Actualmente se aplica Gs. {numberFormat.format(selectedFamilyExchangeRate ?? pricing.exchangeRate)}.</span>
+          </Muted>
+          <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,12rem),1fr))] items-end gap-4">
+            <label className={fieldClassName}><div>Tipo de cambio</div><Input type="number" min="1" step="1" value={draftPricing?.exchangeRate ?? ''} onChange={(event) => setDraftPricing((current) => current ? { ...current, exchangeRate: Number(event.target.value) } : current)} /></label>
+            <label className={fieldClassName}><div>Factor</div><Input type="number" min="0.01" step="0.01" value={draftPricing?.factor ?? ''} onChange={(event) => setDraftPricing((current) => current ? { ...current, factor: Number(event.target.value) } : current)} /></label>
+            <label className={fieldClassName}><div>Mano de obra Gs.</div><Input type="number" min="0" step="1000" value={draftPricing?.laborPrice ?? ''} onChange={(event) => setDraftPricing((current) => current ? { ...current, laborPrice: Number(event.target.value) } : current)} /></label>
+            <Button variant="outline" onClick={() => void saveCommercialSettings()} disabled={!draftPricing || saving} aria-busy={saving}><Save />{saving ? 'Guardando…' : 'Guardar reglas'}</Button>
+          </div>
+          {selectedFamily?.exchangeRate && pricing && selectedFamily.exchangeRate !== pricing.exchangeRate && <div className="flex min-w-0 flex-wrap items-center justify-between gap-4 rounded-xl border border-sky/30 bg-sky/5 p-4">
+            <div className="grid min-w-0 gap-1 [overflow-wrap:anywhere]">
+              <strong className="text-sm text-navy dark:text-white">Tipo de cambio de {selectedFamily.familyName}</strong>
+              <Muted>La planilla trae Gs. {numberFormat.format(selectedFamily.exchangeRate)}. Actualmente se aplica Gs. {numberFormat.format(selectedFamilyExchangeRate ?? pricing.exchangeRate)}.</Muted>
             </div>
-            <button
-              className="secondary-button"
-              type="button"
-              onClick={() => void setFamilyExchangeRateOverride(selectedFamilyOverride !== undefined)}
-              disabled={saving}
-            >
-              {selectedFamilyOverride !== undefined ? 'Usar T.C. de la planilla' : 'Volver al T.C. global'}
-            </button>
+            <Button variant="outline" onClick={() => void setFamilyExchangeRateOverride(selectedFamilyOverride !== undefined)} disabled={saving}>{selectedFamilyOverride !== undefined ? 'Usar T.C. de la planilla' : 'Volver al T.C. global'}</Button>
+          </div>}
+        </Card>
+        <Card className="min-w-0 grid-cols-1" aria-label="Filtros del listado">
+          <CardHeader eyebrow="CONSULTA / FILTROS" title="Buscar partes y opciones" />
+          <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] items-end gap-4">
+            <label className={fieldClassName}><div>Buscar código o descripción</div><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Ej. FK-123" /></label>
+            <label className={fieldClassName}><div>Familia</div><select className={selectClassName} value={familyName} onChange={(event) => setFamilyName(event.target.value)}>
+              <option value="">Todas las familias</option>{familyOptions.map((family) => <option key={family.value} value={family.value}>{family.label}</option>)}
+            </select></label>
+            <label className={fieldClassName}><div>Modelo</div><Input list="sales-models" value={modelName} onChange={(event) => setModelName(event.target.value)} placeholder="Todos los modelos" /><datalist id="sales-models">{availableModels.map((model) => <option key={model} value={model} />)}</datalist></label>
+            <label className={`${checkboxClassName} min-h-10`}><input className="size-4 shrink-0 accent-sky" type="checkbox" checked={stockOnly} onChange={(event) => setStockOnly(event.target.checked)} /><div>Solo con stock</div></label>
           </div>
-        ) : null}
-      </section>
-
-      <section className="catalog-controls price-list-controls" aria-label="Filtros del listado">
-        <label className="search-field">
-          <span>Buscar código o descripción</span>
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Ej. FK-123" />
-        </label>
-        <label className="search-field">
-          <span>Familia</span>
-          <select value={familyName} onChange={(event) => setFamilyName(event.target.value)}>
-            <option value="">Todas las familias</option>
-            {familyOptions.map((family) => <option key={family.value} value={family.value}>{family.label}</option>)}
-          </select>
-        </label>
-        <label className="search-field">
-          <span>Modelo</span>
-          <input list="sales-models" value={modelName} onChange={(event) => setModelName(event.target.value)} placeholder="Todos los modelos" />
-          <datalist id="sales-models">
-            {availableModels.map((model) => <option key={model} value={model} />)}
-          </datalist>
-        </label>
-        <label className="checkbox-field">
-          <input type="checkbox" checked={stockOnly} onChange={(event) => setStockOnly(event.target.checked)} />
-          <span>Solo con stock</span>
-        </label>
-      </section>
-
-      <section className="price-list-model-selection" aria-labelledby="price-list-models-title">
-        <div className="price-list-model-selection-heading">
-          <div>
-            <div className="eyebrow">SELECCIÓN COMERCIAL</div>
-            <h2 id="price-list-models-title">Modelos incluidos</h2>
-            <p>Elegí modelos individuales o una selección filtrada. La exportación crea una hoja Resumen y una hoja por modelo.</p>
-          </div>
-          <strong>{numberFormat.format(selectedModels.length)} seleccionados</strong>
-        </div>
-        <div className="price-list-model-selection-toolbar">
-          <label className="search-field">
-            <span>Buscar modelo</span>
-            <input value={selectionQuery} onChange={(event) => setSelectionQuery(event.target.value)} placeholder="Ej. iR ADV C3325i" />
-          </label>
-          <div className="price-list-model-selection-actions">
-            <button className="secondary-button" type="button" onClick={() => toggleVisibleModels(true)} disabled={visibleModelOptions.length === 0}>
-              Seleccionar visibles
-            </button>
-            <button className="secondary-button" type="button" onClick={() => toggleVisibleModels(false)} disabled={visibleModelOptions.length === 0 || selectedModels.length === 0}>
-              Quitar visibles
-            </button>
-            <label className="checkbox-field">
-              <input type="checkbox" checked={onlySelected} onChange={(event) => setOnlySelected(event.target.checked)} disabled={selectedModels.length === 0} />
-              <span>Solo incluidos</span>
-            </label>
-          </div>
-        </div>
-        <div className="price-list-model-grid" role="list" aria-label="Modelos disponibles para exportar">
-          {visibleModelOptions.map((model) => {
-            const modelKey = normalizeModelText(model);
-            const selected = selectedModelKeys.has(modelKey);
-            const partCount = partCountByModel.get(modelKey) ?? 0;
-            const serviceCount = serviceCountByModel.get(modelKey) ?? 0;
-            return (
-              <label key={model} className={`price-list-model-option${selected ? ' selected' : ''}`}>
-                <input type="checkbox" checked={selected} onChange={() => toggleModel(model)} />
-                <span>
-                  <strong>{model}</strong>
-                  <small>{numberFormat.format(partCount)} partes · {numberFormat.format(serviceCount)} opciones</small>
-                </span>
-              </label>
-            );
-          })}
-          {visibleModelOptions.length === 0 && (
-            <p className="empty-inline">{allItemsLoading ? 'Cargando modelos…' : 'No hay modelos disponibles para esta búsqueda. Importa primero el catálogo desde Catálogo.'}</p>
-          )}
-        </div>
-      </section>
-
-      {displayedModelNotes.length > 0 && (
-        <section className="catalog-model-notes" aria-labelledby="catalog-model-notes-title">
-          <div>
-            <div className="eyebrow">NOTAS DEL LEGADO</div>
-            <h2 id="catalog-model-notes-title">Referencias técnicas por modelo</h2>
-          </div>
-          <div className="catalog-model-notes-list">
-            {displayedModelNotes.map((note) => (
-              <article key={note.id}>
-                <strong>{note.modelName}</strong>
-                <span>{note.note}</span>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <section className="catalog-table-wrap">
-        <table className="catalog-table sales-table">
-          <thead>
-            <tr>
-              <th>N° parte</th>
-              <th>Descripción</th>
-              <th>Modelo</th>
-              <th className="align-right">Stock</th>
-              <th className="align-right">Costo USD</th>
-              <th className="align-right">Venta USD</th>
-              <th className="align-right">Precio Gs.</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pagedItems.items.map((item) => (
-              <tr key={item.id} className={item.discontinuedAt ? 'is-discontinued' : undefined}>
-                <td className="code-cell">{item.code}</td>
-                <td>
-                  <span>{item.description || 'Sin descripción'}</span>
-                  <SalesPartDetails item={item} />
-                </td>
-                <td className="models-cell">{item.models.join(', ') || 'Sin modelo'}</td>
-                <td className="align-right">{numberFormat.format(item.stock)}</td>
-                <td className="align-right">{item.costAvailable === false ? 'Sin costo' : decimalFormat.format(item.priceUsd)}</td>
-                <td className="align-right">{item.costAvailable === false ? 'Sin cálculo' : decimalFormat.format(item.salePriceUsd)}</td>
-                <td className="align-right price-cell">
-                  {item.costAvailable === false ? (
-                    item.priceLocal > 0 ? (
-                      <span className="catalog-reference-price">
-                        <span>{numberFormat.format(item.priceLocal)}</span>
-                        <small>Valor de planilla</small>
-                      </span>
-                    ) : 'Sin precio'
-                  ) : numberFormat.format(item.salePriceLocal)}
-                </td>
-                <td>{item.discontinuedAt ? `Baja ${item.discontinuedAt}` : item.costAvailable === false ? 'Referencia planilla' : 'Activo'}</td>
-              </tr>
-            ))}
-            {displayedItems.length === 0 && (
-              <tr>
-                <td className="empty-cell" colSpan={8}>
-                  {loading ? 'Cargando…' : 'No hay partes para estos filtros. Importa primero un XLSX desde Catálogo.'}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </section>
-      {pagedItems.totalPages > 1 && (
-        <PaginationControls
-          label="Paginación del listado de precios"
-          page={pagedItems.page}
-          pageSize={pagedItems.pageSize}
-          total={pagedItems.total}
-          pageSizeOptions={[50, 100, 250]}
-          onPageChange={pagedItems.setPage}
-          onPageSizeChange={pagedItems.setPageSize}
-        />
-      )}
-
-      {displayedServiceItems.length > 0 && (
-        <section className="catalog-service-items" aria-labelledby="catalog-service-items-title">
-          <div className="catalog-service-items-heading">
-            <div>
-              <div className="eyebrow">SERVICIOS Y CARGOS HEREDADOS</div>
-              <h2 id="catalog-service-items-title">Opciones comerciales por modelo</h2>
-              <p>Estas filas existían en el Listado de precios anterior y ahora quedan guardadas en la base compartida.</p>
+        </Card>
+        <Card className="min-w-0 grid-cols-1" aria-labelledby="price-list-models-title">
+          <CardHeader eyebrow="SELECCIÓN COMERCIAL" title={<span id="price-list-models-title">Modelos incluidos</span>} aside={<Badge tone="success">{numberFormat.format(selectedModels.length)} seleccionados</Badge>} />
+          <Muted>Elegí modelos individuales o una selección filtrada. La exportación crea una hoja Resumen y una hoja por modelo.</Muted>
+          <div className="flex min-w-0 flex-wrap items-end gap-4">
+            <label className={`${fieldClassName} flex-1 basis-64`}><div>Buscar modelo</div><Input value={selectionQuery} onChange={(event) => setSelectionQuery(event.target.value)} placeholder="Ej. iR ADV C3325i" /></label>
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
+              <Button variant="outline" onClick={() => toggleVisibleModels(true)} disabled={visibleModelOptions.length === 0}><Check />Seleccionar visibles</Button>
+              <Button variant="outline" onClick={() => toggleVisibleModels(false)} disabled={visibleModelOptions.length === 0 || selectedModels.length === 0}><Minus />Quitar visibles</Button>
+              <label className={`${checkboxClassName} min-h-10`}><input className="size-4 shrink-0 accent-sky" type="checkbox" checked={onlySelected} onChange={(event) => setOnlySelected(event.target.checked)} disabled={selectedModels.length === 0} /><div>Solo incluidos</div></label>
             </div>
-            <strong>{numberFormat.format(displayedServiceItems.length)} opciones</strong>
           </div>
-          <div className="catalog-table-wrap">
-            <table className="catalog-table catalog-service-table">
-              <thead>
-                <tr>
-                  <th>Tipo</th>
-                  <th>Familia</th>
-                  <th>Modelo</th>
-                  <th>Descripción</th>
-                  <th className="align-right">Precio Gs.</th>
-                  <th>Fuente</th>
-                </tr>
-              </thead>
-              <tbody>
-                {displayedServiceItems.map((item) => {
-                  const price = item.kind === 'labor' ? pricing?.laborPrice ?? null : item.fixedPriceLocal;
-                  return (
-                    <tr key={item.id}>
-                      <td><span className={`catalog-service-kind ${item.kind}`}>{item.kind === 'labor' ? 'Mano de obra' : 'Cargo fijo'}</span></td>
-                      <td>{item.familyName}</td>
-                      <td>{item.modelName}</td>
-                      <td>{item.description}</td>
-                      <td className="align-right price-cell">{price === null ? 'Sin precio' : numberFormat.format(price)}</td>
-                      <td className="catalog-source-cell">{item.sourceName}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className="grid min-w-0 max-h-[28rem] grid-cols-[repeat(auto-fit,minmax(min(100%,16rem),1fr))] gap-3 overflow-y-auto p-1" role="list" aria-label="Modelos disponibles para exportar">
+            {visibleModelOptions.map((model) => {
+              const modelKey = normalizeModelText(model);
+              const selected = selectedModelKeys.has(modelKey);
+              const partCount = partCountByModel.get(modelKey) ?? 0;
+              const serviceCount = serviceCountByModel.get(modelKey) ?? 0;
+              return <div className="min-w-0" role="listitem" key={model}>
+                <label className={`flex min-w-0 cursor-pointer items-start gap-3 rounded-xl border p-3 ${selected ? 'border-sky/60 bg-sky/10' : 'border-navy/10 bg-paper hover:bg-sky/5 dark:border-sky/20 dark:bg-navy/30'}`}>
+                  <input className="mt-1 size-4 shrink-0 accent-sky" type="checkbox" checked={selected} onChange={() => toggleModel(model)} />
+                  <div className="grid min-w-0 grid-cols-1 gap-1 [overflow-wrap:anywhere]"><strong className="text-sm text-navy dark:text-white">{model}</strong><Muted>{numberFormat.format(partCount)} partes · {numberFormat.format(serviceCount)} opciones</Muted></div>
+                </label>
+              </div>;
+            })}
+            {visibleModelOptions.length === 0 && <div className="col-span-full rounded-xl border border-dashed border-navy/20 p-6 text-center dark:border-sky/30"><Muted>{allItemsLoading ? 'Cargando modelos…' : 'No hay modelos disponibles para esta búsqueda. Carga primero el listado o restaura la semilla heredada.'}</Muted></div>}
           </div>
-        </section>
-      )}
+        </Card>
+        {displayedModelNotes.length > 0 && <Card className="min-w-0 grid-cols-1" aria-labelledby="catalog-model-notes-title">
+          <CardHeader eyebrow="NOTAS DEL LEGADO" title={<span id="catalog-model-notes-title">Referencias técnicas por modelo</span>} />
+          <div className="grid min-w-0 grid-cols-1 gap-3">
+            {displayedModelNotes.map((note) => <article className="grid min-w-0 grid-cols-1 gap-2 rounded-xl border border-navy/10 bg-paper p-4 [overflow-wrap:anywhere] dark:border-sky/20 dark:bg-navy/30" key={note.id}>
+              <strong className="text-sm text-navy dark:text-white">{note.modelName}</strong><Muted>{note.note}</Muted>
+            </article>)}
+          </div>
+        </Card>}
+        <Card className="min-w-0 grid-cols-1">
+          <CardHeader eyebrow="CATÁLOGO / PRECIOS" title="Partes y repuestos" aside={<Badge>{numberFormat.format(displayedItems.length)} partes</Badge>} />
+          <Table className="min-w-[64rem]" wrapperClassName="min-w-0" aria-label="Listado de precios">
+            <TableHeader><TableRow>
+              <TableHead>N° parte</TableHead><TableHead>Descripción</TableHead><TableHead>Modelo</TableHead>
+              <TableHead className="text-right">Stock</TableHead><TableHead className="text-right">Costo USD</TableHead><TableHead className="text-right">Venta USD</TableHead><TableHead className="text-right">Precio Gs.</TableHead><TableHead>Estado</TableHead>
+            </TableRow></TableHeader>
+            <TableBody>{pagedItems.items.map((item) => <TableRow key={item.id} className={item.discontinuedAt ? 'bg-red-500/5' : undefined}>
+              <TableCell className="whitespace-nowrap font-mono text-xs">{item.code}</TableCell>
+              <TableCell className="min-w-56 max-w-md [overflow-wrap:anywhere]"><div>{item.description || 'Sin descripción'}</div><SalesPartDetails item={item} /></TableCell>
+              <TableCell className="min-w-40 max-w-xs [overflow-wrap:anywhere]">{item.models.join(', ') || 'Sin modelo'}</TableCell>
+              <TableCell className="text-right whitespace-nowrap tabular-nums">{numberFormat.format(item.stock)}</TableCell>
+              <TableCell className="text-right whitespace-nowrap tabular-nums">{item.costAvailable === false ? 'Sin costo' : decimalFormat.format(item.priceUsd)}</TableCell>
+              <TableCell className="text-right whitespace-nowrap tabular-nums">{item.costAvailable === false ? 'Sin cálculo' : decimalFormat.format(item.salePriceUsd)}</TableCell>
+              <TableCell className="text-right font-bold whitespace-nowrap tabular-nums">{item.costAvailable === false ? item.priceLocal > 0 ? <div className="grid gap-1"><div>{numberFormat.format(item.priceLocal)}</div><Muted>Valor de planilla</Muted></div> : 'Sin precio' : numberFormat.format(item.salePriceLocal)}</TableCell>
+              <TableCell><Badge tone={item.discontinuedAt ? 'warning' : item.costAvailable === false ? 'neutral' : 'success'}>{item.discontinuedAt ? `Baja ${item.discontinuedAt}` : item.costAvailable === false ? 'Referencia planilla' : 'Activo'}</Badge></TableCell>
+            </TableRow>)}
+            {displayedItems.length === 0 && <TableRow><TableCell className="p-6 text-center" colSpan={8}>{loading ? 'Cargando…' : 'No hay partes para estos filtros. Carga un listado o restaura la semilla heredada.'}</TableCell></TableRow>}
+            </TableBody>
+          </Table>
+          {pagedItems.totalPages > 1 && <PaginationControls label="Paginación del listado de precios" page={pagedItems.page} pageSize={pagedItems.pageSize} total={pagedItems.total} pageSizeOptions={[50, 100, 250]} onPageChange={pagedItems.setPage} onPageSizeChange={pagedItems.setPageSize} />}
+        </Card>
+        {displayedServiceItems.length > 0 && <Card className="min-w-0 grid-cols-1" aria-labelledby="catalog-service-items-title">
+          <CardHeader eyebrow="SERVICIOS Y CARGOS HEREDADOS" title={<span id="catalog-service-items-title">Opciones comerciales por modelo</span>} aside={<Badge>{numberFormat.format(displayedServiceItems.length)} opciones</Badge>} />
+          <Muted>Estas filas existían en el Listado de precios anterior y ahora quedan guardadas en la base compartida.</Muted>
+          <Table className="min-w-[52rem]" wrapperClassName="min-w-0" aria-label="Opciones comerciales por modelo">
+            <TableHeader><TableRow><TableHead>Tipo</TableHead><TableHead>Familia</TableHead><TableHead>Modelo</TableHead><TableHead>Descripción</TableHead><TableHead className="text-right">Precio Gs.</TableHead><TableHead>Fuente</TableHead></TableRow></TableHeader>
+            <TableBody>{displayedServiceItems.map((item) => {
+              const price = item.kind === 'labor' ? pricing?.laborPrice ?? null : item.fixedPriceLocal;
+              return <TableRow key={item.id}>
+                <TableCell><Badge>{item.kind === 'labor' ? 'Mano de obra' : 'Cargo fijo'}</Badge></TableCell>
+                <TableCell className="max-w-xs [overflow-wrap:anywhere]">{item.familyName}</TableCell><TableCell className="max-w-xs [overflow-wrap:anywhere]">{item.modelName}</TableCell><TableCell className="min-w-56 max-w-md [overflow-wrap:anywhere]">{item.description}</TableCell>
+                <TableCell className="text-right font-bold whitespace-nowrap tabular-nums">{price === null ? 'Sin precio' : numberFormat.format(price)}</TableCell><TableCell className="max-w-xs [overflow-wrap:anywhere]">{item.sourceName}</TableCell>
+              </TableRow>;
+            })}</TableBody>
+          </Table>
+        </Card>}
+      </div>
     </div>
   );
+}
+
+function PriceListSummary({ label, value }: { label: string; value: number }) {
+  return <Card className="min-w-0 grid-cols-1 gap-2"><Muted>{label}</Muted><strong className="break-all text-2xl font-bold tabular-nums text-navy dark:text-white">{numberFormat.format(value)}</strong></Card>;
 }
 
 function uniqueModelLabels(items: readonly SalesPricePart[], serviceItems: readonly CatalogServiceItem[] = []): string[] {
@@ -787,7 +635,7 @@ function SalesPartDetails({ item }: { item: SalesPricePart }) {
     item.reference ? `Ref.: ${item.reference}` : '',
     item.usefulLife ? `Vida: ${item.usefulLife}` : '',
   ].filter(Boolean);
-  return details.length > 0 ? <small className="catalog-part-details">{details.join(' · ')}</small> : null;
+  return details.length > 0 ? <Muted className="mt-1">{details.join(' · ')}</Muted> : null;
 }
 
 async function digestBytes(bytes: Uint8Array): Promise<string> {

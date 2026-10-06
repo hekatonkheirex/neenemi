@@ -329,6 +329,11 @@ el valor global sigue siendo el predeterminado para consultas sin familia, y las
 de la exportación respetan la regla de su familia. La pantalla conserva y permite descargar el
 archivo original de la última carga del catálogo compartido, y permite volver al T.C. global o
 guardar una excepción por familia.
+La pantalla usa los componentes compartidos del rediseño en ambos temas, con resumen, reglas
+comerciales, filtros y selección separados. La selección se guarda automáticamente en SQLite;
+los repuestos mantienen la paginación y las tablas desplazan dentro de sus tarjetas. Los nombres
+largos de familias, modelos y notas se ajustan sin invadir otras columnas. Guardar las reglas
+actualiza los precios visibles; los cambios pendientes siguen advirtiéndose antes de salir.
 
 Proformas tiene su **paridad operativa aprobada (2026-09-24)** tras verificarse que el XLSX exportado
 coincide con el legado. Ya permite importar un informe de servicio PDF con lectura local: muestra cliente,

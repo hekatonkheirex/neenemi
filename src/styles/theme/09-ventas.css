@@ -15,44 +15,6 @@ html[data-theme='light'] .labor-total-row strong {
   color: var(--ds-success);
 }
 
-html[data-theme='light'] .price-list-model-selection {
-  border-color: var(--ds-border);
-  background: var(--ds-surface);
-  box-shadow: 0 0.65rem 1.6rem var(--ds-shadow);
-}
-
-html[data-theme='light'] .price-list-model-selection-heading h2,
-html[data-theme='light'] .price-list-model-selection-heading > strong {
-  color: var(--ds-ink);
-}
-
-html[data-theme='light'] .price-list-model-selection-heading p {
-  color: var(--ds-muted);
-}
-
-html[data-theme='light'] .price-list-model-selection-heading > strong {
-  color: var(--ds-success);
-}
-
-html[data-theme='light'] .price-list-model-option {
-  border-color: var(--ds-border);
-  color: var(--ds-ink);
-  background: var(--ds-surface-alt);
-}
-
-html[data-theme='light'] .price-list-model-option:hover,
-html[data-theme='light'] .price-list-model-option.selected {
-  border-color: #8bcfe4;
-  background: var(--ds-blue-wash);
-}
-
-html[data-theme='light'] .price-list-model-option strong {
-  color: var(--ds-ink);
-}
-
-html[data-theme='light'] .price-list-model-option small {
-  color: var(--ds-muted);
-}
 
 html[data-theme='light'] .suggestion-row:hover,
 html[data-theme='light'] .history-item:hover,
