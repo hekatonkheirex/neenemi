@@ -114,7 +114,7 @@
   align-items: center;
   justify-content: space-between;
   padding-bottom: 0.6rem;
-  border-bottom: 1px solid rgba(144, 174, 229, 0.12);
+  border-bottom: 1px solid var(--dk-line);
 }
 
 .software-group-heading h3 {
@@ -139,7 +139,7 @@
   gap: 0.7rem;
   align-items: start;
   padding: 0.7rem 0.75rem;
-  border: 1px solid rgba(144, 174, 229, 0.1);
+  border: 1px solid var(--dk-line-faint);
   border-radius: 0.5rem;
   background: rgba(10, 19, 34, 0.38);
   cursor: pointer;
@@ -232,7 +232,7 @@
 
 .software-recommendation {
   padding: 0.85rem;
-  border: 1px solid rgba(144, 174, 229, 0.13);
+  border: 1px solid var(--dk-line);
   border-radius: 0.6rem;
   background: rgba(10, 19, 34, 0.45);
 }
@@ -298,7 +298,7 @@
 
 .software-recommendation details {
   margin-top: 0.7rem;
-  border-top: 1px solid rgba(144, 174, 229, 0.1);
+  border-top: 1px solid var(--dk-line-faint);
   padding-top: 0.6rem;
 }
 
@@ -320,7 +320,7 @@
   display: grid;
   gap: 0.25rem;
   padding-bottom: 0.65rem;
-  border-bottom: 1px solid rgba(144, 174, 229, 0.1);
+  border-bottom: 1px solid var(--dk-line-faint);
 }
 
 .software-reason:last-child {
@@ -371,7 +371,7 @@
   display: grid;
   gap: 0.2rem;
   padding-bottom: 0.55rem;
-  border-bottom: 1px solid rgba(144, 174, 229, 0.1);
+  border-bottom: 1px solid var(--dk-line-faint);
 }
 
 .software-product-row:last-child {

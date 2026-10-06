@@ -61,7 +61,7 @@
 .source-data-sheet-select select {
   width: 100%;
   padding: 0.6rem 0.7rem;
-  border: 1px solid rgba(144, 174, 229, 0.17);
+  border: 1px solid var(--dk-line-strong);
   border-radius: 0.5rem;
   outline: 0;
   color: var(--dk-dce8fc);

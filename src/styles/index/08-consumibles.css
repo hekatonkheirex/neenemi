@@ -9,7 +9,7 @@
   display: grid;
   gap: 0.45rem;
   padding: 0.75rem;
-  border: 1px solid rgba(144, 174, 229, 0.16);
+  border: 1px solid var(--dk-line);
   border-radius: 0.55rem;
   background: rgba(18, 31, 54, 0.32);
 }

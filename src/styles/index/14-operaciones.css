@@ -79,7 +79,7 @@
   gap: 0.3rem;
   margin-top: 0.85rem;
   padding-top: 0.8rem;
-  border-top: 1px solid rgba(144, 174, 229, 0.11);
+  border-top: 1px solid var(--dk-line-faint);
   color: var(--dk-7187aa);
   font-size: 0.68rem;
   line-height: 1.45;

@@ -34,10 +34,16 @@ describe('tokens de color', () => {
     expect(offenders).toEqual([]);
   });
 
-  it('todo var(--dk-*) usado está definido', () => {
-    const used = new Set([...css.matchAll(/var\((--dk-[0-9a-f]{6})\)/g)].map((m) => m[1]));
-    const names = new Set(defined.map((m) => m[1]));
+  it('todo var(--dk-*) usado está definido (un token sin definir deja el borde o el color sin aplicar)', () => {
+    const used = new Set([...css.matchAll(/var\((--dk-[a-z0-9-]+)\)/g)].map((m) => m[1]));
+    const names = new Set([...css.matchAll(/^\s*(--dk-[a-z0-9-]+):/gm)].map((m) => m[1]));
     expect([...used].filter((name) => !names.has(name))).toEqual([]);
     expect(fs.existsSync('src/styles/README.md')).toBe(true);
+  });
+
+  it('líneas del tema oscuro: cuatro intensidades y ningún borde con la rgba suelta de la familia', () => {
+    for (const name of ['--dk-line-faint', '--dk-line', '--dk-line-strong', '--dk-line-emphasis']) expect(css, name).toMatch(new RegExp(`${name}: rgba\\(144, 174, 229, 0\\.\\d+\\);`));
+    const loose = [...css.matchAll(/(?:^|[;{\s])(border(?:-[a-z]+)*)\s*:[^;{}]*rgba\(\s*144,\s*174,\s*229,\s*(0?\.(?:08|09|1|11|12|13|14|15|16|17|18|2|22|23|25))\s*\)/gm)];
+    expect(loose.map((match) => match[0].trim().slice(0, 60))).toEqual([]);
   });
 });

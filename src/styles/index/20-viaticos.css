@@ -66,7 +66,7 @@
 /* El input de mes no heredaba el aspecto de los select vecinos (Estado, Medio): sin fondo oscuro ni borde propio en el tema oscuro. */
 .travel-controls .compact-field input {
   padding: 0.55rem 0.65rem;
-  border: 1px solid rgba(144, 174, 229, 0.17);
+  border: 1px solid var(--dk-line-strong);
   border-radius: 0.5rem;
   outline: 0;
   color: var(--dk-dce8fc);
@@ -123,7 +123,7 @@
 .status-select {
   min-width: 8.5rem;
   padding: 0.45rem 0.55rem;
-  border: 1px solid rgba(144, 174, 229, 0.17);
+  border: 1px solid var(--dk-line-strong);
   border-radius: 0.45rem;
   outline: 0;
   color: #bcd0ef;
@@ -241,7 +241,7 @@
 
 .travel-catalog-details {
   margin-top: 1rem;
-  border-top: 1px solid rgba(144, 174, 229, 0.13);
+  border-top: 1px solid var(--dk-line);
   color: #bcd0ef;
 }
 
@@ -289,7 +289,7 @@
   gap: 0.75rem;
   align-items: start;
   padding: 0.45rem 0.55rem;
-  border: 1px solid rgba(144, 174, 229, 0.12);
+  border: 1px solid var(--dk-line);
   border-radius: 0.45rem;
   background: rgba(18, 31, 54, 0.4);
 }
@@ -324,7 +324,7 @@
   min-width: 0;
   max-width: 100%;
   padding-top: 0.85rem;
-  border-top: 1px solid rgba(144, 174, 229, 0.13);
+  border-top: 1px solid var(--dk-line);
 }
 
 .travel-total strong {
@@ -361,7 +361,7 @@
   width: 100%;
   min-width: 0;
   padding: 0.55rem 0.65rem;
-  border: 1px solid rgba(144, 174, 229, 0.17);
+  border: 1px solid var(--dk-line-strong);
   border-radius: 0.5rem;
   outline: 0;
   color: var(--dk-dce8fc);
@@ -411,7 +411,7 @@
   height: 7.2rem;
   align-items: end;
   padding: 0.2rem;
-  border: 1px solid rgba(144, 174, 229, 0.12);
+  border: 1px solid var(--dk-line);
   border-radius: 0.45rem;
   background: rgba(10, 19, 34, 0.54);
 }
@@ -536,7 +536,7 @@
   width: 1.8rem;
   height: 1.8rem;
   place-items: center;
-  border: 1px solid rgba(144, 174, 229, 0.18);
+  border: 1px solid var(--dk-line-strong);
   border-radius: 0.45rem;
   color: #9bb8ed;
   background: rgba(39, 67, 112, 0.35);
@@ -602,7 +602,7 @@
   align-items: center;
   min-width: 0;
   padding: 1rem 1.1rem;
-  border: 1px solid rgba(144, 174, 229, 0.15);
+  border: 1px solid var(--dk-line);
   border-radius: 0.75rem;
   background: rgba(18, 31, 54, 0.58);
 }
@@ -694,7 +694,7 @@
   width: 100%;
   min-width: 8.5rem;
   padding: 0.42rem 0.5rem;
-  border: 1px solid rgba(144, 174, 229, 0.17);
+  border: 1px solid var(--dk-line-strong);
   border-radius: 0.45rem;
   outline: 0;
   color: #c6d7f2;
@@ -711,7 +711,7 @@
   display: grid;
   gap: 1rem;
   padding: 1rem 1.1rem 1.15rem;
-  border-top: 1px solid rgba(144, 174, 229, 0.13);
+  border-top: 1px solid var(--dk-line);
 }
 
 .travel-rendition-detail-heading {
@@ -753,7 +753,7 @@
 .travel-rendition-detail-notes {
   min-width: 0;
   padding: 0.8rem;
-  border: 1px solid rgba(144, 174, 229, 0.13);
+  border: 1px solid var(--dk-line);
   border-radius: 0.55rem;
   background: rgba(18, 31, 54, 0.36);
 }
@@ -829,13 +829,13 @@
 
 .travel-rendition-cost-line.separate {
   padding-bottom: 0.45rem;
-  border-bottom: 1px dashed rgba(144, 174, 229, 0.16);
+  border-bottom: 1px dashed var(--dk-line);
 }
 
 .travel-rendition-cost-total {
   margin-top: 0.65rem;
   padding-top: 0.65rem;
-  border-top: 1px solid rgba(144, 174, 229, 0.18);
+  border-top: 1px solid var(--dk-line-strong);
 }
 
 .travel-rendition-cost-total span {
@@ -982,7 +982,7 @@
   align-items: end;
   justify-content: center;
   padding: 0.35rem 0.25rem 0;
-  border-bottom: 1px solid rgba(144, 174, 229, 0.14);
+  border-bottom: 1px solid var(--dk-line);
 }
 
 .travel-history-year-bars.single {
@@ -1090,7 +1090,7 @@
   gap: 0.75rem;
   min-width: 0;
   padding: 0.75rem;
-  border: 1px solid rgba(144, 174, 229, 0.13);
+  border: 1px solid var(--dk-line);
   border-radius: 0.6rem;
   background: rgba(18, 31, 54, 0.38);
 }
@@ -1101,7 +1101,7 @@
   align-items: baseline;
   justify-content: space-between;
   padding-bottom: 0.55rem;
-  border-bottom: 1px solid rgba(144, 174, 229, 0.12);
+  border-bottom: 1px solid var(--dk-line);
 }
 
 .travel-monthly-card > div:first-child strong {
@@ -1180,7 +1180,7 @@
   min-width: 0;
   gap: 0.25rem;
   padding: 0.7rem 0.75rem;
-  border: 1px solid rgba(144, 174, 229, 0.14);
+  border: 1px solid var(--dk-line);
   border-radius: 0.55rem;
   color: #c6d7f2;
   background: rgba(18, 31, 54, 0.46);
@@ -1210,7 +1210,7 @@
 .travel-source-table-wrap {
   overflow: auto;
   max-height: 28rem;
-  border: 1px solid rgba(144, 174, 229, 0.14);
+  border: 1px solid var(--dk-line);
   border-radius: 0.55rem;
 }
 
@@ -1280,7 +1280,7 @@
   max-height: calc(100vh - 3rem);
   overflow-y: auto;
   padding: 1.5rem;
-  border: 1px solid rgba(144, 174, 229, 0.22);
+  border: 1px solid var(--dk-line-emphasis);
   border-radius: 0.9rem;
   color: var(--dk-dce8fc);
   background: var(--dk-0f1b30);
@@ -1310,7 +1310,7 @@
   gap: 0.3rem;
   margin-top: 1.25rem;
   padding: 0.85rem 1rem;
-  border: 1px solid rgba(144, 174, 229, 0.14);
+  border: 1px solid var(--dk-line);
   border-radius: 0.6rem;
   background: rgba(18, 31, 54, 0.7);
 }
@@ -1349,7 +1349,7 @@
   min-width: 0;
   gap: 0.35rem;
   padding: 0.7rem;
-  border: 1px solid rgba(144, 174, 229, 0.12);
+  border: 1px solid var(--dk-line);
   border-radius: 0.55rem;
   background: rgba(18, 31, 54, 0.42);
 }

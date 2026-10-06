@@ -482,7 +482,7 @@ html[data-theme='light'] .ai-key-message.error { color: var(--ds-danger); }
 .database-backup-cta:hover:not(:disabled) { filter: brightness(1.08); }
 .database-backup-cta:disabled { cursor: not-allowed; opacity: 0.55; }
 .backup-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.75rem; margin: 0; }
-.backup-stats > div { display: grid; gap: 0.2rem; padding: 0.85rem 1rem; border: 1px solid rgba(144, 174, 229, 0.23); border-radius: 0.65rem; }
+.backup-stats > div { display: grid; gap: 0.2rem; padding: 0.85rem 1rem; border: 1px solid var(--dk-line-emphasis); border-radius: 0.65rem; }
 .backup-stats > div.attention { border-color: #d92d20; }
 .backup-stats dt { margin: 0; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.75; }
 .backup-stats dd { margin: 0; font-size: 1.15rem; font-weight: 800; }

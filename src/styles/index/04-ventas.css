@@ -19,7 +19,7 @@
 
 .catalog-table-wrap {
   overflow-x: auto;
-  border: 1px solid rgba(144, 174, 229, 0.15);
+  border: 1px solid var(--dk-line);
   border-radius: 0.8rem;
   background: rgba(12, 23, 41, 0.7);
 }
@@ -35,7 +35,7 @@
 
 .catalog-table th {
   padding: 0.85rem 0.9rem;
-  border-bottom: 1px solid rgba(144, 174, 229, 0.17);
+  border-bottom: 1px solid var(--dk-line-strong);
   color: var(--dk-7890b8);
   font-size: 0.63rem;
   font-weight: 850;
@@ -76,7 +76,7 @@
 
 .catalog-table td {
   padding: 0.85rem 0.9rem;
-  border-bottom: 1px solid rgba(144, 174, 229, 0.08);
+  border-bottom: 1px solid var(--dk-line-faint);
   vertical-align: top;
   line-height: 1.45;
 }
@@ -145,7 +145,7 @@
   gap: 1rem;
   margin-top: 1.25rem;
   padding: 1.25rem 1.35rem;
-  border: 1px solid rgba(144, 174, 229, 0.15);
+  border: 1px solid var(--dk-line);
   border-radius: 0.85rem;
   background: rgba(15, 27, 48, 0.62);
 }
@@ -165,7 +165,7 @@
   display: grid;
   gap: 0.2rem;
   padding: 0.75rem 0.85rem;
-  border: 1px solid rgba(144, 174, 229, 0.12);
+  border: 1px solid var(--dk-line);
   border-radius: 0.6rem;
   background: rgba(18, 31, 54, 0.45);
 }
@@ -244,7 +244,7 @@
 .secondary-button {
   min-width: 8.5rem;
   padding: 0.78rem 1rem;
-  border: 1px solid rgba(144, 174, 229, 0.23);
+  border: 1px solid var(--dk-line-emphasis);
   border-radius: 0.55rem;
   color: #c6d7f2;
   background: rgba(25, 43, 73, 0.7);

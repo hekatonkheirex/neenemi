@@ -131,7 +131,7 @@
   gap: 0.7rem;
   align-items: center;
   padding-bottom: 0.8rem;
-  border-bottom: 1px solid rgba(144, 174, 229, 0.1);
+  border-bottom: 1px solid var(--dk-line-faint);
 }
 
 .analytics-equipment-row:last-child {
@@ -186,7 +186,7 @@
   gap: 0.25rem;
   min-width: 0;
   padding: 0.8rem 0.9rem;
-  border: 1px solid rgba(144, 174, 229, 0.11);
+  border: 1px solid var(--dk-line-faint);
   border-radius: 0.65rem;
   background: rgba(18, 31, 54, 0.42);
 }
@@ -212,7 +212,7 @@
   align-items: end;
   margin-bottom: 1.25rem;
   padding: 0.9rem 1rem;
-  border: 1px solid rgba(144, 174, 229, 0.15);
+  border: 1px solid var(--dk-line);
   border-radius: 0.8rem;
   background: rgba(15, 27, 48, 0.72);
 }
@@ -225,7 +225,7 @@
   width: 100%;
   min-height: 2.35rem;
   padding: 0.55rem 0.65rem;
-  border: 1px solid rgba(144, 174, 229, 0.17);
+  border: 1px solid var(--dk-line-strong);
   border-radius: 0.5rem;
   outline: 0;
   color: var(--dk-dce8fc);
@@ -357,7 +357,7 @@
 
 .legacy-chart-inset {
   padding: 1rem;
-  border: 1px solid rgba(144, 174, 229, 0.12);
+  border: 1px solid var(--dk-line);
   border-radius: 0.7rem;
   background: rgba(18, 31, 54, 0.3);
 }
@@ -609,7 +609,7 @@
   display: grid;
   gap: 0.75rem;
   padding: 1rem;
-  border-top: 1px solid rgba(144, 174, 229, 0.12);
+  border-top: 1px solid var(--dk-line);
 }
 
 .legacy-detail-heading {
@@ -634,7 +634,7 @@
 .legacy-timeline {
   display: grid;
   overflow: hidden;
-  border: 1px solid rgba(144, 174, 229, 0.12);
+  border: 1px solid var(--dk-line);
   border-radius: 0.65rem;
 }
 
@@ -644,7 +644,7 @@
   gap: 0.45rem 0.7rem;
   align-items: center;
   padding: 0.65rem 0.75rem;
-  border-bottom: 1px solid rgba(144, 174, 229, 0.1);
+  border-bottom: 1px solid var(--dk-line-faint);
   color: #b6c8e5;
   background: rgba(18, 31, 54, 0.3);
   font-size: 0.68rem;
@@ -674,7 +674,7 @@
   gap: 0.65rem;
   margin: 0.5rem 0 1rem;
   padding: 0.8rem 0.9rem;
-  border: 1px solid rgba(144, 174, 229, 0.11);
+  border: 1px solid var(--dk-line-faint);
   border-radius: 0.65rem;
   background: rgba(18, 31, 54, 0.3);
 }

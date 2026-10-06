@@ -55,7 +55,7 @@
   margin-top: 0.45rem;
   padding: 0.65rem;
   overflow-y: auto;
-  border: 1px solid rgba(144, 174, 229, 0.15);
+  border: 1px solid var(--dk-line);
   border-radius: 0.5rem;
   background: rgba(12, 23, 41, 0.72);
 }
@@ -286,7 +286,7 @@
   display: block;
   width: min(100%, 22rem);
   height: auto;
-  border: 1px solid rgba(144, 174, 229, 0.16);
+  border: 1px solid var(--dk-line);
   border-radius: 0.45rem;
   background: rgba(12, 23, 41, 0.5);
 }
@@ -318,7 +318,7 @@
 
 .maintenance-history-chart-empty {
   padding: 1.2rem;
-  border: 1px solid rgba(144, 174, 229, 0.16);
+  border: 1px solid var(--dk-line);
   border-radius: 0.45rem;
   color: var(--dk-7890b8);
   font-size: 0.68rem;
@@ -326,7 +326,7 @@
 
 .maintenance-readings-table-wrap {
   overflow-x: auto;
-  border: 1px solid rgba(144, 174, 229, 0.16);
+  border: 1px solid var(--dk-line);
   border-radius: 0.55rem;
   background: rgba(12, 23, 41, 0.5);
 }
@@ -342,7 +342,7 @@
 .maintenance-readings-table th,
 .maintenance-readings-table td {
   padding: 0.48rem 0.6rem;
-  border-bottom: 1px solid rgba(144, 174, 229, 0.1);
+  border-bottom: 1px solid var(--dk-line-faint);
   white-space: nowrap;
 }
 

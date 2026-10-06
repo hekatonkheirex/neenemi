@@ -13,6 +13,11 @@
   --dk-0f1b30: #0f1b30;
   --dk-9ab0d0: #9ab0d0;
   --dk-f2c279: #f2c279;
+  /* Líneas del tema oscuro (borde de tarjetas, tablas y campos). Cuatro intensidades; las alfas casi iguales (0.08-0.25) se fusionaron, desvío máx. 0.03. */
+  --dk-line-faint: rgba(144, 174, 229, 0.1);
+  --dk-line: rgba(144, 174, 229, 0.14);
+  --dk-line-strong: rgba(144, 174, 229, 0.17);
+  --dk-line-emphasis: rgba(144, 174, 229, 0.22);
   font-family: var(--ds-font-ui);
   font-variant-numeric: tabular-nums;
   color: #edf3ff;
@@ -286,7 +291,7 @@ h2 {
   flex-direction: column;
   justify-content: space-between;
   padding: 1.2rem 1.25rem;
-  border: 1px solid rgba(144, 174, 229, 0.15);
+  border: 1px solid var(--dk-line);
   border-radius: 0.8rem;
   background: rgba(18, 31, 54, 0.58);
 }
@@ -352,7 +357,7 @@ h2 {
   flex-direction: column;
   align-items: flex-start;
   padding: 1.15rem;
-  border: 1px solid rgba(144, 174, 229, 0.15);
+  border: 1px solid var(--dk-line);
   border-radius: 0.8rem;
   color: var(--dk-dce8fc);
   background: rgba(15, 27, 48, 0.72);
@@ -439,7 +444,7 @@ h2 {
 .detail-card {
   min-height: 7.2rem;
   padding: 1.2rem;
-  border: 1px solid rgba(144, 174, 229, 0.15);
+  border: 1px solid var(--dk-line);
   border-radius: 0.8rem;
   background: rgba(18, 31, 54, 0.58);
 }
@@ -514,7 +519,7 @@ h2 {
   justify-content: space-between;
   margin-top: 0.4rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(144, 174, 229, 0.12);
+  border-top: 1px solid var(--dk-line);
 }
 
 .overview-backup p {
@@ -586,7 +591,7 @@ h2 {
   min-height: 2.5rem;
   align-items: center;
   padding: 0.65rem 0.9rem;
-  border: 1px solid rgba(144, 174, 229, 0.23);
+  border: 1px solid var(--dk-line-emphasis);
   border-radius: 0.55rem;
   color: #c6d7f2;
   background: rgba(25, 43, 73, 0.7);
