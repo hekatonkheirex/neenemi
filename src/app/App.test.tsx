@@ -17,8 +17,8 @@ describe('Inicio de la suite', () => {
   it('llama Inicio a la entrada de la barra lateral y pone el respaldo justo bajo las fichas', () => {
     const markup = renderToStaticMarkup(<App />);
 
-    expect(markup).toContain('<span>Inicio</span>');
-    expect(markup).not.toContain('<span>Resumen</span>');
+    expect(markup).toMatch(/<button[^>]*aria-current="page"[^>]*>(?:<svg.*?<\/svg>)Inicio/);
+    expect(markup).not.toMatch(/<button[^>]*>(?:<svg.*?<\/svg>)Resumen/);
     expect(markup).toContain('contratos en cartera');
     expect(markup).toContain('última carga aplicada');
     expect(markup).not.toContain('clientes en la base común');

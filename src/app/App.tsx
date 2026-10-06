@@ -1,20 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { motion, MotionConfig } from 'framer-motion';
-import { HugeiconsIcon } from '@hugeicons/react';
-import {
-  AiBrain01Icon,
-  Airplane01Icon,
-  Alert02Icon,
-  Analytics01Icon,
-  Calculator01Icon,
-  CloudIcon,
-  GridViewIcon,
-  Invoice01Icon,
-  PrinterIcon,
-  ShieldEnergyIcon,
-  Tag01Icon,
-  Wrench01Icon,
-} from '@hugeicons/core-free-icons';
 import type { SuiteOverview } from '../db/overview';
 import { suiteModules, type SuiteModule } from './modules';
 import { persistTheme, readTheme, type Theme } from './theme';
@@ -25,7 +10,7 @@ import suiteLogoUrl from '../../build/icon.png';
 import { confirmAction } from '../core/confirm';
 import ConfirmDialogHost from '../core/ConfirmDialog';
 import CommandPalette from './CommandPalette';
-import BackupAlertDot from './BackupAlertDot';
+import Sidebar from './Sidebar';
 import ModuleSkeleton from './ModuleSkeleton';
 import ChangelogDialog from './ChangelogDialog';
 import { persistLastModule, readLastModule } from './lastModule';
@@ -82,21 +67,6 @@ const sectionLabels: Record<SuiteModule['section'], string> = {
   software: 'Software',
   herramientas: 'Herramientas',
 };
-
-const moduleIcons = {
-  mantenimiento: Wrench01Icon,
-  descontinuador: Alert02Icon,
-  consumibles: Analytics01Icon,
-  mps: Calculator01Icon,
-  cobertura: PrinterIcon,
-  viaticos: Airplane01Icon,
-  tracking: Analytics01Icon,
-  uniflow: CloudIcon,
-  'listado-precios': Tag01Icon,
-  proformas: Invoice01Icon,
-  sla: ShieldEnergyIcon,
-  'software-selector': AiBrain01Icon,
-} satisfies Record<(typeof suiteModules)[number]['id'], typeof PrinterIcon>;
 
 const numberFormat = new Intl.NumberFormat('es-PY');
 const dateFormat = new Intl.DateTimeFormat('es-PY', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -283,59 +253,17 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <aside className="sidebar">
-        <div className="brand-block">
-          <img className="brand-mark" src={suiteLogoUrl} alt="" />
-          <div>
-            <strong>DCSS Suite</strong>
-            <span>Document &amp; Collaborative Solutions Support</span>
-          </div>
-        </div>
-
-        <nav className="module-nav" aria-label="Módulos de la suite">
-          <button
-            className={`nav-item ${activeModuleId === null ? 'active' : ''}`}
-            aria-current={activeModuleId === null ? 'page' : undefined}
-            type="button"
-            onClick={() => void navigateTo(null)}
-          >
-            <span className="nav-icon" aria-hidden="true"><HugeiconsIcon icon={GridViewIcon} size={16} /></span>
-            <span>Inicio</span>
-            {backupDue ? <BackupAlertDot /> : null}
-          </button>
-
-          {sectionOrder.map((section) => {
-            const modules = suiteModules.filter((module) => module.section === section);
-            return (
-              <div className="nav-group" key={section}>
-                <div className="nav-label">{sectionLabels[section]}</div>
-                {modules.map((module) => (
-                  <button
-                    className={`nav-item ${activeModuleId === module.id ? 'active' : ''}`}
-                    key={module.id}
-                    aria-current={activeModuleId === module.id ? 'page' : undefined}
-                    type="button"
-                    onClick={() => void navigateTo(module.id)}
-                  >
-                    <span className="nav-icon" aria-hidden="true"><HugeiconsIcon icon={moduleIcons[module.id]} size={16} /></span>
-                    <span>{module.label}</span>
-                  </button>
-                ))}
-              </div>
-            );
-          })}
-        </nav>
-
-        {health && !health.ok && (
-          <div className="sidebar-footer" role="status">
-            <span className="status-dot error" />
-            <span>SQLite requiere atención</span>
-          </div>
-        )}
-        <div className="sidebar-version">
-          <button type="button" className="sidebar-version-link" onClick={() => setChangelogOpen(true)} aria-haspopup="dialog" title="Ver historial de cambios">Versión v{suiteVersion}</button>
-        </div>
-      </aside>
+      <Sidebar
+        activeModuleId={activeModuleId}
+        sections={sectionOrder}
+        sectionLabels={sectionLabels}
+        backupDue={backupDue}
+        sqliteWarning={Boolean(health && !health.ok)}
+        version={suiteVersion}
+        logoUrl={suiteLogoUrl}
+        onNavigate={(id) => void navigateTo(id)}
+        onOpenChangelog={() => setChangelogOpen(true)}
+      />
 
       <main className="content">
         <header className="topbar">

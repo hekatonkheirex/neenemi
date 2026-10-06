@@ -1,0 +1,17 @@
+/* Tailwind v4 sin preflight: convive con el CSS heredado (index.css, theme.css) mientras los módulos migran uno a uno.
+   Se carga después de ambos en main.tsx. Tema oscuro = html[data-theme='dark'] (ver src/app/theme.ts). */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme {
+  --color-navy: #1a2c4c;
+  --color-panel: #0e1b31;
+  --color-brand: #ff6b00;
+  --color-sky: #00a3e0;
+  --color-paper: #f4f6f9;
+  --color-ink-2: #4a5568;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+}
