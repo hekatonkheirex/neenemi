@@ -96,7 +96,7 @@
 
 .uniflow-device-heading h3 {
   margin: 0;
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
   font-size: 0.92rem;
 }
 
@@ -150,7 +150,7 @@
   padding: 0.55rem 0.7rem;
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
-  color: var(--dk-e7efff);
+  color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);
   text-align: left;
 }
@@ -175,7 +175,7 @@
 }
 
 .uniflow-model-trigger-copy strong {
-  color: var(--dk-e7efff);
+  color: var(--dk-dce8fc);
   font-size: 0.76rem;
   font-weight: 700;
 }
@@ -221,7 +221,7 @@
   border: 0;
   border-bottom: 1px solid rgba(144, 174, 229, 0.14);
   outline: 0;
-  color: var(--dk-e7efff);
+  color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.82);
   font-size: 0.74rem;
 }
@@ -241,7 +241,7 @@
   padding: 0.55rem 0.6rem;
   border: 0;
   border-radius: 0.4rem;
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
   background: transparent;
   text-align: left;
 }
@@ -309,7 +309,7 @@
 .uniflow-term-options button:hover,
 .uniflow-term-options button.active {
   border-color: rgba(117, 166, 255, 0.58);
-  color: var(--dk-e5eeff);
+  color: var(--dk-dce8fc);
   background: rgba(57, 101, 190, 0.28);
 }
 
@@ -331,7 +331,7 @@
 }
 
 .uniflow-quantity-control button:hover:not(:disabled) {
-  color: var(--dk-e5eeff);
+  color: var(--dk-dce8fc);
   background: rgba(57, 101, 190, 0.28);
 }
 
@@ -348,7 +348,7 @@
   border-right: 1px solid rgba(144, 174, 229, 0.12);
   border-left: 1px solid rgba(144, 174, 229, 0.12);
   border-radius: 0;
-  color: var(--dk-e7efff);
+  color: var(--dk-dce8fc);
   background: transparent;
   text-align: center;
 }
@@ -471,7 +471,7 @@
 }
 
 .uniflow-licensing-grid strong {
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
   font-size: 0.72rem;
 }
 
@@ -622,7 +622,7 @@
 .uniflow-price-tabs button:hover,
 .uniflow-price-tabs button.active {
   border-color: rgba(117, 166, 255, 0.55);
-  color: var(--dk-e5eeff);
+  color: var(--dk-dce8fc);
   background: rgba(57, 101, 190, 0.25);
 }
 
@@ -659,7 +659,7 @@
   border: 1px solid rgba(144, 174, 229, 0.14);
   border-radius: 0.35rem;
   outline: 0;
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.76);
   font-size: 0.68rem;
 }

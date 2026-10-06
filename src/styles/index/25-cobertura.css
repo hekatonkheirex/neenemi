@@ -30,7 +30,7 @@
 
 .coverage-upload-description {
   margin: 0.35rem 0 0;
-  color: var(--dk-93a8ca);
+  color: var(--dk-8fa5c7);
   font-size: 0.84rem;
   line-height: 1.6;
 }
@@ -79,7 +79,7 @@
 }
 
 .coverage-upload-copy span {
-  color: var(--dk-93a8ca);
+  color: var(--dk-8fa5c7);
   font-size: 0.74rem;
   line-height: 1.5;
 }
@@ -323,7 +323,7 @@
 .coverage-catalog-hint,
 .coverage-catalog-empty {
   margin: 0.8rem 0 0;
-  color: var(--dk-93a8ca);
+  color: var(--dk-8fa5c7);
   font-size: 0.74rem;
   line-height: 1.5;
 }

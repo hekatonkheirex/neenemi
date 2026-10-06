@@ -102,7 +102,7 @@
 }
 
 .mps-model-option strong {
-  color: var(--dk-e5eeff);
+  color: var(--dk-dce8fc);
   font-size: 0.8rem;
 }
 
@@ -216,7 +216,7 @@
 .mps-presets button:hover,
 .mps-presets button.active {
   border-color: rgba(117, 166, 255, 0.54);
-  color: var(--dk-e5eeff);
+  color: var(--dk-dce8fc);
   background: rgba(57, 101, 190, 0.24);
 }
 
@@ -251,7 +251,7 @@
 }
 
 .mps-year-cell strong {
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
 }
 
 .mps-year-cell small {
@@ -356,7 +356,7 @@
 .mps-analysis-note-list strong {
   min-width: 0;
   overflow-wrap: anywhere;
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
   font-size: 0.78rem;
 }
 
@@ -376,7 +376,7 @@
 
 .mps-profile-section-heading h3 {
   margin: 0;
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
   font-size: 0.9rem;
 }
 
@@ -413,7 +413,7 @@
 
 .mps-profile-consumable-name strong {
   overflow-wrap: anywhere;
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
   font-size: 0.76rem;
 }
 
@@ -463,7 +463,7 @@
 }
 
 .mps-analysis-kpi strong {
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
   font-size: 1.18rem;
 }
 
@@ -540,7 +540,7 @@
 .mps-ranking-label strong {
   min-width: 0;
   overflow: hidden;
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
   font-size: 0.74rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -740,7 +740,7 @@
 }
 
 .mps-copy-row strong {
-  color: var(--dk-e5eeff);
+  color: var(--dk-dce8fc);
   font-size: 0.76rem;
 }
 
@@ -763,7 +763,7 @@
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
   outline: 0;
-  color: var(--dk-e7efff);
+  color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);
   font-size: 0.76rem;
 }
@@ -810,7 +810,7 @@
 
 .mps-consumables-heading h3 {
   margin: 0;
-  color: var(--dk-e5eeff);
+  color: var(--dk-dce8fc);
   font-size: 1rem;
 }
 

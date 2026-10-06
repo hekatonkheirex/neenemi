@@ -69,7 +69,7 @@
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
   outline: 0;
-  color: var(--dk-e7efff);
+  color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);
   font-size: 0.8rem;
   letter-spacing: 0;
@@ -255,7 +255,7 @@
 }
 
 .travel-catalog-details > summary:hover {
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
 }
 
 .travel-catalog-list {
@@ -301,7 +301,7 @@
 .travel-catalog-row strong,
 .travel-catalog-row b {
   display: block;
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
   font-size: 0.7rem;
 }
 
@@ -330,7 +330,7 @@
 .travel-total strong {
   min-width: 0;
   overflow-wrap: anywhere;
-  color: var(--dk-dce9ff);
+  color: var(--dk-dce8fc);
   font-size: 1rem;
 }
 
@@ -364,7 +364,7 @@
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
   outline: 0;
-  color: var(--dk-e7efff);
+  color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);
   font-size: 0.8rem;
 }
@@ -568,7 +568,7 @@
 .travel-subpage-header p {
   max-width: 52rem;
   margin: 0;
-  color: var(--dk-93a8ca);
+  color: var(--dk-8fa5c7);
   font-size: 0.78rem;
   line-height: 1.55;
 }
@@ -899,7 +899,7 @@
 }
 
 .travel-empty-state strong {
-  color: var(--dk-e7efff);
+  color: var(--dk-dce8fc);
   font-size: 0.82rem;
 }
 
@@ -1300,7 +1300,7 @@
 
 .travel-import-dialog-heading p {
   margin: 0;
-  color: var(--dk-93a8ca);
+  color: var(--dk-8fa5c7);
   font-size: 0.75rem;
   line-height: 1.5;
 }
@@ -1333,7 +1333,7 @@
 }
 
 .travel-import-file small {
-  color: var(--dk-93a8ca);
+  color: var(--dk-8fa5c7);
   font-size: 0.68rem;
 }
 

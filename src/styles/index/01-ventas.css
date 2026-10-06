@@ -7,12 +7,7 @@
   --dk-8fa5c7: #8fa5c7;
   --dk-7890b8: #7890b8;
   --dk-8fe5b5: #8fe5b5;
-  --dk-e7efff: #e7efff;
-  --dk-dce9ff: #dce9ff;
-  --dk-e5eeff: #e5eeff;
   --dk-c8d6ed: #c8d6ed;
-  --dk-d8e7ff: #d8e7ff;
-  --dk-93a8ca: #93a8ca;
   --dk-8298ba: #8298ba;
   --dk-edf4ff: #edf4ff;
   --dk-0f1b30: #0f1b30;
@@ -465,7 +460,7 @@ h2 {
 }
 
 .detail-card strong {
-  color: var(--dk-e5eeff);
+  color: var(--dk-dce8fc);
   font-size: 0.92rem;
   overflow-wrap: anywhere;
 }
@@ -646,7 +641,7 @@ h2 {
 
 .io-panel p {
   margin-bottom: 0;
-  color: var(--dk-93a8ca);
+  color: var(--dk-8fa5c7);
   font-size: 0.82rem;
   line-height: 1.55;
 }

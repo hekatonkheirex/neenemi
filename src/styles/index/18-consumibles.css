@@ -87,7 +87,7 @@
 
 .analytics-row-top strong {
   flex: 0 0 auto;
-  color: var(--dk-d8e7ff);
+  color: var(--dk-dce8fc);
 }
 
 .analytics-bar-track {
@@ -193,7 +193,7 @@
 
 .output-summary-grid strong {
   overflow: hidden;
-  color: var(--dk-d8e7ff);
+  color: var(--dk-dce8fc);
   font-size: 1.1rem;
   letter-spacing: -0.04em;
   text-overflow: ellipsis;
@@ -228,7 +228,7 @@
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
   outline: 0;
-  color: var(--dk-e7efff);
+  color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);
   font-size: 0.8rem;
   letter-spacing: 0;
@@ -336,7 +336,7 @@
 }
 
 .legacy-analysis-note strong {
-  color: var(--dk-d8e7ff);
+  color: var(--dk-dce8fc);
 }
 
 .legacy-analysis-note.warning {
@@ -369,7 +369,7 @@
 }
 
 .legacy-chart-inset-heading strong {
-  color: var(--dk-d8e7ff);
+  color: var(--dk-dce8fc);
   font-size: 0.82rem;
 }
 
@@ -488,7 +488,7 @@
 }
 
 .legacy-donut-total {
-  fill: var(--dk-d8e7ff);
+  fill: var(--dk-dce8fc);
   font-size: 17px;
   font-weight: 850;
 }
@@ -537,7 +537,7 @@
 
 .legacy-subheading {
   margin: 1.2rem 0 0.65rem;
-  color: var(--dk-d8e7ff);
+  color: var(--dk-dce8fc);
   font-size: 0.95rem;
 }
 
@@ -621,7 +621,7 @@
 }
 
 .legacy-detail-heading strong {
-  color: var(--dk-d8e7ff);
+  color: var(--dk-dce8fc);
   font-size: 0.8rem;
 }
 
@@ -655,14 +655,14 @@
 }
 
 .legacy-timeline-event strong {
-  color: var(--dk-d8e7ff);
+  color: var(--dk-dce8fc);
   font-size: 0.68rem;
 }
 
 .legacy-timeline-description {
   flex: 1 1 14rem;
   min-width: 10rem;
-  color: var(--dk-d8e7ff);
+  color: var(--dk-dce8fc);
 }
 
 .legacy-timeline-event.service-event {
@@ -693,7 +693,7 @@
 }
 
 .legacy-trend-label strong {
-  color: var(--dk-d8e7ff);
+  color: var(--dk-dce8fc);
   font-size: 0.68rem;
 }
 

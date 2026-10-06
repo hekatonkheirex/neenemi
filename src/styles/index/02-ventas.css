@@ -27,7 +27,7 @@
 
 .catalog-empty-state h2 {
   margin: 0;
-  color: var(--dk-e5eeff);
+  color: var(--dk-dce8fc);
   font-size: clamp(1.25rem, 2vw, 1.7rem);
 }
 
@@ -193,7 +193,7 @@
   border: 1px solid rgba(144, 174, 229, 0.17);
   border-radius: 0.5rem;
   outline: 0;
-  color: var(--dk-e7efff);
+  color: var(--dk-dce8fc);
   background: rgba(18, 31, 54, 0.7);
   font-size: 0.8rem;
   letter-spacing: 0;

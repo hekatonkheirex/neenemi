@@ -12,8 +12,12 @@ describe('tokens de color', () => {
   const defined = [...css.matchAll(/^\s*(--dk-([0-9a-f]{6})):\s*(#[0-9a-f]{6});$/gm)];
 
   it('cada --dk-XXXXXX vale exactamente #XXXXXX', () => {
-    expect(defined.length).toBeGreaterThanOrEqual(16);
+    expect(defined.length).toBeGreaterThanOrEqual(11);
     for (const [, name, hex, value] of defined) expect(value, name).toBe(`#${hex}`);
+  });
+
+  it('los tonos fusionados (ΔE2000 ≤ 2,5 del canónico) ya no existen como token', () => {
+    for (const merged of ['e7efff', 'e5eeff', 'dce9ff', 'd8e7ff', '93a8ca']) expect(css, merged).not.toContain(`--dk-${merged}`);
   });
 
   it('los colores de marca tienen un único valor en --ds-* (claro y oscuro)', () => {
