@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.59 · 2026-10-06
+
+Los botones se normalizan por intención en toda la suite: cargar archivos es celeste con ícono de subida, exportar y descargar es verde con ícono de descarga, procesar sigue siendo el botón primario y lo demás es neutro. Los selectores de archivo nativos (Tracking) y los estilos sueltos de carga pasan a un componente común, y "Importar contrato", "Importar informe PDF" y "Descargar original" siguen la misma regla en tema claro y oscuro. Las tarjetas de fuente de Carga en Discontinuador recuperan su borde, fondo y tipografía, se adaptan al ancho de la ventana y muestran una sola marca de verificación por archivo cargado. Se elimina el módulo Servicios sin uso.
+
 ## 0.1.58 · 2026-10-06
 
 Discontinuador y Listado de precios abren mucho más rápido y ya no congelan la ventana: las tablas grandes se muestran por páginas (100 filas en Listado y en modelos discontinuados, 50 por contrato) con una barra de paginación que mantiene el estilo de cada tarjeta, y los cálculos de cruce de modelos, los conteos por modelo y las consultas de cartera son varias veces más rápidos. Abrir Listado de precios ya no marca "Cambios sin respaldar" sin que haya cambios, y el aviso "SQLite requiere atención" solo aparece tras varios fallos seguidos de la comprobación, no por una consulta pesada. El punto rojo de respaldo pendiente se anima con CSS y no mantiene ocupada la ventana. Los enlaces externos solo abren páginas web y correo, y la política de contenido bloquea estilos inyectados. Ajustes visuales: los títulos de pantalla son más compactos, los plazos de uniFLOW caben en una fila, los botones de texto tienen mayor área de clic, la tabla de mano de obra de Proformas y las barras mensuales de Viáticos caben completas a 960 px, y los bordes del tema oscuro usan cuatro intensidades unificadas.
