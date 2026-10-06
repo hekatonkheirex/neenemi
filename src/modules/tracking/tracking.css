@@ -27,9 +27,11 @@ html[data-theme='dark'] .tracking-module {
 .tracking-card p { margin: .5rem 0 1rem; }
 .tracking-card small { display: block; font-size: .8rem; }
 .tracking-card label { display: flex; flex-direction: column; gap: .5rem; font-size: .85rem; font-weight: 600; }
-.tracking-module input:not([type='checkbox']), .tracking-module select { background: var(--tracking-surface); color: var(--tracking-ink); border: 1px solid var(--tracking-border); border-radius: .5rem; padding: .65rem; width: 100%; min-width: 0; font: inherit; }
-.tracking-module input[type='file'] { font-size: .8rem; }
-.tracking-import-grid { display: grid; grid-template-columns: 1fr 1fr auto; align-items: end; gap: 1rem; margin: 0 0 .75rem; }
+.tracking-module input:not([type='checkbox']):not([type='file']), .tracking-module select { background: var(--tracking-surface); color: var(--tracking-ink); border: 1px solid var(--tracking-border); border-radius: .5rem; padding: .65rem; width: 100%; min-width: 0; font: inherit; }
+.tracking-file { display: flex; flex-direction: column; gap: .5rem; font-size: .85rem; font-weight: 600; min-width: 0; }
+.tracking-file .file-button { justify-content: flex-start; align-self: flex-start; max-width: 100%; }
+.tracking-file .file-button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tracking-import-grid { display: grid; grid-template-columns: 1fr 1fr auto; align-items: start; gap: 1rem; margin: 0 0 .75rem; }
 .tracking-filters { display: flex; gap: 1rem; flex-wrap: wrap; align-items: end; }
 .tracking-filters > label:first-child { min-width: 16rem; flex: 1; }
 .tracking-filters > label:nth-child(2) { min-width: 10rem; }
