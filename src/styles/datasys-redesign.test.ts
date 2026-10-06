@@ -26,6 +26,12 @@ describe('rediseño Datasys', () => {
     }
   });
 
+  it('el CTA primario es naranja de marca también en oscuro', () => {
+    expect(theme).toMatch(/html\[data-theme='dark'\] \.primary-button\s*{[^}]*background:\s*var\(--ds-orange\)/);
+    expect(ratio('#1a2c4c', '#ff6b00')).toBeGreaterThanOrEqual(4.5);
+    expect(ratio('#1a2c4c', '#ff8533')).toBeGreaterThanOrEqual(4.5);
+  });
+
   it.each([
     ['texto principal sobre base navy', '#edf3ff', '#1a2c4c'],
     ['texto principal sobre panel', '#edf3ff', '#0e1b31'],
