@@ -17,13 +17,11 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
   it('Campos compactos: la pista de la rejilla no crece más que la celda (input type=month a 1280 px)', () => {
     expect(rule('.compact-field')).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\)/);
   });
-  it('Mantenimiento: la tarjeta KPI no se ensancha por su contenido (126 px en una celda de 112)', () => {
-    expect(rule('.maintenance-executive-kpi')).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\)/);
-  });
-  it('Mantenimiento: el gráfico de tendencia de críticos puede encogerse en tarjetas de 138 px', () => {
-    const r = rule('.maintenance-critical-trend');
-    expect(r).toMatch(/flex:\s*0 1 auto/);
-    expect(r).toMatch(/min-width:\s*2\.5rem/);
+  it('Mantenimiento: las fichas KPI y el gráfico de tendencia pueden encogerse en celdas estrechas', () => {
+    const summary = fs.readFileSync('src/modules/mantenimiento/MaintenanceExecutiveSummary.tsx', 'utf8');
+    expect(summary).toContain('grid-cols-2 gap-3 sm:grid-cols-3 min-[1180px]:grid-cols-6');
+    expect(summary).toMatch(/grid min-w-0 gap-1 rounded-xl/);
+    expect(summary).toContain('h-6 min-w-10 flex-[0_1_auto]');
   });
   it('Viáticos: el input de mes lleva el mismo fondo oscuro y borde que los select vecinos', () => {
     const block = css.match(/vecinos \(Estado, Medio\)[^\n]*\*\/\n\.travel-controls \.compact-field input \{([^}]*)\}/)?.[1] ?? '';

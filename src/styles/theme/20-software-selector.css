@@ -40,11 +40,6 @@ html[data-theme] :is(.module-nav .nav-item, .anim-tabs button, .catalog-table th
   outline-offset: -3px;
 }
 
-html[data-theme] .maintenance-inspector-button:hover:not(:disabled),
-html[data-theme] .maintenance-inspector-button.is-open {
-  color: var(--ds-navy);
-}
-
 html[data-theme='light'] .primary-button:hover:not(:disabled) {
   background: #ff8533;
 }

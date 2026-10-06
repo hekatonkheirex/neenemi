@@ -1,29 +1,5 @@
 
 
-html:not([data-theme='light']) .maintenance-priority-index {
-  color: #4cc3f0;
-}
-
-html:not([data-theme='light']) .maintenance-priority-row b {
-  color: #ff8a93;
-}
-
-html:not([data-theme='light']) .maintenance-priority-panel.attention .maintenance-priority-row b {
-  color: #f0b44c;
-}
-
-html:not([data-theme='light']) .maintenance-subset-row b {
-  color: #b9afff;
-}
-
-html:not([data-theme='light']) .maintenance-subset-panel.idle .maintenance-subset-row b {
-  color: #a3b0c4;
-}
-
-html:not([data-theme='light']) .maintenance-subset-panel.recommended .maintenance-subset-row b {
-  color: #ff9a6e;
-}
-
 /* Pestaña activa de Consumibles: sobre el naranja translúcido ni el blanco (3,4:1) ni el navy (2,4:1) llegan a AA.
    Oscuro: naranja profundo opaco con texto blanco (>= 4,8:1). Claro: naranja sólido con texto navy. */
 html:not([data-theme='light']) .consumables-tabs button.active {

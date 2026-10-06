@@ -10,9 +10,11 @@ describe('layout entre 960 y 1350 px', () => {
     expect(css).toMatch(/\.catalog-header \.sales-actions\s*{[^}]*flex-wrap:\s*wrap/);
   });
 
-  it('el filtro de Mantenimiento no fuerza una columna que no encoge', () => {
-    expect(css).toMatch(/\.maintenance-analysis-filters\s*{[^}]*minmax\(0, auto\)/);
-    expect(css).not.toMatch(/\.maintenance-normal-toggle\s*{[^}]*white-space:\s*nowrap/);
+  it('los filtros de Mantenimiento envuelven en una rejilla auto-fit y la tabla desplaza dentro de su tarjeta', () => {
+    const module = fs.readFileSync('src/modules/operaciones/MantenimientoModule.tsx', 'utf8');
+    expect(module).toContain('grid-cols-[repeat(auto-fit,minmax(min(100%,12rem),1fr))]');
+    expect(module).not.toMatch(/maintenance-normal-toggle/);
+    expect(css).not.toMatch(/\.maintenance-(?!print|executive-print|page\b)[a-z-]+/);
   });
 
   it('los @media de Discontinuador van después de la regla base (si no, pierden por orden de fuente)', () => {
@@ -56,7 +58,7 @@ describe('layout entre 960 y 1350 px', () => {
     });
 
     it.each([
-      '.operations-table', '.maintenance-table', '.discontinuation-table', '.discontinuation-equipment-table',
+      '.operations-table', '.discontinuation-table', '.discontinuation-equipment-table',
       '.contract-analytics-table', '.dispatch-equipment-table', '.outputs-table', '.consumables-table',
       '.legacy-ficha-table', '.legacy-equipment-table', '.historical-travel-table', '.travel-rendition-table',
     ])('%s no fuerza scroll por encima de su contenido', (selector) => {

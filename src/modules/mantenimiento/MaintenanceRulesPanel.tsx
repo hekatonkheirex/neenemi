@@ -1,8 +1,15 @@
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState, type FormEvent } from 'react';
+import { Pencil, Plus, RotateCcw, Save, Trash2, X } from 'lucide-react';
 import type { MaintenanceModelRule } from './analysis';
 import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
 import { readJson, toErrorMessage } from '../../core/http';
+import { cn } from '../../core/cn';
+import { dialogPanel } from '../../core/dialog';
+import { Badge } from '../../core/ui/badge';
+import { Button } from '../../core/ui/button';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Input } from '../../core/ui/input';
 
 type RuleDraft = {
   id?: string;
@@ -28,13 +35,15 @@ export default function MaintenanceRulesPanel({
 }) {
   const [draft, setDraft] = useState<RuleDraft | null>(null);
   const [draftBaseline, setDraftBaseline] = useState('');
+  const [formError, setFormError] = useState('');
+  const [saving, setSaving] = useState(false);
   useUnsavedChanges(draft !== null && JSON.stringify(draft) !== draftBaseline);
 
   function openDraft(next: RuleDraft) {
     setDraftBaseline(JSON.stringify(next));
+    setFormError('');
     setDraft(next);
   }
-  const [saving, setSaving] = useState(false);
 
   function startNewRule() {
     openDraft({
@@ -57,9 +66,10 @@ export default function MaintenanceRulesPanel({
     });
   }
 
-  async function saveRule() {
+  async function saveRule(event: FormEvent) {
+    event.preventDefault();
     if (!draft || !draft.modelLabel.trim()) {
-      onError('Escribe el nombre del modelo para guardar la regla.');
+      setFormError('Escribe el nombre del modelo para guardar la regla.');
       return;
     }
     const usefulLife = Number(draft.usefulLife);
@@ -67,11 +77,12 @@ export default function MaintenanceRulesPanel({
     const optimalBase = Number(draft.optimalBase);
     const maxWaste = Number(draft.maxWaste);
     if (!Number.isInteger(usefulLife) || usefulLife <= 0 || !Number.isInteger(monthlyRange) || monthlyRange <= 0 || !Number.isInteger(optimalBase) || optimalBase <= 0 || !Number.isFinite(maxWaste) || maxWaste < 0 || maxWaste > 1) {
-      onError('La vida útil, el rango mensual y el óptimo deben ser enteros positivos; la merma debe estar entre 0 y 1.');
+      setFormError('La vida útil, el rango mensual y el óptimo deben ser enteros positivos; la merma debe estar entre 0 y 1.');
       return;
     }
 
     setSaving(true);
+    setFormError('');
     try {
       const response = await fetch('/api/maintenance/rules', {
         method: 'POST',
@@ -88,7 +99,7 @@ export default function MaintenanceRulesPanel({
       setDraft(null);
       onChanged(draft.id ? 'Regla actualizada.' : 'Regla de modelo agregada.');
     } catch (error: unknown) {
-      onError(toErrorMessage(error));
+      setFormError(toErrorMessage(error));
     } finally {
       setSaving(false);
     }
@@ -125,33 +136,77 @@ export default function MaintenanceRulesPanel({
   }
 
   return (
-    <section className="sales-card form-card maintenance-rules-card">
-      <div className="card-heading">
-        <div><div className="eyebrow">CONFIGURACIÓN DEL ANÁLISIS</div><h2>Límites por modelo</h2></div>
-        <span className="muted-note">{rules.length} reglas</span>
-      </div>
-      <p className="form-hint">Estas reglas conservan la vida útil, el rango mensual recomendado, el óptimo base y la merma del gestor antiguo. El óptimo base se calcula al 65% del rango mensual; los cambios se aplican a las lecturas activas.</p>
-      {rules.length === 0 ? <p className="empty-inline">Importa una base o un archivo de contadores para habilitar las reglas.</p> : (
-        <div className="maintenance-rules-list">
-          {rules.map((rule) => <div className="maintenance-rule-row" key={rule.id}>
-            <div><strong>{rule.modelLabel}</strong><small>{rule.usefulLife.toLocaleString('es-PY')} páginas · rango {Math.round(rule.optimalBase / OPTIMAL_BASE_FACTOR).toLocaleString('es-PY')} · óptimo {rule.optimalBase.toLocaleString('es-PY')} · merma {(rule.maxWaste * 100).toLocaleString('es-PY')}%</small></div>
-            <div className="maintenance-rule-actions"><button className="text-button" type="button" onClick={() => startEdit(rule)} disabled={disabled || saving}>Editar</button><button className="text-button danger-text-button" type="button" onClick={() => void deleteRule(rule)} disabled={disabled || saving}>Quitar</button></div>
+    <Card className="min-w-0 grid-cols-1 [overflow-wrap:anywhere]">
+      <CardHeader eyebrow="Configuración del análisis" title="Límites por modelo" aside={<Badge>{rules.length} reglas</Badge>} />
+      <Muted className="text-sm leading-relaxed">Estas reglas conservan la vida útil, el rango mensual recomendado, el óptimo base y la merma del gestor antiguo. El óptimo base se calcula al 65% del rango mensual; los cambios se aplican a las lecturas activas.</Muted>
+      {rules.length === 0 ? <Muted className="rounded-xl border border-dashed border-navy/20 p-5 text-center text-sm dark:border-sky/30">Importa una base o un archivo de contadores para habilitar las reglas.</Muted> : (
+        <div className="grid max-h-[32rem] gap-2 overflow-y-auto">
+          {rules.map((rule) => <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 rounded-xl border border-navy/10 bg-paper p-3 dark:border-sky/20 dark:bg-navy/30" key={rule.id}>
+            <div className="grid min-w-0 gap-1"><div className="font-bold text-navy dark:text-white">{rule.modelLabel}</div><Muted>{rule.usefulLife.toLocaleString('es-PY')} páginas · rango {Math.round(rule.optimalBase / OPTIMAL_BASE_FACTOR).toLocaleString('es-PY')} · óptimo {rule.optimalBase.toLocaleString('es-PY')} · merma {(rule.maxWaste * 100).toLocaleString('es-PY')}%</Muted></div>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={() => startEdit(rule)} disabled={disabled || saving} aria-label={`Editar ${rule.modelLabel}`}><Pencil />Editar</Button>
+              <Button variant="ghost" size="sm" onClick={() => void deleteRule(rule)} disabled={disabled || saving} aria-label={`Quitar ${rule.modelLabel}`}><Trash2 />Quitar</Button>
+            </div>
           </div>)}
         </div>
       )}
-      <div className="maintenance-rules-footer"><button className="secondary-button" type="button" onClick={startNewRule} disabled={disabled || saving}>+ Agregar regla</button><button className="text-button" type="button" onClick={() => void resetRules()} disabled={disabled || saving}>Restaurar base</button></div>
-      {draft ? <div className="maintenance-rule-editor">
-        <div className="eyebrow">{draft.id ? 'EDITAR REGLA' : 'NUEVA REGLA'}</div>
-        <label className="search-field"><span>Modelo / familia</span><input value={draft.modelLabel} onChange={(event) => setDraft((current) => current ? { ...current, modelLabel: event.target.value } : current)} placeholder="CANON iR ADV 525" /></label>
-        <div className="maintenance-rule-inputs">
-          <label className="search-field"><span>Vida útil</span><input type="number" min="1" step="1" value={draft.usefulLife} onChange={(event) => setDraft((current) => current ? { ...current, usefulLife: event.target.value } : current)} /></label>
-          <label className="search-field"><span>Rango mensual recomendado</span><input type="number" min="1" step="1" value={draft.monthlyRange} onChange={(event) => setDraft((current) => current ? { ...current, monthlyRange: event.target.value, optimalBase: String(Math.round((Number(event.target.value) || 0) * OPTIMAL_BASE_FACTOR)) } : current)} /></label>
-          <label className="search-field"><span>Óptimo base (65%)</span><input type="number" min="1" step="1" value={draft.optimalBase} readOnly /></label>
-          <label className="search-field"><span>Merma máxima</span><input type="number" min="0" max="1" step="0.01" value={draft.maxWaste} onChange={(event) => setDraft((current) => current ? { ...current, maxWaste: event.target.value } : current)} /></label>
-        </div>
-        <div className="maintenance-rule-editor-actions"><button className="secondary-button" type="button" onClick={() => setDraft(null)} disabled={saving}>Cancelar</button><button className="primary-button" type="button" onClick={() => void saveRule()} disabled={saving}>{saving ? 'Guardando…' : 'Guardar regla'}</button></div>
-      </div> : null}
-    </section>
+      <div className="flex flex-wrap gap-2">
+        <Button variant="outline" onClick={startNewRule} disabled={disabled || saving}><Plus />Agregar regla</Button>
+        <Button variant="ghost" onClick={() => void resetRules()} disabled={disabled || saving}><RotateCcw />Restaurar base</Button>
+      </div>
+      {draft ? <RuleEditor draft={draft} saving={saving} error={formError} onChange={setDraft} onCancel={() => setDraft(null)} onSubmit={(event) => void saveRule(event)} /> : null}
+    </Card>
   );
 }
 
+function RuleEditor({ draft, saving, error, onChange, onCancel, onSubmit }: {
+  draft: RuleDraft;
+  saving: boolean;
+  error: string;
+  onChange: (update: (current: RuleDraft | null) => RuleDraft | null) => void;
+  onCancel: () => void;
+  onSubmit: (event: FormEvent) => void;
+}) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const field = (key: keyof RuleDraft, value: string) => onChange((current) => current ? { ...current, [key]: value } : current);
+
+  useLayoutEffect(() => {
+    const dialog = dialogRef.current;
+    if (dialog && !dialog.open) {
+      dialog.showModal();
+      dialog.querySelector<HTMLInputElement>('input[name="modelLabel"]')?.focus();
+    }
+    return () => dialog?.close();
+  }, []);
+
+  return (
+    <dialog
+      ref={dialogRef}
+      className={cn(dialogPanel, 'w-[min(40rem,calc(100vw-2rem))]')}
+      aria-labelledby="rule-editor-title"
+      onCancel={(event) => { event.preventDefault(); if (!saving) onCancel(); }}
+      onMouseDown={(event) => { if (event.target === event.currentTarget && !saving) onCancel(); }}
+    >
+      <form className="flex max-h-[calc(100vh-2rem)] flex-col" onSubmit={onSubmit}>
+        <header className="flex shrink-0 items-start justify-between gap-4 border-b border-navy/10 p-5 dark:border-sky/20">
+          <CardHeader eyebrow={draft.id ? 'Editar regla' : 'Nueva regla'} title={<span id="rule-editor-title">{draft.id ? 'Editar límite por modelo' : 'Nuevo límite por modelo'}</span>} />
+          <Button variant="ghost" size="icon" onClick={onCancel} disabled={saving} aria-label="Cerrar editor"><X /></Button>
+        </header>
+        <div className="grid min-h-0 gap-4 overflow-y-auto p-5">
+          {error ? <div className="rounded-xl border border-[#b42318]/30 bg-[#b42318]/5 p-4 text-sm text-[#b42318] dark:text-[#ffb0b7]" role="alert">{error}</div> : null}
+          <label className="grid gap-2 text-xs font-bold">Modelo / familia<Input name="modelLabel" value={draft.modelLabel} onChange={(event) => field('modelLabel', event.target.value)} placeholder="CANON iR ADV 525" /></label>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="grid gap-2 text-xs font-bold">Vida útil<Input type="number" min="1" step="1" value={draft.usefulLife} onChange={(event) => field('usefulLife', event.target.value)} /></label>
+            <label className="grid gap-2 text-xs font-bold">Rango mensual recomendado<Input type="number" min="1" step="1" value={draft.monthlyRange} onChange={(event) => onChange((current) => current ? { ...current, monthlyRange: event.target.value, optimalBase: String(Math.round((Number(event.target.value) || 0) * OPTIMAL_BASE_FACTOR)) } : current)} /></label>
+            <label className="grid gap-2 text-xs font-bold">Óptimo base (65%)<Input type="number" min="1" step="1" value={draft.optimalBase} readOnly /></label>
+            <label className="grid gap-2 text-xs font-bold">Merma máxima<Input type="number" min="0" max="1" step="0.01" value={draft.maxWaste} onChange={(event) => field('maxWaste', event.target.value)} /></label>
+          </div>
+        </div>
+        <footer className="flex shrink-0 flex-wrap justify-end gap-3 border-t border-navy/10 p-5 dark:border-sky/20">
+          <Button variant="outline" onClick={onCancel} disabled={saving}>Cancelar</Button>
+          <Button type="submit" disabled={saving} aria-busy={saving}><Save />{saving ? 'Guardando…' : 'Guardar regla'}</Button>
+        </footer>
+      </form>
+    </dialog>
+  );
+}

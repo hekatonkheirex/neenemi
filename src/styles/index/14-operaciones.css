@@ -1,15 +1,5 @@
 
 
-@media (max-width: 1100px) {
-  .maintenance-source-card {
-    grid-template-columns: 1fr;
-  }
-
-  .maintenance-analysis-filters {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 .analysis-meta {
   margin: -0.45rem 0 1rem;
   color: var(--dk-7187aa);
@@ -56,11 +46,6 @@
 .import-summary strong {
   color: var(--dk-8fe5b5);
   font-size: 0.75rem;
-}
-
-.maintenance-clear-import-button {
-  width: 100%;
-  margin-top: 0.35rem;
 }
 
 .impact-label {

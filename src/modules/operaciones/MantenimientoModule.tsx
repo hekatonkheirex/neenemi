@@ -24,6 +24,14 @@ import {
 } from '@hugeicons/core-free-icons';
 import { readJson, toErrorMessage } from '../../core/http';
 import { UploadButton, ExportButton, DownloadIcon } from '../../core/ActionButtons';
+import { cn } from '../../core/cn';
+import { PageHeader } from '../../core/ui/page-header';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Button, buttonVariants } from '../../core/ui/button';
+import { Input } from '../../core/ui/input';
+import { Badge, type BadgeTone } from '../../core/ui/badge';
+import { StatusLine } from '../../core/ui/status-line';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
 
 type CounterImportResponse = MaintenanceImportSummary & {
   duplicate: boolean;
@@ -38,6 +46,10 @@ type ClearMaintenanceImportResponse = {
 };
 
 type MaintenanceView = 'dashboard' | 'equipos' | 'modelos';
+
+const cardClass = 'min-w-0 grid-cols-1 [overflow-wrap:anywhere]';
+const fieldClass = 'grid min-w-0 gap-2 text-sm font-semibold text-navy dark:text-white';
+const selectClass = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky disabled:opacity-50 dark:border-sky/30 dark:bg-navy/50 dark:text-white';
 
 export default function MantenimientoModule() {
   const [customers, setCustomers] = useState<CustomerRecord[]>([]);
@@ -350,63 +362,57 @@ export default function MantenimientoModule() {
   }
 
   return (
-    <div className="page-content operations-page maintenance-page">
-      <section className="catalog-header">
-        <div>
-          <div className="eyebrow">OPERACIONES / BASE INSTALADA</div>
-          <h1>Mantenimiento</h1>
-          <p className="lead">Consulta clientes, contratos y equipos instalados a partir de los archivos operativos que consumen Catálogo y Ventas.</p>
-        </div>
-        <button className="secondary-button" type="button" onClick={() => void refresh()} disabled={loading || clearingImport}>
-          {loading ? 'Actualizando…' : 'Actualizar'}
-        </button>
-      </section>
+    <div className="page-content maintenance-page grid min-w-0 grid-cols-1 gap-6 [overflow-wrap:anywhere]">
+      <PageHeader
+        eyebrow="SERVICIO TÉCNICO / BASE INSTALADA"
+        title="Mantenimiento"
+        lead="Estado del parque instalado según las lecturas de contadores: expedientes por equipo y límites por modelo."
+        actions={<Button variant="outline" onClick={() => void refresh()} disabled={loading || clearingImport}>{loading ? 'Actualizando…' : 'Actualizar'}</Button>}
+      />
 
-      <section className="sales-card maintenance-source-card" aria-label="Fuente de contadores">
-        <div className="maintenance-source-identity">
-          <div className="eyebrow">SOPORTE DE DATOS</div>
-          <div className="maintenance-source-title">
-            <span className={`maintenance-source-status ${maintenanceSummary?.batchId ? 'is-loaded' : 'is-empty'}`} aria-hidden="true" />
-            <div>
-              <h2>{maintenanceSummary?.batchId ? 'Soporte de datos activo' : 'Sin archivo cargado'}</h2>
-              <strong>{maintenanceSummary?.sourceName ?? 'Carga el export de contadores para habilitar los expedientes.'}</strong>
-              <p>{maintenanceSummary?.batchId
-                ? `${maintenanceSummary.records.toLocaleString('es-PY')} lecturas · ${maintenanceSummary.equipment.toLocaleString('es-PY')} equipos · ${maintenanceSummary.matchedRecords.toLocaleString('es-PY')} reglas reconocidas`
-                : 'El archivo cargado se conserva y se normaliza en la base local.'}</p>
+      <Card className={cardClass} aria-label="Fuente de contadores">
+        <CardHeader
+          eyebrow="Soporte de datos"
+          title={maintenanceSummary?.batchId ? 'Soporte de datos activo' : 'Sin archivo cargado'}
+          aside={<Badge tone={maintenanceSummary?.batchId ? 'success' : 'warning'}>{maintenanceSummary?.batchId ? 'Cargado' : 'Pendiente'}</Badge>}
+        />
+        <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="grid min-w-0 content-start gap-2">
+            <div className="font-semibold text-navy dark:text-white">{maintenanceSummary?.sourceName ?? 'Carga el export de contadores para habilitar los expedientes.'}</div>
+            <Muted className="text-sm">{maintenanceSummary?.batchId
+              ? `${maintenanceSummary.records.toLocaleString('es-PY')} lecturas · ${maintenanceSummary.equipment.toLocaleString('es-PY')} equipos · ${maintenanceSummary.matchedRecords.toLocaleString('es-PY')} reglas reconocidas`
+              : 'El archivo cargado se conserva y se normaliza en la base local.'}</Muted>
+            <Muted>Origen del XLSX: <code>Superset &gt; SGS - Evaluación de Copias - Rankings</code></Muted>
+          </div>
+          <div
+            className={cn('grid min-w-0 content-start gap-3 rounded-xl border border-dashed p-4', isCounterFileDragging ? 'border-sky bg-sky/10' : 'border-navy/25 bg-paper dark:border-sky/30 dark:bg-navy/30')}
+            onDragOver={handleCounterDragOver}
+            onDragLeave={handleCounterDragLeave}
+            onDrop={handleCounterDrop}
+            role="group"
+            aria-label="Cargar archivo de contadores"
+          >
+            <div className="grid gap-1">
+              <div className="text-sm font-bold text-navy dark:text-white">{maintenanceSummary?.batchId ? 'Reemplazar archivo activo' : 'Cargar archivo de contadores'}</div>
+              <Muted>Arrastra aquí el export o selecciona una opción</Muted>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <UploadButton busy={importingCounters} label="Cargar CSV / XLSX" accept=".csv,text/csv,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleCounterFileChange} disabled={clearingImport} />
+              {maintenanceSummary?.batchId && maintenanceSummary.sourceFileId ? <a
+                className={cn(buttonVariants({ variant: 'export' }), 'export-button')}
+                href={`/api/imports/${encodeURIComponent(maintenanceSummary.batchId)}/files/${encodeURIComponent(maintenanceSummary.sourceFileId)}`}
+                download={maintenanceSummary.sourceName ?? undefined}
+              >
+                <DownloadIcon />
+                Descargar original
+              </a> : null}
+              {maintenanceSummary?.batchId ? <Button variant="outline" onClick={() => void clearMaintenanceImport()} disabled={clearingImport || importingCounters}>
+                {clearingImport ? 'Quitando…' : 'Limpiar datos / nuevo archivo'}
+              </Button> : null}
             </div>
           </div>
-          <p className="maintenance-source-origin">Origen del XLSX: <code>Superset &gt; SGS - Evaluación de Copias - Rankings</code></p>
         </div>
-        <div
-          className={`maintenance-source-dropzone${isCounterFileDragging ? ' is-dragging' : ''}`}
-          onDragOver={handleCounterDragOver}
-          onDragLeave={handleCounterDragLeave}
-          onDrop={handleCounterDrop}
-          role="group"
-          aria-label="Cargar archivo de contadores"
-        >
-          <div className="maintenance-source-dropzone-copy">
-            <strong>{maintenanceSummary?.batchId ? 'Reemplazar archivo activo' : 'Cargar archivo de contadores'}</strong>
-            <span>Arrastra aquí el export o selecciona una opción</span>
-          </div>
-          <div className="maintenance-source-upload-actions">
-            <UploadButton busy={importingCounters} label="Cargar CSV / XLSX" accept=".csv,text/csv,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleCounterFileChange} disabled={clearingImport} />
-          </div>
-          {maintenanceSummary?.batchId ? <div className="maintenance-source-file-actions">
-            {maintenanceSummary.sourceFileId ? <a
-              className="secondary-button export-button"
-              href={`/api/imports/${encodeURIComponent(maintenanceSummary.batchId)}/files/${encodeURIComponent(maintenanceSummary.sourceFileId)}`}
-              download={maintenanceSummary.sourceName ?? undefined}
-            >
-              <DownloadIcon />
-              Descargar original
-            </a> : null}
-            <button className="secondary-button maintenance-clear-import-button" type="button" onClick={() => void clearMaintenanceImport()} disabled={clearingImport || importingCounters}>
-              {clearingImport ? 'Quitando…' : 'Limpiar datos / nuevo archivo'}
-            </button>
-          </div> : null}
-        </div>
-      </section>
+      </Card>
 
       <AnimatedTabs
         ariaLabel="Vistas de mantenimiento"
@@ -419,10 +425,7 @@ export default function MantenimientoModule() {
         ]}
       />
 
-      <section className="sales-status" aria-live="polite">
-        <span className={`status-dot ${error ? 'error' : loading ? 'pending' : 'ready'}`} />
-        <span>{error || message || `${customers.length} clientes · ${contractsCount} contratos · ${equipment.length} equipos`}</span>
-      </section>
+      <StatusLine state={error ? 'error' : loading ? 'pending' : 'ready'}>{error || message || `${customers.length} clientes · ${contractsCount} contratos · ${equipment.length} equipos`}</StatusLine>
 
       {activeMaintenanceView === 'dashboard' ? <MaintenanceExecutiveSummary
         analyses={analyses}
@@ -430,50 +433,56 @@ export default function MantenimientoModule() {
         onPrint={printExecutiveSummary}
       /> : null}
 
-      {activeMaintenanceView === 'equipos' ? <section className="sales-card maintenance-analysis-card">
-            <div className="card-heading">
-              <div><div className="eyebrow">EXPEDIENTES TÉCNICOS</div><h2>Expedientes técnicos</h2><p className="form-hint">Resumen por equipo, historial de copias y lecturas originales del archivo cargado.</p></div>
-              <div className="maintenance-analysis-actions">
-                <span className="muted-note">Mostrando {visibleAnalyses.length.toLocaleString('es-PY')} de {analyses.length.toLocaleString('es-PY')} equipos</span>
-                <label className="compact-field"><span>Período</span><select value={analysisMonths} onChange={(event) => { const months = Number(event.target.value); setAnalysisMonths(months); void loadAnalyses(months); }}><option value={1}>Último mes</option><option value={3}>Últimos 3 meses</option><option value={6}>Últimos 6 meses</option><option value={12}>Últimos 12 meses</option></select></label>
-                <button className="secondary-button" type="button" onClick={() => void printAnalysis()} disabled={visibleAnalyses.length === 0}>Imprimir / PDF</button>
-                <ExportButton busy={exportingAnalysis} onClick={() => void exportAnalysis()} disabled={visibleAnalyses.length === 0}>Exportar XLSX</ExportButton>
-              </div>
-            </div>
-            {maintenanceSummary?.batchId ? <p className="analysis-meta">Fuente: <strong>{maintenanceSummary.sourceName}</strong> · {maintenanceSummary.records.toLocaleString('es-PY')} lecturas · {maintenanceSummary.matchedRecords.toLocaleString('es-PY')} modelos reconocidos</p> : null}
-            <div className="maintenance-analysis-filters">
-              <label className="search-field"><span>Buscar <kbd className="maintenance-search-shortcut">/</kbd></span><input ref={analysisSearchRef} value={analysisQuery} onChange={(event) => setAnalysisQuery(event.target.value)} placeholder="Buscar por N° de serie…" /></label>
-              <label className="search-field"><span>Cliente</span><select value={analysisClient} onChange={(event) => setAnalysisClient(event.target.value)}><option value="">Todos</option>{analysisClients.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
-              <label className="search-field"><span>Modelo</span><select value={analysisModel} onChange={(event) => setAnalysisModel(event.target.value)}><option value="">Todos</option>{analysisModels.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
-              <label className="search-field"><span>Período</span><select value={analysisPeriod} onChange={(event) => setAnalysisPeriod(event.target.value)}><option value="">Todos</option>{analysisPeriods.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
-              <label className="maintenance-normal-toggle"><input type="checkbox" checked={showNormalAnalyses} onChange={(event) => setShowNormalAnalyses(event.target.checked)} /><span>Mostrar equipos en Operación Normal ({analyses.filter((analysis) => analysis.status === 'NORMAL').length.toLocaleString('es-PY')})</span></label>
-            </div>
-            <div className="catalog-table-wrap">
-              <table className="catalog-table operations-table maintenance-table">
-                <thead><tr><th>Cliente</th><th>Modelo de equipo</th><th>Nº serie</th><th className="align-right">Prom. copias</th><th className="align-right">Límite desgastado</th><th>Estado</th><th>Acción sugerida</th><th>Acción</th></tr></thead>
-                <tbody>
-                  {visibleAnalyses.map((analysis) => {
-                    const rowKey = `${analysis.serialNumber}::${analysis.modelLabel}`;
-                    const isExpanded = expandedAnalysisKey === rowKey;
-                    return <Fragment key={rowKey}>
-                      <tr className={isExpanded ? 'maintenance-analysis-row is-expanded' : 'maintenance-analysis-row'}>
-                        <td>{analysis.customerName || 'Sin cliente'}{analysis.contractReference ? <small className="table-secondary-text">OV {analysis.contractReference}</small> : null}</td>
-                        <td><span className="code-cell">{analysis.modelLabel}</span></td>
-                        <td className="code-cell">{analysis.serialNumber || 'Sin serie'}</td>
-                        <td className="align-right">{Math.round(analysis.averageCopies).toLocaleString('es-PY')}</td>
-                        <td className="align-right">{Math.round(analysis.optimalMonthly).toLocaleString('es-PY')} <small className="table-secondary-text inline-muted">({Math.round(analysis.appliedWaste * 100)}%)</small></td>
-                        <td><span className={`badge ${maintenanceStatusClass(analysis.status)}`}>{analysis.status}</span></td>
-                        <td className="action-cell" title={analysis.recommendedAction}>{analysis.recommendedAction}</td>
-                        <td><button className={isExpanded ? 'maintenance-inspector-button is-open' : 'maintenance-inspector-button'} type="button" onClick={() => setExpandedAnalysisKey(isExpanded ? null : rowKey)}>{isExpanded ? 'Cerrar X' : 'Inspector'}</button></td>
-                      </tr>
-                      {isExpanded ? <MaintenanceInspectionRow analysis={analysis} onPrint={() => printSingleAnalysis(analysis)} /> : null}
-                    </Fragment>;
-                  })}
-                  {visibleAnalyses.length === 0 && <tr><td colSpan={8} className="empty-cell">{maintenanceSummary?.batchId ? 'No hay equipos para el filtro seleccionado.' : 'Importa un archivo CSV o XLSX de contadores para comenzar.'}</td></tr>}
-                </tbody>
-              </table>
-            </div>
-          </section> : null}
+      {activeMaintenanceView === 'equipos' ? <Card className={cardClass}>
+        <CardHeader
+          eyebrow="Expedientes técnicos"
+          title="Expedientes técnicos"
+          aside={<div className="flex flex-wrap items-end gap-2">
+            <label className="grid gap-1 text-xs font-semibold text-navy dark:text-white">Período
+              <select className={cn(selectClass, 'w-auto')} value={analysisMonths} onChange={(event) => { const months = Number(event.target.value); setAnalysisMonths(months); void loadAnalyses(months); }}>
+                <option value={1}>Último mes</option><option value={3}>Últimos 3 meses</option><option value={6}>Últimos 6 meses</option><option value={12}>Últimos 12 meses</option>
+              </select>
+            </label>
+            <Button variant="outline" onClick={() => void printAnalysis()} disabled={visibleAnalyses.length === 0}>Imprimir / PDF</Button>
+            <ExportButton busy={exportingAnalysis} onClick={() => void exportAnalysis()} disabled={visibleAnalyses.length === 0}>Exportar XLSX</ExportButton>
+          </div>}
+        />
+        <Muted className="text-sm">Resumen por equipo, historial de copias y lecturas originales del archivo cargado. Mostrando {visibleAnalyses.length.toLocaleString('es-PY')} de {analyses.length.toLocaleString('es-PY')} equipos.</Muted>
+        {maintenanceSummary?.batchId ? <Muted className="text-sm">Fuente: <strong>{maintenanceSummary.sourceName}</strong> · {maintenanceSummary.records.toLocaleString('es-PY')} lecturas · {maintenanceSummary.matchedRecords.toLocaleString('es-PY')} modelos reconocidos</Muted> : null}
+        <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,12rem),1fr))] items-end gap-4">
+          <label className={fieldClass}>
+            <span className="flex items-center gap-2">Buscar <kbd className="rounded border border-navy/25 px-1.5 text-[0.7rem] font-semibold dark:border-sky/40">/</kbd></span>
+            <Input ref={analysisSearchRef} value={analysisQuery} onChange={(event) => setAnalysisQuery(event.target.value)} placeholder="Buscar por N° de serie…" />
+          </label>
+          <label className={fieldClass}>Cliente<select className={selectClass} value={analysisClient} onChange={(event) => setAnalysisClient(event.target.value)}><option value="">Todos</option>{analysisClients.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+          <label className={fieldClass}>Modelo<select className={selectClass} value={analysisModel} onChange={(event) => setAnalysisModel(event.target.value)}><option value="">Todos</option>{analysisModels.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+          <label className={fieldClass}>Período<select className={selectClass} value={analysisPeriod} onChange={(event) => setAnalysisPeriod(event.target.value)}><option value="">Todos</option>{analysisPeriods.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+          <label className="flex min-h-10 min-w-0 items-center gap-2 text-sm text-navy dark:text-white"><input className="size-4 shrink-0 accent-sky" type="checkbox" checked={showNormalAnalyses} onChange={(event) => setShowNormalAnalyses(event.target.checked)} /><span>Mostrar equipos en Operación Normal ({analyses.filter((analysis) => analysis.status === 'NORMAL').length.toLocaleString('es-PY')})</span></label>
+        </div>
+        <Table className="min-w-[48rem] [overflow-wrap:normal]" wrapperClassName="@container">
+          <TableHeader><TableRow><TableHead>Cliente</TableHead><TableHead>Modelo de equipo</TableHead><TableHead>Nº serie</TableHead><TableHead className="text-right">Prom. copias</TableHead><TableHead className="text-right">Límite desgastado</TableHead><TableHead>Estado</TableHead><TableHead>Acción sugerida</TableHead><TableHead>Acción</TableHead></TableRow></TableHeader>
+          <TableBody>
+            {visibleAnalyses.map((analysis) => {
+              const rowKey = `${analysis.serialNumber}::${analysis.modelLabel}`;
+              const isExpanded = expandedAnalysisKey === rowKey;
+              return <Fragment key={rowKey}>
+                <TableRow className={isExpanded ? 'bg-sky/10' : undefined}>
+                  <TableCell className="min-w-[8rem]">{analysis.customerName || 'Sin cliente'}{analysis.contractReference ? <Muted className="mt-1">OV {analysis.contractReference}</Muted> : null}</TableCell>
+                  <TableCell className="font-mono text-xs">{analysis.modelLabel}</TableCell>
+                  <TableCell className="whitespace-nowrap font-mono text-xs">{analysis.serialNumber || 'Sin serie'}</TableCell>
+                  <TableCell className="text-right tabular-nums">{Math.round(analysis.averageCopies).toLocaleString('es-PY')}</TableCell>
+                  <TableCell className="text-right tabular-nums">{Math.round(analysis.optimalMonthly).toLocaleString('es-PY')} <span className="text-xs">({Math.round(analysis.appliedWaste * 100)}%)</span></TableCell>
+                  <TableCell><Badge className="whitespace-nowrap" tone={maintenanceStatusTone(analysis.status)}>{analysis.status}</Badge></TableCell>
+                  <TableCell className="min-w-[10rem] max-w-[16rem]" title={analysis.recommendedAction}>{analysis.recommendedAction}</TableCell>
+                  <TableCell><Button variant="outline" size="sm" aria-expanded={isExpanded} onClick={() => setExpandedAnalysisKey(isExpanded ? null : rowKey)}>{isExpanded ? 'Cerrar' : 'Inspector'}</Button></TableCell>
+                </TableRow>
+                {isExpanded ? <MaintenanceInspectionRow analysis={analysis} onPrint={() => printSingleAnalysis(analysis)} /> : null}
+              </Fragment>;
+            })}
+            {visibleAnalyses.length === 0 && <TableRow><TableCell colSpan={8} className="py-8 text-center">{maintenanceSummary?.batchId ? 'No hay equipos para el filtro seleccionado.' : 'Importa un archivo CSV o XLSX de contadores para comenzar.'}</TableCell></TableRow>}
+          </TableBody>
+        </Table>
+      </Card> : null}
 
       {activeMaintenanceView === 'modelos' ? <MaintenanceRulesPanel
         rules={maintenanceRules}
@@ -492,49 +501,53 @@ function MaintenanceInspectionRow({ analysis, onPrint }: { analysis: Maintenance
   const wearRatio = analysis.maxWaste > 0 ? analysis.appliedWaste / analysis.maxWaste : 0;
   const sourceDetails = uniqueMaintenanceSourceDetails(analysis);
 
-  return <tr className="maintenance-inspection-row">
-    <td colSpan={8}>
-      <div className="maintenance-inspection-grid">
-        <div className="maintenance-inspection-overview">
-          <div className="maintenance-wear-summary">
+  return <TableRow className="bg-paper hover:bg-paper dark:bg-navy/30">
+    <TableCell colSpan={8} className="p-0">
+      {/* sticky + 100cqw: el inspector ocupa el ancho visible de la tarjeta aunque la tabla desplace en horizontal */}
+      <div className="sticky left-0 box-border w-[100cqw] max-w-full p-4 [overflow-wrap:anywhere]"><div className="@container min-w-0"><div className="grid min-w-0 gap-6 @[56rem]:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+        <div className="grid min-w-0 content-start gap-3">
+          <div className="flex items-center gap-4">
             <MaintenanceWearGauge ratio={wearRatio} status={analysis.status} />
-            <div>
-              <div className="maintenance-inspection-label">Desgaste de ingeniería</div>
-              <div className="maintenance-inspection-copy">Merma aplicada / merma máxima configurada</div>
-              <div className="maintenance-inspection-copy">Último contador: {analysis.latestCounter.toLocaleString('es-PY')}</div>
+            <div className="grid gap-1">
+              <div className="text-sm font-bold text-navy dark:text-white">Desgaste de ingeniería</div>
+              <Muted>Merma aplicada / merma máxima configurada</Muted>
+              <Muted>Último contador: {analysis.latestCounter.toLocaleString('es-PY')}</Muted>
             </div>
           </div>
-          <h4>Historial de volumen mensual (copias)</h4>
+          <h4 className="m-0 text-sm font-bold text-navy dark:text-white">Historial de volumen mensual (copias)</h4>
           <MaintenanceHistoryChart analysis={analysis} />
-          <p className="maintenance-inspection-note">La línea discontinua naranja señala el límite mensual ajustado por desgaste.</p>
+          <Muted>La línea discontinua naranja señala el límite mensual ajustado por desgaste.</Muted>
         </div>
 
-        <div className="maintenance-inspection-readings">
-          <h4>Lecturas de base de datos</h4>
-          <div className="maintenance-readings-table-wrap">
-            <table className="maintenance-readings-table">
-              <thead><tr><th>Mes período</th><th className="align-right">Copias registradas</th><th className="align-right">Contador total</th><th className="align-right">Óptimo desgastado</th><th className="align-right">Ratio (cargado)</th></tr></thead>
-              <tbody>{analysis.periods.map((period, index) => {
-                const isOver = period.ratio > 1;
-                return <tr key={`${period.period}-${index}`}>
-                  <td>{period.period}</td>
-                  <td className="align-right">{period.copies.toLocaleString('es-PY')}</td>
-                  <td className="align-right">{period.counter.toLocaleString('es-PY')}</td>
-                  <td className="align-right">{period.optimalMonthly.toLocaleString('es-PY')}</td>
-                  <td className={isOver ? 'align-right is-over' : 'align-right'}>{period.ratio.toFixed(2)}{isOver ? <> <HugeiconsIcon icon={Alert02Icon} size={14} aria-label="Excede el límite" /></> : null}</td>
-                </tr>;
-              })}</tbody>
-            </table>
-          </div>
-          {sourceDetails.length > 0 ? <p className="maintenance-inspection-source">Origen: {sourceDetails.join(' · ')}</p> : null}
-          <div className="maintenance-inspection-actions">
-            <ExportButton onClick={onPrint}>Descargar informe técnico PDF</ExportButton>
-          </div>
+        <div className="grid min-w-0 content-start gap-3">
+          <h4 className="m-0 text-sm font-bold text-navy dark:text-white">Lecturas de base de datos</h4>
+          <Table className="min-w-[30rem]" wrapperClassName="max-h-72">
+            <TableHeader><TableRow><TableHead>Mes período</TableHead><TableHead className="text-right">Copias registradas</TableHead><TableHead className="text-right">Contador total</TableHead><TableHead className="text-right">Óptimo desgastado</TableHead><TableHead className="text-right">Ratio (cargado)</TableHead></TableRow></TableHeader>
+            <TableBody>{analysis.periods.map((period, index) => {
+              const isOver = period.ratio > 1;
+              return <TableRow key={`${period.period}-${index}`}>
+                <TableCell>{period.period}</TableCell>
+                <TableCell className="text-right tabular-nums">{period.copies.toLocaleString('es-PY')}</TableCell>
+                <TableCell className="text-right tabular-nums">{period.counter.toLocaleString('es-PY')}</TableCell>
+                <TableCell className="text-right tabular-nums">{period.optimalMonthly.toLocaleString('es-PY')}</TableCell>
+                <TableCell className={cn('text-right tabular-nums', isOver && 'font-bold text-[#912018]! dark:text-[#ffb4ab]!')}>{period.ratio.toFixed(2)}{isOver ? <> <HugeiconsIcon className="inline" icon={Alert02Icon} size={14} aria-label="Excede el límite" /></> : null}</TableCell>
+              </TableRow>;
+            })}</TableBody>
+          </Table>
+          {sourceDetails.length > 0 ? <Muted>Origen: {sourceDetails.join(' · ')}</Muted> : null}
+          <div><ExportButton onClick={onPrint}>Descargar informe técnico PDF</ExportButton></div>
         </div>
-      </div>
-    </td>
-  </tr>;
+      </div></div></div>
+    </TableCell>
+  </TableRow>;
 }
+
+const gaugeTone: Record<string, string> = {
+  critical: 'text-[#d92d20]',
+  attention: 'text-[#e08a00]',
+  unrecognized: 'text-[#6b5bd6] dark:text-[#b9afff]',
+  normal: 'text-[#2f8f5b]',
+};
 
 function MaintenanceWearGauge({ ratio, status }: { ratio: number; status: MaintenanceAnalysis['status'] }) {
   const size = 68;
@@ -545,17 +558,17 @@ function MaintenanceWearGauge({ ratio, status }: { ratio: number; status: Mainte
   const progress = Math.min(Math.max(ratio, 0), 1);
   const tone = status === 'CRÍTICO' ? 'critical' : status === 'ATENCIÓN' ? 'attention' : status === 'NO_RECONOCIDO' ? 'unrecognized' : 'normal';
 
-  return <div className={`maintenance-wear-gauge ${tone}`} role="img" aria-label={`Desgaste de ingeniería: ${Math.round(ratio * 100)}%`}>
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
+  return <div className={cn('relative grid size-[68px] shrink-0 place-items-center', gaugeTone[tone])} role="img" aria-label={`Desgaste de ingeniería: ${Math.round(ratio * 100)}%`}>
+    <svg className="absolute inset-0" width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
       <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="currentColor" strokeOpacity="0.16" strokeWidth={stroke} strokeDasharray={`${arcLength} ${circumference}`} transform={`rotate(135 ${size / 2} ${size / 2})`} />
       <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeDasharray={arcLength} strokeDashoffset={arcLength - arcLength * progress} transform={`rotate(135 ${size / 2} ${size / 2})`} />
     </svg>
-    <span>{Math.round(ratio * 100)}%</span>
+    <div className="text-sm font-bold text-navy dark:text-white">{Math.round(ratio * 100)}%</div>
   </div>;
 }
 
 function MaintenanceHistoryChart({ analysis }: { analysis: MaintenanceAnalysis }) {
-  if (analysis.periods.length < 2) return <div className="maintenance-history-chart-empty">Sin historial suficiente para graficar.</div>;
+  if (analysis.periods.length < 2) return <Muted className="rounded-xl border border-dashed border-navy/20 p-4 text-center dark:border-sky/30">Sin historial suficiente para graficar.</Muted>;
 
   const width = 340;
   const height = 82;
@@ -569,13 +582,13 @@ function MaintenanceHistoryChart({ analysis }: { analysis: MaintenanceAnalysis }
   const points = analysis.periods.map((period, index) => pointFor(period.copies, index)).join(' ');
   const limitY = height - padding - (analysis.optimalMonthly / maxValue) * (height - padding * 2);
 
-  return <svg className="maintenance-history-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Historial mensual de copias y límite desgastado">
-    <line x1={padding} y1={limitY} x2={width - padding} y2={limitY} />
-    <text x={padding} y={Math.max(limitY - 4, 9)}>Límite desgastado dinámico</text>
-    <polyline points={points} />
+  return <svg className="h-auto w-full max-w-[28rem] text-sky" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Historial mensual de copias y límite desgastado">
+    <line x1={padding} y1={limitY} x2={width - padding} y2={limitY} stroke="#ff6b00" strokeWidth="1.5" strokeDasharray="5 4" />
+    <text className="fill-ink-2 dark:fill-[#9fb2d1]" x={width - padding} y={Math.min(limitY + 11, height - 2)} fontSize="9" textAnchor="end">Límite desgastado dinámico</text>
+    <polyline points={points} fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
     {analysis.periods.map((period, index) => {
       const [x, y] = pointFor(period.copies, index).split(',');
-      return <circle key={`${period.period}-${index}`} cx={x} cy={y} r="2.8" />;
+      return <circle key={`${period.period}-${index}`} cx={x} cy={y} r="2.8" fill="currentColor" />;
     })}
   </svg>;
 }
@@ -646,10 +659,10 @@ function toFileSafeName(value: string): string {
     .slice(0, 72) || 'equipo';
 }
 
-function maintenanceStatusClass(status: MaintenanceAnalysis['status']): string {
-  if (status === 'CRÍTICO') return 'alert';
+function maintenanceStatusTone(status: MaintenanceAnalysis['status']): BadgeTone {
+  if (status === 'CRÍTICO') return 'danger';
   if (status === 'ATENCIÓN') return 'warning';
-  if (status === 'NORMAL') return 'ok';
+  if (status === 'NORMAL') return 'success';
   return 'neutral';
 }
 

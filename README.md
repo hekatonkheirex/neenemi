@@ -288,6 +288,9 @@ Los filtros de cartera del Discontinuador se distribuyen en filas cuando el espa
 disponible es menor, sin recortar las opciones ni el botón para limpiar filtros.
 En el detalle de un cliente, cada contrato permite contraer o mostrar sus equipos
 por separado desde el encabezado; el resumen y la exportación del cliente no cambian.
+Mantenimiento usa los componentes compartidos del rediseño en ambos temas: fuente de contadores,
+tablero ejecutivo, expedientes técnicos con inspector y límites por modelo. Las tablas desplazan
+dentro de su tarjeta y el editor de reglas es un diálogo nativo. Los informes PDF conservan sus estilos.
 Mantenimiento también permite cargar por separado uno o varios XLSX de los exports de `Contratos.xlsx`, `Detalles de
 contratos.xlsx` y la clasificación de clientes, conservando OV, división, vigencia, fechas,
 área comercial y requisito de cierre en la base compartida. Discontinuador ofrece además la

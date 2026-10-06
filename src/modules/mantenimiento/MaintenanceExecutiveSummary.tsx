@@ -1,6 +1,10 @@
 import type { MaintenanceAnalysis } from './analysis';
 import { buildMaintenanceExecutiveSummary } from './maintenance-summary';
 import { ExportButton } from '../../core/ActionButtons';
+import { cn } from '../../core/cn';
+import { Button } from '../../core/ui/button';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Badge } from '../../core/ui/badge';
 
 export type MaintenanceExportKind = 'critical' | 'attention' | 'unrecognized' | 'zero' | 'recommended';
 
@@ -12,21 +16,37 @@ type MaintenanceExecutiveSummaryProps = {
 
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 
+// Tono de cada ficha y lista: borde y color del indicador. Los textos usan los tokens de marca en ambos temas.
+const tones: Record<string, { border: string; accent: string }> = {
+  normal: { border: 'border-l-[#2f8f5b]', accent: 'text-[#14532d] dark:text-[#9be3b9]' },
+  critical: { border: 'border-l-[#d92d20]', accent: 'text-[#912018] dark:text-[#ff8a93]' },
+  attention: { border: 'border-l-[#e08a00]', accent: 'text-[#7a4a00] dark:text-[#f0b44c]' },
+  unrecognized: { border: 'border-l-[#6b5bd6]', accent: 'text-[#4a3fa8] dark:text-[#b9afff]' },
+  idle: { border: 'border-l-[#73869f]', accent: 'text-ink-2 dark:text-[#9fb3d4]' },
+  overworked: { border: 'border-l-brand', accent: 'text-[#b84d00] dark:text-[#ff9a4d]' },
+  recommended: { border: 'border-l-sky', accent: 'text-[#00587a] dark:text-[#8bd6f2]' },
+};
+
+const panelClass = 'grid min-w-0 content-start gap-3 rounded-xl border border-navy/10 border-l-4 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30';
+const rowClass = 'grid min-w-0 grid-cols-[2rem_minmax(0,1fr)_auto] items-start gap-3 border-t border-navy/10 pt-3 dark:border-sky/15';
+
 export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrint }: MaintenanceExecutiveSummaryProps) {
   const summary = buildMaintenanceExecutiveSummary(analyses);
   if (summary.total === 0) return null;
 
   return (
-    <section className="sales-card maintenance-executive-card" aria-label="Tablero ejecutivo de mantenimiento">
-      <div className="card-heading">
-        <div><div className="eyebrow">TABLERO EJECUTIVO</div><h2>Estado del parque</h2><p className="form-hint">Lectura priorizada de las mismas reglas y períodos usados en el análisis por equipo.</p></div>
-        <div className="maintenance-executive-heading-actions">
-          <span className="muted-note">{integerFormat.format(summary.total)} equipos analizados</span>
-          {onPrint ? <button className="secondary-button" type="button" onClick={onPrint}>Imprimir resumen PDF</button> : null}
-        </div>
-      </div>
+    <Card className="@container min-w-0 grid-cols-1 [overflow-wrap:anywhere]" aria-label="Tablero ejecutivo de mantenimiento">
+      <CardHeader
+        eyebrow="Tablero ejecutivo"
+        title="Estado del parque"
+        aside={<div className="flex flex-wrap items-center gap-2">
+          <Badge>{integerFormat.format(summary.total)} equipos analizados</Badge>
+          {onPrint ? <Button variant="outline" onClick={onPrint}>Imprimir resumen PDF</Button> : null}
+        </div>}
+      />
+      <Muted className="text-sm">Lectura priorizada de las mismas reglas y períodos usados en el análisis por equipo.</Muted>
 
-      <div className="maintenance-executive-kpis">
+      <div className="grid min-w-0 grid-cols-2 gap-3 sm:grid-cols-3 min-[1180px]:grid-cols-6">
         <SummaryKpi label="Normal" value={summary.normal} tone="normal" detail="Dentro del óptimo dinámico" />
         <SummaryKpi label="Críticos" value={summary.critical} tone="critical" detail="Requieren intervención" trend={summary.criticalTrend} />
         <SummaryKpi label="Atención" value={summary.attention} tone="attention" detail="Revisión preventiva" />
@@ -35,7 +55,7 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
         <SummaryKpi label="Sobre el óptimo" value={summary.overworked} tone="overworked" detail="Ratio mayor a 1" />
       </div>
 
-      <div className="maintenance-executive-grid">
+      <div className="grid min-w-0 gap-4 @[44rem]:grid-cols-2">
         <PriorityList
           title="Intervención prioritaria"
           description="Todos los equipos críticos, ordenados por ratio."
@@ -56,7 +76,7 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
         />
       </div>
 
-      <div className="maintenance-secondary-panels">
+      {summary.unrecognizedList.length > 0 || summary.zeroList.length > 0 ? <div className="grid min-w-0 gap-4 @[44rem]:grid-cols-2">
         {summary.unrecognizedList.length > 0 ? <MaintenanceSubsetPanel
           title="Equipos no reconocidos"
           description="No tienen una regla de vida útil asociada. Configurá el modelo antes de usar el resultado como límite operativo."
@@ -77,7 +97,7 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
           exportKind="zero"
           onExport={onExport}
         /> : null}
-      </div>
+      </div> : null}
 
       <MaintenanceSubsetPanel
         title="Equipos sobre el volumen óptimo recomendado"
@@ -95,26 +115,27 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
         onExport={onExport}
       />
 
-      <div className="maintenance-insight-panel">
-        <div><div className="eyebrow">PATRONES DETECTADOS</div><h3>Lectura operativa</h3></div>
-        <ul>{summary.insights.map((insight) => <li key={insight}>{insight}</li>)}</ul>
+      <div className="grid min-w-0 gap-2 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
+        <div className="text-[0.7rem] font-extrabold uppercase tracking-[0.14em] text-[#00698f] dark:text-sky">Patrones detectados</div>
+        <h3 className="m-0 text-base font-bold text-navy dark:text-white">Lectura operativa</h3>
+        <ul className="m-0 grid list-disc gap-1.5 pl-5 text-sm text-ink-2 [&_li]:before:content-none dark:text-[#d6e2f5]">{summary.insights.map((insight) => <li key={insight}>{insight}</li>)}</ul>
       </div>
-    </section>
+    </Card>
   );
 }
 
 function SummaryKpi({ label, value, tone, detail, trend }: { label: string; value: number; tone: string; detail: string; trend?: readonly { period: string; count: number }[] }) {
-  return <div className={`maintenance-executive-kpi ${tone}`}>
-    <div className="maintenance-executive-kpi-heading">
-      <span>{label}</span>
-      {trend && trend.length >= 2 ? <CriticalTrend trend={trend} /> : null}
+  return <div className={cn('grid min-w-0 gap-1 rounded-xl border border-navy/10 border-l-4 bg-paper p-3 dark:border-sky/20 dark:bg-navy/30', tones[tone].border)}>
+    <div className="flex min-w-0 items-center justify-between gap-2 text-xs font-bold text-ink-2 dark:text-[#9fb2d1]">
+      <div className="min-w-0">{label}</div>
+      {trend && trend.length >= 2 ? <CriticalTrend trend={trend} className={tones[tone].accent} /> : null}
     </div>
-    <strong>{integerFormat.format(value)}</strong>
-    <small>{detail}</small>
+    <div className={cn('text-3xl font-bold tabular-nums', tones[tone].accent)}>{integerFormat.format(value)}</div>
+    <Muted>{detail}</Muted>
   </div>;
 }
 
-function CriticalTrend({ trend }: { trend: readonly { period: string; count: number }[] }) {
+function CriticalTrend({ trend, className }: { trend: readonly { period: string; count: number }[]; className?: string }) {
   const max = Math.max(...trend.map((item) => item.count), 1);
   const points = trend.map((item, index) => {
     const x = trend.length === 1 ? 0 : (index / (trend.length - 1)) * 64;
@@ -122,9 +143,23 @@ function CriticalTrend({ trend }: { trend: readonly { period: string; count: num
     return `${x},${y}`;
   }).join(' ');
   const label = trend.map((item) => `${item.period}: ${item.count}`).join(' · ');
-  return <svg className="maintenance-critical-trend" viewBox="0 0 64 24" role="img" aria-label={`Tendencia de críticos por período: ${label}`}>
-    <polyline fill="none" points={points} />
+  return <svg className={cn('h-6 min-w-10 flex-[0_1_auto]', className)} viewBox="0 0 64 24" role="img" aria-label={`Tendencia de críticos por período: ${label}`}>
+    <polyline fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" points={points} />
   </svg>;
+}
+
+function PanelHeading({ title, description, count, exportKind, analyses, onExport }: {
+  title: string;
+  description: string;
+  count: number;
+  exportKind: MaintenanceExportKind;
+  analyses: readonly MaintenanceAnalysis[];
+  onExport?: (analyses: readonly MaintenanceAnalysis[], kind: MaintenanceExportKind) => void;
+}) {
+  return <div className="flex flex-wrap items-start justify-between gap-3">
+    <div className="grid min-w-0 gap-1"><h3 className="m-0 text-base font-bold text-navy dark:text-white">{title}</h3><Muted>{description}</Muted></div>
+    <div className="flex flex-wrap items-center gap-2"><Badge>{count}</Badge>{onExport && count > 0 ? <ExportButton onClick={() => onExport(analyses, exportKind)}>Descargar XLSX</ExportButton> : null}</div>
+  </div>;
 }
 
 function PriorityList({
@@ -144,15 +179,12 @@ function PriorityList({
   exportKind: MaintenanceExportKind;
   onExport?: (analyses: readonly MaintenanceAnalysis[], kind: MaintenanceExportKind) => void;
 }) {
-  return <div className={`maintenance-priority-panel ${tone}`}>
-    <div className="maintenance-priority-heading">
-      <div><h3>{title}</h3><p>{description}</p></div>
-      <div className="maintenance-panel-heading-actions"><span>{analyses.length}</span>{onExport && analyses.length > 0 ? <ExportButton onClick={() => onExport(analyses, exportKind)}>Descargar XLSX</ExportButton> : null}</div>
-    </div>
-    {analyses.length === 0 ? <p className="maintenance-priority-empty">{empty}</p> : <div className="maintenance-priority-list">{analyses.map((analysis, index) => <div className="maintenance-priority-row" key={`${analysis.serialNumber}-${analysis.modelLabel}-${index}`}>
-      <span className="maintenance-priority-index">{String(index + 1).padStart(2, '0')}</span>
-      <div><strong>{analysis.modelLabel}</strong><small>{analysis.customerName || 'Cliente sin informar'} · {analysis.serialNumber || 'Sin serie'}</small><small>Prom. {integerFormat.format(analysis.averageCopies)} · óptimo {integerFormat.format(analysis.optimalMonthly)}</small></div>
-      <b>{Math.round(analysis.ratio * 100)}%</b>
+  return <div className={cn(panelClass, tones[tone].border)}>
+    <PanelHeading title={title} description={description} count={analyses.length} exportKind={exportKind} analyses={analyses} onExport={onExport} />
+    {analyses.length === 0 ? <Muted className="text-sm">{empty}</Muted> : <div className="grid max-h-96 gap-3 overflow-y-auto pr-1">{analyses.map((analysis, index) => <div className={rowClass} key={`${analysis.serialNumber}-${analysis.modelLabel}-${index}`}>
+      <div className="font-mono text-xs text-ink-2 dark:text-[#9fb2d1]">{String(index + 1).padStart(2, '0')}</div>
+      <div className="grid min-w-0 gap-0.5"><div className="font-bold text-navy dark:text-white">{analysis.modelLabel}</div><Muted>{analysis.customerName || 'Cliente sin informar'} · {analysis.serialNumber || 'Sin serie'}</Muted><Muted>Prom. {integerFormat.format(analysis.averageCopies)} · óptimo {integerFormat.format(analysis.optimalMonthly)}</Muted></div>
+      <div className={cn('text-lg font-bold tabular-nums', tones[tone].accent)}>{Math.round(analysis.ratio * 100)}%</div>
     </div>)}</div>}
   </div>;
 }
@@ -178,15 +210,12 @@ function MaintenanceSubsetPanel({
   exportKind: MaintenanceExportKind;
   onExport?: (analyses: readonly MaintenanceAnalysis[], kind: MaintenanceExportKind) => void;
 }) {
-  return <div className={`maintenance-subset-panel ${tone}`}>
-    <div className="maintenance-priority-heading">
-      <div><h3>{title}</h3><p>{description}</p></div>
-      <div className="maintenance-panel-heading-actions"><span>{analyses.length}</span>{onExport && analyses.length > 0 ? <ExportButton onClick={() => onExport(analyses, exportKind)}>Descargar XLSX</ExportButton> : null}</div>
-    </div>
-    {analyses.length === 0 ? <p className="maintenance-priority-empty">{empty}</p> : <div className="maintenance-subset-list">{analyses.map((analysis, index) => <div className="maintenance-subset-row" key={`${analysis.serialNumber}-${analysis.modelLabel}-${index}`}>
-      <span className="maintenance-priority-index">{String(index + 1).padStart(2, '0')}</span>
-      <div><strong>{analysis.modelLabel}</strong><small>{detail(analysis)}</small></div>
-      <b>{metric(analysis)}</b>
+  return <div className={cn(panelClass, tones[tone].border)}>
+    <PanelHeading title={title} description={description} count={analyses.length} exportKind={exportKind} analyses={analyses} onExport={onExport} />
+    {analyses.length === 0 ? <Muted className="text-sm">{empty}</Muted> : <div className="grid max-h-96 gap-3 overflow-y-auto pr-1">{analyses.map((analysis, index) => <div className={rowClass} key={`${analysis.serialNumber}-${analysis.modelLabel}-${index}`}>
+      <div className="font-mono text-xs text-ink-2 dark:text-[#9fb2d1]">{String(index + 1).padStart(2, '0')}</div>
+      <div className="grid min-w-0 gap-0.5"><div className="font-bold text-navy dark:text-white">{analysis.modelLabel}</div><Muted>{detail(analysis)}</Muted></div>
+      <div className={cn('text-sm font-bold tabular-nums', tones[tone].accent)}>{metric(analysis)}</div>
     </div>)}</div>}
   </div>;
 }

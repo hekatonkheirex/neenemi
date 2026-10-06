@@ -244,17 +244,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
     grid-template-columns: 1fr;
   }
 
-  .maintenance-analysis-filters,
-  .maintenance-rule-inputs {
-    grid-template-columns: 1fr;
-  }
-
-  .maintenance-source-upload-actions,
-  .maintenance-source-file-actions {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
 
   .consumables-controls {
     grid-template-columns: 1fr;

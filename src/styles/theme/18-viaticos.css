@@ -136,25 +136,9 @@ html[data-theme='light'] .discontinuation-model-count {
 }
 
 /* Mantenimiento: números de paso, copias por equipo y porcentaje de prioridad (3,9-4,4:1 -> AA). */
-html[data-theme='light'] .page-content .maintenance-subset-row b {
-  color: var(--ds-subtle);
-}
-
-html[data-theme='light'] .page-content .maintenance-priority-row b {
-  color: #7a4a00;
-}
 
 /* Tema oscuro (barrido que ya mide degradados): textos secundarios y acentos pensados para fondos claros.
    :not([data-theme='light']) los limita al oscuro; en claro siguen los valores existentes. */
-html:not([data-theme='light']) :is(
-  .detail-label, .overview-import-meta, .scope-note, .summary-card-note, .travel-history-metric small,
-  .database-recovery-copy small, .maintenance-source-dropzone-copy span,
-  .maintenance-priority-row small, .maintenance-subset-row small,
-  .travel-overview-row-heading small,
-  .travel-source-sheet-list small, .travel-source-heading-actions .muted-note, .travel-source-pagination span
-) {
-  color: #9fb3d4;
-}
 
 html:not([data-theme='light']) .catalog-table th {
   color: #9fb3d4;

@@ -107,9 +107,3 @@ html[data-theme='light'] .pagination-size select {
 html[data-theme='light'] .pagination-loading {
   color: var(--ds-muted);
 }
-
-html[data-theme='light'] .maintenance-insight-panel {
-  border-color: var(--ds-border);
-  background: var(--ds-surface-alt);
-  box-shadow: 0 0.45rem 1rem var(--ds-shadow);
-}
