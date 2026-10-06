@@ -2,7 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { findSourceHeaderRow } from '../core/source-header-row';
 import { confirmAction } from '../core/confirm';
 import { readJson, toErrorMessage as describeError } from '../core/http';
-import { DownloadIcon } from '../core/ActionButtons';
+import { Download } from 'lucide-react';
+import { createColumnHelper, tableFeatures, useTable } from '@tanstack/react-table';
+import { cn } from '../core/cn';
+import { Button } from '../core/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../core/ui/table';
 
 type ImportBatchSummary = {
   id: string;
@@ -68,6 +72,15 @@ type ImportArchiveViewerProps = {
 };
 
 const numberFormat = new Intl.NumberFormat('es-PY');
+const features = tableFeatures({});
+const EMPTY_ROWS: ImportSourceRow[] = [];
+const columnHelper = createColumnHelper<typeof features, ImportSourceRow>();
+const mutedText = 'text-ink-2! dark:text-[#9fb2d1]!';
+const statusTone: Record<ImportBatchSummary['status'], string> = {
+  applied: 'bg-[#2f8f5b]/15 text-[#14532d]! dark:text-[#9be3b9]!',
+  staged: 'bg-[#e08a00]/15 text-[#7a4a00]! dark:text-[#ffd28a]!',
+  failed: 'bg-[#d92d20]/15 text-[#912018]! dark:text-[#ffb4ab]!',
+};
 
 export default function ImportArchivePanel({ refreshKey, onRemoveBatch }: ImportArchivePanelProps) {
   const [batches, setBatches] = useState<ImportBatchSummary[]>([]);
@@ -210,22 +223,22 @@ export default function ImportArchivePanel({ refreshKey, onRemoveBatch }: Import
   }
 
   return (
-    <section className="source-data-panel overview-import-archive" aria-label="Importaciones y archivos originales">
-      <div className="source-data-heading">
-        <div>
+    <section aria-label="Importaciones y archivos originales" className="mt-6 grid gap-5 rounded-2xl border border-navy/10 bg-white p-5 shadow-md dark:border-sky/20 dark:bg-panel">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="min-w-0">
           <div className="eyebrow">DATOS / ORIGINALES CONSERVADOS</div>
-          <h2>Archivos y filas de origen</h2>
-          <p>Consulta las importaciones de todos los módulos, inspecciona sus hojas y filas originales o descarga el archivo fuente.</p>
+          <h2 className="text-navy dark:text-white">Archivos y filas de origen</h2>
+          <div className={cn('max-w-3xl text-sm', mutedText)}>Consulta las importaciones de todos los módulos, inspecciona sus hojas y filas originales o descarga el archivo fuente.</div>
         </div>
-        <div className="source-data-note">
-          <strong>{numberFormat.format(batches.length)}</strong>
-          <span>importaciones registradas</span>
+        <div className="rounded-xl border border-navy/10 px-4 py-2 text-right dark:border-sky/20">
+          <div className="text-2xl font-extrabold text-navy dark:text-white">{numberFormat.format(batches.length)}</div>
+          <div className={cn('text-xs', mutedText)}>importaciones registradas</div>
         </div>
       </div>
 
-      {error ? <div className="source-data-error" role="alert">{error}</div> : null}
+      {error ? <div role="alert" className="rounded-xl border border-[#d92d20]/40 bg-[#d92d20]/10 px-4 py-3 text-sm text-[#912018] dark:text-[#ffb4ab]">{error}</div> : null}
 
-      <div className="source-data-layout">
+      <div className="grid items-start gap-5 lg:grid-cols-[minmax(16rem,22rem)_minmax(0,1fr)]">
         <ImportBatchList batches={batches} selectedBatchId={selectedBatchId} loading={loadingBatches} onSelect={selectBatch} />
         <ImportArchiveViewer
           batch={selectedBatch}
@@ -247,7 +260,7 @@ export default function ImportArchivePanel({ refreshKey, onRemoveBatch }: Import
   );
 }
 
-function ImportBatchList({
+export function ImportBatchList({
   batches,
   selectedBatchId,
   loading,
@@ -259,23 +272,32 @@ function ImportBatchList({
   onSelect: (batch: ImportBatchSummary) => void;
 }) {
   return (
-    <div className="source-data-batches">
-      <span className="detail-label">Importaciones</span>
-      {loading ? <p className="analytics-empty">Cargando archivos…</p> : null}
-      {!loading && batches.length === 0 ? <p className="analytics-empty">Todavía no hay archivos importados.</p> : null}
-      {batches.map((batch) => (
-        <button
-          className={`source-data-batch ${batch.id === selectedBatchId ? 'active' : ''}`}
-          key={batch.id}
-          type="button"
-          onClick={() => onSelect(batch)}
-        >
-          <strong>{batch.sourceName}</strong>
-          <span>{formatImportDomain(batch.domain)} · {formatImportStatus(batch.status)}</span>
-          <small>{numberFormat.format(batch.rawRows)} filas · {numberFormat.format(batch.rawSheets)} hojas originales</small>
-          <small className="source-data-batch-date">{formatBatchDate(batch)}</small>
-        </button>
-      ))}
+    <div className="grid max-h-[32rem] gap-2 overflow-y-auto pr-1">
+      <div className="text-[0.7rem] font-extrabold uppercase tracking-[0.14em] text-ink-2 dark:text-[#8fa5c7]">Importaciones</div>
+      {loading ? <div className={cn('text-sm', mutedText)}>Cargando archivos…</div> : null}
+      {!loading && batches.length === 0 ? <div className={cn('text-sm', mutedText)}>Todavía no hay archivos importados.</div> : null}
+      {batches.map((batch) => {
+        const active = batch.id === selectedBatchId;
+        return (
+          <button
+            key={batch.id}
+            type="button"
+            aria-pressed={active}
+            onClick={() => onSelect(batch)}
+            className={cn(
+              'grid gap-0.5 rounded-xl border px-3 py-2.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky',
+              active
+                ? 'border-sky bg-sky/10 shadow-[inset_3px_0_0_var(--color-sky)]'
+                : 'border-navy/10 bg-transparent hover:bg-sky/5 dark:border-sky/20',
+            )}
+          >
+            <div className="break-words text-sm font-bold text-navy dark:text-white">{batch.sourceName}</div>
+            <div className={cn('text-xs', mutedText)}>{formatImportDomain(batch.domain)} · {formatImportStatus(batch.status)}</div>
+            <div className={cn('text-xs', mutedText)}>{numberFormat.format(batch.rawRows)} filas · {numberFormat.format(batch.rawSheets)} hojas originales</div>
+            <div className={cn('text-xs tabular-nums', mutedText)}>{formatBatchDate(batch)}</div>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -290,7 +312,7 @@ export function formatBatchDate(batch: Pick<ImportBatchSummary, 'status' | 'crea
   return `${applied ? 'Aplicada' : 'Cargada'} ${batchDateFormat.format(date)}`;
 }
 
-function ImportArchiveViewer({
+export function ImportArchiveViewer({
   batch,
   selectedSheet,
   rawData,
@@ -306,83 +328,114 @@ function ImportArchiveViewer({
   onRemoveBatch,
 }: ImportArchiveViewerProps) {
   const maxColumns = Math.max(...(rawData?.rows.map((row) => row.values.length) ?? [0]), selectedSheet?.columnCount ?? 0, 1);
+  const columns = useMemo(
+    () =>
+      columnHelper.columns([
+        columnHelper.display({ id: 'row', header: '#', cell: ({ row }) => row.original.rowNumber }),
+        ...Array.from({ length: maxColumns }, (_, index) =>
+          columnHelper.display({
+            id: `c${index}`,
+            header: headerLabel(headerValues[index], index),
+            cell: ({ row }) => formatRawValue(row.original.values[index]),
+          }),
+        ),
+      ]),
+    [maxColumns, headerValues],
+  );
+  const table = useTable({ features, columns, data: rawData?.rows ?? EMPTY_ROWS, getRowId: (row) => row.id });
+  const colSpan = maxColumns + 1;
+  const emptyText = 'text-sm ' + mutedText;
 
   return (
-    <div className="source-data-viewer">
+    <div className="grid min-w-0 gap-4 rounded-xl border border-navy/10 p-4 dark:border-sky/20">
       {batch ? (
         <>
-          <div className="source-data-viewer-heading">
-            <div>
-              <span className="detail-label">Fuente seleccionada</span>
-              <h3>{batch.sourceName}</h3>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-[0.7rem] font-extrabold uppercase tracking-[0.14em] text-ink-2 dark:text-[#8fa5c7]">Fuente seleccionada</div>
+              <h3 className="break-words text-lg font-bold text-navy dark:text-white">{batch.sourceName}</h3>
             </div>
-            <div className="source-data-viewer-actions">
-              <span className={`source-data-status status-${batch.status}`}>{formatImportStatus(batch.status)}</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className={cn('rounded-full px-3 py-1 text-xs font-bold', statusTone[batch.status])}>{formatImportStatus(batch.status)}</div>
               {selectedSheet ? (
-                <a
-                  className="secondary-button export-button"
-                  href={`/api/imports/${encodeURIComponent(batch.id)}/files/${encodeURIComponent(selectedSheet.importFileId)}`}
-                  download={selectedSheet.fileName}
-                >
-                  <DownloadIcon />
-                  Descargar original
-                </a>
+                <Button asChild variant="outline" size="sm">
+                  <a
+                    href={`/api/imports/${encodeURIComponent(batch.id)}/files/${encodeURIComponent(selectedSheet.importFileId)}`}
+                    download={selectedSheet.fileName}
+                  >
+                    <Download aria-hidden="true" />
+                    Descargar original
+                  </a>
+                </Button>
               ) : null}
               {batch.domain === 'consumibles' ? (
-                <button
-                  className="secondary-button source-data-remove-button"
-                  type="button"
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-[#d92d20]/50 text-[#912018] hover:bg-[#d92d20]/10 dark:text-[#ffb4ab]"
                   disabled={removingBatchId !== null}
                   onClick={() => onRemoveBatch(batch)}
                 >
                   {removingBatchId === batch.id ? 'Quitando…' : 'Quitar carga'}
-                </button>
+                </Button>
               ) : null}
             </div>
           </div>
 
           {rawData?.sheets.length ? (
             <>
-              <label className="source-data-sheet-select">
-                <span>Hoja</span>
-                <select value={selectedSheet ? sourceSheetKey(selectedSheet) : ''} onChange={(event) => onSheetChange(event.target.value)}>
+              <label className="grid max-w-xl gap-1 text-xs font-bold text-ink-2! dark:text-[#9fb2d1]!">
+                Hoja
+                <select
+                  className="h-10 rounded-xl border border-navy/20 bg-white px-3 text-sm font-normal text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky dark:border-sky/30 dark:bg-panel dark:text-white"
+                  value={selectedSheet ? sourceSheetKey(selectedSheet) : ''}
+                  onChange={(event) => onSheetChange(event.target.value)}
+                >
                   {rawData.sheets.map((sheet) => <option key={sourceSheetKey(sheet)} value={sourceSheetKey(sheet)}>{sheet.fileName} · {sheet.sheetName} ({numberFormat.format(sheet.rowCount)} filas)</option>)}
                 </select>
               </label>
-              <div className="source-data-meta">
-                <span>{selectedSheet?.sheetName}</span>
-                <span>{numberFormat.format(selectedSheet?.rowCount ?? 0)} filas · {numberFormat.format(selectedSheet?.columnCount ?? 0)} columnas</span>
-                <span>Filas {page * 100 + 1}–{Math.min((page + 1) * 100, selectedSheet?.rowCount ?? 0)}</span>
+              <div className={cn('flex flex-wrap gap-x-4 gap-y-1 text-xs', mutedText)}>
+                <div>{selectedSheet?.sheetName}</div>
+                <div>{numberFormat.format(selectedSheet?.rowCount ?? 0)} filas · {numberFormat.format(selectedSheet?.columnCount ?? 0)} columnas</div>
+                <div>Filas {page * 100 + 1}–{Math.min((page + 1) * 100, selectedSheet?.rowCount ?? 0)}</div>
               </div>
-              <div className="catalog-table-wrap source-data-table-wrap">
-                <table className="catalog-table source-data-table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      {Array.from({ length: maxColumns }, (_, index) => <th key={index}>{headerLabel(headerValues[index], index)}</th>)}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {loadingRows ? <tr><td className="empty-cell" colSpan={maxColumns + 1}>Leyendo filas originales…</td></tr> : null}
-                    {!loadingRows && rawData.rows.map((row) => (
-                      <tr className={row.rowNumber === headerRowNumber ? 'source-header-row' : ''} key={row.id}>
-                        <td className="source-row-number">{row.rowNumber}</td>
-                        {Array.from({ length: maxColumns }, (_, index) => <td key={index}>{formatRawValue(row.values[index])}</td>)}
-                      </tr>
-                    ))}
-                    {!loadingRows && rawData.rows.length === 0 ? <tr><td className="empty-cell" colSpan={maxColumns + 1}>No hay filas en este tramo.</td></tr> : null}
-                  </tbody>
-                </table>
-              </div>
-              <div className="source-data-pagination">
-                <button className="secondary-button" type="button" onClick={() => onPageChange(page - 1)} disabled={!canGoBack || loadingRows}>Anterior</button>
-                <span>Página {page + 1}</span>
-                <button className="secondary-button" type="button" onClick={() => onPageChange(page + 1)} disabled={!canGoForward || loadingRows}>Siguiente</button>
+              <Table wrapperClassName="max-h-[28rem]">
+                <TableHeader>
+                  {table.getHeaderGroups().map((group) => (
+                    <TableRow key={group.id}>
+                      {group.headers.map((header) => (
+                        <TableHead key={header.id}>{header.isPlaceholder ? null : <table.FlexRender header={header} />}</TableHead>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {loadingRows ? <TableRow><TableCell colSpan={colSpan} className={emptyText}>Leyendo filas originales…</TableCell></TableRow> : null}
+                  {!loadingRows && table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id} className={row.original.rowNumber === headerRowNumber ? 'bg-sky/10' : undefined}>
+                      {row.getAllCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cell.column.id === 'row' ? 'text-right tabular-nums' : 'max-w-72 truncate'}
+                          title={cell.column.id === 'row' ? undefined : formatRawValue(row.original.values[Number(cell.column.id.slice(1))])}
+                        >
+                          <table.FlexRender cell={cell} />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                  {!loadingRows && rawData.rows.length === 0 ? <TableRow><TableCell colSpan={colSpan} className={emptyText}>No hay filas en este tramo.</TableCell></TableRow> : null}
+                </TableBody>
+              </Table>
+              <div className="flex items-center justify-end gap-3">
+                <Button variant="outline" size="sm" onClick={() => onPageChange(page - 1)} disabled={!canGoBack || loadingRows}>Anterior</Button>
+                <div className={cn('text-xs', mutedText)}>Página {page + 1}</div>
+                <Button variant="outline" size="sm" onClick={() => onPageChange(page + 1)} disabled={!canGoForward || loadingRows}>Siguiente</Button>
               </div>
             </>
-          ) : loadingRows ? <p className="analytics-empty">Preparando las hojas originales…</p> : <p className="analytics-empty">Esta importación no contiene filas XLSX conservadas.</p>}
+          ) : <div className={emptyText}>{loadingRows ? 'Preparando las hojas originales…' : 'Esta importación no contiene filas XLSX conservadas.'}</div>}
         </>
-      ) : <p className="analytics-empty">Selecciona una importación para inspeccionar sus datos.</p>}
+      ) : <div className={emptyText}>Selecciona una importación para inspeccionar sus datos.</div>}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Tick02Icon, Alert02Icon } from '@hugeicons/core-free-icons';
+import { Check, TriangleAlert } from 'lucide-react';
+import { cn } from '../core/cn';
+import { Button } from '../core/ui/button';
 import { submitImportJob, type ImportJobSnapshot } from '../core/import-job-client';
 import { confirmAction } from '../core/confirm';
 
@@ -43,13 +44,24 @@ const dateTimeFormat = new Intl.DateTimeFormat('es-PY', { day: '2-digit', month:
 const formatStamp = (value: string | null) => (value ? dateTimeFormat.format(new Date(value)) : 'Nunca');
 const plural = (n: number, one: string, many: string) => `${n.toLocaleString('es-PY')} ${n === 1 ? one : many}`;
 
+// Colores de estado (no de marca): rojo = sin respaldar, ámbar = antiguo, verde = al día. El texto del CTA se elige por contraste.
+const levelTone = {
+  never: { accent: '#d92d20', ink: 'text-white' },
+  pending: { accent: '#d92d20', ink: 'text-white' },
+  stale: { accent: '#e08a00', ink: 'text-navy' },
+  ok: { accent: '#2f8f5b', ink: 'text-white' },
+  loading: { accent: '#6b7a90', ink: 'text-white' },
+} as const;
+
+const mutedText = 'text-ink-2 dark:text-[#9fb2d1]';
+
 function describeAge(days: number | null): string {
   if (days === null) return 'sin respaldo';
   if (days === 0) return 'hoy';
   return `hace ${plural(days, 'día', 'días')}`;
 }
 
-function describeReminder(health: BackupHealth): { title: string; text: string } {
+export function describeReminder(health: BackupHealth): { title: string; text: string } {
   switch (health.level) {
     case 'never':
       return { title: 'Todavía no hay ningún respaldo', text: 'Descarga uno ahora: si falla el disco o la base se daña, la información cargada no se puede recuperar.' };
@@ -173,114 +185,139 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
   const backupReady = status !== null && missingFiles === 0;
 
   const reminder = health ? describeReminder(health) : null;
+  const level = health?.level ?? 'loading';
+  const tone = levelTone[level];
+  const ctaClass = cn('h-11 px-5 font-extrabold bg-(--accent) hover:brightness-110 hover:bg-(--accent)', tone.ink);
   const downloadButton = backupReady ? (
-    <a
-      className="database-backup-cta"
-      href="/api/system/backup"
-      download
-      onClick={() => { window.setTimeout(() => void refreshHealth().catch(() => undefined), 2500); }}
+    <Button
+      asChild
+      className={ctaClass}
     >
-      Descargar respaldo completo
-    </a>
+      <a
+        href="/api/system/backup"
+        download
+        onClick={() => { window.setTimeout(() => void refreshHealth().catch(() => undefined), 2500); }}
+      >
+        Descargar respaldo completo
+      </a>
+    </Button>
   ) : (
-    <button className="database-backup-cta" type="button" disabled>
+    <Button className={ctaClass} disabled>
       Completa los originales para respaldar
-    </button>
+    </Button>
   );
+  const attention = health && (health.changedSinceBackup || health.loadsSinceBackup > 0);
+  const busy = restoring || backfilling;
 
   return (
-    <section className={`database-recovery level-${health?.level ?? 'loading'}`} aria-label="Respaldo y recuperación de la base">
-      <div className="backup-banner" role="status">
-        <span className="backup-banner-icon" aria-hidden="true"><HugeiconsIcon icon={health?.level === 'ok' ? Tick02Icon : Alert02Icon} size={22} strokeWidth={2.5} aria-hidden="true" /></span>
-        <div className="backup-banner-copy">
-          <span className="detail-label">Respaldo y recuperación</span>
-          <h3>{reminder?.title ?? 'Consultando el estado del respaldo…'}</h3>
-          {reminder ? <p>{reminder.text}</p> : null}
+    <section
+      data-level={level}
+      style={{ '--accent': tone.accent } as React.CSSProperties}
+      className="grid gap-4 rounded-2xl border border-l-[6px] border-navy/10 border-l-(--accent) bg-white p-5 shadow-md dark:border-sky/20 dark:border-l-(--accent) dark:bg-panel"
+      aria-label="Respaldo y recuperación de la base"
+    >
+      <div role="status" className="flex flex-wrap items-center gap-x-5 gap-y-4 rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] px-5 py-4">
+        <div aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-full bg-(--accent) text-white">
+          {level === 'ok' ? <Check className="size-6" strokeWidth={2.75} /> : <TriangleAlert className="size-6" strokeWidth={2.5} />}
+        </div>
+        <div className="min-w-0 flex-[1_1_18rem]">
+          <div className="text-[0.7rem] font-extrabold uppercase tracking-[0.14em] text-ink-2 dark:text-[#8fa5c7]">Respaldo y recuperación</div>
+          <h3 className="my-1 text-xl font-bold text-navy dark:text-white">{reminder?.title ?? 'Consultando el estado del respaldo…'}</h3>
+          {reminder ? <div className="max-w-3xl text-sm leading-relaxed text-navy dark:text-[#d6e2f5]">{reminder.text}</div> : null}
         </div>
         {downloadButton}
       </div>
 
       {health ? (
-        <dl className="backup-stats">
-          <div>
-            <dt>Último respaldo</dt>
-            <dd>{formatStamp(health.lastBackupAt)}</dd>
-            <small>{describeAge(health.daysSinceBackup)}</small>
-          </div>
-          <div>
-            <dt>Última carga aplicada</dt>
-            <dd>{health.lastLoadAt ? formatStamp(health.lastLoadAt) : 'Sin cargas'}</dd>
-            <small>importación más reciente</small>
-          </div>
-          <div className={health.changedSinceBackup || health.loadsSinceBackup > 0 ? 'attention' : undefined}>
-            <dt>Último cambio de datos</dt>
-            <dd>{health.lastChangeAt ? formatStamp(health.lastChangeAt) : 'Sin cambios'}</dd>
-            <small>{health.changedSinceBackup || health.loadsSinceBackup > 0 ? 'posterior al último respaldo' : 'ya incluido en el respaldo'}</small>
-          </div>
-          <div className={missingFiles > 0 ? 'attention' : undefined}>
-            <dt>Originales en SQLite</dt>
-            <dd>{status ? `${status.embeddedFiles.toLocaleString('es-PY')} / ${status.totalFiles.toLocaleString('es-PY')}` : '—'}</dd>
-            <small>{status ? `${formatBytes(status.embeddedBytes)} de ${formatBytes(status.totalBytes)}` : 'consultando…'}</small>
-          </div>
+        <dl className="m-0 grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-3">
+          <Stat label="Último respaldo" value={formatStamp(health.lastBackupAt)} note={describeAge(health.daysSinceBackup)} />
+          <Stat label="Última carga aplicada" value={health.lastLoadAt ? formatStamp(health.lastLoadAt) : 'Sin cargas'} note="importación más reciente" />
+          <Stat
+            attention={Boolean(attention)}
+            label="Último cambio de datos"
+            value={health.lastChangeAt ? formatStamp(health.lastChangeAt) : 'Sin cambios'}
+            note={attention ? 'posterior al último respaldo' : 'ya incluido en el respaldo'}
+          />
+          <Stat
+            attention={missingFiles > 0}
+            label="Originales en SQLite"
+            value={status ? `${status.embeddedFiles.toLocaleString('es-PY')} / ${status.totalFiles.toLocaleString('es-PY')}` : '—'}
+            note={status ? `${formatBytes(status.embeddedBytes)} de ${formatBytes(status.totalBytes)}` : 'consultando…'}
+          />
         </dl>
       ) : null}
 
-      <div className="database-recovery-body">
-        <div className="database-recovery-controls">
-          <div className="database-recovery-actions">
-            {missingFiles > 0 ? (
-              <button
-                className="secondary-button"
-                type="button"
-                disabled={backfilling || loadingStatus}
-                onClick={() => void backfillOriginals()}
-              >
-                {backfilling ? `${backfillJob?.progress ?? 0}% · ${backfillJob?.stage ?? 'Preparando…'}` : 'Incluir originales en SQLite'}
-              </button>
-            ) : null}
-            <button
-              className="database-restore-picker"
-              type="button"
-              disabled={restoring || backfilling}
-              onClick={() => restoreInput.current?.click()}
+      <div className="grid gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2 max-[720px]:[&>*]:w-full">
+          {missingFiles > 0 ? (
+            <Button variant="outline" disabled={backfilling || loadingStatus} onClick={() => void backfillOriginals()}>
+              {backfilling ? `${backfillJob?.progress ?? 0}% · ${backfillJob?.stage ?? 'Preparando…'}` : 'Incluir originales en SQLite'}
+            </Button>
+          ) : null}
+          <Button variant="outline" disabled={busy} onClick={() => restoreInput.current?.click()}>
+            {restoring ? 'Validando y restaurando…' : 'Restaurar respaldo SQLite'}
+          </Button>
+          {onClearImports ? (
+            <Button
+              variant="outline"
+              className="border-brand/60 bg-[#fff0e6] text-[#8f3b00] hover:bg-[#ffe4d2] dark:border-brand/50 dark:bg-brand/10 dark:text-brand dark:hover:bg-brand/20"
+              onClick={onClearImports}
+              disabled={clearingImports || busy}
+              aria-busy={clearingImports}
+              title="Quita todas las cargas importadas y sus datos derivados. Los originales quedan en el archivo recuperable."
             >
-              {restoring ? 'Validando y restaurando…' : 'Restaurar respaldo SQLite'}
-            </button>
-            {onClearImports ? (
-              <button
-                className="global-clear-button"
-                type="button"
-                onClick={onClearImports}
-                disabled={clearingImports || restoring || backfilling}
-                aria-busy={clearingImports}
-                title="Quita todas las cargas importadas y sus datos derivados. Los originales quedan en el archivo recuperable."
-              >
-                {clearingImports ? 'Limpiando…' : 'Limpiar cargas'}
-              </button>
-            ) : null}
-          </div>
-          <input
-            ref={restoreInput}
-            className="database-restore-file"
-            type="file"
-            accept=".sqlite,.db,application/vnd.sqlite3,application/octet-stream"
-            disabled={restoring || backfilling}
-            onChange={(event) => {
-              const file = event.currentTarget.files?.[0];
-              event.currentTarget.value = '';
-              void restoreBackup(file);
-            }}
-          />
-          <small>Máximo 2 GB. La restauración sustituye toda la base y reinicia la Suite.</small>
+              {clearingImports ? 'Limpiando…' : 'Limpiar cargas'}
+            </Button>
+          ) : null}
         </div>
+        <input
+          ref={restoreInput}
+          className="hidden"
+          type="file"
+          accept=".sqlite,.db,application/vnd.sqlite3,application/octet-stream"
+          disabled={busy}
+          onChange={(event) => {
+            const file = event.currentTarget.files?.[0];
+            event.currentTarget.value = '';
+            void restoreBackup(file);
+          }}
+        />
+        <div className={cn('text-right text-xs max-[720px]:text-left', mutedText)}>Máximo 2 GB. La restauración sustituye toda la base y reinicia la Suite.</div>
       </div>
 
       {backfilling && backfillJob ? (
-        <progress className="database-recovery-progress" max={100} value={backfillJob.progress} aria-label="Progreso de archivo" />
+        <progress className="h-2 w-full accent-sky" max={100} value={backfillJob.progress} aria-label="Progreso de archivo" />
       ) : null}
-      {clearMessage ? <p className={`database-recovery-message ${clearMessage.tone}`} role={clearMessage.tone === 'error' ? 'alert' : 'status'}>{clearMessage.text}</p> : null}
-      {message ? <p className={`database-recovery-message ${message.tone}`} role={message.tone === 'error' ? 'alert' : 'status'}>{message.text}</p> : null}
+      {clearMessage ? <Message tone={clearMessage.tone} text={clearMessage.text} /> : null}
+      {message ? <Message tone={message.tone} text={message.text} /> : null}
     </section>
+  );
+}
+
+// ponytail: <div>/<dt>/<dd> y no <p>/<span>/<small>: el CSS heredado del tema claro (theme/01-mantenimiento.css) les pone color con más especificidad.
+function Stat({ label, value, note, attention = false }: { label: string; value: string; note: string; attention?: boolean }) {
+  return (
+    <div className={cn('grid gap-1 rounded-xl border px-4 py-3', attention ? 'border-[#d92d20]' : 'border-navy/10 dark:border-sky/20')}>
+      <dt className="m-0 text-[0.7rem] font-extrabold uppercase tracking-wider text-ink-2 dark:text-[#9fb2d1]">{label}</dt>
+      <dd className="m-0 text-lg font-extrabold text-navy dark:text-white">{value}</dd>
+      <div className={cn('text-[0.7rem]', mutedText)}>{note}</div>
+    </div>
+  );
+}
+
+function Message({ tone, text }: { tone: 'success' | 'error'; text: string }) {
+  return (
+    <div
+      role={tone === 'error' ? 'alert' : 'status'}
+      className={cn(
+        'rounded-xl border px-4 py-3 text-sm',
+        tone === 'error'
+          ? 'border-[#d92d20]/40 bg-[#d92d20]/10 text-[#912018] dark:text-[#ffb4ab]'
+          : 'border-[#2f8f5b]/40 bg-[#2f8f5b]/10 text-[#14532d] dark:text-[#9be3b9]',
+      )}
+    >
+      {text}
+    </div>
   );
 }
 

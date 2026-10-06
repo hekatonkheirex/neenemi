@@ -5,7 +5,7 @@ import { cn } from '../cn';
 
 /** Botón shadcn/ui con los tokens de marca: default = CTA naranja, outline/ghost = acciones secundarias. */
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-colors duration-150 ' +
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl no-underline text-sm font-semibold transition-colors duration-150 ' +
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky disabled:pointer-events-none disabled:opacity-50 ' +
     '[&_svg]:size-4 [&_svg]:shrink-0',
   {

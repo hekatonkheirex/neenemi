@@ -52,7 +52,7 @@ describe('Inicio', () => {
     expect(markup.match(/Limpiar cargas/g)).toHaveLength(1);
     expect(markup).not.toContain('Base compartida');
     const clear = markup.indexOf('Limpiar cargas');
-    expect(clear).toBeGreaterThan(markup.indexOf('database-recovery'));
+    expect(clear).toBeGreaterThan(markup.indexOf('aria-label="Respaldo y recuperación de la base"'));
     expect(clear).toBeLessThan(markup.indexOf('Archivos y filas de origen'));
     expect(markup.slice(0, markup.indexOf('</header>'))).not.toContain('Limpiar cargas');
   });
