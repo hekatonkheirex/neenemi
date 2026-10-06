@@ -73,10 +73,33 @@ describe('normalizacion de botones de carga y exportacion', () => {
     expect(offenders).toEqual([]);
   });
 
-  it('los botones y enlaces que dicen Exportar o Descargar usan ExportButton / export-button', () => {
+  it('los botones que dicen Exportar o Descargar usan ExportButton', () => {
     const offenders = files.flatMap((file) => {
       const text = readFileSync(file, 'utf8');
-      return [...text.matchAll(/<button[^>]*className="(?:primary|secondary)-button"[^>]*>[^<]*(?:Exportar|Descargar)/g)].map(() => file);
+      return [...text.matchAll(/<button\b((?:=>|[^>])*)>\s*([^<]*)/g)]
+        .filter(([, attrs, label]) => /className="[^"]*(?:primary|secondary)-button/.test(attrs) && /Exportar|Descargar/.test(label))
+        .map(() => file);
+    });
+    expect(offenders).toEqual([]);
+  });
+
+  it('los enlaces con download usan export-button (o son enlaces de texto / CTA propio)', () => {
+    const allowed = /export-button|text-button|database-backup-cta/;
+    const offenders = files.flatMap((file) => {
+      const text = readFileSync(file, 'utf8');
+      return [...text.matchAll(/<a\b((?:=>|[^>])*)>/g)]
+        .filter(([, attrs]) => /\bdownload\b/.test(attrs) && /className=/.test(attrs) && !allowed.test(attrs))
+        .map(() => file);
+    });
+    expect(offenders).toEqual([]);
+  });
+
+  it('los botones que abren un dialogo de carga usan UploadTriggerButton', () => {
+    const offenders = files.flatMap((file) => {
+      const text = readFileSync(file, 'utf8');
+      return [...text.matchAll(/<button\b((?:=>|[^>])*)>\s*([^<]*)/g)]
+        .filter(([, attrs, label]) => /className="[^"]*secondary-button/.test(attrs) && !/upload-button/.test(attrs) && /^\{?[^}]*\b(?:Importar|Cargar|Seleccionar) (?:contrato|informe|archivo|PDF|XLSX)/.test(label))
+        .map(() => file);
     });
     expect(offenders).toEqual([]);
   });

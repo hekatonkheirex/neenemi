@@ -22,7 +22,7 @@ import type {
   SalesCatalogs,
 } from './types';
 import { readJson, toErrorMessage } from '../../core/http';
-import { ExportButton } from '../../core/ActionButtons';
+import { ExportButton, UploadTriggerButton } from '../../core/ActionButtons';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const usdNumberFormat = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -633,9 +633,9 @@ export default function ProformasModule() {
         </div>
         <div className="sales-actions">
           <button className="secondary-button" type="button" onClick={startNew}>Nueva</button>
-          <button className="secondary-button" type="button" onClick={() => setReportImportOpen(true)}>Importar informe PDF</button>
+          <UploadTriggerButton onClick={() => setReportImportOpen(true)}>Importar informe PDF</UploadTriggerButton>
           <button className="secondary-button" type="button" onClick={() => setSalesCatalogImportOpen(true)}>Actualizar catálogos</button>
-          <button className="secondary-button" type="button" onClick={() => setContractImportOpen(true)}>Importar contrato</button>
+          <UploadTriggerButton onClick={() => setContractImportOpen(true)}>Importar contrato</UploadTriggerButton>
           <ExportButton onClick={() => void handleExport()} disabled={!savedProforma}>Exportar XLSX</ExportButton>
         </div>
       </section>
@@ -824,7 +824,7 @@ export default function ProformasModule() {
                   {openContract.meta.sourceBatchId && openContract.meta.sourceFileId ? <a className="text-button" href={`/api/imports/${encodeURIComponent(openContract.meta.sourceBatchId)}/files/${encodeURIComponent(openContract.meta.sourceFileId)}`} download={openContract.meta.fileName}>Descargar original</a> : null}
                 </div>
               ) : null}
-              <button className="secondary-button full-button" type="button" onClick={() => setContractImportOpen(true)}>{openContract ? 'Reemplazar contrato' : 'Importar contrato'}</button>
+              <UploadTriggerButton className="full-button" onClick={() => setContractImportOpen(true)}>{openContract ? 'Reemplazar contrato' : 'Importar contrato'}</UploadTriggerButton>
             </section>
           ) : null}
 

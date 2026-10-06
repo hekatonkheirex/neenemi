@@ -67,3 +67,15 @@ export function ExportButton({ busy = false, busyLabel = 'Exportando…', classN
     </button>
   );
 }
+
+export type UploadTriggerProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'children'> & { children: ReactNode };
+
+/** Boton "cargar" que no abre el selector de archivos: abre un dialogo con su propia zona de carga. */
+export function UploadTriggerButton({ className = '', children, ...rest }: UploadTriggerProps) {
+  return (
+    <button {...rest} type="button" className={`secondary-button upload-button${className ? ` ${className}` : ''}`}>
+      <UploadIcon />
+      <span>{children}</span>
+    </button>
+  );
+}

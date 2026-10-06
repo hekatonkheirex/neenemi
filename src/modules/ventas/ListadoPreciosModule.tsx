@@ -12,7 +12,7 @@ import { getSharedJson, readJson, toErrorMessage } from '../../core/http';
 import { memoizeString } from '../../core/memoize';
 import PaginationControls from '../../core/PaginationControls';
 import { usePagedList } from '../../core/usePagedList';
-import { UploadButton, ExportButton } from '../../core/ActionButtons';
+import { DownloadIcon, ExportButton, UploadButton } from '../../core/ActionButtons';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const decimalFormat = new Intl.NumberFormat('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
@@ -490,10 +490,11 @@ export default function ListadoPreciosModule() {
         <span>{error || (savingSelection ? 'Guardando selección…' : message || (loading || legacyCatalogLoading ? 'Consultando catálogo…' : `${numberFormat.format(displayedItems.length)} precios y ${numberFormat.format(displayedServiceItems.length)} opciones visibles${selectedFamily?.exchangeRate ? ` · T.C. ${numberFormat.format(selectedFamily.exchangeRate)} de ${selectedFamily.familyName}` : ''}`))}</span>
         {sourceFile ? (
           <a
-            className="secondary-button catalog-source-link"
+            className="secondary-button export-button catalog-source-link"
             href={`/api/imports/${encodeURIComponent(sourceFile.batchId)}/files/${encodeURIComponent(sourceFile.fileId)}`}
             download={sourceFile.fileName}
           >
+            <DownloadIcon />
             Descargar original
           </a>
         ) : null}
