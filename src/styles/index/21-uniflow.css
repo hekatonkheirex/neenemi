@@ -63,9 +63,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
 }
 
 @media (max-width: 1050px) {
-  .consumables-filter-bar {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 
   .legacy-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -84,26 +81,12 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
     grid-template-columns: 1fr;
   }
 
-
-  .consumables-layout {
-    grid-template-columns: 1fr;
-  }
-
   .service-layout {
     grid-template-columns: 1fr;
-  }
-
-  .operations-sidebar {
-    position: static;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 720px) {
-
-  .consumables-filter-bar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 
   .legacy-summary,
   .legacy-analysis-toolbar,
@@ -124,46 +107,12 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
     grid-template-columns: 1fr;
   }
 
-  .consumables-filter-bar .secondary-button {
-    grid-column: 1 / -1;
-  }
-
-  .operations-sidebar {
-    grid-template-columns: 1fr;
-  }
-
-
-  .consumables-controls {
-    grid-template-columns: 1fr;
-  }
-
-  .source-data-heading,
-  .source-data-bundle-heading,
-  .source-data-bundle-actions {
-    display: grid;
-  }
-
-  .source-data-note,
-  .source-data-bundle-count {
-    justify-items: start;
-    text-align: left;
-  }
-
-  .source-data-panel {
-    padding: 1rem;
-  }
-
   .service-controls {
     grid-template-columns: 1fr;
   }
 
   .form-actions {
     justify-content: stretch;
-  }
-
-  .form-actions .primary-button,
-  .form-actions .secondary-button {
-    flex: 1;
   }
 
   .consumables-analytics-grid {

@@ -701,20 +701,6 @@ li::before {
 }
 
 /* Con wrap, las acciones pasan debajo del título cuando no caben (960 px: Viáticos se salía 17 px). */
-.catalog-header {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  align-items: end;
-  justify-content: space-between;
-  margin-bottom: 2.2rem;
-}
-
-.catalog-header h1 {
-  max-width: 12ch;
-  margin-bottom: 1rem;
-  font-size: clamp(2.25rem, 3.6vw, 3.25rem);
-}
 
 .catalog-header-actions {
   display: flex;
@@ -725,33 +711,6 @@ li::before {
 }
 
 /* Las acciones de la cabecera pasan a otra línea en vez de empujar la página fuera de la ventana. */
-
-.catalog-header-actions > :where(.primary-button, .secondary-button) {
-  margin: 0;
-}
-
-.primary-button {
-  min-width: 9.5rem;
-  padding: 0.78rem 1rem;
-  border: 1px solid rgba(126, 176, 255, 0.5);
-  border-radius: var(--ds-radius-xl);
-  color: #eff5ff;
-  /* #eff5ff sobre el extremo claro del degradado antes daba 3,87:1 (12 px negrita); ahora >= 4,6:1. */
-  background: linear-gradient(135deg, #3466cf, #2347a3);
-  box-shadow: 0 0.7rem 1.8rem rgba(34, 83, 181, 0.22);
-  font-size: 0.78rem;
-  font-weight: 800;
-}
-
-.primary-button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #3768d6, #2650ab);
-}
-
-.primary-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-  box-shadow: none;
-}
 
 .catalog-status-row {
   display: flex;

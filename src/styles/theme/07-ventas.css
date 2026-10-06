@@ -20,7 +20,6 @@ html[data-theme='light'] .status-dot {
   background: var(--ds-subtle);
 }
 
-html[data-theme='light'] .sales-status,
 html[data-theme='light'] .catalog-status-row {
   color: var(--ds-muted);
 }

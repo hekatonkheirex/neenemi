@@ -288,6 +288,9 @@ Los filtros de cartera del Discontinuador se distribuyen en filas cuando el espa
 disponible es menor, sin recortar las opciones ni el botón para limpiar filtros.
 En el detalle de un cliente, cada contrato permite contraer o mostrar sus equipos
 por separado desde el encabezado; el resumen y la exportación del cliente no cambian.
+Analítica de consumibles usa los componentes compartidos del rediseño en el encabezado, los filtros, el
+resumen, los registros normalizados, las importaciones y la pestaña Datos; los paneles de análisis y las pestañas
+T03, T06, GPR-53, contratos, repuestos, ranking y equipos conservan el diseño anterior hasta la segunda entrega.
 Proformas usa los componentes compartidos del rediseño en ambos temas: cabecera, líneas, mano de obra,
 resumen e historial. Los tres paneles de importación (contrato, catálogos e informe PDF) son diálogos nativos;
 el resumen es una barra fija inferior bajo 1500 px y pasa a la columna lateral desde ese ancho.

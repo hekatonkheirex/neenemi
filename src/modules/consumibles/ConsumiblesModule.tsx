@@ -56,8 +56,33 @@ import {
 } from './LegacyAnalysisPanels';
 import { readJson, toErrorMessage } from '../../core/http';
 import { UploadButton } from '../../core/ActionButtons';
+import { cn } from '../../core/cn';
+import { PageHeader } from '../../core/ui/page-header';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Button } from '../../core/ui/button';
+import { Input } from '../../core/ui/input';
+import { Badge } from '../../core/ui/badge';
+import { StatusLine } from '../../core/ui/status-line';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
 
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
+
+const cardClass = 'min-w-0 grid-cols-1 [overflow-wrap:anywhere]';
+const fieldClass = 'grid min-w-0 gap-1.5 text-xs font-semibold text-navy dark:text-white';
+const selectClass = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky disabled:opacity-50 dark:border-sky/30 dark:bg-navy/50 dark:text-white';
+const subCardClass = 'min-w-0 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30';
+const spreadsheetAccept = '.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+type DirectSource = { kind: ConsumablesSourceType; eyebrow: string; title: string; origin: string; note: string };
+
+// Las cinco fuentes directas del flujo; el texto de cada tarjeta es el mismo que mostraba el diseño anterior.
+const directSources: readonly DirectSource[] = [
+  { kind: 'consumibles', eyebrow: 'Fuente principal', title: 'Detalle de consumibles', origin: 'Superset > SGS Cliente 360 > Consumibles > Consumibles, Detalles', note: 'Se filtran papel y modelos fuera de las familias analizadas.' },
+  { kind: 'repuestos', eyebrow: 'Fuente complementaria', title: 'Detalle de repuestos', origin: 'Superset > SGS Cliente 360 > Repuestos > Repuestos, Detalles', note: 'También puede producir consumibles migrados, como rodillos y cilindros.' },
+  { kind: 'uso-repuestos', eyebrow: 'Fuente histórica', title: 'Uso de repuestos', origin: 'Superset > SGS Uso de Repuestos > Consolidados y selectores > Detalle de Repuestos', note: `Totales en PYG; se muestran en guaraníes usando la tasa referencial ${PYG_USD_RATE_DATE}.` },
+  { kind: 'salida-consumibles', eyebrow: 'Despachos', title: 'Salida de consumibles', origin: 'SGS > REPORTES > Consumibles > Rango de fechas', note: 'Importa remisiones de tóner, cilindros y rodillos como entregas separadas.' },
+  { kind: 'salida-repuestos', eyebrow: 'Despachos', title: 'Salida de repuestos', origin: 'SGS > REPORTES > Consumibles > Rango de fechas', note: 'Rodillos y cilindros se clasifican como consumibles; las demás piezas quedan como repuestos.' },
+];
 
 type ImportResponse = ConsumablesImportResult & {
   duplicate: boolean;
@@ -480,34 +505,31 @@ export default function ConsumiblesModule() {
   }
 
   return (
-    <div className="page-content operations-page">
-      <section className="catalog-header">
-        <div>
-          <div className="eyebrow">ANÁLISIS / CONSUMIBLES</div>
-          <h1>Consumo real</h1>
-          <p className="lead">Carga los detalles XLSX, crúzalos con la base instalada y consulta consumibles y repuestos sobre la misma SQLite de la suite.</p>
+    <div className="page-content operations-page grid min-w-0 grid-cols-1 gap-6 [overflow-wrap:anywhere]">
+      <PageHeader
+        eyebrow="SERVICIO TÉCNICO / CONSUMIBLES"
+        title="Consumo real"
+        lead="Carga los detalles XLSX, crúzalos con la base instalada y consulta consumibles y repuestos sobre la misma SQLite de la suite."
+        actions={<Button variant="outline" onClick={() => void refresh()} disabled={loading}>{loading ? 'Actualizando…' : 'Actualizar datos'}</Button>}
+      />
+
+      <StatusLine state={error ? 'error' : loading ? 'pending' : 'ready'}>{error || message || (summary?.records ? `${integerFormat.format(summary.records)} líneas normalizadas` : 'Importa un XLSX de detalle para comenzar.')}</StatusLine>
+
+      <Card className={cardClass} aria-label="Filtros globales del análisis">
+        <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,11rem),1fr))] items-end gap-4">
+          <label className={fieldClass}>Sector<select className={selectClass} value={filters.sector ?? ''} onChange={(event) => updateFilter(setFilters, 'sector', event.target.value)}><option value="">Todos</option><option value="Publico">Público</option><option value="Privado">Privado</option></select></label>
+          <label className={fieldClass}>Departamento<select className={selectClass} value={filters.department ?? ''} onChange={(event) => updateFilter(setFilters, 'department', event.target.value)}><option value="">Todos</option><option value="Strategic">Strategic</option><option value="Commercial">Commercial</option></select></label>
+          <label className={fieldClass}>Tipo de contrato<select className={selectClass} value={filters.contractType ?? ''} onChange={(event) => updateFilter(setFilters, 'contractType', event.target.value)}><option value="">Todos</option><option value="Alquiler">Alquiler</option><option value="Leasing">Leasing</option><option value="Mantenimiento">Mantenimiento</option></select></label>
+          <label className={fieldClass}>Desde<Input type="month" value={filters.dateFrom ?? ''} onChange={(event) => updateFilter(setFilters, 'dateFrom', event.target.value)} /></label>
+          <label className={fieldClass}>Hasta<Input type="month" value={filters.dateTo ?? ''} onChange={(event) => updateFilter(setFilters, 'dateTo', event.target.value)} /></label>
+          <Button variant="outline" onClick={() => setFilters({})} disabled={Object.values(filters).every((value) => !value)}>Limpiar filtros</Button>
         </div>
-        <button className="secondary-button" type="button" onClick={() => void refresh()} disabled={loading}>{loading ? 'Actualizando…' : 'Actualizar datos'}</button>
-      </section>
+      </Card>
 
-      <section className="sales-status" aria-live="polite">
-        <span className={`status-dot ${error ? 'error' : loading ? 'pending' : 'ready'}`} />
-        <span>{error || message || (summary?.records ? `${integerFormat.format(summary.records)} líneas normalizadas` : 'Importa un XLSX de detalle para comenzar.')}</span>
-      </section>
-
-      <section className="consumables-filter-bar" aria-label="Filtros globales del análisis">
-        <label className="compact-field"><span>Sector</span><select value={filters.sector ?? ''} onChange={(event) => updateFilter(setFilters, 'sector', event.target.value)}><option value="">Todos</option><option value="Publico">Público</option><option value="Privado">Privado</option></select></label>
-        <label className="compact-field"><span>Departamento</span><select value={filters.department ?? ''} onChange={(event) => updateFilter(setFilters, 'department', event.target.value)}><option value="">Todos</option><option value="Strategic">Strategic</option><option value="Commercial">Commercial</option></select></label>
-        <label className="compact-field"><span>Tipo de contrato</span><select value={filters.contractType ?? ''} onChange={(event) => updateFilter(setFilters, 'contractType', event.target.value)}><option value="">Todos</option><option value="Alquiler">Alquiler</option><option value="Leasing">Leasing</option><option value="Mantenimiento">Mantenimiento</option></select></label>
-        <label className="compact-field"><span>Desde</span><input type="month" value={filters.dateFrom ?? ''} onChange={(event) => updateFilter(setFilters, 'dateFrom', event.target.value)} /></label>
-        <label className="compact-field"><span>Hasta</span><input type="month" value={filters.dateTo ?? ''} onChange={(event) => updateFilter(setFilters, 'dateTo', event.target.value)} /></label>
-        <button className="secondary-button" type="button" onClick={() => setFilters({})} disabled={Object.values(filters).every((value) => !value)}>Limpiar filtros</button>
-      </section>
-
-      <section className="summary-grid operations-summary" aria-label="Resumen de consumibles">
-        <div className="summary-card accent"><span className="summary-value">{integerFormat.format(summary?.records ?? 0)}</span><span className="summary-label">líneas normalizadas</span></div>
-        <div className="summary-card"><span className="summary-value">{formatPyg(summary?.totalCostUsd ?? 0)}</span><span className="summary-label">costo acumulado</span></div>
-        <div className="summary-card"><span className="summary-value">{integerFormat.format(summary?.equipment ?? 0)}</span><span className="summary-label">equipos con consumo</span></div>
+      <section className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-3" aria-label="Resumen de consumibles">
+        <SummaryStat value={integerFormat.format(summary?.records ?? 0)} label="líneas normalizadas" accent />
+        <SummaryStat value={formatPyg(summary?.totalCostUsd ?? 0)} label="costo acumulado" />
+        <SummaryStat value={integerFormat.format(summary?.equipment ?? 0)} label="equipos con consumo" />
       </section>
 
       <AnimatedTabs ariaLabel="Vistas de Consumibles" tabs={consumablesTabs} active={activeTab} onChange={setActiveTab} />
@@ -536,34 +558,46 @@ export default function ConsumiblesModule() {
           onPageSizeChange={(size) => { setOutputPageSize(size); setOutputPage(1); }}
         /> : null}
 
-        <section className="consumables-layout">
-        <div className="consumables-main">
-          <section className="sales-card">
-            <div className="card-heading">
-              <div><div className="eyebrow">REGISTROS NORMALIZADOS</div><h2>Consumibles y repuestos</h2></div>
-              <span className="muted-note">{summary?.firstMonth && summary.lastMonth ? `${summary.firstMonth} → ${summary.lastMonth}` : 'Sin período'}</span>
+        {/* Bajo 1500 px la columna lateral de importaciones baja bajo la tabla. */}
+        <section className="grid min-w-0 items-start gap-4 min-[1500px]:grid-cols-[minmax(0,1fr)_22rem]">
+          <Card className={cardClass}>
+            <CardHeader eyebrow="Registros normalizados" title="Consumibles y repuestos" aside={<Badge>{summary?.firstMonth && summary.lastMonth ? `${summary.firstMonth} → ${summary.lastMonth}` : 'Sin período'}</Badge>} />
+            <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] items-end gap-4">
+              <label className={fieldClass}>Buscar<Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cliente, serie, código o dato de origen…" /></label>
+              <label className={fieldClass}>Tipo de registro<select className={selectClass} value={kind} onChange={(event) => setKind(event.target.value as ConsumablesRecordKind | '')}><option value="">Todos</option><option value="consumable">Consumibles</option><option value="part">Repuestos</option></select></label>
             </div>
-            <div className="consumables-controls">
-              <label className="search-field"><span>Buscar</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cliente, serie, código o dato de origen…" /></label>
-              <label className="compact-field"><span>Tipo de registro</span><select value={kind} onChange={(event) => setKind(event.target.value as ConsumablesRecordKind | '')}><option value="">Todos</option><option value="consumable">Consumibles</option><option value="part">Repuestos</option></select></label>
-            </div>
-            <div className="catalog-table-wrap">
-              <table className="catalog-table consumables-table">
-                <thead><tr><th>Fecha</th><th>Cliente / equipo</th><th>Serie</th><th>Parte</th><th>Tipo</th><th className="align-right">Cantidad</th><th className="align-right">Costo PYG</th></tr></thead>
-                <tbody>
-                  {(recordPageData?.items ?? []).map((record) => <tr key={record.id}>
-                    <td>{record.recordedAt || record.month || 'Sin fecha'}<SourceLocationLabel fileName={record.sourceFileName} sheetName={record.sourceSheetName} rowNumber={record.sourceRowNumber} />{record.sourceType ? <small className="table-secondary-text">{formatConsumablesSourceType(record.sourceType)}</small> : null}{formatConsumablesOperationalSummary(record.sourceOperational).map((detail) => <small className="table-secondary-text" key={`operational-date-${detail}`}>{detail}</small>)}<SourceDetails details={record.sourceDetails} /></td>
-                    <td><span className="code-cell">{record.modelLabel}</span><small className="table-secondary-text">{record.customerName}{formatContractLabel(record.contractReference, record.orderReference)}</small>{formatContractDetails(record.contractReference, record.orderReference, record.division, record.contractCommercialArea).map((detail) => <small className="table-secondary-text" key={detail}>{detail}</small>)}{formatCustomerClassification(record.customerType, record.commercialArea) ? <small className="table-secondary-text">{formatCustomerClassification(record.customerType, record.commercialArea)}</small> : null}{record.sourceCustomerName || record.sourceOrderReference ? <small className="table-secondary-text">Origen: {record.sourceCustomerName || 'sin cliente'}{record.sourceOrderReference ? ` · OV ${record.sourceOrderReference}` : ''}</small> : null}{formatConsumablesOperationalNarrative(record.sourceOperational).map((detail) => <small className="table-secondary-text" key={`operational-client-${detail}`}>{detail}</small>)}</td>
-                    <td>{record.serialNumber}</td>
-                    <td><span className="code-cell">{record.partCode}</span><small className="table-secondary-text">{record.description || 'Sin descripción'}</small>{record.sourceUnitPricePyg !== null || record.sourceTotalPyg !== null ? <small className="table-secondary-text">Origen: {record.sourceUnitPricePyg !== null ? `₲ ${integerFormat.format(record.sourceUnitPricePyg)} unit.` : ''}{record.sourceTotalPyg !== null ? ` · ₲ ${integerFormat.format(record.sourceTotalPyg)} total` : ''}</small> : null}</td>
-                    <td><span className={`badge ${record.recordKind === 'consumable' ? 'ok' : 'warning'}`}>{record.recordKind === 'consumable' ? 'Consumible' : 'Repuesto'}</span><small className="table-secondary-text">{record.family} · {record.classification}</small></td>
-                    <td className="align-right">{numberFormat(record.quantity)}</td>
-                    <td className="align-right price-cell">{formatPyg(record.costUsd)}</td>
-                  </tr>)}
-                  {(recordPageData?.items.length ?? 0) === 0 && <tr><td colSpan={7} className="empty-cell">{recordsLoading || (recordPageData === null && loading) ? 'Cargando registros…' : error && recordPageData === null ? 'No se pudieron cargar los registros.' : recordPageData?.total || summary?.records ? 'No hay registros para el filtro seleccionado.' : 'Importa un detalle XLSX para ver datos aquí.'}</td></tr>}
-                </tbody>
-              </table>
-            </div>
+            <Table className="min-w-[56rem] [overflow-wrap:normal]">
+              <TableHeader><TableRow><TableHead>Fecha</TableHead><TableHead>Cliente / equipo</TableHead><TableHead>Serie</TableHead><TableHead>Parte</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Cantidad</TableHead><TableHead className="text-right">Costo PYG</TableHead></TableRow></TableHeader>
+              <TableBody>
+                {(recordPageData?.items ?? []).map((record) => <TableRow key={record.id}>
+                  <TableCell className="min-w-[9rem]">
+                    <div className="whitespace-nowrap">{record.recordedAt || record.month || 'Sin fecha'}</div>
+                    <SourceLocationLabel fileName={record.sourceFileName} sheetName={record.sourceSheetName} rowNumber={record.sourceRowNumber} />
+                    {record.sourceType ? <Muted className="mt-0.5">{formatConsumablesSourceType(record.sourceType)}</Muted> : null}
+                    {formatConsumablesOperationalSummary(record.sourceOperational).map((detail) => <Muted className="mt-0.5" key={`operational-date-${detail}`}>{detail}</Muted>)}
+                    <SourceDetails details={record.sourceDetails} />
+                  </TableCell>
+                  <TableCell className="min-w-[14rem]">
+                    <div className="font-mono text-xs font-semibold text-navy dark:text-white">{record.modelLabel}</div>
+                    <Muted className="mt-0.5">{record.customerName}{formatContractLabel(record.contractReference, record.orderReference)}</Muted>
+                    {formatContractDetails(record.contractReference, record.orderReference, record.division, record.contractCommercialArea).map((detail) => <Muted className="mt-0.5" key={detail}>{detail}</Muted>)}
+                    {formatCustomerClassification(record.customerType, record.commercialArea) ? <Muted className="mt-0.5">{formatCustomerClassification(record.customerType, record.commercialArea)}</Muted> : null}
+                    {record.sourceCustomerName || record.sourceOrderReference ? <Muted className="mt-0.5">Origen: {record.sourceCustomerName || 'sin cliente'}{record.sourceOrderReference ? ` · OV ${record.sourceOrderReference}` : ''}</Muted> : null}
+                    {formatConsumablesOperationalNarrative(record.sourceOperational).map((detail) => <Muted className="mt-0.5" key={`operational-client-${detail}`}>{detail}</Muted>)}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">{record.serialNumber}</TableCell>
+                  <TableCell className="min-w-[10rem]">
+                    <div className="font-mono text-xs font-semibold text-navy dark:text-white">{record.partCode}</div>
+                    <Muted className="mt-0.5">{record.description || 'Sin descripción'}</Muted>
+                    {record.sourceUnitPricePyg !== null || record.sourceTotalPyg !== null ? <Muted className="mt-0.5">Origen: {record.sourceUnitPricePyg !== null ? `₲ ${integerFormat.format(record.sourceUnitPricePyg)} unit.` : ''}{record.sourceTotalPyg !== null ? ` · ₲ ${integerFormat.format(record.sourceTotalPyg)} total` : ''}</Muted> : null}
+                  </TableCell>
+                  <TableCell><Badge className="whitespace-nowrap" tone={record.recordKind === 'consumable' ? 'success' : 'warning'}>{record.recordKind === 'consumable' ? 'Consumible' : 'Repuesto'}</Badge><Muted className="mt-1">{record.family} · {record.classification}</Muted></TableCell>
+                  <TableCell className="text-right tabular-nums">{numberFormat(record.quantity)}</TableCell>
+                  <TableCell className="whitespace-nowrap text-right font-semibold tabular-nums">{formatPyg(record.costUsd)}</TableCell>
+                </TableRow>)}
+                {(recordPageData?.items.length ?? 0) === 0 && <TableRow><TableCell colSpan={7} className="py-8 text-center">{recordsLoading || (recordPageData === null && loading) ? 'Cargando registros…' : error && recordPageData === null ? 'No se pudieron cargar los registros.' : recordPageData?.total || summary?.records ? 'No hay registros para el filtro seleccionado.' : 'Importa un detalle XLSX para ver datos aquí.'}</TableCell></TableRow>}
+              </TableBody>
+            </Table>
             {recordPageData ? <PaginationControls
               label="Paginación de consumibles y repuestos"
               page={recordPageData.page}
@@ -573,74 +607,48 @@ export default function ConsumiblesModule() {
               onPageChange={setRecordPage}
               onPageSizeChange={(size) => { setRecordPageSize(size); setRecordPage(1); }}
             /> : null}
-          </section>
-        </div>
+          </Card>
 
-        <aside className="operations-sidebar">
-          <section className="sales-card form-card">
-            <div className="eyebrow">FUENTE PRINCIPAL</div>
-            <h2>Detalle de consumibles</h2>
-            <p className="form-hint import-description">Origen: <code>Superset &gt; SGS Cliente 360 &gt; Consumibles &gt; Consumibles, Detalles</code>. Se filtran papel y modelos fuera de las familias analizadas.</p>
-            <UploadButton busy={importing === 'consumibles'} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('consumibles', event)} disabled={importing !== null} />
-          </section>
+          <aside className="grid min-w-0 gap-4">
+            {directSources.map((source) => (
+              <Card className={cardClass} key={source.kind}>
+                <CardHeader eyebrow={source.eyebrow} title={source.title} />
+                <Muted className="text-sm leading-relaxed">Origen: <code>{source.origin}</code>. {source.note}</Muted>
+                <div><UploadButton busy={importing === source.kind} label="Seleccionar XLSX" accept={spreadsheetAccept} multiple onChange={(event) => void importFile(source.kind, event)} disabled={importing !== null} /></div>
+              </Card>
+            ))}
 
-          <section className="sales-card form-card">
-            <div className="eyebrow">FUENTE COMPLEMENTARIA</div>
-            <h2>Detalle de repuestos</h2>
-            <p className="form-hint import-description">Origen: <code>Superset &gt; SGS Cliente 360 &gt; Repuestos &gt; Repuestos, Detalles</code>. También puede producir consumibles migrados, como rodillos y cilindros.</p>
-            <UploadButton busy={importing === 'repuestos'} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('repuestos', event)} disabled={importing !== null} />
-          </section>
+            <Card className={cardClass}>
+              <CardHeader eyebrow="Fuentes relacionadas" title="Completar base del legado" />
+              <Muted className="text-sm leading-relaxed">El análisis original dependía también de estos exports. Cárgalos desde la ubicación indicada para que los cruces no dependan de una cartera ya preparada.</Muted>
+              <div className="grid gap-3">
+                {legacyConsumablesSources.map((source) => {
+                  const definition = SOURCE_CATALOG.find((item) => item.id === source.sourceId);
+                  return (
+                    <div className={cn(subCardClass, 'grid gap-2 p-3')} key={source.type}>
+                      <div className="flex flex-wrap items-baseline justify-between gap-2"><div className="font-bold text-navy dark:text-white">{source.title}</div><Muted>{definition?.expectedFiles[0] ?? 'Archivo XLSX'}</Muted></div>
+                      <Muted>{definition?.origin}</Muted>
+                      <div><UploadButton busy={importing === source.type} label="Seleccionar XLSX" accept={spreadsheetAccept} multiple onChange={(event) => void importLegacySource(source.type, event)} disabled={importing !== null} /></div>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
 
-          <section className="sales-card form-card">
-            <div className="eyebrow">FUENTE HISTÓRICA</div>
-            <h2>Uso de repuestos</h2>
-            <p className="form-hint import-description">Origen: <code>Superset &gt; SGS Uso de Repuestos &gt; Consolidados y selectores &gt; Detalle de Repuestos</code>. Totales en PYG; se muestran en guaraníes usando la tasa referencial {PYG_USD_RATE_DATE}.</p>
-            <UploadButton busy={importing === 'uso-repuestos'} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('uso-repuestos', event)} disabled={importing !== null} />
-          </section>
-
-          <section className="sales-card form-card">
-            <div className="eyebrow">DESPACHOS</div>
-            <h2>Salida de consumibles</h2>
-            <p className="form-hint import-description">Origen: <code>SGS &gt; REPORTES &gt; Consumibles &gt; Rango de fechas</code>. Importa remisiones de tóner, cilindros y rodillos como entregas separadas.</p>
-            <UploadButton busy={importing === 'salida-consumibles'} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('salida-consumibles', event)} disabled={importing !== null} />
-          </section>
-
-          <section className="sales-card form-card">
-            <div className="eyebrow">DESPACHOS</div>
-            <h2>Salida de repuestos</h2>
-            <p className="form-hint import-description">Origen: <code>SGS &gt; REPORTES &gt; Consumibles &gt; Rango de fechas</code>. Rodillos y cilindros se clasifican como consumibles; las demás piezas quedan como repuestos.</p>
-            <UploadButton busy={importing === 'salida-repuestos'} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importFile('salida-repuestos', event)} disabled={importing !== null} />
-          </section>
-
-          <section className="sales-card form-card consumables-legacy-sources-card">
-            <div className="eyebrow">FUENTES RELACIONADAS</div>
-            <h2>Completar base del legado</h2>
-            <p className="form-hint import-description">El análisis original dependía también de estos exports. Cárgalos desde la ubicación indicada para que los cruces no dependan de una cartera ya preparada.</p>
-            <div className="legacy-fleet-source-list">
-              {legacyConsumablesSources.map((source) => {
-                const definition = SOURCE_CATALOG.find((item) => item.id === source.sourceId);
-                return (
-                  <div className="legacy-fleet-source" key={source.type}>
-                    <div className="legacy-fleet-source-heading"><strong>{source.title}</strong><span>{definition?.expectedFiles[0] ?? 'Archivo XLSX'}</span></div>
-                    <small>{definition?.origin}</small>
-                    <UploadButton busy={importing === source.type} label="Seleccionar XLSX" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple onChange={(event) => void importLegacySource(source.type, event)} disabled={importing !== null} />
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
-          <section className="sales-card form-card consumables-method-card">
-            <div className="eyebrow">REGLAS DE CRUCE</div>
-            <h2>Una fuente común</h2>
-            <div className="mps-facts"><div><span>Equipos</span><strong>Se busca por número de serie</strong></div><div><span>Contratos</span><strong>Alquiler · Leasing · Mantenimiento</strong></div><div><span>Deduplicación</span><strong>Código + serie + fecha</strong></div></div>
-          </section>
-        </aside>
+            <Card className={cardClass}>
+              <CardHeader eyebrow="Reglas de cruce" title="Una fuente común" />
+              <dl className="m-0 grid gap-2">
+                <MethodFact label="Equipos" value="Se busca por número de serie" />
+                <MethodFact label="Contratos" value="Alquiler · Leasing · Mantenimiento" />
+                <MethodFact label="Deduplicación" value="Código + serie + fecha" />
+              </dl>
+            </Card>
+          </aside>
         </section>
       </> : null}
 
       {activeTab !== 'overview' && activeTab !== 'data' ? analysisLoading
-        ? <section className="sales-card pagination-loading" role="status">Cargando los datos necesarios para esta vista…</section>
+        ? <Card className={cardClass} role="status">Cargando los datos necesarios para esta vista…</Card>
         : analytics ? <ConsumablesLegacyTab
             activeTab={activeTab}
             analytics={analytics}
@@ -659,6 +667,15 @@ export default function ConsumiblesModule() {
           /> : null : null}
     </div>
   );
+}
+
+function SummaryStat({ value, label, accent = false }: { value: string; label: string; accent?: boolean }) {
+  // El monto en guaraníes puede tener 13 dígitos: el tamaño sigue el ancho de la ficha y no parte la cifra.
+  return <Card className={cn('@container min-w-0 gap-1 p-4', accent && 'border-l-4 border-l-brand')}><div className="whitespace-nowrap text-[clamp(1.1rem,10cqw,1.875rem)] font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{label}</Muted></Card>;
+}
+
+function MethodFact({ label, value }: { label: string; value: string }) {
+  return <div className={cn(subCardClass, 'grid gap-0.5 p-3')}><dt className="text-xs text-ink-2 dark:text-[#9fb2d1]">{label}</dt><dd className="m-0 text-sm font-semibold text-navy dark:text-white">{value}</dd></div>;
 }
 
 function ConsumablesLegacyTab({

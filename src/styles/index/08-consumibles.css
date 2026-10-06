@@ -1,51 +1,5 @@
 
 
-.legacy-fleet-source-list {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.legacy-fleet-source {
-  display: grid;
-  gap: 0.45rem;
-  padding: 0.75rem;
-  border: 1px solid var(--dk-line);
-  border-radius: var(--ds-radius-xl);
-  background: rgba(18, 31, 54, 0.32);
-}
-
-.legacy-fleet-source-heading {
-  display: flex;
-  gap: 0.75rem;
-  align-items: baseline;
-  justify-content: space-between;
-}
-
-.legacy-fleet-source-heading strong {
-  min-width: 0;
-  color: var(--dk-dce8fc);
-  font-size: 0.76rem;
-}
-
-.legacy-fleet-source-heading span,
-.legacy-fleet-source small {
-  color: var(--dk-7187aa);
-  font-size: 0.66rem;
-  line-height: 1.45;
-}
-
-.legacy-fleet-source-heading span {
-  flex: 0 1 10rem;
-  text-align: right;
-}
-
-.form-hint {
-  margin: 0.25rem 0 0;
-  color: var(--dk-7187aa);
-  font-size: 0.7rem;
-  line-height: 1.45;
-}
-
 .operations-heading-actions {
   display: flex;
   gap: 0.65rem;

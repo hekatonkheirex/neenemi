@@ -60,7 +60,9 @@ describe('layout entre 960 y 1350 px', () => {
   });
 
   it('Consumibles: la columna lateral de importaciones baja bajo 1500 px', () => {
-    expect(css).toMatch(/@media \(max-width: 1500px\)\s*{\s*\.consumables-layout\s*{\s*grid-template-columns:\s*1fr/);
+    const module = fs.readFileSync('src/modules/consumibles/ConsumiblesModule.tsx', 'utf8');
+    expect(module).toContain('min-[1500px]:grid-cols-[minmax(0,1fr)_22rem]');
+    expect(css).not.toMatch(/\.consumables-layout/);
   });
 
   it('Viáticos: la tabla de viajes desplaza dentro de su tarjeta y no parte fecha ni importe', () => {
@@ -83,9 +85,11 @@ describe('revisión visual 2026-10', () => {
     expect(indexCss).toMatch(/\nh1\s*{[^}]*font-size:\s*clamp\(2\.25rem,\s*3\.6vw,\s*3\.25rem\)[^}]*letter-spacing:\s*-0\.045em/);
   });
 
-  it('primary-button deshabilitado no brilla ni muestra cursor de espera', () => {
-    expect(indexCss).toMatch(/\.primary-button:disabled\s*{[^}]*cursor:\s*not-allowed[^}]*box-shadow:\s*none/);
-    expect(themeCss).toMatch(/\[data-theme='light'\]\s+\.primary-button:disabled\s*{\s*box-shadow:\s*none/);
+  it('el botón primario deshabilitado no brilla ni responde al puntero (Button compartido)', () => {
+    const button = fs.readFileSync('src/core/ui/button.tsx', 'utf8');
+    expect(button).toContain('disabled:pointer-events-none disabled:opacity-50');
+    expect(button).toContain('bg-brand');
+    expect(indexCss).not.toMatch(/\.primary-button/);
   });
 
 });

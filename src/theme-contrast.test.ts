@@ -70,8 +70,7 @@ describe('contraste del tema claro', () => {
       expect(ratio(fg, bg)).toBeGreaterThanOrEqual(4.5);
     });
 
-    it('el CSS usa el degradado corregido del botón primario', () => {
-      expect(css).toMatch(/\.primary-button\s*{[^}]*linear-gradient\(135deg, #3466cf, #2347a3\)/);
+    it('las pestañas de Consumibles usan el naranja corregido', () => {
       expect(theme).toMatch(/html:not\(\[data-theme='light'\]\) \.consumables-tabs button\.active\s*{[^}]*#c24d00/);
     });
 
@@ -103,7 +102,7 @@ describe('contraste del tema claro', () => {
     expect(ratio('#182b4a', '#ffffff')).toBeGreaterThanOrEqual(4.5);
     expect(ratio('#182b4a', '#ff8533')).toBeGreaterThanOrEqual(4.5);
     expect(ratio('#9fb3d4', '#1b335e')).toBeGreaterThanOrEqual(4.5);
-    expect(theme).toMatch(/\.primary-button:hover:not\(:disabled\)\s*{\s*background:\s*#ff8533/);
+    expect(fs.readFileSync('src/core/ui/button.tsx', 'utf8')).toContain('hover:bg-[#e66000]');
     expect(theme).toMatch(/\.module-nav \.nav-item[\s\S]*?\):focus-visible\s*{\s*outline-offset:\s*-3px/);
   });
   it('campos inválidos: borde y etiqueta cumplen en ambos temas y el CSS usa :user-invalid y aria-invalid', () => {

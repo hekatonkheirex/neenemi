@@ -4,10 +4,6 @@ html[data-theme='light'] .badge.neutral {
   background: var(--ds-surface-alt);
 }
 
-html[data-theme='light'] .app-shell :where(.form-card, .analytics-panel) {
-  color: var(--ds-ink);
-}
-
 html[data-theme='light'] .consumables-tabs {
   border-color: var(--ds-border);
   background: var(--ds-surface);
@@ -27,11 +23,6 @@ html[data-theme='light'] .consumables-tabs button.active {
   border-color: #d95700;
   color: #ffffff;
   background: var(--ds-orange);
-}
-
-html[data-theme='light'] .consumables-filter-bar {
-  border-color: var(--ds-border);
-  background: var(--ds-surface);
 }
 
 html[data-theme='light'] .legacy-subheading,

@@ -1,35 +1,3 @@
-.operations-sidebar {
-  min-width: 0;
-}
-
 .catalog-table-wrap {
   min-width: 0;
-}
-
-
-.mps-facts {
-  display: grid;
-  gap: 0.7rem;
-}
-
-.mps-facts > div {
-  display: grid;
-  gap: 0.25rem;
-  padding-bottom: 0.7rem;
-  border-bottom: 1px solid var(--dk-line-faint);
-}
-
-.mps-facts > div:last-child {
-  padding-bottom: 0;
-  border-bottom: 0;
-}
-
-.mps-facts span {
-  color: var(--dk-7187aa);
-  font-size: 0.68rem;
-}
-
-.mps-facts strong {
-  color: #d8e6fb;
-  font-size: 0.8rem;
 }

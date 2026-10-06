@@ -53,7 +53,6 @@ html[data-theme='dark'] .eyebrow {
 }
 
 .nav-item,
-.secondary-button,
 .search-field input,
 .anim-tabs {
   border-radius: var(--ds-radius-xl);
@@ -70,20 +69,6 @@ html[data-theme='dark'] .eyebrow {
 }
 
 /* CTA de marca también en oscuro (antes azul): navy sobre naranja, 5,6:1. */
-html[data-theme='dark'] .primary-button {
-  border-color: #d95700;
-  color: var(--ds-navy);
-  background: var(--ds-orange);
-  box-shadow: var(--ds-shadow-md);
-}
-
-html[data-theme='dark'] .primary-button:hover:not(:disabled) {
-  background: #ff8533;
-}
-
-html[data-theme='dark'] .primary-button:disabled {
-  box-shadow: none;
-}
 
 /* Encabezados de módulo compactos: título en una línea y menos aire arriba, para dar sitio a los datos. */
 .page-content,
@@ -92,7 +77,6 @@ html[data-theme='dark'] .primary-button:disabled {
 }
 
 .page-content h1,
-.catalog-header h1,
 .software-page h1 {
   max-width: none;
   margin-bottom: 0.6rem;

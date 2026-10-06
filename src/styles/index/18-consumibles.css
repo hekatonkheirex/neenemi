@@ -1,10 +1,5 @@
 
 
-.consumables-main {
-  display: grid;
-  gap: 1.25rem;
-}
-
 .consumables-analytics-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -205,41 +200,6 @@
   font-size: 0.65rem;
 }
 
-.consumables-filter-bar {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr)) auto;
-  gap: 0.75rem;
-  align-items: end;
-  margin-bottom: 1.25rem;
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--dk-line);
-  border-radius: var(--ds-radius-2xl);
-  background: rgba(15, 27, 48, 0.72);
-}
-
-.consumables-filter-bar .compact-field {
-  min-width: 0;
-}
-
-.consumables-filter-bar .compact-field input {
-  width: 100%;
-  min-height: 2.35rem;
-  padding: 0.55rem 0.65rem;
-  border: 1px solid var(--dk-line-strong);
-  border-radius: var(--ds-radius-xl);
-  outline: 0;
-  color: var(--dk-dce8fc);
-  background: rgba(18, 31, 54, 0.7);
-  font-size: 0.8rem;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.consumables-filter-bar .secondary-button {
-  min-height: 2.35rem;
-  white-space: nowrap;
-}
-
 .outputs-table {
   min-width: 0;
 }
@@ -251,14 +211,6 @@
 
 .outputs-table td:nth-child(5) {
   min-width: 135px;
-}
-
-.consumables-controls {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 180px;
-  gap: 0.75rem;
-  align-items: end;
-  margin-bottom: 1rem;
 }
 
 .consumables-table {
@@ -758,9 +710,4 @@
 
 .consumables-table td:nth-child(5) {
   min-width: 120px;
-}
-
-.consumables-method-card .mps-facts strong {
-  font-size: 0.75rem;
-  line-height: 1.35;
 }

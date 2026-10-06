@@ -16,17 +16,6 @@
   background: rgba(144, 174, 229, 0.14);
 }
 
-.import-description {
-  margin: -0.55rem 0 0.85rem;
-  line-height: 1.55;
-}
-
-.import-description code {
-  color: #b9d2ff;
-  font-family: var(--ds-font-code);
-  font-size: 0.68rem;
-}
-
 .import-summary {
   display: grid;
   gap: 0.3rem;

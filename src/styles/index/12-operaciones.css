@@ -78,12 +78,6 @@
 }
 
 @media print {
-  .maintenance-page > .catalog-header,
-  .maintenance-page > .sales-status,
-  .maintenance-page > .operations-summary,
-  .maintenance-page .operations-sidebar {
-    display: none !important;
-  }
 
   .maintenance-page,
   .maintenance-page .operations-layout,

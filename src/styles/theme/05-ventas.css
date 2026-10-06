@@ -59,33 +59,3 @@ html[data-theme='light'] .app-shell :where(input, textarea, select):focus {
 html[data-theme='light'] .app-shell :where(button) {
   color: var(--ds-ink);
 }
-
-html[data-theme='light'] .primary-button {
-  border-color: #d95700;
-  color: var(--ds-navy);
-  background: var(--ds-orange);
-  box-shadow: 0 0.65rem 1.5rem rgba(255, 107, 0, 0.2);
-}
-
-html[data-theme='light'] .primary-button:disabled {
-  box-shadow: none;
-}
-
-html[data-theme='light'] .primary-button:hover:not(:disabled) {
-  background: #e96000;
-}
-
-html[data-theme='light'] .secondary-button {
-  border-color: var(--ds-border-strong);
-  color: var(--ds-navy);
-  background: var(--ds-surface);
-}
-
-html[data-theme='light'] .secondary-button:hover:not(:disabled) {
-  border-color: var(--ds-sky);
-  background: var(--ds-blue-wash);
-}
-
-html[data-theme='light'] .pagination-loading {
-  color: var(--ds-muted);
-}

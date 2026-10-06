@@ -1,5 +1,5 @@
 /* Botones por intencion. Cargar: .upload-button (celeste). Exportar: .export-button (verde).
-   Procesar: .primary-button. Neutro: .secondary-button. Componentes en src/core/ActionButtons.tsx. */
+   Procesar y neutro: Button de src/core/ui/button.tsx. Componentes en src/core/ActionButtons.tsx. */
 .upload-button,
 .export-button {
   position: relative;

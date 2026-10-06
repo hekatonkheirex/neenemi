@@ -125,10 +125,6 @@
     grid-column: 1 / -1;
   }
 
-  .sales-page .catalog-header {
-    display: block;
-  }
-
   .sales-page .catalog-header-actions {
     margin-top: 1.25rem;
     justify-content: flex-start;
@@ -190,30 +186,11 @@
     grid-template-columns: 1fr;
   }
 
-  .catalog-header {
-    display: block;
-  }
-
   .catalog-header-actions {
     display: grid;
     grid-template-columns: 1fr;
     width: 100%;
     margin-top: 1.5rem;
-  }
-
-  .catalog-header-actions .secondary-button,
-  .catalog-header-actions .primary-button {
-    width: 100%;
-    margin-top: 0;
-  }
-
-  .catalog-header .primary-button {
-    width: 100%;
-    margin-top: 1.5rem;
-  }
-
-  .catalog-header-actions .primary-button {
-    margin-top: 0;
   }
 
   .card-heading {

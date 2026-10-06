@@ -13,11 +13,6 @@
   flex-wrap: wrap;
 }
 
-.form-actions .secondary-button,
-.form-actions .primary-button {
-  min-width: 0;
-}
-
 /* Etiqueta + "N viajes" en una celda de ~130 px: que el contador pase a la línea de abajo en vez de cortar el nombre ("MÓVIL P…"). */
 
 /* Tarjetas de ~270 px (960-1150 px de ventana): etiqueta y monto arriba, barra debajo; en 3 columnas sumaban 353 px. */

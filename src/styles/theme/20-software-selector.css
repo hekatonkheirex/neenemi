@@ -39,7 +39,3 @@ html[data-theme] .app-shell .proforma-page :is(input, textarea)::placeholder {
 html[data-theme] :is(.module-nav .nav-item, .anim-tabs button, .catalog-table th button):focus-visible {
   outline-offset: -3px;
 }
-
-html[data-theme='light'] .primary-button:hover:not(:disabled) {
-  background: #ff8533;
-}

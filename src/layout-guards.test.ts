@@ -21,7 +21,7 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
     expect(summary).toContain('h-6 min-w-10 flex-[0_1_auto]');
   });
   it('960 px: la cabecera de módulo envuelve sus acciones', () => {
-    expect(rule('.catalog-header')).toMatch(/flex-wrap:\s*wrap/);
+    expect(fs.readFileSync('src/core/ui/page-header.tsx', 'utf8')).toContain('flex flex-wrap items-end justify-between gap-4');
   });
   it('960 px: la tabla de mano de obra de Proformas desplaza dentro de su tarjeta y deja "Precio venta" alcanzable', () => {
     const module = fs.readFileSync('src/modules/ventas/ProformasModule.tsx', 'utf8');

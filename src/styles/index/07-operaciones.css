@@ -1,9 +1,5 @@
 
 
-.operations-summary {
-  margin: 1.25rem 0;
-}
-
 /* Van después de la regla base: las versiones anteriores, dentro de los @media de arriba, perdían por orden de fuente. */
 /* Las tres tarjetas piden 741 px como mínimo; a 1051-1150 px de ventana el contenido mide ~700 px y la tercera se salía 41 px. */
 
@@ -20,24 +16,14 @@
   align-items: start;
 }
 
-.operations-main,
-.operations-sidebar {
+.operations-main {
   min-width: 0;
   display: grid;
   gap: 1.25rem;
 }
 
-.operations-main > *,
-.operations-sidebar > * {
+.operations-main > * {
   min-width: 0;
-}
-
-.operations-sidebar {
-  position: static;
-}
-
-.form-card h2 {
-  margin-bottom: 1.15rem;
 }
 
 .form-stack {

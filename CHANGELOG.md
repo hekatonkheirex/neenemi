@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.74 · 2026-10-06
+
+Primera entrega del rediseño de Analítica de consumibles: el encabezado, los filtros globales, las fichas de resumen, la tabla de registros normalizados, las fuentes de importación, la pestaña Datos y la carga coordinada de las nueve fuentes adoptan los componentes compartidos. Los montos largos en guaraníes se ajustan al ancho de la ficha. La columna lateral de importaciones pasa bajo la tabla por debajo de 1500 px. Conserva las importaciones, la carga coordinada atómica, el recálculo desde los originales y la limpieza de cargas. Los paneles de análisis, los despachos y las pestañas T03, T06, GPR-53, contratos, repuestos, ranking y equipos siguen con el diseño anterior hasta la segunda entrega. La etiqueta de origen compartida usa el texto secundario del rediseño y se retira el CSS que dejó de usarse, incluido el botón primario heredado.
+
 ## 0.1.73 · 2026-10-06
 
 Proformas adopta el encabezado, las tarjetas, los campos, los botones, las tablas y los estados compartidos del rediseño. Cabecera, búsqueda de partes, ítems, mano de obra, resumen, catálogos, contrato abierto e historial conservan sus datos, cálculos y exportación XLSX. Bajo 1500 px el resumen queda como barra fija inferior, más compacta, y desde 1500 px pasa a la columna lateral. Las coincidencias de cada línea se muestran bajo el código sin recortarse. Importar contrato, Actualizar catálogos e Importar informe PDF son diálogos nativos (foco atrapado, Esc, fondo difuminado) que no se cierran mientras procesan. Se agrega el enlace de descarga compartido `ExportLink` y se retira el CSS anterior de pantalla del módulo.

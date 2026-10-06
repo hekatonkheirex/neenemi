@@ -68,19 +68,6 @@ html[data-theme='light'] .legacy-donut-label {
   fill: var(--ds-muted);
 }
 
-html[data-theme='light'] .source-data-heading p {
-  color: var(--ds-muted);
-}
-
-html[data-theme='light'] .source-data-panel {
-  border-color: var(--ds-border);
-  background: var(--ds-surface);
-}
-
-html[data-theme='light'] .source-data-heading p {
-  color: var(--ds-muted);
-}
-
 html[data-theme='light'] .source-data-remove-button {
   border-color: #efb3b0;
   color: var(--ds-danger);
@@ -89,52 +76,6 @@ html[data-theme='light'] .source-data-remove-button {
 html[data-theme='light'] .source-data-remove-button:hover:not(:disabled) {
   border-color: var(--ds-danger);
   background: #fff1f0;
-}
-
-html[data-theme='light'] .source-data-note strong {
-  color: var(--ds-success);
-}
-
-html[data-theme='light'] .source-data-error {
-  border-color: #efb3b0;
-  color: var(--ds-danger);
-  background: #fff1f0;
-}
-
-html[data-theme='light'] .source-data-bundle {
-  border-color: #acd9e8;
-  background: linear-gradient(135deg, #f0fbfe, var(--ds-surface-alt));
-}
-
-html[data-theme='light'] .source-data-bundle-heading p,
-html[data-theme='light'] .source-data-bundle-count,
-html[data-theme='light'] .source-data-bundle-actions,
-html[data-theme='light'] .source-data-bundle-copy span,
-html[data-theme='light'] .source-data-bundle-copy small {
-  color: var(--ds-muted);
-}
-
-html[data-theme='light'] .source-data-bundle-count strong,
-html[data-theme='light'] .source-data-bundle-copy em {
-  color: var(--ds-success);
-}
-
-html[data-theme='light'] .source-data-bundle-row {
-  border-color: var(--ds-border);
-  background: var(--ds-surface);
-}
-
-html[data-theme='light'] .source-data-bundle-row.selected {
-  border-color: #a8d8bc;
-  background: #f4fcf7;
-}
-
-html[data-theme='light'] .source-data-bundle-index {
-  color: var(--ds-sky-dark);
-}
-
-html[data-theme='light'] .source-data-bundle-copy strong {
-  color: var(--ds-navy);
 }
 
 @media (max-width: 720px) {

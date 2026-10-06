@@ -4,6 +4,9 @@ import type { ConsumablesBundleFiles, ConsumablesBundleSourceId } from './bundle
 import ConsumablesBundlePanel from './ConsumiblesBundlePanel';
 import { confirmAction } from '../../core/confirm';
 import { readJson, toErrorMessage as describeError } from '../../core/http';
+import { Badge } from '../../core/ui/badge';
+import { Button } from '../../core/ui/button';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
 export { findSourceHeaderRow } from '../../core/source-header-row';
 
 type ImportBatchSummary = {
@@ -108,44 +111,31 @@ export default function SourceDataPanel({ onImportBundle, onBundleFilesChange, o
   }
 
   return (
-    <section className="source-data-panel" aria-label="Fuentes de datos de Consumibles">
-      <div className="source-data-heading">
-        <div>
-          <div className="eyebrow">CONSUMIBLES / DATOS</div>
-          <h2>Fuentes y mantenimiento de datos</h2>
-          <p>Importa el paquete histórico o vuelve a calcular la información a partir de los archivos originales conservados.</p>
+    <Card className="min-w-0 grid-cols-1 [overflow-wrap:anywhere]" aria-label="Fuentes de datos de Consumibles">
+      <CardHeader eyebrow="Consumibles / Datos" title="Fuentes y mantenimiento de datos" aside={<Badge>{numberFormat.format(consumablesBatchCount)} cargas de Consumibles</Badge>} />
+      <Muted className="text-sm">Importa el paquete histórico o vuelve a calcular la información a partir de los archivos originales conservados.</Muted>
+      <div className="grid gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={() => void reindexSources()} disabled={busy}>{reindexing ? 'Recalculando…' : 'Recalcular datos'}</Button>
+          <Button variant="outline" onClick={() => void clearConsumables()} disabled={!hasConsumablesBatches || busy}>{clearing ? 'Limpiando…' : 'Limpiar cargas de Consumibles'}</Button>
         </div>
-        <div className="source-data-heading-actions">
-          <div className="source-data-reindex-actions">
-            <div className="source-data-action-row">
-              <button className="secondary-button" type="button" onClick={() => void reindexSources()} disabled={busy}>
-                {reindexing ? 'Recalculando…' : 'Recalcular datos'}
-              </button>
-              <button className="secondary-button source-data-clear-button" type="button" onClick={() => void clearConsumables()} disabled={!hasConsumablesBatches || busy}>
-                {clearing ? 'Limpiando…' : 'Limpiar cargas de Consumibles'}
-              </button>
-            </div>
-            <small>Relee los XLSX archivados de Consumibles, Servicios y Viáticos.</small>
-          </div>
-          <div className="source-data-note">
-            <strong>{numberFormat.format(consumablesBatchCount)}</strong>
-            <span>cargas de Consumibles</span>
-          </div>
-        </div>
+        <Muted>Relee los XLSX archivados de Consumibles, Servicios y Viáticos.</Muted>
       </div>
 
-      {error ? <div className="source-data-error" role="alert">{error}</div> : null}
-      {reindexMessage ? <div className="source-data-success" role="status">{reindexMessage}</div> : null}
+      {error ? <div className="rounded-xl border border-[#b42318]/30 bg-[#b42318]/5 p-4 text-sm text-[#b42318] dark:text-[#ffb0b7]" role="alert">{error}</div> : null}
+      {reindexMessage ? <div className="rounded-xl border border-[#2f8f5b]/40 bg-[#2f8f5b]/10 p-4 text-sm text-[#14532d] dark:text-[#9be3b9]" role="status">{reindexMessage}</div> : null}
 
-      <ConsumablesBundlePanel
-        importing={bundleImporting}
-        busy={busy}
-        files={bundleFiles}
-        onFilesChange={onBundleFilesChange}
-        progressMessage={bundleProgress}
-        onImportBundle={onImportBundle}
-      />
-    </section>
+      <div className="border-t border-navy/10 pt-4 dark:border-sky/20">
+        <ConsumablesBundlePanel
+          importing={bundleImporting}
+          busy={busy}
+          files={bundleFiles}
+          onFilesChange={onBundleFilesChange}
+          progressMessage={bundleProgress}
+          onImportBundle={onImportBundle}
+        />
+      </div>
+    </Card>
   );
 }
 

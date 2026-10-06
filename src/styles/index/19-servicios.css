@@ -10,11 +10,6 @@
 
 /* Barra propia bajo la tabla (mismo borde y radio que .catalog-table-wrap): conteo a la izquierda; filas, página y botones agrupados a la derecha. */
 
-.pagination-loading {
-  padding: 1rem 1.2rem;
-  color: var(--dk-8fa5c7);
-}
-
 .service-table {
   min-width: 1180px;
 }
@@ -27,9 +22,4 @@
 
 .service-table td:nth-child(4) {
   min-width: 145px;
-}
-
-.service-method-card .mps-facts strong {
-  font-size: 0.75rem;
-  line-height: 1.35;
 }
