@@ -1,5 +1,5 @@
 // Renumera los trozos de src/styles/{index,theme} sin huecos y reescribe los @import de src/{index,theme}.css.
-// Uso: node scripts/renumber-styles.mjs [raíz=.]   (tras borrar o añadir un trozo; src/styles/manifest.test.ts lo exige)
+// Uso: node scripts/renumber-styles.mjs [raíz=.] (tras borrar o añadir un trozo).
 import fs from 'node:fs';
 import path from 'node:path';
 

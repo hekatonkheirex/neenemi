@@ -18,6 +18,10 @@ con el texto del cambio. La versión de la barra lateral abre ese historial dent
 aplicación, y una prueba (`src/core/changelog.test.ts`) falla si la primera entrada no
 coincide con la versión de `package.json`.
 
+Cada incremento de versión debe cerrarse con un commit de los cambios correspondientes y un
+push a la rama remota configurada, después de verificar la entrega. Si el push falla, la
+publicación queda pendiente y debe informarse explícitamente.
+
 ## Análisis con IA
 
 SLA Compliance Analyzer y Canon Software Selector llaman a **OpenRouter** (`https://openrouter.ai/api/v1`) desde la
@@ -365,12 +369,20 @@ partir de los equipos agregados, consolida los volúmenes T1/T2 y CIP, y permite
 las cuatro listas de precios heredadas del proyecto. En Electron la configuración se guarda como
 PDF mediante el diálogo nativo local; si se ejecuta solo el renderer con Vite, se usa el diálogo de
 impresión del navegador. También se puede exportar a XLSX.
+La interfaz usa los componentes compartidos de SLA y Software Selector, con equipos y resultados
+en la columna principal y tarifas en un panel lateral que se apila en ventanas más estrechas.
+El control de cantidad integra los botones −/+ y el valor en una sola pieza. Las tarifas editadas
+se identifican como «Sin guardar»; restaurar la base cambia solo el borrador hasta pulsar «Guardar precios».
 
 `Canon Software Selector` analiza texto de pliegos con reglas locales deterministas, permite
 revisar manualmente 35 requisitos, compara uniFLOW e imageWARE y conserva el último análisis en
 `app_settings`. Acepta TXT/MD/CSV/JSON, PDF con capa de texto y DOCX; la extracción se ejecuta
 localmente. Para el análisis IA usa únicamente OpenRouter (ver «Análisis con IA»); al pulsar
 «Analizar con IA», el texto se envía a la API de OpenRouter.
+La interfaz comparte tarjetas, campos y botones con SLA: documento, revisión por categorías y
+recomendaciones con porcentaje de cobertura y requisitos pendientes. El JSON conserva la matriz
+y los motivos de selección; la impresión/PDF muestra los resultados, los límites de cada producto,
+la trazabilidad y los requisitos sin cobertura, sin incluir campos de entrada ni configuración de IA.
 
 `SLA Compliance Analyzer` compara texto de pliegos con las cláusulas estándar de Data Systems,
 calcula score y riesgo, muestra trazabilidad por requisito y guarda el último informe en

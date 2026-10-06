@@ -366,9 +366,6 @@ html[data-theme='light'] .app-shell :where(
   .output-summary-grid > div,
   .travel-estimate,
   .travel-bar-track,
-  .uniflow-device-row,
-  .uniflow-tier-hint,
-  .software-feature-row,
   .coverage-model-row,
   .coverage-bottleneck,
   .mps-volume-status

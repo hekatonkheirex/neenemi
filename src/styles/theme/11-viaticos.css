@@ -62,26 +62,4 @@ html[data-theme='light'] .analytics-rank {
   color: #007ea8;
 }
 
-html[data-theme='light'] .uniflow-tier-hint {
-  border-color: #b9d8e5;
-  background: var(--ds-blue-wash);
-}
-
-html[data-theme='light'] .uniflow-tier-hint span,
-html[data-theme='light'] .uniflow-tier-hint p {
-  color: #006e95;
-}
-
-html[data-theme='light'] .software-recommendation.best {
-  border-color: #a8d9bf;
-  background: #f0fbf5;
-}
-
-html[data-theme='light'] .software-recommendation.best > * {
-  color: var(--ds-ink);
-}
-
-html[data-theme='light'] .software-recommendation-head > b {
-  color: var(--ds-success);
-}
 

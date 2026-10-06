@@ -41,7 +41,6 @@ html[data-theme='light'] .empty-inline,
 html[data-theme='light'] .empty-cell,
 html[data-theme='light'] .analysis-meta,
 html[data-theme='light'] .overview-import-meta,
-html[data-theme='light'] .software-note,
 html[data-theme='light'] .coverage-note,
 html[data-theme='light'] .coverage-catalog-hint,
 html[data-theme='light'] .coverage-catalog-empty {
@@ -95,8 +94,7 @@ html[data-theme='light'] .module-arrow {
   color: var(--ds-orange);
 }
 
-html[data-theme='light'] .data-tag,
-html[data-theme='light'] .software-tier {
+html[data-theme='light'] .data-tag {
   border-color: #a8d8e9;
   color: #006e95;
   background: var(--ds-blue-wash);

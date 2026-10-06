@@ -5,7 +5,7 @@ import { buttonVariants } from './ui/button';
 
 // Botones por intencion: cargar (UploadButton, acento celeste), exportar (ExportButton, acento verde),
 // procesar (Button default, naranja) y neutro (Button outline). Los ganchos .upload-button y .export-button se conservan:
-// el CSS de algunos módulos (src/styles/index/26-action-buttons.css) los usa para ubicarlos.
+// el CSS de algunos módulos (src/styles/index/25-action-buttons.css) los usa para ubicarlos.
 // ponytail: el texto va sin <span>; el CSS heredado del tema claro colorea los <span> con más especificidad.
 
 export function UploadIcon() {

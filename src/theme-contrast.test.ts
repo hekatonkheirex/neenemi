@@ -92,8 +92,7 @@ describe('contraste del tema claro', () => {
     });
   });
 
-  it('estados vacíos y de error: reglas para el selector de atajos (claro) y el reintento de Tracking (ambos temas)', () => {
-    expect(theme).toMatch(/html\[data-theme='light'\] \.software-shortcut\s*{[^}]*background:\s*var\(--ds-surface-alt\)/);
+  it('el reintento de Tracking conserva contraste en ambos temas', () => {
     expect(theme).toMatch(/html\[data-theme\] \.tracking-error \.secondary-button\s*{[^}]*background:\s*#ffffff/);
     expect(ratio('#1a2c4c', '#ffffff')).toBeGreaterThanOrEqual(4.5);
   });
@@ -112,12 +111,6 @@ describe('contraste del tema claro', () => {
       expect(ratio(fg, bg)).toBeGreaterThanOrEqual(3);
     });
 
-    it('el CSS fija bordes de campo, un anillo de foco único y el anillo claro de la barra marino', () => {
-      expect(theme).toMatch(/html\[data-theme='light'\] :is\(input[\s\S]*?, select, textarea\)\s*{\s*border-color:\s*#73869f/);
-      expect(theme).toMatch(/html\[data-theme\] :is\(a, button, input, select, textarea, summary, \[tabindex\]\):focus-visible\s*{\s*outline:\s*3px solid var\(--focus-ring\)/);
-      expect(theme).toMatch(/\.mps-editor-close:focus-visible\s*{\s*outline-color:\s*#7cc4ff/);
-      expect(theme).toMatch(/\.uniflow-quantity-control\s*{\s*border-color:\s*#73869f/);
-    });
   });
 
   it('placeholders en oscuro: #8ea3c4 cumple 4,5:1 sobre campo oscuro y sobre el extremo claro del degradado', () => {

@@ -46,23 +46,14 @@ html[data-theme='light'] .icon-button:hover {
 html[data-theme='light'] .price-cell,
 html[data-theme='light'] .suggestion-price,
 html[data-theme='light'] .import-summary strong,
-html[data-theme='light'] .analytics-equipment-value strong,
-html[data-theme='light'] .uniflow-device-summary-row b {
+html[data-theme='light'] .analytics-equipment-value strong {
   color: var(--ds-success);
-}
-
-html[data-theme='light'] .software-recommendation {
-  border-color: var(--ds-border);
-  background: var(--ds-surface);
-  box-shadow: 0 0.65rem 1.6rem var(--ds-shadow);
 }
 
 html[data-theme='light'] .suggestion-row,
 html[data-theme='light'] .history-item,
 html[data-theme='light'] .mps-model-option,
-html[data-theme='light'] .software-feature-row,
-html[data-theme='light'] .analytics-equipment-row,
-html[data-theme='light'] .uniflow-device-summary-row {
+html[data-theme='light'] .analytics-equipment-row {
   color: var(--ds-ink);
   background: transparent;
   box-shadow: none;

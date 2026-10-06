@@ -107,10 +107,13 @@ La suite usa `xlsx.load()`/`xlsx.writeBuffer()` y las APIs de archivos del naveg
 esas operaciones se verificaron sin errores ni advertencias en la consola.
 
 Desde v0.1.36, el escaneo inicial de Vite usa únicamente `index.html`; no recorre
-el HTML del paquete Electron en `release/`. El resolver de esbuild conserva como
-interno el archivo `exceljs-browser-globals.js` inyectado tanto durante el escaneo
-como en el prebundling. El arranque con una caché nueva y la lectura/escritura XLSX
-en desarrollo se verificaron sin el error de ruta inyectada externalizada.
+el HTML del paquete Electron en `release/`. `src/main.tsx` importa primero
+`exceljs-browser-globals.js`, que inicializa Buffer y process antes del resto del
+renderer. No se inyecta ese módulo dentro de las dependencias: hacerlo genera un
+ciclo con el propio polyfill de Buffer y JSZip puede guardar `nodebuffer = false`,
+dejando `xlsx.writeBuffer()` pendiente. La exportación de Viáticos se verificó
+desde Chromium en desarrollo con dependencias regeneradas y en la compilación de
+producción: descarga un XLSX legible con los 1.026 viajes y libera el botón.
 
 `pdfjs-dist` pasó a 6.x en v0.1.22
 ([GHSA-hq66-cqwq-w95j](https://github.com/advisories/GHSA-hq66-cqwq-w95j)) y

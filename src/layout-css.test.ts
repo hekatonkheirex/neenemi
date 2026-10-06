@@ -104,17 +104,8 @@ describe('revisión visual 2026-10', () => {
     expect(themeCss).toMatch(/\[data-theme='light'\]\s+\.primary-button:disabled\s*{\s*box-shadow:\s*none/);
   });
 
-  it('chips de plazo uniFLOW: objetivo táctil de 28px y texto de 12px', () => {
-    expect(indexCss).toMatch(/\.uniflow-term-options button\s*{\s*min-height:\s*1\.75rem[^}]*font-size:\s*0\.75rem/);
-  });
 });
 
-describe('chips de plazo uniFLOW', () => {
-  it('los 5 plazos van en una sola fila (rejilla de 5 columnas) y sin partir "12 m"', () => {
-    expect(css).toMatch(/\.uniflow-term-options\s*{[^}]*display:\s*grid[^}]*repeat\(5,\s*minmax\(0,\s*1fr\)\)/);
-    expect(css).toMatch(/\.uniflow-term-options button\s*{[^}]*white-space:\s*nowrap/);
-  });
-});
 
 describe('botones de texto', () => {
   it('.text-button ofrece un objetivo de al menos 28px de alto y texto de 12px', () => {

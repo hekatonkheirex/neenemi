@@ -58,9 +58,7 @@ html[data-theme='light'] .suggestion-row:hover,
 html[data-theme='light'] .history-item:hover,
 html[data-theme='light'] .history-item.active,
 html[data-theme='light'] .mps-model-option:hover,
-html[data-theme='light'] .mps-model-option.active,
-html[data-theme='light'] .software-feature-row:hover,
-html[data-theme='light'] .software-feature-row.selected {
+html[data-theme='light'] .mps-model-option.active {
   border-color: #9bcfe1;
   background: var(--ds-blue-wash);
 }

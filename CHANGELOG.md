@@ -2,9 +2,23 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.62 · 2026-10-06
+
+uniFLOW Online adopta el encabezado, las tarjetas, los campos, las tablas y los botones compartidos del rediseño. Conserva la selección y búsqueda de modelos, los volúmenes CPS/CIP, los tiers y las exportaciones XLSX/PDF. El editor distingue las tarifas pendientes de guardar y mantiene la advertencia al salir; editar un SKU no interrumpe el foco al escribir. El control de cantidad tiene un único borde exterior y separadores rectos, sin redondeados ni fondos anidados, en ambos temas. Se retiran los estilos de pantalla anteriores, conservando el informe comercial imprimible.
+
+## 0.1.61 · 2026-10-06
+
+Unifica el espaciado de los encabezados compartidos con Mantenimiento y Viáticos: la etiqueta superior queda a 16 px del título y la descripción usa el mismo interlineado. Software Selector y SLA mantienen así el mismo ritmo visual que los módulos existentes.
+
+## 0.1.60 · 2026-10-06
+
+Software Selector continúa el rediseño de Data Systems con las tarjetas, campos y botones compartidos que ya usa SLA. Documento, revisión y recomendaciones conservan el análisis local e IA, la selección por categorías, los filtros y la restauración desde SQLite. Las tarjetas de producto muestran cobertura y requisitos pendientes; los controles de categorías anuncian su estado al teclado y a lectores de pantalla. El informe PDF excluye los controles y la configuración de IA, pero incluye los límites de cada producto, la trazabilidad y los requisitos sin cobertura. Se retira el CSS anterior del módulo.
+
 ## 0.1.59 · 2026-10-06
 
 Los botones se normalizan por intención en toda la suite: cargar archivos es celeste con ícono de subida, exportar y descargar es verde con ícono de descarga, procesar sigue siendo el botón primario y lo demás es neutro. Los selectores de archivo nativos (Tracking) y los estilos sueltos de carga pasan a un componente común, y "Importar contrato", "Importar informe PDF" y "Descargar original" siguen la misma regla en tema claro y oscuro. Las tarjetas de fuente de Carga en Discontinuador recuperan su borde, fondo y tipografía, se adaptan al ancho de la ventana y muestran una sola marca de verificación por archivo cargado. Se elimina el módulo Servicios sin uso.
+
+Corrige Exportar XLSX en Control de viáticos: los polyfills de Buffer y process se inicializan antes de las dependencias del renderer, evitando el ciclo que bloqueaba la generación del archivo y dejaba el botón en «Exportando…».
 
 ## 0.1.58 · 2026-10-06
 

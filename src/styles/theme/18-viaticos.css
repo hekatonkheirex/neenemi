@@ -137,11 +137,6 @@ html[data-theme='light'] .coverage-empty {
   color: var(--ds-muted);
 }
 
-/* Selector de software: resumen de cada recomendación. */
-html[data-theme='light'] .software-recommendation summary {
-  color: #00698f;
-}
-
 /* Barrido de contraste en tema claro (WCAG AA): texto naranja, blanco sobre naranja y colores del tema oscuro sin variante clara. */
 html[data-theme='light'] .consumables-tabs button.active {
   color: var(--ds-navy);

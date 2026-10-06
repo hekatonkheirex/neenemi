@@ -19,6 +19,15 @@ import { ChartBarLineIcon, GridViewIcon, PrinterIcon, ServerStack01Icon, ShieldE
 import AnimatedTabs from '../../core/AnimatedTabs';
 import { readJson, toErrorMessage } from '../../core/http';
 import { UploadButton, ExportButton } from '../../core/ActionButtons';
+import { ChevronDown, ChevronUp, FileText, Printer, Search, Sparkles } from 'lucide-react';
+import { cn } from '../../core/cn';
+import { Badge } from '../../core/ui/badge';
+import { Button } from '../../core/ui/button';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Input } from '../../core/ui/input';
+import { PageHeader } from '../../core/ui/page-header';
+import { StatusLine } from '../../core/ui/status-line';
+import { Textarea } from '../../core/ui/textarea';
 
 const MAX_TEXT_LENGTH = 250_000;
 const DEMO_TEXT = 'El pliego requiere liberación Follow-Me, autenticación con tarjeta, integración con Active Directory, escaneo a SharePoint y continuidad operativa mediante un servidor de impresión local.';
@@ -299,163 +308,232 @@ export default function SoftwareSelectorModule() {
     setMessage('Reporte JSON generado.');
   }
 
-  const productById = new Map(products.map((product) => [product.id, product]));
-
   return (
     <div className="page-content software-page">
-      <section className="catalog-header">
-        <div>
-          <div className="eyebrow">SOPORTE / ANÁLISIS LOCAL</div>
-          <h1>Canon Software Selector</h1>
-          <p className="lead">Convierte requisitos de un pliego en una matriz de compatibilidad para uniFLOW e imageWARE, sin depender de un proveedor de IA.</p>
-        </div>
-        <div className="software-actions">
-          <button className="secondary-button" type="button" onClick={() => void printReport()} disabled={selectedFeatures.length === 0}>Imprimir / PDF</button>
-          <ExportButton onClick={exportReport} disabled={selectedFeatures.length === 0}>Exportar JSON</ExportButton>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="SOPORTE / SELECCIÓN DE SOFTWARE"
+        title="Canon Software Selector"
+        lead="Cruza los requisitos del cliente con uniFLOW e imageWARE. Analiza el pliego, revisa la selección y compara la cobertura de cada producto."
+        actions={(
+          <>
+            <Button variant="outline" onClick={() => void printReport()} disabled={selectedFeatures.length === 0}><Printer />Imprimir / PDF</Button>
+            <ExportButton onClick={exportReport} disabled={selectedFeatures.length === 0}>Exportar JSON</ExportButton>
+          </>
+        )}
+      />
 
-      <section className="sales-status" aria-live="polite">
-        <span className={`status-dot ${error ? 'error' : loading || analyzing ? 'pending' : 'ready'}`} />
-        <span>{error || message || (loading ? 'Cargando catálogo de requisitos…' : 'Pega un pliego para comenzar.')}</span>
-      </section>
+      <div className="print:hidden">
+        <StatusLine state={error ? 'error' : loading || analyzing ? 'pending' : 'ready'}>
+          {error || (analyzing ? 'Analizando requisitos del pliego…' : loading ? 'Cargando catálogo de requisitos…' : message || 'Pega un pliego o selecciona requisitos para comenzar.')}
+        </StatusLine>
+      </div>
 
-      <section className="software-layout">
-        <main className="software-main">
-          <section className="sales-card software-input-card">
-            <div className="card-heading">
-              <div><div className="eyebrow">PASO 1 / DOCUMENTO</div><h2>Requisitos del pliego</h2></div>
-              <span className="muted-note">{compactNumber.format(text.length)} / {compactNumber.format(MAX_TEXT_LENGTH)} caracteres</span>
-            </div>
-            <form onSubmit={analyze}>
-              <label className="search-field software-text-field">
-                <span>Texto para analizar</span>
-                <textarea id="software-requirements" name="requirements" value={text} maxLength={MAX_TEXT_LENGTH} rows={9} onChange={(event) => { setText(event.target.value); setAnalysis(null); }} placeholder="Pega aquí los requisitos técnicos del cliente…" />
+      <div className="grid items-start gap-5 min-[1401px]:grid-cols-[minmax(0,1fr)_24rem] print:block">
+        <div className="grid min-w-0 gap-5 print:hidden">
+          <Card>
+            <CardHeader
+              eyebrow="PASO 1 / DOCUMENTO"
+              title="Requisitos del pliego"
+              aside={<Muted>{compactNumber.format(text.length)} / {compactNumber.format(MAX_TEXT_LENGTH)} caracteres</Muted>}
+            />
+            <form className="grid gap-3" onSubmit={analyze}>
+              <label className="grid gap-1.5 text-xs font-bold text-ink-2! dark:text-[#9fb2d1]!">
+                Texto para analizar
+                <Textarea
+                  id="software-requirements"
+                  name="requirements"
+                  className="min-h-56 font-normal"
+                  value={text}
+                  maxLength={MAX_TEXT_LENGTH}
+                  rows={9}
+                  onChange={(event) => { setText(event.target.value); setAnalysis(null); }}
+                  placeholder="Pega aquí los requisitos técnicos del cliente…"
+                />
               </label>
-              <div className="software-input-actions">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <UploadButton id="software-source-file" name="sourceFile" label="Cargar TXT / PDF / DOCX" accept=".txt,.md,.csv,.json,.pdf,.docx,text/plain,text/markdown,text/csv,application/json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(event) => void loadDocumentFile(event)} />
-                <button className="secondary-button" type="button" onClick={loadDemo}>Cargar ejemplo</button>
-                <button className="secondary-button" type="submit" id="btn-local" disabled={analyzing || !text.trim()}>{analyzing ? 'Procesando…' : 'Analizar localmente'}</button>
-                <button className="primary-button" type="submit" id="btn-ai" disabled={analyzing || !text.trim()}>Analizar con IA</button>
+                <Button variant="outline" onClick={loadDemo}>Cargar ejemplo</Button>
+                <Button variant="outline" type="submit" id="btn-local" disabled={analyzing || !text.trim()}><FileText />{analyzing ? 'Procesando…' : 'Analizar localmente'}</Button>
+                <Button type="submit" id="btn-ai" className="ml-auto max-[720px]:ml-0" disabled={analyzing || !text.trim()}><Sparkles />Analizar con IA</Button>
               </div>
-              <p className="form-hint">Fuente actual: <strong>{fileName}</strong>. PDF y DOCX se extraen localmente; el motor normaliza acentos y busca expresiones técnicas conocidas. Los resultados se guardan en la SQLite de esta instalación.</p>
+              <Muted className="break-words leading-relaxed">
+                Fuente actual: {fileName}. PDF y DOCX se extraen localmente. El análisis local busca expresiones técnicas conocidas y guarda el resultado en SQLite; el análisis con IA envía el texto a OpenRouter.
+              </Muted>
             </form>
-          </section>
+          </Card>
 
           <AiKeyPanel />
 
-          <section className="sales-card software-feature-card">
-            <div className="card-heading">
-              <div><div className="eyebrow">PASO 2 / REVISIÓN</div><h2>Requisitos evaluados</h2></div>
-              <span className="badge neutral">{compactNumber.format(selectedFeatureIds.length)} seleccionados</span>
-            </div>
-            <div className="software-filter-row">
-              <label className="search-field"><span>Buscar requisito</span><input id="software-feature-search" name="featureSearch" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="OCR, LDAP, tóner…" /></label>
-              <div className="software-filter-actions">
-                <button className="text-button" type="button" onClick={() => setSelectedFeatureIds([])}>Quitar selección</button>
-                {(selectedFeatureIds.length > 0 || text || analysis) && <button className="text-button" type="button" onClick={clearSelection}>Reiniciar</button>}
+          <Card>
+            <CardHeader eyebrow="PASO 2 / REVISIÓN" title="Requisitos evaluados" aside={<Badge>{compactNumber.format(selectedFeatureIds.length)} seleccionados</Badge>} />
+            <div className="flex flex-wrap items-end gap-3">
+              <label className="grid min-w-0 flex-1 basis-60 gap-1.5 text-xs font-bold text-ink-2! dark:text-[#9fb2d1]!">
+                Buscar requisito
+                <div className="relative">
+                  <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-3 size-4" />
+                  <Input id="software-feature-search" name="featureSearch" className="pl-9 font-normal" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="OCR, LDAP, tóner…" />
+                </div>
+              </label>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="ghost" size="sm" onClick={() => setSelectedFeatureIds([])} disabled={selectedFeatureIds.length === 0}>Quitar selección</Button>
+                {(selectedFeatureIds.length > 0 || text || analysis) && <Button variant="outline" size="sm" onClick={clearSelection}>Reiniciar</Button>}
               </div>
             </div>
             <AnimatedTabs scroll ariaLabel="Categorías de requisitos" tabs={categoryTabs} active={activeCategory} onChange={setActiveCategory} />
-            <div className="software-category-actions">
-              <span>Vista de categorías</span>
-              <div>
-                <button className="text-button" type="button" onClick={() => setAllCategoriesCollapsed(false)}>Expandir todo</button>
-                <button className="text-button" type="button" onClick={() => setAllCategoriesCollapsed(true)}>Colapsar todo</button>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Muted>{compactNumber.format(filteredFeatures.length)} requisitos visibles</Muted>
+              <div className="flex flex-wrap gap-1">
+                <Button variant="ghost" size="sm" onClick={() => setAllCategoriesCollapsed(false)}>Expandir todo</Button>
+                <Button variant="ghost" size="sm" onClick={() => setAllCategoriesCollapsed(true)}>Colapsar todo</Button>
               </div>
             </div>
-            <div className="software-feature-groups">
-              {SOFTWARE_CATEGORIES.map((category) => {
+            <div className="grid gap-5">
+              {SOFTWARE_CATEGORIES.map((category, categoryIndex) => {
                 const categoryFeatures = filteredFeatures.filter((feature) => feature.category === category);
                 if (categoryFeatures.length === 0) return null;
                 const selectedInCategory = categoryFeatures.filter((feature) => selectedFeatureIds.includes(feature.id)).length;
                 const collapsed = collapsedCategories[category];
+                const groupId = `software-category-${categoryIndex}`;
                 return (
-                  <section className="software-feature-group" key={category}>
-                    <div className="software-group-heading">
-                      <div><h3>{category}</h3><span>{selectedInCategory} / {categoryFeatures.length} visibles seleccionados</span></div>
-                      <div className="software-group-actions">
-                        <button className="text-button" type="button" onClick={() => toggleCategory(category)}>{selectedInCategory === categoryFeatures.length ? 'Ninguno' : 'Todos'}</button>
-                        <button className="text-button" type="button" onClick={() => toggleCategoryVisibility(category)}>{collapsed ? 'Mostrar' : 'Ocultar'}</button>
+                  <section className="grid gap-3" key={category} aria-labelledby={`${groupId}-title`}>
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-navy/10 pb-3 dark:border-sky/20">
+                      <div className="min-w-0">
+                        <h3 id={`${groupId}-title`} className="text-sm font-bold text-navy dark:text-white">{category}</h3>
+                        <Muted>{selectedInCategory} / {categoryFeatures.length} visibles seleccionados</Muted>
+                      </div>
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="sm" onClick={() => toggleCategory(category)} aria-label={`${selectedInCategory === categoryFeatures.length ? 'Quitar' : 'Seleccionar'} todos los requisitos visibles de ${category}`}>{selectedInCategory === categoryFeatures.length ? 'Ninguno' : 'Todos'}</Button>
+                        <Button variant="outline" size="sm" onClick={() => toggleCategoryVisibility(category)} aria-expanded={!collapsed} aria-controls={groupId}>{collapsed ? <ChevronDown /> : <ChevronUp />}{collapsed ? 'Mostrar' : 'Ocultar'}</Button>
                       </div>
                     </div>
-                    {!collapsed && <div className="software-feature-list">
+                    <div id={groupId} hidden={collapsed} className={collapsed ? undefined : 'grid gap-2'}>
                       {categoryFeatures.map((feature) => {
                         const selected = selectedFeatureIds.includes(feature.id);
                         return (
-                          <label className={`software-feature-row ${selected ? 'selected' : ''}`} key={feature.id}>
-                            <input id={`software-feature-${feature.id}`} name="features" type="checkbox" value={feature.id} checked={selected} onChange={() => toggleFeature(feature.id)} />
-                            <span><strong>{feature.label}</strong><small>{feature.description}</small></span>
+                          <label
+                            className={cn(
+                              'grid cursor-pointer grid-cols-[1rem_minmax(0,1fr)] items-start gap-3 rounded-xl border p-3 transition-colors hover:border-sky/60 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-sky',
+                              selected ? 'border-sky/60 bg-sky/10' : 'border-navy/10 bg-paper/60 dark:border-sky/20 dark:bg-navy/30',
+                            )}
+                            key={feature.id}
+                          >
+                            <input className="mt-0.5 size-4 accent-sky" id={`software-feature-${feature.id}`} name="features" type="checkbox" value={feature.id} checked={selected} onChange={() => toggleFeature(feature.id)} />
+                            <div className="grid gap-1">
+                              <div className="text-sm font-semibold leading-snug text-navy dark:text-white">{feature.label}</div>
+                              <Muted className="leading-relaxed">{feature.description}</Muted>
+                            </div>
                           </label>
                         );
                       })}
-                    </div>}
+                    </div>
                   </section>
                 );
               })}
-              {filteredFeatures.length === 0 && <div className="software-empty">No hay requisitos que coincidan con la búsqueda.</div>}
+              {filteredFeatures.length === 0 && (
+                <div className="grid justify-items-center gap-2 rounded-xl border border-dashed border-navy/20 p-6 text-center dark:border-sky/30">
+                  <div className="text-sm font-bold text-navy dark:text-white">Sin coincidencias</div>
+                  <Muted>Prueba otra búsqueda o vuelve a la categoría Todas.</Muted>
+                </div>
+              )}
             </div>
-          </section>
-        </main>
+          </Card>
+        </div>
 
-        <aside className="software-sidebar">
-          <section className="sales-card software-summary-card">
-            <div className="card-heading"><div><div className="eyebrow">MATRIZ / RESULTADO</div><h2>Recomendaciones</h2></div><span className="muted-note">{recommendations.length} opciones</span></div>
-            {recommendations.length === 0
-              ? <div className="software-empty">
-                <strong>Sin matriz todavía.</strong>
-                <span>Analiza un pliego o selecciona requisitos manualmente.</span>
-                <div className="software-shortcuts">
+        <aside aria-label="Matriz de compatibilidad y recomendaciones" className="grid min-w-0 gap-5 print:block">
+          <Card className="print:mb-5">
+            <CardHeader eyebrow="PASO 3 / RESULTADO" title="Recomendaciones" aside={<Badge>{recommendations.length} opciones</Badge>} />
+            {recommendations.length === 0 ? (
+              <div className="grid gap-4">
+                <div className="grid gap-1 rounded-xl border border-dashed border-navy/20 p-5 text-center dark:border-sky/30">
+                  <div className="font-bold text-navy dark:text-white">Sin matriz todavía</div>
+                  <Muted>Analiza un pliego o selecciona requisitos manualmente. También puedes partir de un caso de uso.</Muted>
+                </div>
+                <div className="grid gap-2">
                   {SOFTWARE_PRESETS.map((preset) => (
-                    <button className="software-shortcut" type="button" key={preset.id} onClick={() => applyPreset(preset.featureIds, preset.label)}>
-                      <strong>{preset.label}</strong>
-                      <span>{preset.description}</span>
-                    </button>
+                    <Button variant="outline" className="h-auto justify-start whitespace-normal p-3 text-left" key={preset.id} onClick={() => applyPreset(preset.featureIds, preset.label)}>
+                      <div className="grid gap-1">
+                        <div className="text-sm">{preset.label}</div>
+                        <Muted className="font-normal">{preset.description}</Muted>
+                      </div>
+                    </Button>
                   ))}
                 </div>
               </div>
-              : <div className="software-recommendation-list">{recommendations.map((recommendation) => <RecommendationCard key={recommendation.product.id} recommendation={recommendation} />)}</div>}
-          </section>
+            ) : (
+              <div className="grid gap-3">{recommendations.map((recommendation) => <RecommendationCard key={recommendation.product.id} recommendation={recommendation} />)}</div>
+            )}
+          </Card>
 
-          <section className="sales-card software-analysis-card">
-            <div className="card-heading"><div><div className="eyebrow">TRAZABILIDAD</div><h2>Requisitos detectados</h2></div><span className="muted-note">{analysis ? analysis.source : 'manual'}</span></div>
-            {analysis
-              ? <div className="software-reason-list">{analysis.selectedFeatureIds.map((id) => <div className="software-reason" key={id}><strong>{features.find((feature) => feature.id === id)?.label ?? id}</strong><span>{analysis.reasoning[id]}</span></div>)}</div>
-              : <p className="software-note">El motor mostrará aquí la expresión que justificó cada selección. Puedes corregir la matriz manualmente.</p>}
-            {analysis && <button className="text-button software-clear-saved" type="button" onClick={() => void clearSavedAnalysis()}>Borrar análisis guardado</button>}
-          </section>
+          <Card className="print:mb-5 print:break-inside-avoid">
+            <CardHeader eyebrow="TRAZABILIDAD" title="Requisitos detectados" aside={<Badge>{analysis ? analysis.source : 'manual'}</Badge>} />
+            {analysis ? (
+              <div className="grid max-h-96 gap-3 overflow-y-auto print:max-h-none print:overflow-visible">
+                {analysis.selectedFeatureIds.map((id) => (
+                  <div className="grid gap-1 border-b border-navy/10 pb-3 last:border-0 last:pb-0 dark:border-sky/20" key={id}>
+                    <div className="text-sm font-semibold text-navy dark:text-white">{features.find((feature) => feature.id === id)?.label ?? id}</div>
+                    <Muted className="leading-relaxed">{analysis.reasoning[id]}</Muted>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <Muted className="leading-relaxed">El motor mostrará aquí la expresión que justificó cada selección. Puedes corregir la matriz manualmente.</Muted>
+            )}
+            {analysis && <Button variant="ghost" size="sm" className="justify-self-start underline print:hidden" onClick={() => void clearSavedAnalysis()}>Borrar análisis guardado</Button>}
+          </Card>
 
-          <section className="sales-card software-gaps-card">
-            <div className="card-heading"><div><div className="eyebrow">REVISIÓN</div><h2>Gaps universales</h2></div><span className="badge neutral">{gaps.length}</span></div>
-            {gaps.length > 0
-              ? <ul className="software-gap-list">{gaps.map((feature) => <li key={feature.id}>{feature.label}</li>)}</ul>
-              : <p className="software-note">No hay requisitos seleccionados que queden sin cobertura en las cuatro opciones de la matriz.</p>}
-          </section>
+          <Card className="print:mb-5 print:break-inside-avoid">
+            <CardHeader eyebrow="REVISIÓN" title="Requisitos sin cobertura" aside={<Badge tone={gaps.length > 0 ? 'warning' : 'neutral'}>{gaps.length}</Badge>} />
+            {gaps.length > 0 ? (
+              <div className="grid gap-2">
+                {gaps.map((feature) => <div className="rounded-xl border border-[#e08a00]/30 bg-[#e08a00]/10 p-3 text-sm text-[#7a4a00] dark:text-[#ffd28a]" key={feature.id}>{feature.label}</div>)}
+              </div>
+            ) : (
+              <Muted className="leading-relaxed">No hay requisitos seleccionados que queden sin cobertura en las cuatro opciones de la matriz.</Muted>
+            )}
+          </Card>
 
-          <section className="sales-card software-products-card">
-            <div className="card-heading"><div><div className="eyebrow">REFERENCIA</div><h2>Productos comparados</h2></div><span className="muted-note">{products.length}</span></div>
-            <div className="software-product-list">{products.map((product) => <div className="software-product-row" key={product.id}><strong>{product.name}</strong><span>{product.category}</span></div>)}</div>
-            {productById.size === 0 && <p className="software-note">El catálogo no está disponible.</p>}
-          </section>
+          <Card className="print:hidden">
+            <CardHeader eyebrow="REFERENCIA" title="Productos comparados" aside={<Badge>{products.length}</Badge>} />
+            <div className="grid gap-3">
+              {products.map((product) => (
+                <div className="grid gap-1 border-b border-navy/10 pb-3 last:border-0 last:pb-0 dark:border-sky/20" key={product.id}>
+                  <div className="text-sm font-semibold text-navy dark:text-white">{product.name}</div>
+                  <Muted>{product.category}</Muted>
+                </div>
+              ))}
+            </div>
+            {products.length === 0 && <Muted>El catálogo no está disponible.</Muted>}
+          </Card>
         </aside>
-      </section>
+      </div>
     </div>
   );
 }
 
 function RecommendationCard({ recommendation }: { recommendation: SoftwareRecommendation }) {
+  const best = recommendation.tier === 'Mejor coincidencia';
   return (
-    <article className={`software-recommendation ${recommendation.tier === 'Mejor coincidencia' ? 'best' : ''}`}>
-      <div className="software-recommendation-head">
-        <div><span className="software-tier">{recommendation.tier}</span><strong>{recommendation.product.name}</strong></div>
-        <b>{percentage.format(recommendation.coverageRate)}</b>
+    <article className={cn('grid gap-3 rounded-xl border p-4 print:break-inside-avoid', best ? 'border-sky/50 bg-sky/10' : 'border-navy/10 bg-paper/60 dark:border-sky/20 dark:bg-navy/30')}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="grid min-w-0 gap-2">
+          <Badge className="justify-self-start" tone={best ? 'success' : 'neutral'}>{recommendation.tier}</Badge>
+          <h3 className="text-base font-bold leading-snug text-navy dark:text-white">{recommendation.product.name}</h3>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-extrabold text-[#00698f] dark:text-sky">{percentage.format(recommendation.coverageRate)}</div>
+          <Muted>cobertura</Muted>
+        </div>
       </div>
-      <p>{recommendation.product.description}</p>
-      <div className="software-score-line"><span>{recommendation.score} de {recommendation.score + recommendation.unsupportedFeatureIds.length} requisitos cubiertos</span><span>{recommendation.unsupportedFeatureIds.length} pendientes</span></div>
-      <details>
-        <summary>Ver alcance y límites</summary>
-        <p>{recommendation.product.details}</p>
+      <Muted className="leading-relaxed">{recommendation.product.description}</Muted>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <Muted>{recommendation.score} de {recommendation.score + recommendation.unsupportedFeatureIds.length} requisitos cubiertos</Muted>
+        <Badge tone={recommendation.unsupportedFeatureIds.length > 0 ? 'warning' : 'success'}>{recommendation.unsupportedFeatureIds.length} {recommendation.unsupportedFeatureIds.length === 1 ? 'pendiente' : 'pendientes'}</Badge>
+      </div>
+      <details className="border-t border-navy/10 pt-3 dark:border-sky/20 print:hidden">
+        <summary className="cursor-pointer text-xs font-bold text-[#00698f] dark:text-sky">Ver alcance y límites</summary>
+        <Muted className="mt-2 leading-relaxed">{recommendation.product.details}</Muted>
       </details>
+      <Muted className="hidden leading-relaxed print:block">{recommendation.product.details}</Muted>
     </article>
   );
 }

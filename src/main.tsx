@@ -1,3 +1,4 @@
+import './core/exceljs-browser-globals';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './app/App';
