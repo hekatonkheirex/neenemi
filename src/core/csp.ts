@@ -12,13 +12,15 @@ export function inlineScriptHashes(html: string): string[] {
 /**
  * Política de la Suite empaquetada. Todo es local salvo los mosaicos de OpenStreetMap (<image> del mapa de Tracking);
  * Photon, OSRM y OpenRouter se llaman desde el servidor, no desde la página, así que connect-src queda en 'self'.
- * Los estilos en línea los usan React y Framer Motion (atributo style).
+ * style-src 'self' sin 'unsafe-inline': React y Framer Motion asignan estilos por CSSOM (element.style), que la política permite;
+ * lo que bloquea son <style> y atributos style inyectados como texto. Los reportes con <style> propio (Cobertura, SLA) van a otra ventana
+ * (data:) o a un archivo descargado, no a esta página.
  */
 export function buildContentSecurityPolicy(indexHtml: string): string {
   return [
     "default-src 'self'",
     `script-src ${["'self'", "'wasm-unsafe-eval'", ...inlineScriptHashes(indexHtml)].join(' ')}`,
-    "style-src 'self' 'unsafe-inline'",
+    "style-src 'self'",
     "img-src 'self' data: blob: https://tile.openstreetmap.org",
     "font-src 'self' data:",
     "connect-src 'self'",

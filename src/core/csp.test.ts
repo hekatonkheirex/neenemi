@@ -22,6 +22,9 @@ describe('buildContentSecurityPolicy', () => {
     expect(directive('script-src')).toMatch(/^script-src 'self' 'wasm-unsafe-eval' 'sha256-/);
     expect(directive('script-src')).not.toMatch(/'unsafe-inline'|'unsafe-eval'/);
   });
+  it("estilos solo propios: sin 'unsafe-inline' (React y Framer Motion usan CSSOM, no <style> ni atributos en el HTML)", () => {
+    expect(directive('style-src')).toBe("style-src 'self'");
+  });
   it('bloquea objetos, marcos y base ajena; red solo local', () => {
     expect(directive('object-src')).toBe("object-src 'none'");
     expect(directive('frame-ancestors')).toBe("frame-ancestors 'none'");
