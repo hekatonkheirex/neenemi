@@ -4,6 +4,7 @@ type PaginationControlsProps = PageRequest & {
   total: number;
   label?: string;
   disabled?: boolean;
+  pageSizeOptions?: readonly number[];
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
 };
@@ -14,6 +15,7 @@ export default function PaginationControls({
   total,
   label = 'Paginación de registros',
   disabled = false,
+  pageSizeOptions = [25, 50, 100],
   onPageChange,
   onPageSizeChange,
 }: PaginationControlsProps) {
@@ -27,9 +29,7 @@ export default function PaginationControls({
       <label className="pagination-size">
         <span>Filas</span>
         <select value={pageSize} onChange={(event) => onPageSizeChange(Number(event.target.value))} disabled={disabled}>
-          <option value={25}>25</option>
-          <option value={50}>50</option>
-          <option value={100}>100</option>
+          {pageSizeOptions.map((size) => <option key={size} value={size}>{size}</option>)}
         </select>
       </label>
       <span className="pagination-page">{totalPages === 0 ? 'Sin páginas' : `Página ${page} de ${totalPages}`}</span>

@@ -26,6 +26,8 @@ import type {
 } from './repository';
 import { confirmAction } from '../../core/confirm';
 import { readJson, toErrorMessage } from '../../core/http';
+import PaginationControls from '../../core/PaginationControls';
+import { usePagedList } from '../../core/usePagedList';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const customerTypes: readonly CustomerType[] = ['Publico', 'Privado'];
@@ -333,6 +335,7 @@ export default function DescontinuadorModule() {
         .includes(normalizedQuery),
     );
   }, [modelItems, query]);
+  const pagedModelItems = usePagedList(visibleModelItems, 100);
   const visibleStockItems = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase();
     if (!normalizedQuery) return stockItems;
@@ -814,7 +817,7 @@ export default function DescontinuadorModule() {
           <table className="catalog-table operations-table discontinuation-table">
             <thead><tr><th>Modelo</th><th>Código de parte</th><th>Tensión</th><th>Fecha fin</th><th>Equipos instalados</th><th>Notas de fuente</th><th>Estado</th></tr></thead>
             <tbody>
-              {visibleModelItems.map((item) => <tr key={item.id} className={item.status === 'discontinued' ? 'is-discontinued' : undefined}>
+              {pagedModelItems.items.map((item) => <tr key={item.id} className={item.status === 'discontinued' ? 'is-discontinued' : undefined}>
                 <td><span className="code-cell">{item.modelLabel}</span><small className="table-secondary-text" title={item.sourceLabel ?? item.sourceName}>{item.sourceLabel ?? item.sourceName}</small></td>
                 <td>{item.partCode || <span className="muted-note">Sin código</span>}</td>
                 <td>{item.voltage || <span className="muted-note">Sin dato</span>}</td>
@@ -827,6 +830,7 @@ export default function DescontinuadorModule() {
             </tbody>
           </table>
         </div>
+        {pagedModelItems.totalPages > 1 && <PaginationControls label="Paginación de modelos discontinuados" page={pagedModelItems.page} pageSize={pagedModelItems.pageSize} total={pagedModelItems.total} pageSizeOptions={[50, 100, 250]} onPageChange={pagedModelItems.setPage} onPageSizeChange={pagedModelItems.setPageSize} />}
       </section>
       </>}
 
@@ -1013,25 +1017,36 @@ function CustomerPortfolioDetail({
         {contracts.map((contract) => <details className="discontinuation-contract-detail" open key={contract.id}>
           <summary><span><b>{contract.reference || 'Sin referencia'}</b><small>{contract.contractType} · {formatDateRange(contract.startsAt, contract.endsAt)}</small></span><em>{contract.equipment.length} equipo{contract.equipment.length === 1 ? '' : 's'}</em><span className="discontinuation-contract-toggle"><span className="when-open">Contraer equipos</span><span className="when-closed">Ver equipos</span></span></summary>
           <div className="discontinuation-contract-meta">{formatContractMetadata(contract)}<SourceDetails details={contract.sourceDetails} /></div>
-          <div className="catalog-table-wrap">
-            <table className="catalog-table operations-table discontinuation-equipment-table">
-              <thead><tr><th>Equipo</th><th>Serie</th><th>Ubicación</th><th>Ciudad / dirección</th><th>Estado Canon</th></tr></thead>
-              <tbody>{contract.equipment.map((equipment) => {
-                const support = supportByModel.get(equipment.modelLabel);
-                return <tr key={equipment.id}>
-                  <td><span className="code-cell">{equipment.modelLabel}</span><small className="table-secondary-text">{[equipment.brand, equipment.description].filter(Boolean).join(' · ') || 'Sin descripción de origen'}</small><SourceDetails details={equipment.sourceDetails} /></td>
-                  <td>{equipment.serialNumber || 'Sin serie'}</td>
-                  <td><span>{equipment.interior || equipment.location || 'Sin ubicación'}</span><small className="table-secondary-text">{equipment.branch || 'Sin sucursal'}</small></td>
-                  <td><span>{equipment.city || 'Sin ciudad'}</span><small className="table-secondary-text">{equipment.address || 'Sin dirección'}</small></td>
-                  <td>{support ? <><span className={`badge ${support.status === 'discontinued' ? 'alert' : support.status === 'scheduled' ? 'warning' : 'ok'}`}>{support.status === 'discontinued' ? 'Discontinuado' : support.status === 'scheduled' ? 'Próximo fin' : 'Soporte vigente'}</span><small className="table-secondary-text">{support.endsAt ? `Fin: ${formatDate(support.endsAt)}` : support.sourceName}</small></> : <span className="badge neutral">Sin registro Canon</span>}</td>
-                </tr>;
-              })}</tbody>
-            </table>
-          </div>
+          <ContractEquipmentTable equipment={contract.equipment} supportByModel={supportByModel} />
         </details>)}
         {contracts.length === 0 && <p className="empty-inline">Sin contratos registrados para este filtro.</p>}
       </div>
     </div>
+  );
+}
+
+/** Equipos de un contrato, de a 50: un cliente grande llega a cientos de filas con detalle de origen cada una. */
+function ContractEquipmentTable({ equipment, supportByModel }: { equipment: ContractRecord['equipment']; supportByModel: ReadonlyMap<string, ModelDiscontinuationRecord | undefined> }) {
+  const paged = usePagedList(equipment, 50);
+  return (
+    <>
+      <div className="catalog-table-wrap">
+        <table className="catalog-table operations-table discontinuation-equipment-table">
+          <thead><tr><th>Equipo</th><th>Serie</th><th>Ubicación</th><th>Ciudad / dirección</th><th>Estado Canon</th></tr></thead>
+          <tbody>{paged.items.map((equipment) => {
+            const support = supportByModel.get(equipment.modelLabel);
+            return <tr key={equipment.id}>
+              <td><span className="code-cell">{equipment.modelLabel}</span><small className="table-secondary-text">{[equipment.brand, equipment.description].filter(Boolean).join(' · ') || 'Sin descripción de origen'}</small><SourceDetails details={equipment.sourceDetails} /></td>
+              <td>{equipment.serialNumber || 'Sin serie'}</td>
+              <td><span>{equipment.interior || equipment.location || 'Sin ubicación'}</span><small className="table-secondary-text">{equipment.branch || 'Sin sucursal'}</small></td>
+              <td><span>{equipment.city || 'Sin ciudad'}</span><small className="table-secondary-text">{equipment.address || 'Sin dirección'}</small></td>
+              <td>{support ? <><span className={`badge ${support.status === 'discontinued' ? 'alert' : support.status === 'scheduled' ? 'warning' : 'ok'}`}>{support.status === 'discontinued' ? 'Discontinuado' : support.status === 'scheduled' ? 'Próximo fin' : 'Soporte vigente'}</span><small className="table-secondary-text">{support.endsAt ? `Fin: ${formatDate(support.endsAt)}` : support.sourceName}</small></> : <span className="badge neutral">Sin registro Canon</span>}</td>
+            </tr>;
+          })}</tbody>
+        </table>
+      </div>
+      {paged.totalPages > 1 && <PaginationControls label="Paginación de equipos del contrato" page={paged.page} pageSize={paged.pageSize} total={paged.total} pageSizeOptions={[25, 50, 100]} onPageChange={paged.setPage} onPageSizeChange={paged.setPageSize} />}
+    </>
   );
 }
 

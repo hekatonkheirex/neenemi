@@ -9,6 +9,8 @@ import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
 import { readJson, toErrorMessage } from '../../core/http';
 import { memoizeString } from '../../core/memoize';
+import PaginationControls from '../../core/PaginationControls';
+import { usePagedList } from '../../core/usePagedList';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const decimalFormat = new Intl.NumberFormat('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
@@ -240,6 +242,8 @@ export default function ListadoPreciosModule() {
       return selectedModelKeys.has(normalizeModelText(note.modelName));
     });
   }, [familyModelKeys, modelName, modelNotes, onlySelected, selectedModelKeys, selectedModels.length]);
+
+  const pagedItems = usePagedList(displayedItems, 100);
 
   useEffect(() => {
     if (!selectionReady || !selectionNeedsSave(selectedModels, persistedSelection.current)) return;
@@ -660,7 +664,7 @@ export default function ListadoPreciosModule() {
             </tr>
           </thead>
           <tbody>
-            {displayedItems.map((item) => (
+            {pagedItems.items.map((item) => (
               <tr key={item.id} className={item.discontinuedAt ? 'is-discontinued' : undefined}>
                 <td className="code-cell">{item.code}</td>
                 <td>
@@ -693,6 +697,17 @@ export default function ListadoPreciosModule() {
             )}
           </tbody>
         </table>
+        {pagedItems.totalPages > 1 && (
+          <PaginationControls
+            label="Paginación del listado de precios"
+            page={pagedItems.page}
+            pageSize={pagedItems.pageSize}
+            total={pagedItems.total}
+            pageSizeOptions={[50, 100, 250]}
+            onPageChange={pagedItems.setPage}
+            onPageSizeChange={pagedItems.setPageSize}
+          />
+        )}
       </section>
 
       {displayedServiceItems.length > 0 && (
