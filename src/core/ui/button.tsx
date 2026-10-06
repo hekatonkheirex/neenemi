@@ -3,6 +3,8 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import type { ButtonHTMLAttributes } from 'react';
 import { cn } from '../cn';
 
+// Los colores de texto llevan "!" porque el CSS heredado del tema claro (theme/05-ventas.css: .app-shell :where(button)) los fija con más
+// especificidad. Quitar al borrar ese CSS.
 /** Botón shadcn/ui con los tokens de marca: default = CTA naranja, outline/ghost = acciones secundarias. */
 export const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl no-underline text-sm font-semibold transition-colors duration-150 ' +
@@ -11,11 +13,11 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border border-transparent bg-brand text-navy shadow-md hover:bg-[#e66000]',
+        default: 'border border-transparent bg-brand text-navy! shadow-md hover:bg-[#e66000]',
         outline:
-          'border border-navy/20 bg-white text-navy hover:bg-sky/10 dark:border-sky/30 dark:bg-transparent dark:text-white dark:hover:bg-sky/15',
-        ghost: 'border border-transparent bg-transparent text-navy hover:bg-sky/10 dark:text-white dark:hover:bg-sky/15',
-        destructive: 'border border-transparent bg-[#b42318] text-white shadow-md hover:bg-[#912018]',
+          'border border-navy/20 bg-white text-navy! hover:bg-sky/10 dark:border-sky/30 dark:bg-transparent dark:text-white! dark:hover:bg-sky/15',
+        ghost: 'border border-transparent bg-transparent text-navy! hover:bg-sky/10 dark:text-white! dark:hover:bg-sky/15',
+        destructive: 'border border-transparent bg-[#b42318] text-white! shadow-md hover:bg-[#912018]',
       },
       size: {
         default: 'h-10 px-4',

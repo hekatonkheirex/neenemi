@@ -1,5 +1,8 @@
 import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { currentConfirm, resolveConfirm, subscribeConfirm, type ConfirmRequest } from './confirm';
+import { cn } from './cn';
+import { dialogPanel } from './dialog';
+import { Button } from './ui/button';
 
 export function ConfirmDialogView({ request, onResolve }: { request: ConfirmRequest; onResolve: (confirmed: boolean) => void }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -14,26 +17,26 @@ export function ConfirmDialogView({ request, onResolve }: { request: ConfirmRequ
   return (
     <dialog
       ref={ref}
-      className="confirm-dialog"
+      className={dialogPanel}
+      data-tone={danger ? 'danger' : 'default'}
       aria-labelledby="confirm-dialog-title"
       aria-describedby="confirm-dialog-message"
       // Esc dispara "cancel": se resuelve como rechazo y se deja que el host desmonte el diálogo.
       onCancel={(event) => { event.preventDefault(); onResolve(false); }}
     >
-      <h2 id="confirm-dialog-title">{request.title}</h2>
-      <p id="confirm-dialog-message">{request.message}</p>
-      <div className="confirm-dialog-actions">
-        {/* Cancelar tiene el foco inicial: la acción destructiva nunca se activa con un Enter accidental. */}
-        <button className="secondary-button" type="button" autoFocus onClick={() => onResolve(false)}>
-          {request.cancelLabel ?? 'Cancelar'}
-        </button>
-        <button
-          className={danger ? 'primary-button confirm-dialog-danger' : 'primary-button'}
-          type="button"
-          onClick={() => onResolve(true)}
-        >
-          {request.confirmLabel}
-        </button>
+      <div className="grid gap-4 p-6">
+        <h2 id="confirm-dialog-title" className="text-lg font-bold text-navy dark:text-white">{request.title}</h2>
+        {/* ponytail: <div> y no <p>: el CSS heredado del tema claro colorea <p> con más especificidad. */}
+        <div id="confirm-dialog-message" className="text-sm leading-relaxed text-ink-2 dark:text-[#b9c9e6]">{request.message}</div>
+        <div className="mt-2 flex flex-wrap justify-end gap-2">
+          {/* Cancelar tiene el foco inicial: la acción destructiva nunca se activa con un Enter accidental. */}
+          <Button variant="outline" autoFocus onClick={() => onResolve(false)}>
+            {request.cancelLabel ?? 'Cancelar'}
+          </Button>
+          <Button variant={danger ? 'destructive' : 'default'} className={cn(danger && 'dark:bg-[#d92d20]')} onClick={() => onResolve(true)}>
+            {request.confirmLabel}
+          </Button>
+        </div>
       </div>
     </dialog>
   );

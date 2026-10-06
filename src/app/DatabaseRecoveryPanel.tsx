@@ -46,11 +46,11 @@ const plural = (n: number, one: string, many: string) => `${n.toLocaleString('es
 
 // Colores de estado (no de marca): rojo = sin respaldar, ámbar = antiguo, verde = al día. El texto del CTA se elige por contraste.
 const levelTone = {
-  never: { accent: '#d92d20', ink: 'text-white' },
-  pending: { accent: '#d92d20', ink: 'text-white' },
-  stale: { accent: '#e08a00', ink: 'text-navy' },
-  ok: { accent: '#2f8f5b', ink: 'text-white' },
-  loading: { accent: '#6b7a90', ink: 'text-white' },
+  never: { accent: '#d92d20', ink: 'text-white!' },
+  pending: { accent: '#d92d20', ink: 'text-white!' },
+  stale: { accent: '#e08a00', ink: 'text-navy!' },
+  ok: { accent: '#2f8f5b', ink: 'text-white!' },
+  loading: { accent: '#6b7a90', ink: 'text-white!' },
 } as const;
 
 const mutedText = 'text-ink-2 dark:text-[#9fb2d1]';
@@ -260,7 +260,7 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
           {onClearImports ? (
             <Button
               variant="outline"
-              className="border-brand/60 bg-[#fff0e6] text-[#8f3b00] hover:bg-[#ffe4d2] dark:border-brand/50 dark:bg-brand/10 dark:text-brand dark:hover:bg-brand/20"
+              className="border-brand/60 bg-[#fff0e6] text-[#8f3b00]! hover:bg-[#ffe4d2] dark:border-brand/50 dark:bg-brand/10 dark:text-brand! dark:hover:bg-brand/20"
               onClick={onClearImports}
               disabled={clearingImports || busy}
               aria-busy={clearingImports}

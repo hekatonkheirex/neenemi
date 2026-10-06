@@ -38,6 +38,9 @@ describe('CommandPalette', () => {
     expect(markup).toContain('role="listbox"');
     expect(markup).toContain('aria-selected="true"');
     expect(markup).toContain('Gestor de mantenimiento');
+    expect(markup).toMatch(/<dialog[^>]*aria-label="Ir a un módulo"/);
+    expect(markup).toContain('backdrop:backdrop-blur-sm');
+    expect(markup).not.toMatch(/class="[^"]*command-palette/);
   });
 });
 

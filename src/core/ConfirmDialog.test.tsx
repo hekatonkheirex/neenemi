@@ -37,14 +37,17 @@ describe('ConfirmDialogView', () => {
     const markup = renderToStaticMarkup(<ConfirmDialogView request={base} onResolve={() => {}} />);
     expect(markup).toContain('aria-labelledby="confirm-dialog-title"');
     expect(markup).toContain('aria-describedby="confirm-dialog-message"');
-    expect(markup).toContain('>Quitar carga</button>');
-    expect(markup).toContain('confirm-dialog-danger');
-    expect(markup).toContain('>Cancelar</button>');
+    expect(markup).toMatch(/<button[^>]*>Quitar carga<\/button>/);
+    expect(markup).toContain('data-tone="danger"');
+    expect(markup).toContain('bg-[#b42318]');
+    expect(markup).toMatch(/<button[^>]*>Cancelar<\/button>/);
+    expect(markup).toContain('backdrop:backdrop-blur-sm');
   });
 
   it('no marca como destructiva una confirmación neutra', () => {
     const markup = renderToStaticMarkup(<ConfirmDialogView request={{ ...base, tone: 'default' }} onResolve={() => {}} />);
-    expect(markup).not.toContain('confirm-dialog-danger');
+    expect(markup).toContain('data-tone="default"');
+    expect(markup).not.toContain('bg-[#b42318]');
   });
 });
 

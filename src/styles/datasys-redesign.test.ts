@@ -1,6 +1,9 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { readCssBundle } from '../test-support/css';
 
+const root = path.resolve(import.meta.dirname, '../..');
 const luminance = (hex: string) => {
   const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
     .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
@@ -59,13 +62,15 @@ describe('rediseño Datasys', () => {
   });
 
   it('todos los modales llevan blur y no quedan azules fuera de paleta ni glifos de texto como iconos', () => {
-    for (const sel of ['.changelog-overlay', '.confirm-dialog::backdrop', '.command-palette::backdrop', '.travel-drawer::backdrop']) {
+    for (const sel of ['.travel-drawer::backdrop']) {
       expect(theme, sel).toMatch(new RegExp(`${sel.replace(/[.:]/g, '\\$&')}[^{]*{[^}]*backdrop-filter:\\s*blur`));
     }
     expect(theme).not.toMatch(/#4277e9|#77a7ff|rgba\(66, ?119, ?233/);
   });
 
-  it('el changelog gana por especificidad, no por orden de carga', () => {
-    expect(theme).toMatch(/html\[data-theme\] \.changelog-dialog\s*{[^}]*border-radius:\s*var\(--ds-radius-2xl\)[^}]*box-shadow:\s*var\(--ds-shadow-md\)/);
+  it('los diálogos de la suite comparten dialogPanel: blur, radio 2xl y sombra md, sin CSS heredado', () => {
+    const dialog = fs.readFileSync(path.join(root, 'src/core/dialog.ts'), 'utf8');
+    for (const token of ['rounded-2xl', 'shadow-md', 'backdrop:backdrop-blur-sm', 'motion-reduce:backdrop:backdrop-blur-none', 'dark:bg-panel']) expect(dialog).toContain(token);
+    expect(theme).not.toMatch(/\.(confirm-dialog|command-palette|changelog-dialog|changelog-overlay)/);
   });
 });

@@ -139,27 +139,13 @@ html[data-theme='dark'] .module-symbol {
   color: var(--ds-sky);
 }
 
-/* Todos los modales: fondo con blur (los <dialog> nativos usan ::backdrop). */
-.changelog-overlay,
-.confirm-dialog::backdrop,
-.command-palette::backdrop,
+/* Los diálogos de la suite usan clases Tailwind (src/core/dialog.ts); aquí quedan solo los modales con CSS heredado. */
 .travel-drawer::backdrop {
   backdrop-filter: blur(0.5rem);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .changelog-overlay,
-  .confirm-dialog::backdrop,
-  .command-palette::backdrop,
   .travel-drawer::backdrop {
     backdrop-filter: none;
   }
-}
-
-/* El changelog trae su propio CSS (ChangelogDialog.css): html[data-theme] sube la especificidad para no depender del orden de carga. */
-.confirm-dialog,
-.command-palette,
-html[data-theme] .changelog-dialog {
-  border-radius: var(--ds-radius-2xl);
-  box-shadow: var(--ds-shadow-md);
 }

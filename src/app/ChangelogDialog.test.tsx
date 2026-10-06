@@ -7,10 +7,13 @@ import { version } from '../../package.json';
 describe('historial de cambios', () => {
   it('lista el historial completo, marca la versión instalada y expone el diálogo con nombre accesible', () => {
     const markup = renderToStaticMarkup(<ChangelogDialog currentVersion={version} onClose={() => {}} />);
-    expect(markup).toContain('role="dialog"');
-    expect(markup).toContain('aria-labelledby="changelog-title"');
+    expect(markup).toMatch(/<dialog[^>]*aria-labelledby="changelog-title"/);
+    expect(markup).toContain('aria-label="Cerrar historial"');
+    expect(markup).toContain('backdrop:backdrop-blur-sm');
     expect(markup).toContain(`v${version}`);
     expect(markup).toContain('Instalada');
+    // El CSS global de listas pinta un ✓ en li::before; el historial lo anula.
+    expect(markup).toContain('before:content-none');
     expect(markup).toContain('v0.1.1<');
     expect(markup.match(/<li/g)!.length).toBeGreaterThanOrEqual(46);
   });

@@ -372,7 +372,7 @@ export function ImportArchiveViewer({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-[#d92d20]/50 text-[#912018] hover:bg-[#d92d20]/10 dark:text-[#ffb4ab]"
+                  className="border-[#d92d20]/50 text-[#912018]! hover:bg-[#d92d20]/10 dark:text-[#ffb4ab]!"
                   disabled={removingBatchId !== null}
                   onClick={() => onRemoveBatch(batch)}
                 >
