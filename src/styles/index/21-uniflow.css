@@ -84,9 +84,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
     grid-template-columns: 1fr;
   }
 
-  .mps-layout {
-    grid-template-columns: 1fr;
-  }
 
   .consumables-layout {
     grid-template-columns: 1fr;
@@ -258,9 +255,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
     grid-template-columns: 1fr;
   }
 
-  .mps-volume-row {
-    grid-template-columns: 1fr;
-  }
 
   .consumables-controls {
     grid-template-columns: 1fr;
@@ -335,9 +329,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .mps-volume-row .primary-button {
-    width: 100%;
-  }
 
   .compact-search {
     width: 100%;

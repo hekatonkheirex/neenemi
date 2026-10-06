@@ -142,11 +142,6 @@ html[data-theme='light'] .consumables-tabs button.active {
   color: var(--ds-navy);
 }
 
-html[data-theme='light'] .mps-presets button {
-  border-color: var(--ds-border-strong);
-  color: var(--ds-navy);
-  background: var(--ds-surface-alt);
-}
 
 html[data-theme='light'] .history-item b {
   color: var(--ds-success);
@@ -173,8 +168,8 @@ html[data-theme='light'] .page-content .maintenance-priority-row b {
    :not([data-theme='light']) los limita al oscuro; en claro siguen los valores existentes. */
 html:not([data-theme='light']) :is(
   .detail-label, .overview-import-meta, .scope-note, .summary-card-note, .travel-history-metric small,
-  .database-recovery-copy small, .maintenance-source-dropzone-copy span, .mps-model-volume,
-  .mps-model-select small, .maintenance-priority-row small, .maintenance-subset-row small,
+  .database-recovery-copy small, .maintenance-source-dropzone-copy span,
+  .maintenance-priority-row small, .maintenance-subset-row small,
   .travel-overview-row-heading small, .pricing-panel .search-field > span,
   .travel-source-sheet-list small, .travel-source-heading-actions .muted-note, .travel-source-pagination span
 ) {

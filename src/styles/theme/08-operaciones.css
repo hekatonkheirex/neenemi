@@ -52,7 +52,6 @@ html[data-theme='light'] .analytics-equipment-value strong {
 
 html[data-theme='light'] .suggestion-row,
 html[data-theme='light'] .history-item,
-html[data-theme='light'] .mps-model-option,
 html[data-theme='light'] .analytics-equipment-row {
   color: var(--ds-ink);
   background: transparent;

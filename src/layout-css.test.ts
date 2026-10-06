@@ -38,10 +38,6 @@ describe('layout entre 960 y 1350 px', () => {
     expect(theme).toMatch(/html\[data-theme='light'\] \.total-breakdown b\s*{\s*color:\s*var\(--ds-navy\)/);
   });
 
-  it('MPS: la columna lateral baja bajo 1500 px y los nombres de insumo pueden envolver', () => {
-    expect(css).toMatch(/@media \(max-width: 1500px\)\s*{\s*\.mps-layout\s*{\s*grid-template-columns:\s*1fr/);
-    expect(css).toMatch(/\.mps-projection-table \.code-cell\s*{\s*white-space:\s*normal/);
-  });
 
   it('PDF de MPS: el título no hereda el h1 global y las tarjetas no heredan el estilo de tarjeta de theme.css', () => {
     expect(css).toMatch(/\.mps-print-title-row h1\s*{\s*max-width:\s*none[^}]*letter-spacing:\s*-0\.01em/);

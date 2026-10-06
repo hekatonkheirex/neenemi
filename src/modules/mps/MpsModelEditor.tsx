@@ -1,6 +1,13 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from 'react';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
 import type { MpsConsumable, MpsModel, SaveMpsModelInput } from './repository';
+import { Copy, Plus, Save, Trash2, X } from 'lucide-react';
+import { cn } from '../../core/cn';
+import { dialogPanel } from '../../core/dialog';
+import { Badge } from '../../core/ui/badge';
+import { Button } from '../../core/ui/button';
+import { CardHeader, Muted } from '../../core/ui/card';
+import { Input } from '../../core/ui/input';
 
 type EditorMode = 'create' | 'edit' | 'clone';
 
@@ -66,7 +73,10 @@ const COLOR_PRESET: readonly ConsumableDraft[] = [
   { name: 'Unidad de Tambor Color', type: 'drum', yieldPages: '122000', color: 'other', sku: '4818C001AA' },
 ];
 
+const selectClassName = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy dark:border-sky/30 dark:bg-navy/50 dark:text-white';
+
 export default function MpsModelEditor({ mode, model, models, saving, onCancel, onSave }: MpsModelEditorProps) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const [draft, setDraft] = useState<ModelDraft>(() => makeDraft(mode, model));
   const [copySourceId, setCopySourceId] = useState('');
   const [formError, setFormError] = useState('');
@@ -78,13 +88,14 @@ export default function MpsModelEditor({ mode, model, models, saving, onCancel, 
     setFormError('');
   }, [mode, model]);
 
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape' && !saving) onCancel();
+  useLayoutEffect(() => {
+    const dialog = dialogRef.current;
+    if (dialog && !dialog.open) {
+      dialog.showModal();
+      dialog.querySelector<HTMLInputElement>('input[name="brand"]')?.focus();
     }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onCancel, saving]);
+    return () => dialog?.close();
+  }, []);
 
   function updateDraft<K extends keyof ModelDraft>(key: K, value: ModelDraft[K]) {
     setDraft((current) => ({ ...current, [key]: value }));
@@ -193,60 +204,67 @@ export default function MpsModelEditor({ mode, model, models, saving, onCancel, 
     : 'Los perfiles manuales quedan guardados en SQLite y no se pierden al reimportar la base Canon.';
 
   return (
-    <div className="mps-editor-overlay" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget && !saving) onCancel(); }}>
-      <section className="mps-editor" role="dialog" aria-modal="true" aria-labelledby="mps-editor-title">
-        <header className="mps-editor-header">
-          <div><div className="eyebrow">PERFIL MANUAL</div><h2 id="mps-editor-title">{title}</h2><p>{subtitle}</p></div>
-          <button className="mps-editor-close" type="button" onClick={onCancel} disabled={saving} aria-label="Cerrar editor">×</button>
+    <dialog
+      ref={dialogRef}
+      className={cn(dialogPanel, 'w-[min(64rem,calc(100vw-2rem))]')}
+      aria-labelledby="mps-editor-title"
+      aria-describedby="mps-editor-subtitle"
+      onCancel={(event) => { event.preventDefault(); if (!saving) onCancel(); }}
+      onMouseDown={(event) => { if (event.target === event.currentTarget && !saving) onCancel(); }}
+    >
+      <div className="flex max-h-[calc(100vh-2rem)] flex-col">
+        <header className="flex shrink-0 items-start justify-between gap-4 border-b border-navy/10 p-5 dark:border-sky/20">
+          <div className="grid min-w-0 gap-2"><CardHeader eyebrow="PERFIL MANUAL" title={<span id="mps-editor-title">{title}</span>} /><Muted id="mps-editor-subtitle">{subtitle}</Muted></div>
+          <Button variant="ghost" size="icon" onClick={onCancel} disabled={saving} aria-label="Cerrar editor"><X /></Button>
         </header>
-
-        <form className="mps-editor-form" onSubmit={submit}>
-          <div className="mps-editor-body">
-            {mode === 'clone' && model ? <div className="mps-editor-banner">Variante de <strong>{model.brand} {model.modelLabel}</strong>. Puedes cambiar el nombre, velocidad o volumen sin modificar el original.</div> : null}
-
-            {models.length > 0 ? <div className="mps-copy-row">
-              <div><strong>Copiar parámetros e insumos</strong><small>Trae la configuración de otro modelo para evitar recargarla.</small></div>
-              <div className="mps-copy-controls"><select name="copySource" value={copySourceId} onChange={(event) => setCopySourceId(event.target.value)} aria-label="Modelo fuente para copiar"><option value="">Seleccionar modelo…</option>{models.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.brand} {candidate.modelLabel}</option>)}</select><button className="secondary-button" type="button" onClick={copyFromModel} disabled={!copySourceId}>Copiar</button></div>
+        <form className="flex min-h-0 flex-1 flex-col" onSubmit={submit}>
+          <div className="grid min-h-0 gap-5 overflow-y-auto p-5">
+            {mode === 'clone' && model ? <div className="rounded-xl border border-sky/30 bg-sky/10 p-4 text-sm">Variante de <strong>{model.brand} {model.modelLabel}</strong>. Puedes cambiar el nombre, velocidad o volumen sin modificar el original.</div> : null}
+            {models.length > 0 ? <div className="grid gap-3 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+              <div className="grid content-center gap-1"><strong className="text-sm">Copiar parámetros e insumos</strong><Muted>Trae la configuración de otro modelo para evitar recargarla.</Muted></div>
+              <div className="flex min-w-0 items-center gap-2"><select className={selectClassName} name="copySource" value={copySourceId} onChange={(event) => setCopySourceId(event.target.value)} aria-label="Modelo fuente para copiar"><option value="">Seleccionar modelo…</option>{models.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.brand} {candidate.modelLabel}</option>)}</select><Button variant="outline" onClick={copyFromModel} disabled={!copySourceId}><Copy />Copiar</Button></div>
             </div> : null}
-
-            {formError ? <div className="mps-editor-error" role="alert">{formError}</div> : null}
-
-            <div className="mps-editor-fields">
-              <label className="search-field"><span>Marca *</span><input required pattern=".*\S.*" title="No puede quedar vacío ni solo con espacios." name="brand" value={draft.brand} onChange={(event) => updateDraft('brand', event.target.value)} placeholder="Canon" autoFocus /></label>
-              <label className="search-field"><span>Modelo *</span><input required pattern=".*\S.*" title="No puede quedar vacío ni solo con espacios." name="model" value={draft.model} onChange={(event) => updateDraft('model', event.target.value)} placeholder="imageRUNNER ADVANCE…" /></label>
-              <label className="search-field"><span>Velocidad PPM</span><input name="speedPpm" type="number" min="0" step="1" value={draft.speedPpm} onChange={(event) => updateDraft('speedPpm', event.target.value)} placeholder="Opcional" /></label>
-              <label className="search-field"><span>Tipo de equipo</span><select name="equipmentType" value={draft.isColor ? 'color' : 'mono'} onChange={(event) => updateDraft('isColor', event.target.value === 'color')}><option value="mono">Monocromático</option><option value="color">Color</option></select></label>
-              <label className="search-field"><span>Volumen mínimo / mes</span><input name="recVolumeMin" type="number" min="0" step="1" value={draft.recVolumeMin} onChange={(event) => updateDraft('recVolumeMin', event.target.value)} /></label>
-              <label className="search-field"><span>Volumen máximo / mes</span><input name="recVolumeMax" type="number" min="0" step="1" value={draft.recVolumeMax} onChange={(event) => updateDraft('recVolumeMax', event.target.value)} /></label>
+            {formError ? <div className="rounded-xl border border-[#b42318]/30 bg-[#b42318]/5 p-4 text-sm text-[#b42318] dark:text-[#ffb0b7]" role="alert">{formError}</div> : null}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-2 text-xs font-bold">Marca *<Input required pattern=".*\S.*" title="No puede quedar vacío ni solo con espacios." name="brand" value={draft.brand} onChange={(event) => updateDraft('brand', event.target.value)} placeholder="Canon" autoFocus /></label>
+              <label className="grid gap-2 text-xs font-bold">Modelo *<Input required pattern=".*\S.*" title="No puede quedar vacío ni solo con espacios." name="model" value={draft.model} onChange={(event) => updateDraft('model', event.target.value)} placeholder="imageRUNNER ADVANCE…" /></label>
+              <label className="grid gap-2 text-xs font-bold">Velocidad PPM<Input name="speedPpm" type="number" min="0" step="1" value={draft.speedPpm} onChange={(event) => updateDraft('speedPpm', event.target.value)} placeholder="Opcional" /></label>
+              <label className="grid gap-2 text-xs font-bold">Tipo de equipo<select className={selectClassName} name="equipmentType" value={draft.isColor ? 'color' : 'mono'} onChange={(event) => updateDraft('isColor', event.target.value === 'color')}><option value="mono">Monocromático</option><option value="color">Color</option></select></label>
+              <label className="grid gap-2 text-xs font-bold">Volumen mínimo / mes<Input name="recVolumeMin" type="number" min="0" step="1" value={draft.recVolumeMin} onChange={(event) => updateDraft('recVolumeMin', event.target.value)} /></label>
+              <label className="grid gap-2 text-xs font-bold">Volumen máximo / mes<Input name="recVolumeMax" type="number" min="0" step="1" value={draft.recVolumeMax} onChange={(event) => updateDraft('recVolumeMax', event.target.value)} /></label>
             </div>
 
-            <div className="mps-consumables-editor">
-              <div className="mps-consumables-heading">
-                <div><div className="eyebrow">COMPONENTES</div><h3>Consumibles del perfil</h3><p>Define rendimiento, tipo, color y SKU para la proyección anual.</p></div>
-                <div className="mps-consumables-actions">
-                  <button className="secondary-button" type="button" onClick={() => applyConsumablesPreset('monochrome')}>Cargar monocromo</button>
-                  <button className="secondary-button" type="button" onClick={() => applyConsumablesPreset('color')}>Cargar color</button>
-                  <button className="secondary-button" type="button" onClick={addConsumable}>+ Agregar consumible</button>
+            <section className="grid gap-4 border-t border-navy/10 pt-5 dark:border-sky/20">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="grid gap-1"><h3 className="m-0 text-base font-bold">Consumibles del perfil</h3><Muted>Define rendimiento, tipo, color y SKU para la proyección anual.</Muted></div>
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" size="sm" onClick={() => applyConsumablesPreset('monochrome')}>Cargar monocromo</Button>
+                  <Button variant="outline" size="sm" onClick={() => applyConsumablesPreset('color')}>Cargar color</Button>
+                  <Button variant="outline" size="sm" onClick={addConsumable}><Plus />Agregar consumible</Button>
                 </div>
               </div>
-              <div className="mps-consumable-editor-list">
-                {draft.consumables.map((item, index) => <div className="mps-consumable-editor-row" key={`${item.id ?? 'new'}-${index}`}>
-                  <div className="mps-consumable-index">{String(index + 1).padStart(2, '0')}</div>
-                  <label className="search-field"><span>Nombre</span><input required pattern=".*\S.*" title="No puede quedar vacío ni solo con espacios." name={`consumable-${index}-name`} value={item.name} onChange={(event) => updateConsumable(index, 'name', event.target.value)} placeholder="Tóner negro" /></label>
-                  <label className="search-field"><span>Tipo</span><select name={`consumable-${index}-type`} value={item.type} onChange={(event) => updateConsumable(index, 'type', event.target.value)}>{CONSUMABLE_TYPES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-                  <label className="search-field"><span>Rendimiento</span><input required name={`consumable-${index}-yield`} type="number" min="1" step="1" value={item.yieldPages} onChange={(event) => updateConsumable(index, 'yieldPages', event.target.value)} /></label>
-                  <label className="search-field"><span>Color</span><select name={`consumable-${index}-color`} value={item.color} onChange={(event) => updateConsumable(index, 'color', event.target.value)}>{CONSUMABLE_COLORS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-                  <label className="search-field"><span>SKU</span><input name={`consumable-${index}-sku`} value={item.sku} onChange={(event) => updateConsumable(index, 'sku', event.target.value)} placeholder="Opcional" /></label>
-                  <button className="mps-remove-consumable" type="button" onClick={() => removeConsumable(index)} aria-label={`Quitar ${item.name || 'consumible'}`}>×</button>
+              <div className="grid gap-3">
+                {draft.consumables.map((item, index) => <div className="grid min-w-0 gap-3 rounded-xl border border-navy/10 bg-paper/60 p-4 dark:border-sky/20 dark:bg-navy/30" key={`${item.id ?? 'new'}-${index}`}>
+                  <div className="flex items-center justify-between gap-3"><Badge>Consumible {String(index + 1).padStart(2, '0')}</Badge><Button variant="ghost" size="sm" onClick={() => removeConsumable(index)} aria-label={`Quitar ${item.name || 'consumible'}`}><Trash2 />Quitar</Button></div>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    <label className="grid min-w-0 gap-2 text-xs font-bold sm:col-span-2 lg:col-span-1">Nombre<Input required pattern=".*\S.*" title="No puede quedar vacío ni solo con espacios." name={`consumable-${index}-name`} value={item.name} onChange={(event) => updateConsumable(index, 'name', event.target.value)} placeholder="Tóner negro" /></label>
+                    <label className="grid min-w-0 gap-2 text-xs font-bold">Tipo<select className={selectClassName} name={`consumable-${index}-type`} value={item.type} onChange={(event) => updateConsumable(index, 'type', event.target.value)}>{CONSUMABLE_TYPES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+                    <label className="grid min-w-0 gap-2 text-xs font-bold">Rendimiento<Input required name={`consumable-${index}-yield`} type="number" min="1" step="1" value={item.yieldPages} onChange={(event) => updateConsumable(index, 'yieldPages', event.target.value)} /></label>
+                    <label className="grid min-w-0 gap-2 text-xs font-bold">Color<select className={selectClassName} name={`consumable-${index}-color`} value={item.color} onChange={(event) => updateConsumable(index, 'color', event.target.value)}>{CONSUMABLE_COLORS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+                    <label className="grid min-w-0 gap-2 text-xs font-bold sm:col-span-1 lg:col-span-2">SKU<Input name={`consumable-${index}-sku`} value={item.sku} onChange={(event) => updateConsumable(index, 'sku', event.target.value)} placeholder="Opcional" /></label>
+                  </div>
                 </div>)}
-                {draft.consumables.length === 0 ? <div className="mps-editor-empty">Aún no hay consumibles. Agrega al menos uno.</div> : null}
+                {draft.consumables.length === 0 ? <Muted className="rounded-xl border border-dashed border-navy/20 p-5 text-center dark:border-sky/30">Aún no hay consumibles. Agrega al menos uno.</Muted> : null}
               </div>
-            </div>
+            </section>
           </div>
-          <footer className="mps-editor-footer"><button className="secondary-button" type="button" onClick={onCancel} disabled={saving}>Cancelar</button><button className="primary-button" type="submit" disabled={saving}>{saving ? 'Guardando…' : mode === 'edit' ? 'Guardar cambios' : 'Crear perfil'}</button></footer>
+          <footer className="flex shrink-0 flex-wrap justify-end gap-3 border-t border-navy/10 p-5 dark:border-sky/20">
+            <Button variant="outline" onClick={onCancel} disabled={saving}>Cancelar</Button>
+            <Button type="submit" disabled={saving} aria-busy={saving}><Save />{saving ? 'Guardando…' : mode === 'edit' ? 'Guardar cambios' : 'Crear perfil'}</Button>
+          </footer>
         </form>
-      </section>
-    </div>
+      </div>
+    </dialog>
   );
 }
 

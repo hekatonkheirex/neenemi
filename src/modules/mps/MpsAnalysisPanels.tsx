@@ -1,6 +1,11 @@
 import type { MpsAnalysis } from './analysis';
 import type { MpsModel } from './repository';
 import { ExportButton } from '../../core/ActionButtons';
+import { Printer } from 'lucide-react';
+import { Badge } from '../../core/ui/badge';
+import { Button } from '../../core/ui/button';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
 
 type MpsAnalysisPanelsProps = {
   model: MpsModel;
@@ -39,81 +44,89 @@ export default function MpsAnalysisPanels({ model, analysis, exporting, exportin
   const maximumRankingUnits = Math.max(...(analysis?.ranking.map((entry) => entry.units) ?? [1]), 1);
 
   return <>
-    <section className="sales-card mps-profile-card">
-      <div className="card-heading">
-        <div>
-          <div className="eyebrow">FICHA TÉCNICA</div>
-          <h2>Especificaciones de fábrica</h2>
-          <p className="mps-card-subtitle">Datos del perfil actual y rendimiento declarado de sus componentes.</p>
+    <Card className="min-w-0">
+      <CardHeader eyebrow="FICHA TÉCNICA" title="Especificaciones de fábrica" aside={
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge>{model.isEditable ? 'Perfil manual' : 'Fuente importada'}</Badge>
+          <ExportButton busy={exportingConsumables} busyLabel="Preparando…" onClick={onExportConsumables} disabled={model.consumables.length === 0}>Exportar consumibles</ExportButton>
         </div>
-        <div className="mps-analysis-actions">
-          <ExportButton busy={exportingConsumables} busyLabel="Preparando…" onClick={onExportConsumables} disabled={model.consumables.length === 0}>Exportar XLSX</ExportButton>
-          <span className={`mps-profile-source ${model.isEditable ? 'manual' : 'imported'}`}>
-            {model.isEditable ? 'Perfil manual' : 'Fuente importada'}
-          </span>
-        </div>
+      } />
+      <Muted>Datos del perfil actual y rendimiento declarado de sus componentes.</Muted>
+      <dl className="m-0 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <ProfileFact label="Marca" value={model.brand} />
+        <ProfileFact label="Modelo" value={model.modelLabel} />
+        <ProfileFact label="Velocidad" value={model.speedPpm === null ? 'No informada' : `${integerFormat.format(model.speedPpm)} ppm`} />
+        <ProfileFact label="Impresión" value={model.isColor ? 'Color' : 'Monocromática'} />
+        <ProfileFact label="Rango recomendado" value={`${integerFormat.format(model.recVolumeMin)}–${integerFormat.format(model.recVolumeMax)} pág./mes`} />
+      </dl>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-navy/10 pt-4 dark:border-sky/20">
+        <div className="grid gap-1"><h3 className="m-0 text-sm font-bold text-navy dark:text-white">Rendimiento original</h3><Muted>Componentes guardados en el perfil MPS.</Muted></div>
+        <Badge>{model.consumables.length} componentes</Badge>
       </div>
+      <Table className="min-w-[32rem]" aria-label="Ficha de consumibles">
+        <TableHeader><TableRow><TableHead>Consumible</TableHead><TableHead>Tipo / color</TableHead><TableHead className="text-right">Rendimiento</TableHead><TableHead>SKU</TableHead></TableRow></TableHeader>
+        <TableBody>{model.consumables.map((consumable) => <TableRow key={consumable.id}>
+          <TableCell className="max-w-64 break-words font-semibold">{consumable.name}</TableCell>
+          <TableCell>{consumableTypeLabels[consumable.type] ?? consumable.type} · {consumableColorLabels[consumable.color] ?? consumable.color}</TableCell>
+          <TableCell className="text-right whitespace-nowrap tabular-nums">{integerFormat.format(consumable.yieldPages)} pág.</TableCell>
+          <TableCell className="break-all text-xs">{consumable.sku || 'Sin SKU'}</TableCell>
+        </TableRow>)}</TableBody>
+      </Table>
+    </Card>
 
-      <div className="mps-profile-facts">
-        <div><span>Marca</span><strong>{model.brand}</strong></div>
-        <div><span>Modelo</span><strong>{model.modelLabel}</strong></div>
-        <div><span>Velocidad</span><strong>{model.speedPpm === null ? 'No informada' : `${integerFormat.format(model.speedPpm)} ppm`}</strong></div>
-        <div><span>Impresión</span><strong>{model.isColor ? 'Color' : 'Monocromática'}</strong></div>
-        <div><span>Rango recomendado</span><strong>{integerFormat.format(model.recVolumeMin)}–{integerFormat.format(model.recVolumeMax)} pág./mes</strong></div>
-      </div>
-
-      <div className="mps-profile-consumables">
-        <div className="mps-profile-section-heading"><div><h3>Rendimiento original</h3><p>Componentes guardados en el perfil MPS.</p></div><span>{model.consumables.length} componentes</span></div>
-        <div className="mps-profile-consumable-list">
-          {model.consumables.map((consumable) => <div className="mps-profile-consumable" key={consumable.id}>
-            <div className="mps-profile-consumable-name"><strong>{consumable.name}</strong><small>{consumableTypeLabels[consumable.type] ?? consumable.type} · {consumableColorLabels[consumable.color] ?? consumable.color}</small></div>
-            <div className="mps-profile-consumable-value"><strong>{integerFormat.format(consumable.yieldPages)} pág.</strong><small>{consumable.sku || 'Sin SKU'}</small></div>
-          </div>)}
+    <Card className="min-w-0">
+      <CardHeader eyebrow="ANÁLISIS EJECUTIVO" title="Demanda estimada" aside={
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={onPrint} disabled={!analysis || printing} aria-busy={printing}><Printer />{printing ? 'Preparando…' : 'Imprimir / PDF'}</Button>
+          <ExportButton busy={exporting} busyLabel="Preparando…" onClick={onExport} disabled={!analysis}>Exportar análisis</ExportButton>
         </div>
-      </div>
-    </section>
-
-    <section className="sales-card mps-executive-card">
-      <div className="card-heading">
-        <div>
-          <div className="eyebrow">ANÁLISIS EJECUTIVO</div>
-          <h2>Demanda estimada</h2>
-          <p className="mps-card-subtitle">Lectura de planificación para el volumen mensual aplicado, acumulada a cinco años.</p>
-        </div>
-        <div className="mps-analysis-actions">
-          <button className="secondary-button" type="button" onClick={onPrint} disabled={!analysis || printing}>{printing ? 'Preparando…' : 'Imprimir / PDF'}</button>
-          <ExportButton busy={exporting} busyLabel="Preparando…" onClick={onExport} disabled={!analysis}>Exportar Excel</ExportButton>
-        </div>
-      </div>
-
+      } />
+      <Muted>Lectura de planificación para el volumen mensual aplicado, acumulada a cinco años.</Muted>
       {analysis ? <>
-        <div className="mps-analysis-kpis">
-          <div className="mps-analysis-kpi accent"><span>Páginas año 1</span><strong>{integerFormat.format(analysis.annualPages)}</strong><small>{integerFormat.format(analysis.paperReams)} resmas equivalentes</small></div>
-          <div className="mps-analysis-kpi"><span>Unidades a 5 años</span><strong>{integerFormat.format(analysis.totalUnitsFiveYears)}</strong><small>{decimalFormat.format(analysis.totalCyclesFiveYears)} ciclos acumulados</small></div>
-          <div className="mps-analysis-kpi"><span>Insumos críticos</span><strong>{analysis.criticalConsumables}</strong><small>con 3 o más ciclos al año 3</small></div>
-          <div className="mps-analysis-kpi"><span>Kits preventivos</span><strong>{analysis.preventiveKits}</strong><small>componentes no tóner hasta año 5</small></div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <AnalysisKpi label="Páginas año 1" value={integerFormat.format(analysis.annualPages)} note={`${integerFormat.format(analysis.paperReams)} resmas equivalentes`} accent />
+          <AnalysisKpi label="Unidades a 5 años" value={integerFormat.format(analysis.totalUnitsFiveYears)} note={`${decimalFormat.format(analysis.totalCyclesFiveYears)} ciclos acumulados`} />
+          <AnalysisKpi label="Insumos críticos" value={String(analysis.criticalConsumables)} note="con 3 o más ciclos al año 3" />
+          <AnalysisKpi label="Kits preventivos" value={String(analysis.preventiveKits)} note="componentes no tóner hasta año 5" />
         </div>
-
-        <div className="mps-analysis-grid">
-          <div className="mps-ranking-panel">
-            <div className="mps-profile-section-heading"><div><h3>Componentes con mayor demanda</h3><p>Ordenados por unidades acumuladas a cinco años.</p></div><span>Top {analysis.ranking.length}</span></div>
-            <ol className="mps-ranking-list">
-              {analysis.ranking.map((entry, index) => <li key={entry.id}>
-                <span className="mps-ranking-index">{String(index + 1).padStart(2, '0')}</span>
-                <div className="mps-ranking-content"><div className="mps-ranking-label"><strong>{entry.name}</strong><span>{integerFormat.format(entry.units)} ud. · {decimalFormat.format(entry.share * 100)}%</span></div><div className="mps-ranking-track"><span style={{ width: `${Math.max(4, entry.units / maximumRankingUnits * 100)}%` }} /></div></div>
-              </li>)}
-            </ol>
+        <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
+          <div className="grid min-w-0 gap-4 rounded-xl border border-navy/10 p-4 dark:border-sky/20">
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div className="grid gap-1"><h3 className="m-0 text-sm font-bold text-navy dark:text-white">Componentes con mayor demanda</h3><Muted>Ordenados por unidades acumuladas a cinco años.</Muted></div>
+              <Badge>Top {analysis.ranking.length}</Badge>
+            </div>
+            <div className="grid gap-4" role="list" aria-label="Ranking de demanda de consumibles">
+              {analysis.ranking.map((entry, index) => <div className="flex min-w-0 items-start gap-3" role="listitem" key={entry.id}>
+                <Badge>{String(index + 1).padStart(2, '0')}</Badge>
+                <div className="grid min-w-0 flex-1 gap-2">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1"><strong className="break-words text-xs text-navy dark:text-white">{entry.name}</strong><Muted className="tabular-nums">{integerFormat.format(entry.units)} ud. · {decimalFormat.format(entry.share * 100)}%</Muted></div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-navy/10 dark:bg-sky/15" aria-hidden="true"><div className="h-full rounded-full bg-sky" style={{ width: `${Math.max(4, entry.units / maximumRankingUnits * 100)}%` }} /></div>
+                </div>
+              </div>)}
+            </div>
           </div>
-
-          <div className="mps-analysis-note-panel">
-            <div className={`mps-volume-insight ${analysis.volumeStatus}`}><strong>{volumeStatusLabel(analysis)}</strong><span>{volumeStatusDescription(analysis)}</span></div>
-            <div className="mps-analysis-note-list"><div><span>Volumen aplicado</span><strong>{integerFormat.format(analysis.monthlyVolume)} pág./mes</strong></div><div><span>Páginas periodo completo</span><strong>{integerFormat.format(analysis.fiveYearPages)}</strong></div><div><span>Recomendación</span><strong>Contrastar con consumo real</strong></div></div>
+          <div className="grid min-w-0 gap-4 rounded-xl border border-navy/10 p-4 dark:border-sky/20">
+            <Badge className="w-fit whitespace-normal" tone={analysis.volumeStatus === 'optimal' ? 'success' : 'warning'}>{volumeStatusLabel(analysis)}</Badge>
+            <Muted>{volumeStatusDescription(analysis)}</Muted>
+            <dl className="m-0 grid gap-3">
+              <ProfileFact label="Volumen aplicado" value={`${integerFormat.format(analysis.monthlyVolume)} pág./mes`} />
+              <ProfileFact label="Páginas periodo completo" value={integerFormat.format(analysis.fiveYearPages)} />
+              <ProfileFact label="Recomendación" value="Contrastar con consumo real" />
+            </dl>
           </div>
         </div>
-        <p className="scope-note mps-export-note">Excel incluye el resumen ejecutivo, la ficha técnica y el detalle anual. Imprimir / PDF guarda el informe con las opciones locales de Electron; si se abre en navegador, muestra el diálogo de impresión. No se envía fuera del equipo.</p>
-      </> : <div className="mps-analysis-empty">Calcula una proyección para habilitar el análisis ejecutivo y la exportación.</div>}
-    </section>
+        <Muted>Excel incluye el resumen ejecutivo, la ficha técnica y el detalle anual. Imprimir / PDF guarda el informe con las opciones locales de Electron; si se abre en navegador, muestra el diálogo de impresión. No se envía fuera del equipo.</Muted>
+      </> : <Muted className="rounded-xl border border-dashed border-navy/20 p-6 text-center dark:border-sky/30">Calcula una proyección para habilitar el análisis ejecutivo y la exportación.</Muted>}
+    </Card>
   </>;
+}
+
+function ProfileFact({ label, value }: { label: string; value: string }) {
+  return <div className="grid content-start gap-1 rounded-xl border border-navy/10 bg-paper/60 p-3 dark:border-sky/15 dark:bg-navy/30"><dt className="text-xs text-ink-2 dark:text-[#9fb2d1]">{label}</dt><dd className="m-0 break-words text-sm font-semibold text-navy dark:text-white">{value}</dd></div>;
+}
+
+function AnalysisKpi({ label, value, note, accent = false }: { label: string; value: string; note: string; accent?: boolean }) {
+  return <div className={`grid min-w-0 content-start gap-2 rounded-xl border p-4 [container-type:inline-size] ${accent ? 'border-sky/40 bg-sky/10' : 'border-navy/10 bg-paper/60 dark:border-sky/20 dark:bg-navy/30'}`}><Muted>{label}</Muted><strong className="break-all text-[clamp(1.1rem,10cqi,1.75rem)] font-bold tabular-nums text-navy dark:text-white">{value}</strong><Muted>{note}</Muted></div>;
 }
 
 function volumeStatusLabel(analysis: MpsAnalysis): string {

@@ -367,8 +367,7 @@ html[data-theme='light'] .app-shell :where(
   .travel-estimate,
   .travel-bar-track,
   .coverage-model-row,
-  .coverage-bottleneck,
-  .mps-volume-status
+  .coverage-bottleneck
 ) {
   border-color: var(--ds-border);
   background: var(--ds-surface);
@@ -377,7 +376,6 @@ html[data-theme='light'] .app-shell :where(
 
 html[data-theme='light'] .app-shell :where(
     .suggestion-list,
-    .mps-model-list,
     .history-list,
     .coverage-color-list
   ) {

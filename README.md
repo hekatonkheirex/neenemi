@@ -249,7 +249,13 @@ ejecutivo, guardar un informe PDF local en formato horizontal MPS y exportar un 
 Desde la ficha técnica también permite exportar directamente el listado de consumibles del modelo
 seleccionado, sin ejecutar una proyección. También permite
 crear, editar o duplicar perfiles manuales con sus consumibles; los perfiles importados quedan
-protegidos como fuente de referencia. El editor manual conserva los atajos heredados para cargar de una vez los consumibles de perfiles monocromáticos o color. En Electron, la ficha y el análisis se guardan como PDF mediante un diálogo local; si se ejecuta solo el renderer con Vite, se usa el diálogo de impresión del navegador. Discontinuador también puede importar desde
+protegidos como fuente de referencia. El editor manual conserva los atajos heredados para cargar de una vez los consumibles de perfiles monocromáticos o color.
+El catálogo, la configuración de volumen, la ficha técnica y el análisis usan los componentes
+compartidos del rediseño, con tablas desplazables y ambos temas. El editor es un diálogo
+nativo: mantiene el foco dentro, lo devuelve al control de apertura y conserva visibles las
+acciones mientras se desplazan los consumibles. «Exportar consumibles» no requiere calcular;
+«Exportar análisis» incluye el resumen, la ficha y la proyección aplicada.
+En Electron, la ficha y el análisis se guardan como PDF mediante un diálogo local; si se ejecuta solo el renderer con Vite, se usa el diálogo de impresión del navegador. Discontinuador también puede importar desde
 la interfaz una o varias carteras XLSX históricas, conservar sus originales, deduplicar las filas y
 enlazar clientes, contratos y equipos con las tablas operativas compartidas. Las columnas pobladas
 del registro heredado quedan disponibles desde el cliente, contrato o equipo correspondiente, junto

@@ -29,10 +29,6 @@ html[data-theme] :is(a, button, input, select, textarea, summary, [tabindex]):fo
   outline-offset: 2px;
 }
 
-/* La cabecera del editor MPS y de los diálogos de Proformas es azul marino en los dos temas: ahí el anillo es el claro (1,32:1 en tema claro). */
-html[data-theme] .mps-editor-close:focus-visible {
-  outline-color: #7cc4ff;
-}
 
 /* Placeholders en oscuro: #536887 (2,9:1) y el gris por defecto del navegador #757575 (3,6:1) no llegan a AA. */
 html:not([data-theme='light']) :is(input, textarea)::placeholder {
@@ -47,7 +43,7 @@ html[data-theme] .app-shell .proforma-page :is(input, textarea)::placeholder {
 }
 
 /* Los ítems que llenan contenedores con overflow llevan el anillo hacia dentro. */
-html[data-theme] :is(.module-nav .nav-item, .mps-model-list .mps-model-select, .anim-tabs button, .catalog-table th button):focus-visible {
+html[data-theme] :is(.module-nav .nav-item, .anim-tabs button, .catalog-table th button):focus-visible {
   outline-offset: -3px;
 }
 

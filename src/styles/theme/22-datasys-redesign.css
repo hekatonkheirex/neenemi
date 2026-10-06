@@ -68,7 +68,6 @@ html[data-theme='dark'] .eyebrow {
 .service-report-overlay,
 .sales-catalog-overlay,
 .open-contract-overlay,
-.mps-editor-overlay,
 .travel-import-backdrop {
   backdrop-filter: blur(0.5rem);
 }

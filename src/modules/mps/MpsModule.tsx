@@ -11,6 +11,14 @@ import type { MpsImportSummary, MpsModel, MpsProjection, SaveMpsModelInput } fro
 import { confirmAction } from '../../core/confirm';
 import { readJson, toErrorMessage } from '../../core/http';
 import { UploadButton, DownloadIcon } from '../../core/ActionButtons';
+import { Calculator, Copy, Pencil, Plus, RefreshCw, Trash2 } from 'lucide-react';
+import { Badge } from '../../core/ui/badge';
+import { Button } from '../../core/ui/button';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Input } from '../../core/ui/input';
+import { PageHeader } from '../../core/ui/page-header';
+import { StatusLine } from '../../core/ui/status-line';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1 });
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
@@ -255,120 +263,129 @@ export default function MpsModule() {
   }
 
   return (
-    <div className="page-content operations-page mps-page">
-      <section className="catalog-header">
-        <div>
-          <div className="eyebrow">ANÁLISIS / MPS</div>
-          <h1>Insumos MPS</h1>
-          <p className="lead">Proyecta reemplazos de consumibles por modelo y volumen mensual usando el perfil Canon guardado en la SQLite compartida.</p>
-        </div>
-        <button className="secondary-button" type="button" onClick={() => void refresh()} disabled={loading}>{loading ? 'Actualizando…' : 'Actualizar modelos'}</button>
+    <div className="page-content mps-page">
+      <PageHeader eyebrow="ANÁLISIS / MPS" title="Insumos MPS"
+        lead="Proyecta reemplazos de consumibles por modelo y volumen mensual usando el perfil Canon guardado en la SQLite compartida."
+        actions={<Button variant="outline" onClick={() => void refresh()} disabled={loading} aria-busy={loading}><RefreshCw />{loading ? 'Actualizando…' : 'Actualizar modelos'}</Button>}
+      />
+      <StatusLine state={error ? 'error' : loading || importing ? 'pending' : 'ready'}>
+        {error || message || (loading ? 'Cargando perfiles MPS…' : summary && summary.models > 0 ? `${summary.models} modelos · ${summary.consumables} insumos disponibles` : 'Importa la base MPS anterior o crea un perfil manual para comenzar.')}
+      </StatusLine>
+      <section className="mb-6 grid gap-4 sm:grid-cols-3 print:hidden" aria-label="Resumen MPS">
+        <MpsSummary label="Modelos MPS" value={summary?.models ?? 0} accent />
+        <MpsSummary label="Insumos registrados" value={summary?.consumables ?? 0} />
+        <MpsSummary label="Modelos enlazados" value={summary?.linkedEquipmentModels ?? 0} />
       </section>
 
-      <section className="sales-status" aria-live="polite">
-        <span className={`status-dot ${error ? 'error' : loading ? 'pending' : 'ready'}`} />
-        <span>{error || message || (summary && summary.models > 0 ? `${summary.models} modelos · ${summary.consumables} insumos disponibles` : 'Importa la base MPS anterior para comenzar.')}</span>
-      </section>
-
-      <section className="summary-grid operations-summary" aria-label="Resumen MPS">
-        <div className="summary-card accent"><span className="summary-value">{summary?.models.toLocaleString('es-PY') ?? '0'}</span><span className="summary-label">modelos MPS</span></div>
-        <div className="summary-card"><span className="summary-value">{summary?.consumables.toLocaleString('es-PY') ?? '0'}</span><span className="summary-label">insumos registrados</span></div>
-        <div className="summary-card"><span className="summary-value">{summary?.linkedEquipmentModels.toLocaleString('es-PY') ?? '0'}</span><span className="summary-label">modelos enlazados</span></div>
-      </section>
-
-      <section className="mps-layout">
-        <div className="mps-main">
-          <section className="sales-card mps-selection-card">
-            <div className="card-heading">
-              <div><div className="eyebrow">PASO 1 / MODELO</div><h2>Selecciona el equipo</h2></div>
-              <div className="mps-model-heading-actions"><label className="search-field compact-search"><span>Buscar</span><input id="mps-model-search" name="modelQuery" value={modelQuery} onChange={(event) => setModelQuery(event.target.value)} placeholder="Modelo o marca…" /></label><button className="secondary-button" type="button" onClick={() => openEditor('create')}>+ Nuevo modelo</button></div>
-            </div>
-            {visibleModels.length > 0 ? <div className="mps-model-list">
-              {visibleModels.map((model) => <div className={`mps-model-option ${selectedModel?.id === model.id ? 'active' : ''}`} key={model.id}>
-                <button className="mps-model-select" type="button" onClick={() => setSelectedModelId(model.id)}>
-                  <span><strong>{model.modelLabel}</strong><small>{model.brand} · {model.consumables.length} insumo{model.consumables.length === 1 ? '' : 's'}</small></span>
-                  <span className="mps-model-volume">{integerFormat.format(model.recVolumeMin)}–{integerFormat.format(model.recVolumeMax)} pág.</span>
-                </button>
-                {model.isEditable ? <div className="mps-model-actions"><button className="text-button" type="button" onClick={() => openEditor('edit', model)}>Editar</button><button className="text-button" type="button" onClick={() => openEditor('clone', model)}>Duplicar</button><button className="text-button danger-text-button" type="button" onClick={() => void deleteModel(model)}>Eliminar</button></div> : <span className="mps-source-badge">Importado</span>}
+      <div className="grid min-w-0 items-start gap-6 min-[1601px]:grid-cols-[minmax(0,1fr)_20rem]">
+        <div className="grid min-w-0 gap-6">
+          <Card className="min-w-0 print:hidden">
+            <CardHeader eyebrow="PASO 1 / MODELO" title="Selecciona el equipo" aside={
+              <Button variant="outline" size="sm" onClick={() => openEditor('create')}><Plus />Nuevo modelo</Button>
+            } />
+            <label className="grid gap-2 text-xs font-bold text-navy dark:text-white">
+              Buscar modelo o marca
+              <Input id="mps-model-search" name="modelQuery" type="search" value={modelQuery} onChange={(event) => setModelQuery(event.target.value)} placeholder="Modelo o marca…" />
+            </label>
+            {visibleModels.length > 0 ? <div className="grid max-h-[27rem] gap-2 overflow-y-auto p-1" aria-label="Perfiles MPS">
+              {visibleModels.map((model) => <div className={`grid min-w-0 gap-2 rounded-xl border p-3 ${selectedModel?.id === model.id ? 'border-sky/60 bg-sky/10 dark:bg-sky/15' : 'border-navy/10 bg-paper/50 dark:border-sky/20 dark:bg-navy/30'}`} key={model.id}>
+                <Button variant="ghost" className="h-auto min-w-0 justify-between gap-4 px-2 py-2 text-left whitespace-normal" aria-pressed={selectedModel?.id === model.id} onClick={() => setSelectedModelId(model.id)}>
+                  <span className="grid min-w-0 gap-1"><strong className="break-words text-sm">{model.modelLabel}</strong><span className="text-xs font-normal text-ink-2 dark:text-[#9fb2d1]">{model.brand} · {model.consumables.length} insumo{model.consumables.length === 1 ? '' : 's'}</span></span>
+                  <span className="shrink-0 text-right text-xs font-normal text-ink-2 dark:text-[#9fb2d1]">{integerFormat.format(model.recVolumeMin)}–{integerFormat.format(model.recVolumeMax)} pág.</span>
+                </Button>
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-navy/10 pt-2 dark:border-sky/15">
+                  <Badge>{model.isEditable ? 'Perfil manual' : 'Importado'}</Badge>
+                  {model.isEditable ? <div className="flex flex-wrap gap-1">
+                    <Button variant="ghost" size="sm" onClick={() => openEditor('edit', model)} aria-label={`Editar ${model.modelLabel}`}><Pencil />Editar</Button>
+                    <Button variant="ghost" size="sm" onClick={() => openEditor('clone', model)} aria-label={`Duplicar ${model.modelLabel}`}><Copy />Duplicar</Button>
+                    <Button variant="ghost" size="sm" className="text-[#b42318]! dark:text-[#ffb0b7]!" onClick={() => void deleteModel(model)} aria-label={`Eliminar ${model.modelLabel}`}><Trash2 />Eliminar</Button>
+                  </div> : null}
+                </div>
               </div>)}
-            </div> : <div className="mps-empty"><strong>No hay perfiles MPS cargados.</strong><span>Selecciona el archivo `canon_mps.db` en el panel de migración.</span></div>}
-          </section>
+            </div> : <div className="grid gap-2 rounded-xl border border-dashed border-navy/20 p-6 text-center dark:border-sky/30">
+              <strong className="text-sm text-navy dark:text-white">{models.length > 0 ? 'No hay modelos que coincidan con la búsqueda.' : 'No hay perfiles MPS cargados.'}</strong>
+              <Muted>{models.length > 0 ? 'Prueba otro modelo o marca.' : 'Importa canon_mps.db o crea un nuevo modelo con sus consumibles.'}</Muted>
+            </div>}
+          </Card>
 
           {selectedModel ? <>
-            <section className="sales-card mps-config-card">
-              <div className="card-heading">
-                <div><div className="eyebrow">PASO 2 / VOLUMEN</div><h2>{selectedModel.modelLabel}</h2></div>
-                <span className="mps-model-meta">{selectedModel.isEditable ? 'Perfil manual' : 'Fuente importada'} · {selectedModel.isColor ? 'Color' : 'Monocromático'}{selectedModel.speedPpm ? ` · ${selectedModel.speedPpm} ppm` : ''}</span>
+            <Card className="min-w-0 print:hidden">
+              <CardHeader eyebrow="PASO 2 / VOLUMEN" title={selectedModel.modelLabel} aside={<Badge>{selectedModel.isColor ? 'Color' : 'Monocromático'}{selectedModel.speedPpm ? ` · ${selectedModel.speedPpm} ppm` : ''}</Badge>} />
+              <div className="flex flex-wrap items-end gap-3">
+                <label className="grid min-w-0 flex-1 basis-64 gap-2 text-xs font-bold text-navy dark:text-white">
+                  Volumen mensual del cliente
+                  <Input id="mps-monthly-volume" name="monthlyVolume" type="number" min="1" step="1" value={monthlyVolumeInput} onChange={(event) => setMonthlyVolumeInput(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') applyVolume(); }} />
+                </label>
+                <Button onClick={applyVolume}><Calculator />Calcular proyección</Button>
               </div>
-              <div className="mps-volume-row">
-                <label className="search-field"><span>Volumen mensual del cliente</span><input id="mps-monthly-volume" name="monthlyVolume" type="number" min="1" step="1" value={monthlyVolumeInput} onChange={(event) => setMonthlyVolumeInput(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') applyVolume(); }} /></label>
-                <button className="primary-button" type="button" onClick={applyVolume}>Calcular proyección</button>
-                <div className={`mps-volume-status ${appliedVolume ? getVolumeStatus(appliedVolume, selectedModel.recVolumeMin, selectedModel.recVolumeMax).className : 'idle'}`}>
-                  {appliedVolume ? getVolumeStatus(appliedVolume, selectedModel.recVolumeMin, selectedModel.recVolumeMax).label : 'Ingresa un volumen para evaluar el rango'}
-                </div>
+              {appliedVolume ? <Badge className="w-fit" tone={getVolumeStatus(appliedVolume, selectedModel.recVolumeMin, selectedModel.recVolumeMax).className === 'good' ? 'success' : 'warning'}>
+                {getVolumeStatus(appliedVolume, selectedModel.recVolumeMin, selectedModel.recVolumeMax).label}
+              </Badge> : <Muted>Ingresa un volumen para evaluar el rango recomendado.</Muted>}
+              <div className="flex flex-wrap items-center gap-2 border-t border-navy/10 pt-4 dark:border-sky/20" aria-label="Volúmenes habituales">
+                <Muted>Presets</Muted>
+                {[1000, 3000, 5000, 10000, 20000, 50000].map((value) => <Button variant="outline" size="sm" className={appliedVolume === value ? 'border-sky! bg-sky/10! dark:bg-sky/20!' : ''} aria-pressed={appliedVolume === value} key={value} onClick={() => { setMonthlyVolumeInput(String(value)); setAppliedVolume(value); }}>{integerFormat.format(value)}</Button>)}
               </div>
-              <div className="mps-presets"><span>Presets</span>{[1000, 3000, 5000, 10000, 20000, 50000].map((value) => <button className={appliedVolume === value ? 'active' : ''} type="button" key={value} onClick={() => { setMonthlyVolumeInput(String(value)); setAppliedVolume(value); }}>{integerFormat.format(value)}</button>)}</div>
-            </section>
+            </Card>
 
-            <section className="sales-card">
-              <div className="card-heading">
-                <div><div className="eyebrow">PROYECCIÓN / 5 AÑOS</div><h2>Reemplazos estimados</h2></div>
-                <span className="muted-note">{appliedVolume ? `${integerFormat.format(appliedVolume)} páginas / mes` : 'Esperando volumen'}</span>
-              </div>
-              <div className="catalog-table-wrap">
-                <table className="catalog-table mps-projection-table">
-                  <thead><tr><th>Insumo</th><th>Tipo</th><th className="align-right">Rendimiento</th><th className="align-right">Año 1</th><th className="align-right">Año 2</th><th className="align-right">Año 3</th><th className="align-right">Año 4</th><th className="align-right">Año 5</th></tr></thead>
-                  <tbody>{projections.map((projection) => <ProjectionRow key={projection.consumable.id} projection={projection} />)}{projections.length === 0 && <tr><td colSpan={8} className="empty-cell">Selecciona un volumen para calcular los reemplazos.</td></tr>}</tbody>
-                </table>
-              </div>
-              <p className="scope-note mps-note">La proyección usa el rendimiento declarado en el perfil actual, importado o manual. Sirve como base de planificación y debe contrastarse con el consumo real del contrato.</p>
-            </section>
+            <Card className="min-w-0">
+              <CardHeader eyebrow="PROYECCIÓN / 5 AÑOS" title="Reemplazos estimados" aside={<Muted>{appliedVolume ? `${integerFormat.format(appliedVolume)} páginas / mes` : 'Esperando volumen'}</Muted>} />
+              <Table className="min-w-[48rem]" aria-label="Proyección anual de consumibles">
+                <TableHeader><TableRow><TableHead className="w-48">Insumo</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Rendimiento</TableHead>{[1, 2, 3, 4, 5].map((year) => <TableHead className="text-right" key={year}>Año {year}</TableHead>)}</TableRow></TableHeader>
+                <TableBody>{projections.map((projection) => <ProjectionRow key={projection.consumable.id} projection={projection} />)}{projections.length === 0 && <TableRow><TableCell colSpan={8} className="py-8 text-center">Selecciona un volumen para calcular los reemplazos.</TableCell></TableRow>}</TableBody>
+              </Table>
+              <Muted>La proyección usa el rendimiento declarado en el perfil actual, importado o manual. Sirve como base de planificación y debe contrastarse con el consumo real del contrato.</Muted>
+            </Card>
             <MpsAnalysisPanels model={selectedModel} analysis={analysis} exporting={exportingAnalysis} exportingConsumables={exportingConsumables} printing={printableAnalysis !== null} onExport={() => void exportAnalysis()} onExportConsumables={() => void exportConsumables()} onPrint={printAnalysis} />
           </> : null}
         </div>
 
-        <aside className="operations-sidebar">
-          <section className="sales-card form-card maintenance-import-card">
-            <div className="eyebrow">MIGRACIÓN DE LEGADO</div>
-            <h2>Importar perfiles</h2>
-            <p className="form-hint import-description">Selecciona el archivo SQLite <code>canon_mps.db</code> de la calculadora anterior. Se conserva el original y sus modelos pasan a la base unificada.</p>
+        <aside className="grid min-w-0 gap-6 md:grid-cols-2 min-[1601px]:grid-cols-1 print:hidden">
+          <Card className="min-w-0">
+            <CardHeader eyebrow="MIGRACIÓN DE LEGADO" title="Importar perfiles" />
+            <Muted>Selecciona el archivo SQLite <code>canon_mps.db</code> de la calculadora anterior. Se conserva el original y sus modelos pasan a la base unificada.</Muted>
             <UploadButton id="mps-legacy-database" name="mpsLegacyDatabase" busy={importing} label="Seleccionar base SQLite" accept=".db,.sqlite,.sqlite3,application/vnd.sqlite3" onChange={(event) => void importLegacyFile(event)} />
-            <div className="import-summary">
+            <div className="grid gap-2 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
               {summary && summary.models > 0 ? <>
-                <strong>{summary.models.toLocaleString('es-PY')} modelos activos</strong>
-                <span>{summary.sourceName ? `${summary.sourceName} · ` : 'Incluye perfiles manuales · '}{summary.linkedEquipmentModels.toLocaleString('es-PY')} enlazados con equipos</span>
-                {summary.batchId && summary.sourceFileId ? <a
-                  className="secondary-button export-button"
+                <strong className="text-sm text-navy dark:text-white">{summary.models.toLocaleString('es-PY')} modelos activos</strong>
+                <Muted>{summary.sourceName ? `${summary.sourceName} · ` : 'Incluye perfiles manuales · '}{summary.linkedEquipmentModels.toLocaleString('es-PY')} enlazados con equipos</Muted>
+                {summary.batchId && summary.sourceFileId ? <Button variant="export" size="sm" className="w-fit" asChild><a
                   href={`/api/imports/${encodeURIComponent(summary.batchId)}/files/${encodeURIComponent(summary.sourceFileId)}`}
                   download={summary.sourceName ?? undefined}
-                >
-                  <DownloadIcon />
-                  Descargar base original
-                </a> : null}
-              </> : <span>Aún no hay una carga MPS en la suite.</span>}
+                ><DownloadIcon />Descargar base original</a></Button> : null}
+              </> : <Muted>Aún no hay una carga MPS en la suite.</Muted>}
             </div>
-          </section>
-
-          <section className="sales-card form-card">
-            <div className="eyebrow">RANGO DE FÁBRICA</div>
-            <h2>{selectedModel ? 'Lectura del perfil' : 'Cómo empezar'}</h2>
-            {selectedModel ? <div className="mps-facts"><div><span>Volumen mínimo</span><strong>{integerFormat.format(selectedModel.recVolumeMin)} pág./mes</strong></div><div><span>Volumen máximo</span><strong>{integerFormat.format(selectedModel.recVolumeMax)} pág./mes</strong></div><div><span>Insumos</span><strong>{selectedModel.consumables.length}</strong></div></div> : <p className="form-hint">La importación habilita la selección de modelos, el cálculo de volumen y la proyección anual de insumos.</p>}
-          </section>
+          </Card>
+          <Card className="min-w-0">
+            <CardHeader eyebrow="RANGO DE FÁBRICA" title={selectedModel ? 'Lectura del perfil' : 'Cómo empezar'} />
+            {selectedModel ? <dl className="m-0 grid gap-3">
+              <MpsFact label="Volumen mínimo" value={`${integerFormat.format(selectedModel.recVolumeMin)} pág./mes`} />
+              <MpsFact label="Volumen máximo" value={`${integerFormat.format(selectedModel.recVolumeMax)} pág./mes`} />
+              <MpsFact label="Insumos" value={String(selectedModel.consumables.length)} />
+            </dl> : <Muted>Importa la base anterior o crea un perfil manual para seleccionar un modelo y proyectar sus insumos.</Muted>}
+          </Card>
         </aside>
-      </section>
+      </div>
       {printableAnalysis ? <MpsPrintReport {...printableAnalysis} /> : null}
       {editorMode ? <MpsModelEditor mode={editorMode} model={editorModel} models={models} saving={savingModel} onCancel={closeEditor} onSave={(input) => void saveModel(input)} /> : null}
     </div>
   );
 }
 
+function MpsSummary({ label, value, accent = false }: { label: string; value: number; accent?: boolean }) {
+  return <Card className={`gap-2 ${accent ? 'border-sky/40 bg-sky/10! dark:bg-sky/10!' : ''}`}><Muted>{label}</Muted><strong className="break-all text-2xl font-bold tabular-nums text-navy dark:text-white">{integerFormat.format(value)}</strong></Card>;
+}
+
+function MpsFact({ label, value }: { label: string; value: string }) {
+  return <div className="grid gap-1 border-b border-navy/10 pb-3 last:border-0 last:pb-0 dark:border-sky/20"><dt className="text-xs text-ink-2 dark:text-[#9fb2d1]">{label}</dt><dd className="m-0 break-words text-sm font-bold text-navy dark:text-white">{value}</dd></div>;
+}
+
 function ProjectionRow({ projection }: { projection: MpsProjection }) {
-  return <tr>
-    <td><span className="code-cell">{projection.consumable.name}</span><small className="table-secondary-text">{projection.consumable.sku || 'Sin SKU'}</small></td>
-    <td>{projection.consumable.type} · {projection.consumable.color}</td>
-    <td className="align-right">{integerFormat.format(projection.consumable.yieldPages)} pág.</td>
-    {projection.years.map((year) => <td className="align-right mps-year-cell" key={year.year}><strong>{integerFormat.format(year.units)} ud.</strong><small>{numberFormat.format(year.replacements)} ciclos</small></td>)}
-  </tr>;
+  return <TableRow>
+    <TableCell><strong className="text-xs">{projection.consumable.name}</strong><Muted>{projection.consumable.sku || 'Sin SKU'}</Muted></TableCell>
+    <TableCell>{projection.consumable.type} · {projection.consumable.color}</TableCell>
+    <TableCell className="text-right whitespace-nowrap tabular-nums">{integerFormat.format(projection.consumable.yieldPages)} pág.</TableCell>
+    {projection.years.map((year) => <TableCell className="text-right whitespace-nowrap tabular-nums" key={year.year}><strong>{integerFormat.format(year.units)} ud.</strong><Muted>{numberFormat.format(year.replacements)} ciclos</Muted></TableCell>)}
+  </TableRow>;
 }
 
 function getVolumeStatus(volume: number, minimum: number, maximum: number): { label: string; className: string } {

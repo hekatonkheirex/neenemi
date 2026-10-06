@@ -43,7 +43,7 @@ app.whenReady().then(async () => {
     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(vol, '${volume}');
     vol.dispatchEvent(new Event('input', { bubbles: true })); await sleep(300);
     btn(/Calcular proyección/)?.click(); await sleep(1500);
-    const rows = document.querySelectorAll('.mps-projection-table tbody tr').length;
+    const rows = document.querySelectorAll('table[aria-label="Proyección anual de consumibles"] tbody tr').length;
     btn(/^Imprimir \\/ PDF/)?.click();
     return { rows };
   })()`);

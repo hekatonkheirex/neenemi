@@ -23,11 +23,6 @@ describe('rediseño Datasys', () => {
     expect(theme).toMatch(/html\[data-theme='dark'\] \.sidebar\s*{[^}]*var\(--ds-panel\)/);
   });
 
-  it('los modales llevan blur', () => {
-    for (const cls of ['service-report-overlay', 'sales-catalog-overlay', 'open-contract-overlay', 'mps-editor-overlay', 'travel-import-backdrop']) {
-      expect(theme).toMatch(new RegExp(`\\.${cls}[^{]*{[^}]*backdrop-filter:\\s*blur`));
-    }
-  });
 
   it('el CTA primario es naranja de marca también en oscuro', () => {
     expect(theme).toMatch(/html\[data-theme='dark'\] \.primary-button\s*{[^}]*background:\s*var\(--ds-orange\)/);

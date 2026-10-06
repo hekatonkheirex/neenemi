@@ -56,13 +56,7 @@ html[data-theme='light'] .price-list-model-option small {
 
 html[data-theme='light'] .suggestion-row:hover,
 html[data-theme='light'] .history-item:hover,
-html[data-theme='light'] .history-item.active,
-html[data-theme='light'] .mps-model-option:hover,
-html[data-theme='light'] .mps-model-option.active {
+html[data-theme='light'] .history-item.active {
   border-color: #9bcfe1;
   background: var(--ds-blue-wash);
-}
-
-html[data-theme='light'] .mps-model-option.active {
-  box-shadow: inset 3px 0 var(--ds-orange);
 }

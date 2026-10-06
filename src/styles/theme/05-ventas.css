@@ -15,7 +15,6 @@ html[data-theme='light'] .family-pricing-choice span {
 html[data-theme='light'] .overview-backup,
 html[data-theme='light'] .database-recovery,
 html[data-theme='light'] .total-breakdown,
-html[data-theme='light'] .mps-presets,
 html[data-theme='light'] .travel-total {
   border-color: var(--ds-border);
 }
