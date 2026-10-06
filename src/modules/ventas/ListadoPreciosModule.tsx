@@ -486,7 +486,7 @@ export default function ListadoPreciosModule() {
           <ExportButton onClick={() => void handleExport()} disabled={!pricing || selectedModels.length === 0 || allItemsLoading || legacyCatalogLoading || importingCatalog}>Exportar listado XLSX</ExportButton>
         </div>}
       />
-      <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-4">
+      <div className="mt-4 flex min-w-0 flex-wrap items-center justify-between gap-x-4">
         <StatusLine state={error ? 'error' : savingSelection || loading || legacyCatalogLoading || importingCatalog || restoringSeed ? 'pending' : 'ready'}>
           <div className="[overflow-wrap:anywhere]">{error || (savingSelection ? 'Guardando selección…' : message || (loading || legacyCatalogLoading ? 'Consultando catálogo…' : `${numberFormat.format(displayedItems.length)} precios y ${numberFormat.format(displayedServiceItems.length)} opciones visibles${selectedFamily?.exchangeRate ? ` · T.C. ${numberFormat.format(selectedFamily.exchangeRate)} de ${selectedFamily.familyName}` : ''}`))}</div>
         </StatusLine>
@@ -495,8 +495,8 @@ export default function ListadoPreciosModule() {
       <div className="grid min-w-0 gap-6">
         <section className="grid min-w-0 gap-4 sm:grid-cols-3" aria-label="Resumen del listado">
           <PriceListSummary label="Partes visibles" value={displayedItems.length} />
-          <PriceListSummary label="Opciones comerciales" value={displayedServiceItems.length} />
-          <PriceListSummary label="Modelos incluidos" value={selectedModels.length} />
+          <PriceListSummary label="Modelos disponibles" value={availableModels.length} />
+          <PriceListSummary label="Familias del catálogo" value={families.length} />
         </section>
         <Card className="min-w-0 grid-cols-1">
           <CardHeader eyebrow="REGLAS COMERCIALES" title="Precio calculado" aside={
