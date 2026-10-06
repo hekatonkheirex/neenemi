@@ -253,8 +253,7 @@ html[data-theme='light'] h2 {
 }
 
 html[data-theme='light'] .lead,
-html[data-theme='light'] .section-heading p,
-html[data-theme='light'] .scope-note {
+html[data-theme='light'] .section-heading p {
   color: var(--ds-muted);
 }
 

@@ -101,7 +101,6 @@ html[data-theme='dark'] .primary-button:disabled {
 
 .page-content h1,
 .catalog-header h1,
-.discontinuation-page-header h1,
 .software-page h1 {
   max-width: none;
   margin-bottom: 0.6rem;

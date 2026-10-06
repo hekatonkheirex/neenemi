@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.72 · 2026-10-06
+
+Discontinuador adopta el encabezado, las tarjetas, los campos, los botones, las tablas y los estados compartidos del rediseño. Discontinuados, Stock Waldbott y Carga conservan sus datos, filtros por contrato, cliente y área, exportaciones XLSX, importaciones por fuente y filas originales. El resumen de cartera (estado Canon, equipos y contratos por tipo), los modelos identificados y el directorio de clientes se adaptan al ancho de su tarjeta; las tablas desplazan dentro de ella. La paginación y el detalle de origen compartidos con Consumibles, Listado de precios y Viáticos pasan a los componentes del rediseño, sin cambiar su comportamiento. Se retira el CSS anterior de pantalla del módulo.
+
 ## 0.1.71 · 2026-10-06
 
 Control de viáticos adopta el encabezado, las tarjetas, los campos, los botones, las tablas y los estados compartidos del rediseño. Resumen, Viajes, Rendiciones e Histórico mantienen sus datos, filtros, paginación y exportación XLSX. Los gráficos de gasto, las comparativas anuales y la tendencia mensual se adaptan al ancho de su tarjeta; las tablas desplazan dentro de ella y el detalle de cada rendición ocupa el ancho visible. El panel «Registrar viaje» y la previsualización de importación son diálogos nativos con el mismo fondo difuminado y foco atrapado; el panel conserva la estimación orientativa, el catálogo de peajes y pasajes y la confirmación antes de descartar cambios. Se retira el CSS anterior de pantalla del módulo.

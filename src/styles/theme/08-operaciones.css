@@ -1,23 +1,5 @@
 
 
-html[data-theme='light'] .discontinuation-import-progress {
-  border-color: rgba(27, 151, 218, 0.26);
-  color: var(--ds-muted);
-  background: rgba(27, 151, 218, 0.07);
-}
-
-html[data-theme='light'] .discontinuation-import-progress-heading strong {
-  color: #087ead;
-}
-
-html[data-theme='light'] .discontinuation-import-progress-track {
-  background: rgba(39, 89, 135, 0.12);
-}
-
-html[data-theme='light'] .discontinuation-import-progress small {
-  color: var(--ds-muted);
-}
-
 html[data-theme='light'] .status-dot.ready {
   background: #2a9b68;
   box-shadow: 0 0 0 0.25rem rgba(42, 155, 104, 0.14);

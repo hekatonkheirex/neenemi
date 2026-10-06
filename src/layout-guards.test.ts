@@ -41,10 +41,4 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
   it('encabezados de tarjeta: el contador pasa a otra línea si no cabe (SLA, badge "5" a 960 px)', () => {
     expect(rule('.card-heading')).toMatch(/flex-wrap:\s*wrap/);
   });
-  it('Discontinuador: las tres tarjetas de resumen pasan a 2 columnas hasta 1150 px (piden 741 px mínimo)', () => {
-    expect(css).toMatch(/@media \(max-width: 1150px\) \{\s*\.discontinuation-insights \{\s*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
-  });
-  it('Discontinuador: la cabecera de la tarjeta de modelo envuelve (badge + contador justo al límite a 960 px)', () => {
-    expect(rule('.discontinuation-model-card-heading')).toMatch(/flex-wrap:\s*wrap/);
-  });
 });

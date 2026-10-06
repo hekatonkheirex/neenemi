@@ -70,8 +70,7 @@
   background: rgba(15, 27, 48, 0.72);
 }
 
-.source-data-heading,
-.source-data-viewer-heading {
+.source-data-heading {
   display: flex;
   gap: 1rem;
   align-items: start;
@@ -82,8 +81,7 @@
   margin-bottom: 1.1rem;
 }
 
-.source-data-heading h2,
-.source-data-viewer-heading h3 {
+.source-data-heading h2 {
   margin-bottom: 0.45rem;
 }
 
@@ -145,9 +143,7 @@
   font-size: 1.4rem;
 }
 
-.source-data-note span,
-.source-data-meta,
-.source-data-pagination {
+.source-data-note span {
   color: var(--dk-7187aa);
   font-size: 0.7rem;
 }
@@ -313,80 +309,4 @@
   min-width: auto;
   padding: 0.58rem 0.75rem;
   font-size: 0.68rem;
-}
-
-.source-data-layout {
-  display: grid;
-  grid-template-columns: minmax(210px, 280px) minmax(0, 1fr);
-  gap: 1rem;
-  align-items: stretch;
-}
-
-.source-data-batches,
-.source-data-viewer {
-  min-width: 0;
-  padding: 0.85rem;
-  border: 1px solid var(--dk-line);
-  border-radius: var(--ds-radius-xl);
-  background: rgba(12, 23, 41, 0.58);
-}
-
-.source-data-batches {
-  display: grid;
-  /* Sin aportar altura propia: la lista llena la fila que fija el visor y desplaza dentro. */
-  contain: size;
-  min-height: 18rem;
-  gap: 0.55rem;
-  overflow-y: auto;
-  align-content: start;
-}
-
-.source-data-batches > .detail-label {
-  margin-bottom: 0.15rem;
-}
-
-.source-data-batch {
-  display: grid;
-  min-width: 0;
-  gap: 0.25rem;
-  padding: 0.7rem;
-  border: 1px solid var(--dk-line);
-  border-radius: var(--ds-radius-xl);
-  color: var(--dk-c8d6ed);
-  background: rgba(18, 31, 54, 0.66);
-  text-align: left;
-}
-
-.source-data-batch:hover,
-.source-data-batch.active {
-  border-color: rgba(0, 163, 224, 0.62);
-  background: rgba(0, 163, 224, 0.1);
-}
-
-.source-data-batch strong {
-  overflow: hidden;
-  color: var(--dk-dce8fc);
-  font-size: 0.73rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.source-data-batch span,
-.source-data-batch small {
-  color: var(--dk-8fa5c7);
-  font-size: 0.64rem;
-  line-height: 1.35;
-}
-
-.source-data-viewer-heading {
-  align-items: center;
-  margin-bottom: 0.85rem;
-}
-
-.source-data-viewer-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-  align-items: center;
-  justify-content: flex-end;
 }

@@ -5,7 +5,6 @@ html[data-theme='light'] .detail-label,
 html[data-theme='light'] .module-section,
 html[data-theme='light'] .muted-note,
 html[data-theme='light'] .form-hint,
-html[data-theme='light'] .source-cell,
 html[data-theme='light'] .empty-inline,
 html[data-theme='light'] .empty-cell,
 html[data-theme='light'] .analysis-meta,
@@ -20,14 +19,6 @@ html[data-theme='light'] .source-details summary {
 html[data-theme='light'] .source-details-grid {
   border-color: var(--ds-border);
   background: var(--ds-surface-alt);
-}
-
-html[data-theme='light'] .source-detail-item span {
-  color: var(--ds-subtle);
-}
-
-html[data-theme='light'] .source-detail-item strong {
-  color: var(--ds-ink);
 }
 
 html[data-theme='light'] .module-card {

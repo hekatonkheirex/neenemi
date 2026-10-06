@@ -9,61 +9,6 @@
 }
 
 /* Barra propia bajo la tabla (mismo borde y radio que .catalog-table-wrap): conteo a la izquierda; filas, página y botones agrupados a la derecha. */
-.pagination-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.6rem 1.25rem;
-  margin-top: 0.75rem;
-  padding: 0.65rem 0.9rem;
-  border: 1px solid var(--dk-line);
-  border-radius: var(--ds-radius-2xl);
-  background: rgba(12, 23, 41, 0.7);
-  color: var(--dk-8fa5c7);
-  font-size: 0.75rem;
-}
-
-.pagination-count {
-  margin-right: auto;
-  color: #c6d7f2;
-  font-weight: 750;
-  white-space: nowrap;
-}
-
-.pagination-size {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.pagination-page {
-  min-width: 6.5rem;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.pagination-size select {
-  min-width: 4.5rem;
-  min-height: 2.2rem;
-  padding: 0.35rem 0.55rem;
-  border: 1px solid rgba(144, 174, 229, 0.3);
-  border-radius: var(--ds-radius-xl);
-  color: #d7e4f7;
-  background: #142542;
-  font: inherit;
-}
-
-.pagination-actions {
-  display: inline-flex;
-  gap: 0.45rem;
-}
-
-.pagination-controls .secondary-button {
-  min-width: auto;
-  min-height: 2.2rem;
-  padding: 0.4rem 0.7rem;
-}
 
 .pagination-loading {
   padding: 1rem 1.2rem;

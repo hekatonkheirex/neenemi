@@ -87,22 +87,6 @@ html[data-theme='light'] .secondary-button:hover:not(:disabled) {
   background: var(--ds-blue-wash);
 }
 
-html[data-theme='light'] .pagination-controls {
-  border-color: var(--ds-border);
-  background: var(--ds-surface);
-  color: var(--ds-muted);
-}
-
-html[data-theme='light'] .pagination-count {
-  color: var(--ds-ink);
-}
-
-html[data-theme='light'] .pagination-size select {
-  border-color: var(--ds-border-strong);
-  color: var(--ds-ink);
-  background: var(--ds-surface);
-}
-
 html[data-theme='light'] .pagination-loading {
   color: var(--ds-muted);
 }

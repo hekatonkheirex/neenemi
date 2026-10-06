@@ -4,10 +4,6 @@ html:not([data-theme='light']) .history-item small {
   color: #9fb3d4;
 }
 
-html:not([data-theme='light']) tr.is-discontinued .muted-note {
-  color: #9fb3d4;
-}
-
 /* Campos inválidos (tras escribir/salir o al enviar; :user-invalid no marca el formulario recién abierto). Borde más grueso además del color (WCAG 1.4.1). */
 html[data-theme] :is(input:not([type='checkbox']):not([type='radio']):not([type='range']), select, textarea):is(:user-invalid, [aria-invalid='true']) {
   border-color: #b3261e;

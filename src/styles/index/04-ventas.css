@@ -107,11 +107,6 @@
   white-space: nowrap;
 }
 
-.is-discontinued {
-  color: #8290a7;
-  opacity: 0.72;
-}
-
 .empty-cell {
   padding: 3rem 1rem !important;
   color: #7086a7;

@@ -72,40 +72,12 @@ html[data-theme='light'] .source-data-heading p {
   color: var(--ds-muted);
 }
 
-html[data-theme='light'] .source-data-batches,
-html[data-theme='light'] .source-data-viewer {
-  border-color: var(--ds-border);
-  background: var(--ds-surface-alt);
-}
-
 html[data-theme='light'] .source-data-panel {
   border-color: var(--ds-border);
   background: var(--ds-surface);
 }
 
-html[data-theme='light'] .source-data-batch {
-  border-color: var(--ds-border);
-  color: var(--ds-ink);
-  background: var(--ds-surface);
-}
-
-html[data-theme='light'] .source-data-batch:hover,
-html[data-theme='light'] .source-data-batch.active {
-  border-color: var(--ds-sky);
-  background: var(--ds-blue-wash);
-}
-
-html[data-theme='light'] .source-data-batch strong,
-html[data-theme='light'] .source-data-viewer-heading h3 {
-  color: var(--ds-navy);
-}
-
-html[data-theme='light'] .source-data-batch span,
-html[data-theme='light'] .source-data-batch small,
-html[data-theme='light'] .source-data-heading p,
-html[data-theme='light'] .source-data-meta,
-html[data-theme='light'] .source-data-pagination,
-html[data-theme='light'] .source-data-sheet-select {
+html[data-theme='light'] .source-data-heading p {
   color: var(--ds-muted);
 }
 
@@ -163,20 +135,6 @@ html[data-theme='light'] .source-data-bundle-index {
 
 html[data-theme='light'] .source-data-bundle-copy strong {
   color: var(--ds-navy);
-}
-
-html[data-theme='light'] .source-data-table th {
-  background: var(--ds-surface);
-}
-
-html[data-theme='light'] .source-data-table .source-row-number {
-  color: var(--ds-success);
-  background: var(--ds-surface);
-}
-
-html[data-theme='light'] .source-data-table .source-header-row td {
-  color: var(--ds-navy);
-  background: var(--ds-blue-wash);
 }
 
 @media (max-width: 720px) {

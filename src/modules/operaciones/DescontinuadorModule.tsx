@@ -31,17 +31,28 @@ import { readJson, toErrorMessage } from '../../core/http';
 import PaginationControls from '../../core/PaginationControls';
 import { usePagedList } from '../../core/usePagedList';
 import { UploadButton, ExportButton } from '../../core/ActionButtons';
+import { cn } from '../../core/cn';
+import { PageHeader } from '../../core/ui/page-header';
+import { Card, CardHeader, Eyebrow, Muted } from '../../core/ui/card';
+import { Button } from '../../core/ui/button';
+import { Input } from '../../core/ui/input';
+import { Badge, type BadgeTone } from '../../core/ui/badge';
+import { StatusLine } from '../../core/ui/status-line';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const customerTypes: readonly CustomerType[] = ['Publico', 'Privado'];
 const commercialAreas: readonly CommercialArea[] = ['Strategic', 'Commercial'];
 const contractTypes: readonly ContractType[] = ['Alquiler', 'Abierto', 'Mantenimiento', 'Leasing'];
-const contractTypeClasses: Record<ContractType, string> = {
-  Alquiler: 'alquiler',
-  Abierto: 'abierto',
-  Mantenimiento: 'mantenimiento',
-  Leasing: 'leasing',
+const contractTypeFill: Record<ContractType, string> = {
+  Alquiler: 'bg-brand',
+  Abierto: 'bg-[#4a8d72]',
+  Mantenimiento: 'bg-sky',
+  Leasing: 'bg-[#6b5acd]',
 };
+const cardClass = 'min-w-0 grid-cols-1 [overflow-wrap:anywhere]';
+const fieldClass = 'grid min-w-0 gap-1.5 text-xs font-semibold text-navy dark:text-white';
+const subCardClass = 'min-w-0 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30';
 const customerPageSize = 50;
 
 type ImportBatchSummary = {
@@ -123,37 +134,39 @@ function DiscontinuationSourceCard({
   if (!source) return null;
 
   return (
-    <article className="source-data-source-card discontinuation-source-card">
-      <div className="source-data-source-heading">
-        <span className="detail-label">{title}</span>
-      </div>
+    <article className={cn(subCardClass, 'grid content-start gap-3')}>
+      <div className="text-sm font-bold text-navy dark:text-white">{title}</div>
+      <dl className="m-0 grid gap-2.5 text-sm">
+        <SourceFact label="Archivo esperado"><span className="font-bold text-navy dark:text-white">{source.expectedFiles.join(' · ')}</span></SourceFact>
+        <SourceFact label="Origen">{source.origin}</SourceFact>
+        <SourceFact label="Qué alimenta">{source.purpose}</SourceFact>
+        <SourceFact label="Archivos cargados">
+          {loadingBatches ? <span>Consultando estado…</span> : null}
+          {!loadingBatches && sourceBatchesError ? <span>No se pudo consultar el estado de carga.</span> : null}
+          {!loadingBatches && !sourceBatchesError && loadedBatches.length === 0 ? <span>Sin archivo cargado</span> : null}
+          {!loadingBatches && !sourceBatchesError && loadedBatches.length > 0 ? (
+            <ul className="m-0 grid list-none gap-1 p-0">
+              {loadedBatches.map((batch) => <li className="flex min-w-0 items-center gap-1.5 text-[#14532d] before:content-none dark:text-[#9be3b9]" key={batch.id} title={batch.sourceName}><HugeiconsIcon className="shrink-0" icon={Tick02Icon} size={14} strokeWidth={2.5} aria-hidden="true" /><span className="min-w-0 truncate font-semibold">{batch.sourceName}</span></li>)}
+            </ul>
+          ) : null}
+        </SourceFact>
+      </dl>
       <div>
-        <span className="discontinuation-source-card-label">Archivo esperado</span>
-        <strong>{source.expectedFiles.join(' · ')}</strong>
+        <UploadButton
+          busy={busy}
+          label={actionLabel}
+          accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          multiple={multiple}
+          onChange={onChange}
+          disabled={disabled}
+        />
       </div>
-      <p><span className="discontinuation-source-card-label">Origen</span>{source.origin}</p>
-      <small><span className="discontinuation-source-card-label">Qué alimenta</span>{source.purpose}</small>
-      <div className="discontinuation-source-loaded">
-        <span className="discontinuation-source-card-label">Archivos cargados</span>
-        {loadingBatches ? <span className="discontinuation-source-loaded-empty">Consultando estado…</span> : null}
-        {!loadingBatches && sourceBatchesError ? <span className="discontinuation-source-loaded-empty">No se pudo consultar el estado de carga.</span> : null}
-        {!loadingBatches && !sourceBatchesError && loadedBatches.length === 0 ? <span className="discontinuation-source-loaded-empty">Sin archivo cargado</span> : null}
-        {!loadingBatches && !sourceBatchesError && loadedBatches.length > 0 ? (
-          <ul className="discontinuation-source-loaded-list">
-            {loadedBatches.map((batch) => <li key={batch.id} title={batch.sourceName}><HugeiconsIcon icon={Tick02Icon} size={14} strokeWidth={2.5} aria-hidden="true" /><strong>{batch.sourceName}</strong></li>)}
-          </ul>
-        ) : null}
-      </div>
-      <UploadButton
-        busy={busy}
-        label={actionLabel}
-        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        multiple={multiple}
-        onChange={onChange}
-        disabled={disabled}
-      />
     </article>
   );
+}
+
+function SourceFact({ label, children }: { label: string; children: React.ReactNode }) {
+  return <div className="grid min-w-0 gap-0.5"><dt className="text-[0.7rem] font-bold uppercase tracking-wider text-ink-2 dark:text-[#9fb2d1]">{label}</dt><dd className="m-0 min-w-0 text-ink-2 dark:text-[#d6e2f5]">{children}</dd></div>;
 }
 
 export default function DescontinuadorModule() {
@@ -662,17 +675,19 @@ export default function DescontinuadorModule() {
     }
   }
 
+  const title = activeView === 'discontinued' ? 'Equipos discontinuados' : activeView === 'stock' ? 'Stock Waldbott' : 'Archivos del flujo de discontinuación';
+  const lead = activeView === 'discontinued' ? 'Identifica contratos que requieren revisión y prioriza los modelos afectados.' : activeView === 'stock' ? 'Cruza el stock recuperable con el soporte Canon y la cartera instalada.' : 'Conserva cada exportación, muestra su origen y deja las filas originales disponibles para inspección.';
+
   return (
-    <div className="page-content operations-page">
-      <section className="catalog-header discontinuation-page-header">
-        <div>
-          <div className="eyebrow">OPERACIONES / CICLO DE VIDA</div>
-          <h1>{activeView === 'discontinued' ? 'Equipos discontinuados' : activeView === 'stock' ? 'Stock Waldbott' : 'Archivos del flujo de discontinuación'}</h1>
-          <p className="lead">{activeView === 'discontinued' ? 'Identifica contratos que requieren revisión y prioriza los modelos afectados.' : activeView === 'stock' ? 'Cruza el stock recuperable con el soporte Canon y la cartera instalada.' : 'Conserva cada exportación, muestra su origen y deja las filas originales disponibles para inspección.'}</p>
-        </div>
-        {activeView === 'discontinued' && <div className="discontinuation-header-metric"><strong>{numberFormat.format(portfolioStats.discontinued)}</strong><span>equipos discontinuados</span></div>}
-        {activeView === 'uploads' && <div className="discontinuation-header-metric is-neutral"><strong>{loadedSourceCount}</strong><span>cargas activas</span></div>}
-      </section>
+    <div className="page-content grid min-w-0 grid-cols-1 gap-6 [overflow-wrap:anywhere]">
+      <PageHeader
+        eyebrow="ADMINISTRATIVO / CICLO DE VIDA"
+        title={title}
+        lead={lead}
+        actions={activeView === 'discontinued'
+          ? <HeaderMetric value={numberFormat.format(portfolioStats.discontinued)} label="equipos discontinuados" tone="danger" />
+          : activeView === 'uploads' ? <HeaderMetric value={String(loadedSourceCount)} label="cargas activas" /> : undefined}
+      />
 
       <AnimatedTabs
         ariaLabel="Vistas del Discontinuador"
@@ -685,185 +700,169 @@ export default function DescontinuadorModule() {
         ]}
       />
 
-      {(activeView === 'uploads' || error || message || loading || importProgress) && <section className="sales-status" aria-live="polite">
-        <span className={`status-dot ${error ? 'error' : loading || importProgress ? 'pending' : 'ready'}`} />
-        <span>{error || message || (importProgress ? `${importProgress.currentFile}/${importProgress.totalFiles} archivo(s) · ${importProgress.progress}% · ${importProgress.stage}` : loading ? 'Consultando modelos Canon y base instalada…' : `${modelItems.length} modelos Canon para cruce`)}</span>
-      </section>}
+      {(activeView === 'uploads' || error || message || loading || importProgress) && <StatusLine state={error ? 'error' : loading || importProgress ? 'pending' : 'ready'}>{error || message || (importProgress ? `${importProgress.currentFile}/${importProgress.totalFiles} archivo(s) · ${importProgress.progress}% · ${importProgress.stage}` : loading ? 'Consultando modelos Canon y base instalada…' : `${modelItems.length} modelos Canon para cruce`)}</StatusLine>}
 
-      {importProgress ? <section className="discontinuation-import-progress" aria-label="Progreso de importación">
-        <div className="discontinuation-import-progress-heading">
-          <span>{importProgress.sourceName}</span>
-          <strong>{importProgress.progress}%</strong>
+      {importProgress ? <Card className={cardClass} aria-label="Progreso de importación">
+        <div className="flex items-baseline justify-between gap-3"><div className="font-semibold text-navy dark:text-white">{importProgress.sourceName}</div><div className="font-bold tabular-nums text-navy dark:text-white">{importProgress.progress}%</div></div>
+        <div className="h-2 overflow-hidden rounded-full bg-navy/10 dark:bg-white/10" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={importProgress.progress}>
+          <div className="h-full rounded-full bg-sky transition-[width]" style={{ width: `${importProgress.progress}%` }} />
         </div>
-        <div className="discontinuation-import-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={importProgress.progress}>
-          <span style={{ width: `${importProgress.progress}%` }} />
-        </div>
-        <small>Archivo {importProgress.currentFile} de {importProgress.totalFiles} · {importProgress.stage}</small>
-      </section> : null}
+        <Muted>Archivo {importProgress.currentFile} de {importProgress.totalFiles} · {importProgress.stage}</Muted>
+      </Card> : null}
 
       {activeView === 'uploads' && <>
-        <section className="source-data-panel discontinuation-source-panel" aria-labelledby="discontinuation-source-title">
-          <div className="source-data-heading">
-            <div>
-              <div className="eyebrow">FUENTES DE CARGA</div>
-              <h2 id="discontinuation-source-title">Archivos del flujo de discontinuación</h2>
-              <p>Selecciona cada exportación desde su origen indicado. La Suite conserva el archivo original, normaliza los campos necesarios y deja las filas completas disponibles para inspección.</p>
-            </div>
-            <div className="source-data-note">
-              <strong>4</strong>
-              <span>fuentes documentadas</span>
-            </div>
-          </div>
-          <div className="source-data-source-grid discontinuation-source-grid">
+        <Card className={cardClass} aria-labelledby="flow-source-title">
+          <CardHeader eyebrow="Fuentes de carga" title={<span id="flow-source-title">Archivos del flujo de discontinuación</span>} aside={<Badge>4 fuentes documentadas</Badge>} />
+          <Muted className="text-sm leading-relaxed">Selecciona cada exportación desde su origen indicado. La Suite conserva el archivo original, normaliza los campos necesarios y deja las filas completas disponibles para inspección.</Muted>
+          <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,16rem),1fr))] gap-4">
             <DiscontinuationSourceCard {...discontinuationSourceCards[0]} busy={importingPortfolio} disabled={sourceActionsDisabled} loadedBatches={loadedBatchesBySource.get('fleet.equipment') ?? []} loadingBatches={loadingImportBatches} sourceBatchesError={sourceBatchesError} onChange={(event) => void importLegacyPortfolio(event)} />
             <DiscontinuationSourceCard {...discontinuationSourceCards[1]} busy={importingClassification} disabled={sourceActionsDisabled} loadedBatches={loadedBatchesBySource.get('fleet.customer-classification') ?? []} loadingBatches={loadingImportBatches} sourceBatchesError={sourceBatchesError} onChange={(event) => void importCustomerClassification(event)} />
             <DiscontinuationSourceCard {...discontinuationSourceCards[2]} busy={importingCanon} disabled={sourceActionsDisabled} loadedBatches={loadedBatchesBySource.get('discontinuation.canon') ?? []} loadingBatches={loadingImportBatches} sourceBatchesError={sourceBatchesError} onChange={(event) => void importCanonDiscontinuation(event)} />
             <DiscontinuationSourceCard {...discontinuationSourceCards[3]} busy={importingWaldbott} disabled={sourceActionsDisabled} loadedBatches={loadedBatchesBySource.get('discontinuation.waldbott') ?? []} loadingBatches={loadingImportBatches} sourceBatchesError={sourceBatchesError} onChange={(event) => void importWaldbottStock(event)} />
           </div>
-          <div className="discontinuation-source-actions">
-            <button className="secondary-button" type="button" onClick={() => void clearExclusiveImports()} disabled={sourceActionsDisabled || (modelItems.length === 0 && stockItems.length === 0)}>{clearingExclusiveImports ? 'Limpiando listas…' : 'Limpiar listas Canon / stock'}</button>
-            <button className="secondary-button" type="button" onClick={() => void refresh()} disabled={loading || clearingExclusiveImports}>{loading ? 'Actualizando…' : 'Actualizar alertas'}</button>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={() => void clearExclusiveImports()} disabled={sourceActionsDisabled || (modelItems.length === 0 && stockItems.length === 0)}>{clearingExclusiveImports ? 'Limpiando listas…' : 'Limpiar listas Canon / stock'}</Button>
+            <Button variant="outline" onClick={() => void refresh()} disabled={loading || clearingExclusiveImports}>{loading ? 'Actualizando…' : 'Actualizar alertas'}</Button>
           </div>
-        </section>
+        </Card>
 
         <LegacySourceDataPanel key={sourceDataRefreshKey} />
       </>}
 
-      {activeView === 'discontinued' && <section className="sales-card discontinuation-portfolio-card">
-        <div className="card-heading">
-          <div><div className="eyebrow">FILTRO GENERAL</div><h2>Segmentar cartera</h2><p className="analysis-meta">Combina tipo de contrato, cliente y área comercial para priorizar los equipos afectados.</p></div>
-          <div className="discontinuation-portfolio-heading-actions">
-          <label className="search-field compact-search"><span>Buscar cartera</span><input value={customerQuery} onChange={(event) => { setCustomerQuery(event.target.value); setVisibleCustomerCount(customerPageSize); }} placeholder="Cliente, contrato, OV, serie…" /></label>
+      {activeView === 'discontinued' && <Card className={cardClass}>
+        <CardHeader
+          eyebrow="Filtro general"
+          title="Segmentar cartera"
+          aside={<div className="flex flex-wrap items-end gap-2">
+            <label className={cn(fieldClass, 'w-64')}>Buscar cartera<Input value={customerQuery} onChange={(event) => { setCustomerQuery(event.target.value); setVisibleCustomerCount(customerPageSize); }} placeholder="Cliente, contrato, OV, serie…" /></label>
             <ExportButton busy={exportingPortfolio} onClick={() => void exportPortfolio()} disabled={exportCustomers.length === 0}>Exportar cartera XLSX</ExportButton>
-          </div>
-        </div>
+          </div>}
+        />
+        <Muted className="text-sm">Combina tipo de contrato, cliente y área comercial para priorizar los equipos afectados.</Muted>
 
-        <div className="discontinuation-filter-bar" aria-label="Filtros de cartera" aria-busy={isFilterPending}>
+        <div className="flex flex-wrap items-end gap-x-6 gap-y-3" aria-label="Filtros de cartera" aria-busy={isFilterPending}>
           <FilterGroup label="Tipo de contrato" value={contractFilter} values={['Todos', ...contractTypes]} onChange={applyContractFilter} disabled={isFilterPending} />
           <FilterGroup label="Tipo de cliente" value={customerTypeFilter} values={['Todos', ...customerTypes]} onChange={applyCustomerTypeFilter} disabled={isFilterPending} />
           <FilterGroup label="Área comercial" value={commercialAreaFilter} values={['Todos', ...commercialAreas]} onChange={applyCommercialAreaFilter} disabled={isFilterPending} />
-          <button className="secondary-button filter-reset-button" type="button" onClick={resetPortfolioFilters} disabled={isFilterPending}>Limpiar filtros</button>
+          <Button variant="ghost" onClick={resetPortfolioFilters} disabled={isFilterPending}>Limpiar filtros</Button>
         </div>
 
-        <div className="discontinuation-portfolio-stats" aria-label="Indicadores de cartera filtrada">
-          <div><span>Clientes</span><strong>{numberFormat.format(portfolioStats.customers)}</strong></div>
-          <div><span>Equipos relevados</span><strong>{numberFormat.format(portfolioStats.equipment)}</strong></div>
-          <div className="is-critical"><span>Discontinuados</span><strong>{numberFormat.format(portfolioStats.discontinued)}</strong></div>
-          <div className={portfolioStats.scheduled > 0 ? 'is-warning' : ''}><span>Próximos a fin de soporte</span><strong>{numberFormat.format(portfolioStats.scheduled)}</strong></div>
+        <div className="grid min-w-0 grid-cols-2 gap-3 min-[900px]:grid-cols-4" aria-label="Indicadores de cartera filtrada">
+          <Stat label="Clientes" value={numberFormat.format(portfolioStats.customers)} />
+          <Stat label="Equipos relevados" value={numberFormat.format(portfolioStats.equipment)} />
+          <Stat label="Discontinuados" value={numberFormat.format(portfolioStats.discontinued)} tone="danger" />
+          <Stat label="Próximos a fin de soporte" value={numberFormat.format(portfolioStats.scheduled)} tone={portfolioStats.scheduled > 0 ? 'warning' : undefined} />
         </div>
 
-        <section className="discontinuation-insights" aria-label="Resumen gráfico de cartera">
-          <article className="discontinuation-insight-card">
-            <div className="discontinuation-insight-heading">
-              <div><div className="eyebrow">PARQUE INSTALADO</div><h3>Estado Canon</h3><p>Soporte de los equipos incluidos en los filtros actuales.</p></div>
-              <span>{numberFormat.format(portfolioStats.equipment)} equipos</span>
-            </div>
-            <div className="discontinuation-chart-content">
-              <div className="discontinuation-donut" role="img" aria-label={`${portfolioStats.discontinued} equipos discontinuados, ${portfolioStats.scheduled} próximos a vencer y ${portfolioStats.supported} con soporte vigente`} style={{ background: portfolioChart }}>
-                <div><strong>{numberFormat.format(portfolioStats.equipment)}</strong><span>equipos</span></div>
+        <section className="@container min-w-0" aria-label="Resumen gráfico de cartera">
+          <div className="grid min-w-0 gap-4 @[44rem]:grid-cols-2 @[68rem]:grid-cols-3">
+            <article className={cn(subCardClass, 'grid content-start gap-4')}>
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="grid gap-1"><Eyebrow>Parque instalado</Eyebrow><h3 className="m-0 text-base font-bold text-navy dark:text-white">Estado Canon</h3><Muted>Soporte de los equipos incluidos en los filtros actuales.</Muted></div>
+                <Badge>{numberFormat.format(portfolioStats.equipment)} equipos</Badge>
               </div>
-              <div className="discontinuation-chart-legend">
-                <span><i className="discontinuation-legend-dot discontinued" />Discontinuados <b>{numberFormat.format(portfolioStats.discontinued)}</b></span>
-                <span><i className="discontinuation-legend-dot scheduled" />Próximo fin <b>{numberFormat.format(portfolioStats.scheduled)}</b></span>
-                <span><i className="discontinuation-legend-dot unmatched" />Soporte vigente <b>{numberFormat.format(portfolioStats.supported)}</b></span>
+              <div className="flex flex-wrap items-center gap-5">
+                <div className="grid size-32 shrink-0 place-items-center rounded-full" role="img" aria-label={`${portfolioStats.discontinued} equipos discontinuados, ${portfolioStats.scheduled} próximos a vencer y ${portfolioStats.supported} con soporte vigente`} style={{ background: portfolioChart }}>
+                  <div className="grid size-20 place-items-center content-center rounded-full bg-paper text-center dark:bg-[#13233f]"><div className="text-xl font-bold tabular-nums text-navy dark:text-white">{numberFormat.format(portfolioStats.equipment)}</div><Muted>equipos</Muted></div>
+                </div>
+                <div className="grid gap-2 text-sm text-ink-2 dark:text-[#d6e2f5]">
+                  <LegendRow color="var(--ds-chart-danger)" label="Discontinuados" value={portfolioStats.discontinued} />
+                  <LegendRow color="var(--ds-chart-warning)" label="Próximo fin" value={portfolioStats.scheduled} />
+                  <LegendRow color="var(--ds-chart-success)" label="Soporte vigente" value={portfolioStats.supported} />
+                </div>
               </div>
-            </div>
-          </article>
-          <PortfolioBreakdownCard eyebrow="EQUIPOS POR CONTRATO" title="Distribución por tipo" description="Equipos instalados según el tipo de contrato." values={portfolioStats.equipmentByContractType} />
-          <PortfolioBreakdownCard eyebrow="CONTRATOS POR TIPO" title="Cantidad de contratos" description="Contratos incluidos en la selección actual." values={portfolioStats.contractsByType} />
+            </article>
+            <PortfolioBreakdownCard eyebrow="Equipos por contrato" title="Distribución por tipo" description="Equipos instalados según el tipo de contrato." values={portfolioStats.equipmentByContractType} />
+            <PortfolioBreakdownCard eyebrow="Contratos por tipo" title="Cantidad de contratos" description="Contratos incluidos en la selección actual." values={portfolioStats.contractsByType} />
+          </div>
         </section>
 
-        <section className="discontinuation-models" aria-labelledby="discontinuation-models-title">
-          <div className="discontinuation-models-heading">
-            <div><div className="eyebrow">MODELOS IDENTIFICADOS</div><h2 id="discontinuation-models-title">Canon discontinuados en la cartera</h2><p>Modelos con fin de soporte que aparecen en los equipos filtrados.</p></div>
-            <span className="discontinuation-model-count"><strong>{discontinuedModels.length}</strong> modelos</span>
+        <section className="grid min-w-0 gap-3" aria-labelledby="models-title">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="grid gap-1"><Eyebrow>Modelos identificados</Eyebrow><h2 className="m-0 text-lg font-bold text-navy dark:text-white" id="models-title">Canon discontinuados en la cartera</h2><Muted>Modelos con fin de soporte que aparecen en los equipos filtrados.</Muted></div>
+            <Badge>{discontinuedModels.length} modelos</Badge>
           </div>
-          {discontinuedModels.length > 0 ? <div className="discontinuation-model-grid">
-            {discontinuedModels.map((model) => <article className="discontinuation-model-card" key={model.modelLabel}>
-              <div className="discontinuation-model-card-heading"><span className="badge alert">Discontinuado</span><strong>{numberFormat.format(model.equipmentCount)} equipos</strong></div>
-              <h3>{model.modelLabel}</h3>
-              <small>{model.endsAt ? `Fin de soporte: ${formatDate(model.endsAt)}` : 'Fin de soporte sin fecha'}</small>
+          {discontinuedModels.length > 0 ? <div className="grid min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,13rem),1fr))] gap-3">
+            {discontinuedModels.map((model) => <article className={cn(subCardClass, 'grid content-start gap-2 p-3')} key={model.modelLabel}>
+              <div className="flex flex-wrap items-center justify-between gap-2"><Badge tone="danger">Discontinuado</Badge><div className="text-sm font-bold tabular-nums text-navy dark:text-white">{numberFormat.format(model.equipmentCount)} equipos</div></div>
+              <h3 className="m-0 text-sm font-bold text-navy dark:text-white">{model.modelLabel}</h3>
+              <Muted>{model.endsAt ? `Fin de soporte: ${formatDate(model.endsAt)}` : 'Fin de soporte sin fecha'}</Muted>
             </article>)}
-          </div> : <p className="empty-inline">No hay modelos discontinuados en la cartera filtrada.</p>}
+          </div> : <Muted className="text-sm">No hay modelos discontinuados en la cartera filtrada.</Muted>}
         </section>
 
-        <div className="discontinuation-portfolio-grid">
-          <aside className="discontinuation-customer-directory" aria-label="Clientes de la cartera">
-            <div className="discontinuation-directory-heading"><strong>Clientes</strong><span>{numberFormat.format(filteredCustomers.length)} encontrados</span></div>
-            <div className="discontinuation-customer-list">
-              {visibleCustomers.map((customer) => {
-                const alertCount = customerAlertCounts.get(customer.id) ?? 0;
-                const customerContracts = contractFilter === 'Todos' ? customer.contracts : customer.contracts.filter((contract) => contract.contractType === contractFilter);
-                const equipmentCount = customerContracts.reduce((total, contract) => total + contract.equipment.length, 0);
-                return <button className={`discontinuation-customer ${selectedCustomer?.id === customer.id ? 'selected' : ''}`} type="button" key={customer.id} onClick={() => setSelectedCustomerId(customer.id)}><span><strong>{customer.name}</strong><small>{customerContracts.length} contrato{customerContracts.length === 1 ? '' : 's'} · {equipmentCount} equipo{equipmentCount === 1 ? '' : 's'}</small></span><b className={alertCount > 0 ? 'has-alert' : ''}>{alertCount > 0 ? `${alertCount} alertas` : 'Sin alertas'}</b></button>;
-              })}
-              {remainingCustomers > 0 && <button className="text-button directory-more-button" type="button" onClick={() => setVisibleCustomerCount((current) => current + customerPageSize)}>Ver {Math.min(customerPageSize, remainingCustomers)} clientes más</button>}
-              {visibleCustomers.length === 0 && <p className="empty-inline">{loading ? 'Cargando cartera…' : 'No hay clientes para este filtro.'}</p>}
-            </div>
-          </aside>
+        <div className="@container min-w-0">
+          <div className="grid min-w-0 items-start gap-4 @[56rem]:grid-cols-[minmax(16rem,1fr)_minmax(0,2.2fr)]">
+            <aside className={cn(subCardClass, 'grid content-start gap-3')} aria-label="Clientes de la cartera">
+              <div className="flex items-baseline justify-between gap-2"><div className="font-bold text-navy dark:text-white">Clientes</div><Muted>{numberFormat.format(filteredCustomers.length)} encontrados</Muted></div>
+              <div className="grid max-h-[40rem] gap-2 overflow-y-auto pr-1">
+                {visibleCustomers.map((customer) => {
+                  const alertCount = customerAlertCounts.get(customer.id) ?? 0;
+                  const customerContracts = contractFilter === 'Todos' ? customer.contracts : customer.contracts.filter((contract) => contract.contractType === contractFilter);
+                  const equipmentCount = customerContracts.reduce((total, contract) => total + contract.equipment.length, 0);
+                  const selected = selectedCustomer?.id === customer.id;
+                  return <button className={cn('grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-xl border p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky', selected ? 'border-sky bg-sky/10' : 'border-navy/10 bg-white hover:bg-sky/5 dark:border-sky/20 dark:bg-transparent')} type="button" key={customer.id} aria-pressed={selected} onClick={() => setSelectedCustomerId(customer.id)}>
+                    <div className="min-w-0"><div className="font-bold text-navy dark:text-white">{customer.name}</div><Muted>{customerContracts.length} contrato{customerContracts.length === 1 ? '' : 's'} · {equipmentCount} equipo{equipmentCount === 1 ? '' : 's'}</Muted></div>
+                    <Badge className="whitespace-nowrap" tone={alertCount > 0 ? 'danger' : 'neutral'}>{alertCount > 0 ? `${alertCount} alertas` : 'Sin alertas'}</Badge>
+                  </button>;
+                })}
+                {remainingCustomers > 0 && <Button variant="outline" onClick={() => setVisibleCustomerCount((current) => current + customerPageSize)}>Ver {Math.min(customerPageSize, remainingCustomers)} clientes más</Button>}
+                {visibleCustomers.length === 0 && <Muted className="text-sm">{loading ? 'Cargando cartera…' : 'No hay clientes para este filtro.'}</Muted>}
+              </div>
+            </aside>
 
-          <div className="discontinuation-customer-detail">
-            {selectedCustomer ? <CustomerPortfolioDetail customer={selectedCustomer} contractFilter={contractFilter} supportByModel={modelSupportByLabel} alertCount={customerAlertCounts.get(selectedCustomer.id) ?? 0} exporting={exportingCustomerId === selectedCustomer.id} onExport={() => void exportCustomer(selectedCustomer)} /> : <div className="empty-inline">Importa una cartera para consultar contratos y equipos por cliente.</div>}
+            <div className="min-w-0">
+              {selectedCustomer ? <CustomerPortfolioDetail customer={selectedCustomer} contractFilter={contractFilter} supportByModel={modelSupportByLabel} alertCount={customerAlertCounts.get(selectedCustomer.id) ?? 0} exporting={exportingCustomerId === selectedCustomer.id} onExport={() => void exportCustomer(selectedCustomer)} /> : <Muted className="text-sm">Importa una cartera para consultar contratos y equipos por cliente.</Muted>}
+            </div>
           </div>
         </div>
-      </section>}
+      </Card>}
 
-      {activeView === 'discontinued' && <>
-      <section className="sales-card">
-        <div className="card-heading">
-          <div><div className="eyebrow">SOPORTE CANON + BASE INSTALADA</div><h2>Modelos de impresoras discontinuados</h2></div>
-          <span className="analysis-meta">Se conservan registros de modelo aunque la lista no traiga código de parte.</span>
-        </div>
-        <div className="catalog-table-wrap">
-          <table className="catalog-table operations-table discontinuation-table">
-            <thead><tr><th>Modelo</th><th>Código de parte</th><th>Tensión</th><th>Fecha fin</th><th>Equipos instalados</th><th>Notas de fuente</th><th>Estado</th></tr></thead>
-            <tbody>
-              {pagedModelItems.items.map((item) => <tr key={item.id} className={item.status === 'discontinued' ? 'is-discontinued' : undefined}>
-                <td><span className="code-cell">{item.modelLabel}</span><small className="table-secondary-text" title={item.sourceLabel ?? item.sourceName}>{item.sourceLabel ?? item.sourceName}</small></td>
-                <td>{item.partCode || <span className="muted-note">Sin código</span>}</td>
-                <td>{item.voltage || <span className="muted-note">Sin dato</span>}</td>
-                <td>{item.endsAt ? formatDate(item.endsAt) : <span className="muted-note">Sin fecha</span>}</td>
-                <td>{item.installedCount > 0 ? <span className="impact-label">{item.installedCount} equipo{item.installedCount === 1 ? '' : 's'}<small>{item.installedModels.join(', ')}</small></span> : <span className="muted-note">Sin coincidencias</span>}</td>
-                <td>{item.sourceNotes.length > 0 ? <span className="source-cell" title={item.sourceNotes.join(' · ')}>{item.sourceNotes.join(' · ')}</span> : <span className="muted-note">Sin notas</span>}</td>
-                <td><span className={`badge ${item.status === 'discontinued' ? 'alert' : 'warning'}`}>{item.status === 'discontinued' ? 'Discontinuado' : 'Programado'}</span></td>
-              </tr>)}
-              {visibleModelItems.length === 0 && <tr><td colSpan={7} className="empty-cell">{loading ? 'Cargando…' : 'Importa una lista Canon XLSX para consultar modelos y fechas de soporte.'}</td></tr>}
-            </tbody>
-          </table>
-        </div>
+      {activeView === 'discontinued' && <Card className={cardClass}>
+        <CardHeader eyebrow="Soporte Canon + base instalada" title="Modelos de impresoras discontinuados" />
+        <Muted className="text-sm">Se conservan registros de modelo aunque la lista no traiga código de parte.</Muted>
+        <Table className="min-w-[52rem] [overflow-wrap:normal]">
+          <TableHeader><TableRow><TableHead>Modelo</TableHead><TableHead>Código de parte</TableHead><TableHead>Tensión</TableHead><TableHead>Fecha fin</TableHead><TableHead>Equipos instalados</TableHead><TableHead>Notas de fuente</TableHead><TableHead>Estado</TableHead></TableRow></TableHeader>
+          <TableBody>
+            {pagedModelItems.items.map((item) => <TableRow key={item.id} className={item.status === 'discontinued' ? 'bg-[#d92d20]/5' : undefined}>
+              <TableCell className="min-w-[10rem]"><div className="font-mono text-xs font-semibold text-navy dark:text-white">{item.modelLabel}</div><Muted className="mt-1" title={item.sourceLabel ?? item.sourceName}>{item.sourceLabel ?? item.sourceName}</Muted></TableCell>
+              <TableCell>{item.partCode || <Muted>Sin código</Muted>}</TableCell>
+              <TableCell>{item.voltage || <Muted>Sin dato</Muted>}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.endsAt ? formatDate(item.endsAt) : <Muted>Sin fecha</Muted>}</TableCell>
+              <TableCell>{item.installedCount > 0 ? <div><div className="font-semibold">{item.installedCount} equipo{item.installedCount === 1 ? '' : 's'}</div><Muted>{item.installedModels.join(', ')}</Muted></div> : <Muted>Sin coincidencias</Muted>}</TableCell>
+              <TableCell className="max-w-[16rem]">{item.sourceNotes.length > 0 ? <div className="line-clamp-2" title={item.sourceNotes.join(' · ')}>{item.sourceNotes.join(' · ')}</div> : <Muted>Sin notas</Muted>}</TableCell>
+              <TableCell><Badge className="whitespace-nowrap" tone={item.status === 'discontinued' ? 'danger' : 'warning'}>{item.status === 'discontinued' ? 'Discontinuado' : 'Programado'}</Badge></TableCell>
+            </TableRow>)}
+            {visibleModelItems.length === 0 && <TableRow><TableCell colSpan={7} className="py-8 text-center">{loading ? 'Cargando…' : 'Importa una lista Canon XLSX para consultar modelos y fechas de soporte.'}</TableCell></TableRow>}
+          </TableBody>
+        </Table>
         {pagedModelItems.totalPages > 1 && <PaginationControls label="Paginación de modelos discontinuados" page={pagedModelItems.page} pageSize={pagedModelItems.pageSize} total={pagedModelItems.total} pageSizeOptions={[50, 100, 250]} onPageChange={pagedModelItems.setPage} onPageSizeChange={pagedModelItems.setPageSize} />}
-      </section>
-      </>}
+      </Card>}
 
-      {activeView === 'stock' && <section className="sales-card">
-        <div className="card-heading">
-          <div><div className="eyebrow">WALDBOTT + SOPORTE CANON</div><h2>Stock recuperable</h2></div>
-          <span className="analysis-meta">
-            {stockItems.length
-              ? `${numberFormat.format(stockUnits)} unidades en ${stockItems.length} modelos. ${numberFormat.format(rescueStockUnits)} unidades tienen soporte Canon discontinuado.`
-              : 'Solo se considera el Depósito 04. Las filas de proyectores, Epson, Casio, BenQ y pantallas interactivas quedan fuera.'}
-          </span>
-        </div>
-        <div className="catalog-table-wrap">
-          <table className="catalog-table operations-table stock-table">
-            <thead><tr><th>Modelo</th><th className="align-right">Unidades</th><th>Canon</th><th>Fecha fin</th><th>Base instalada</th><th>Fuente</th></tr></thead>
-            <tbody>
-              {visibleStockItems.map((item) => <tr key={item.id}>
-                <td><span className="code-cell">{item.modelLabel}</span>{item.canonModelLabel && item.canonModelLabel !== item.modelLabel ? <small className="table-secondary-text">Canon: {item.canonModelLabel}</small> : null}</td>
-                <td className="align-right">{numberFormat.format(item.quantity)}</td>
-                <td><span className={`badge ${stockStatusClass(item.canonStatus)}`}>{formatStockStatus(item.canonStatus)}</span></td>
-                <td>{item.canonEndsAt ? formatDate(item.canonEndsAt) : <span className="muted-note">Sin fecha</span>}</td>
-                <td>{item.installedCount > 0 ? <span className="impact-label">{item.installedCount} equipo{item.installedCount === 1 ? '' : 's'}<small>{item.installedModels.join(', ')}</small></span> : <span className="muted-note">Sin coincidencias</span>}</td>
-                <td><span className="source-cell" title={item.sourceNames.join(', ')}>{item.sourceNames.join(', ')}</span></td>
-              </tr>)}
-              {visibleStockItems.length === 0 && <tr><td colSpan={6} className="empty-cell">{loading ? 'Cargando…' : 'Importa el stock Waldbott XLSX para cruzar unidades recuperables con soporte Canon y cartera instalada.'}</td></tr>}
-            </tbody>
-          </table>
-        </div>
-      </section>
-      }
+      {activeView === 'stock' && <Card className={cardClass}>
+        <CardHeader eyebrow="Waldbott + soporte Canon" title="Stock recuperable" />
+        <Muted className="text-sm">
+          {stockItems.length
+            ? `${numberFormat.format(stockUnits)} unidades en ${stockItems.length} modelos. ${numberFormat.format(rescueStockUnits)} unidades tienen soporte Canon discontinuado.`
+            : 'Solo se considera el Depósito 04. Las filas de proyectores, Epson, Casio, BenQ y pantallas interactivas quedan fuera.'}
+        </Muted>
+        <Table className="min-w-[44rem] [overflow-wrap:normal]">
+          <TableHeader><TableRow><TableHead>Modelo</TableHead><TableHead className="text-right">Unidades</TableHead><TableHead>Canon</TableHead><TableHead>Fecha fin</TableHead><TableHead>Base instalada</TableHead><TableHead>Fuente</TableHead></TableRow></TableHeader>
+          <TableBody>
+            {visibleStockItems.map((item) => <TableRow key={item.id}>
+              <TableCell className="min-w-[10rem]"><div className="font-mono text-xs font-semibold text-navy dark:text-white">{item.modelLabel}</div>{item.canonModelLabel && item.canonModelLabel !== item.modelLabel ? <Muted className="mt-1">Canon: {item.canonModelLabel}</Muted> : null}</TableCell>
+              <TableCell className="text-right tabular-nums">{numberFormat.format(item.quantity)}</TableCell>
+              <TableCell><Badge className="whitespace-nowrap" tone={stockStatusTone(item.canonStatus)}>{formatStockStatus(item.canonStatus)}</Badge></TableCell>
+              <TableCell className="whitespace-nowrap">{item.canonEndsAt ? formatDate(item.canonEndsAt) : <Muted>Sin fecha</Muted>}</TableCell>
+              <TableCell>{item.installedCount > 0 ? <div><div className="font-semibold">{item.installedCount} equipo{item.installedCount === 1 ? '' : 's'}</div><Muted>{item.installedModels.join(', ')}</Muted></div> : <Muted>Sin coincidencias</Muted>}</TableCell>
+              <TableCell className="max-w-[14rem]"><div className="line-clamp-2" title={item.sourceNames.join(', ')}>{item.sourceNames.join(', ')}</div></TableCell>
+            </TableRow>)}
+            {visibleStockItems.length === 0 && <TableRow><TableCell colSpan={6} className="py-8 text-center">{loading ? 'Cargando…' : 'Importa el stock Waldbott XLSX para cruzar unidades recuperables con soporte Canon y cartera instalada.'}</TableCell></TableRow>}
+          </TableBody>
+        </Table>
+      </Card>}
 
-      <p className="scope-note">La suite cruza stock, listas de modelos Canon y equipos instalados con las reglas disponibles del legado. El proyecto original no definía sustitutos automáticos; para no inventar equivalencias, los modelos sin cruce se muestran como pendientes de revisión.</p>
+      <Muted className="text-sm leading-relaxed">La suite cruza stock, listas de modelos Canon y equipos instalados con las reglas disponibles del legado. El proyecto original no definía sustitutos automáticos; para no inventar equivalencias, los modelos sin cruce se muestran como pendientes de revisión.</Muted>
     </div>
   );
 }
@@ -943,10 +942,24 @@ function formatStockStatus(status: WaldbottStockRecord['canonStatus']): string {
   return 'Sin registro';
 }
 
-function stockStatusClass(status: WaldbottStockRecord['canonStatus']): string {
-  if (status === 'discontinued') return 'alert';
+function stockStatusTone(status: WaldbottStockRecord['canonStatus']): BadgeTone {
+  if (status === 'discontinued') return 'danger';
   if (status === 'scheduled') return 'warning';
   return 'neutral';
+}
+
+function HeaderMetric({ value, label, tone }: { value: string; label: string; tone?: 'danger' }) {
+  return <div className={cn('grid min-w-36 gap-0.5 rounded-xl border border-navy/10 bg-white px-4 py-3 shadow-md dark:border-sky/20 dark:bg-panel', tone === 'danger' && 'border-l-4 border-l-[#d92d20]!')}><div className={cn('text-3xl font-bold tabular-nums', tone === 'danger' ? 'text-[#912018] dark:text-[#ff8a93]' : 'text-navy dark:text-white')}>{value}</div><Muted>{label}</Muted></div>;
+}
+
+const statTone = { danger: 'border-l-[#d92d20]', warning: 'border-l-[#e08a00]' } as const;
+
+function Stat({ label, value, tone }: { label: string; value: string; tone?: keyof typeof statTone }) {
+  return <div className={cn(subCardClass, 'grid gap-1 p-3', tone && `border-l-4 ${statTone[tone]}`)}><Muted>{label}</Muted><div className="text-2xl font-bold tabular-nums text-navy dark:text-white">{value}</div></div>;
+}
+
+function LegendRow({ color, label, value }: { color: string; label: string; value: number }) {
+  return <div className="flex items-center gap-2"><i className="size-2.5 shrink-0 rounded-full" style={{ background: color }} /><div>{label}</div><b className="tabular-nums text-navy dark:text-white">{numberFormat.format(value)}</b></div>;
 }
 
 function FilterGroup<T extends string>({
@@ -962,7 +975,7 @@ function FilterGroup<T extends string>({
   onChange: (value: T) => void;
   disabled: boolean;
 }) {
-  return <div className="discontinuation-filter-group"><span>{label}</span><div className="discontinuation-filter-options" aria-label={label}>{values.map((option) => <button type="button" key={option} className={option === value ? 'active' : ''} aria-pressed={option === value} disabled={disabled} onClick={() => onChange(option)}>{option === 'Publico' ? 'Público' : option}</button>)}</div></div>;
+  return <div className="grid gap-1.5"><div className="text-xs font-semibold text-navy dark:text-white">{label}</div><div className="flex flex-wrap gap-1.5" role="group" aria-label={label}>{values.map((option) => <Button type="button" key={option} size="sm" variant={option === value ? 'default' : 'outline'} aria-pressed={option === value} disabled={disabled} onClick={() => onChange(option)}>{option === 'Publico' ? 'Público' : option}</Button>)}</div></div>;
 }
 
 function PortfolioBreakdownCard({
@@ -978,12 +991,12 @@ function PortfolioBreakdownCard({
 }) {
   const maximum = Math.max(1, ...values.map((value) => value.amount));
   return (
-    <article className="discontinuation-insight-card">
-      <div className="discontinuation-insight-heading"><div><div className="eyebrow">{eyebrow}</div><h3>{title}</h3><p>{description}</p></div></div>
-      <div className="discontinuation-breakdown-list">
-        {values.map((value) => <div className="discontinuation-breakdown-item" key={value.type}>
-          <div><span>{value.type}</span><b>{numberFormat.format(value.amount)}</b></div>
-          <div className="discontinuation-breakdown-track"><span className={`discontinuation-breakdown-fill ${contractTypeClasses[value.type]}`} style={{ width: `${(value.amount / maximum) * 100}%` }} /></div>
+    <article className={cn(subCardClass, 'grid content-start gap-4')}>
+      <div className="grid gap-1"><Eyebrow>{eyebrow}</Eyebrow><h3 className="m-0 text-base font-bold text-navy dark:text-white">{title}</h3><Muted>{description}</Muted></div>
+      <div className="grid gap-3">
+        {values.map((value) => <div className="grid gap-1.5" key={value.type}>
+          <div className="flex items-baseline justify-between gap-2 text-sm text-ink-2 dark:text-[#d6e2f5]"><div>{value.type}</div><b className="tabular-nums text-navy dark:text-white">{numberFormat.format(value.amount)}</b></div>
+          <div className="h-2 overflow-hidden rounded-full bg-navy/10 dark:bg-white/10"><div className={cn('h-full rounded-full', contractTypeFill[value.type])} style={{ width: `${(value.amount / maximum) * 100}%` }} /></div>
         </div>)}
       </div>
     </article>
@@ -1008,19 +1021,22 @@ function CustomerPortfolioDetail({
   const contracts = contractFilter === 'Todos' ? customer.contracts : customer.contracts.filter((contract) => contract.contractType === contractFilter);
   const equipmentCount = contracts.reduce((total, contract) => total + contract.equipment.length, 0);
   return (
-    <div>
-      <div className="discontinuation-customer-detail-header">
-        <div><div className="eyebrow">CLIENTE SELECCIONADO</div><h3>{customer.name}</h3><p>{customer.customerType ?? 'Sin tipo'} · {customer.commercialArea ?? 'Sin área comercial'}</p><SourceDetails details={customer.sourceDetails} /></div>
+    <div className="grid min-w-0 gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="grid min-w-0 gap-1"><Eyebrow>Cliente seleccionado</Eyebrow><h3 className="m-0 text-lg font-bold text-navy dark:text-white">{customer.name}</h3><Muted>{customer.customerType ?? 'Sin tipo'} · {customer.commercialArea ?? 'Sin área comercial'}</Muted><SourceDetails details={customer.sourceDetails} /></div>
         <ExportButton busy={exporting} onClick={onExport}>Exportar cliente XLSX</ExportButton>
       </div>
-      <div className="discontinuation-customer-meta"><span><strong>{numberFormat.format(contracts.length)}</strong> contratos</span><span><strong>{numberFormat.format(equipmentCount)}</strong> equipos</span><span className={alertCount > 0 ? 'has-alert' : ''}><strong>{numberFormat.format(alertCount)}</strong> alertas de soporte</span></div>
-      <div className="discontinuation-contract-detail-list">
-        {contracts.map((contract) => <details className="discontinuation-contract-detail" open key={contract.id}>
-          <summary><span><b>{contract.reference || 'Sin referencia'}</b><small>{contract.contractType} · {formatDateRange(contract.startsAt, contract.endsAt)}</small></span><em>{contract.equipment.length} equipo{contract.equipment.length === 1 ? '' : 's'}</em><span className="discontinuation-contract-toggle"><span className="when-open">Contraer equipos</span><span className="when-closed">Ver equipos</span></span></summary>
-          <div className="discontinuation-contract-meta">{formatContractMetadata(contract)}<SourceDetails details={contract.sourceDetails} /></div>
-          <ContractEquipmentTable equipment={contract.equipment} supportByModel={supportByModel} />
+      <div className="flex flex-wrap gap-2"><Badge>{numberFormat.format(contracts.length)} contratos</Badge><Badge>{numberFormat.format(equipmentCount)} equipos</Badge><Badge tone={alertCount > 0 ? 'danger' : 'neutral'}>{numberFormat.format(alertCount)} alertas de soporte</Badge></div>
+      <div className="grid gap-3">
+        {contracts.map((contract) => <details className={cn(subCardClass, 'group')} open key={contract.id}>
+          <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2 focus-visible:outline-2 focus-visible:outline-sky">
+            <div className="grid min-w-0 gap-0.5"><b className="text-navy dark:text-white">{contract.reference || 'Sin referencia'}</b><Muted>{contract.contractType} · {formatDateRange(contract.startsAt, contract.endsAt)}</Muted></div>
+            <div className="flex items-center gap-3 text-xs"><em className="not-italic font-semibold text-ink-2 dark:text-[#d6e2f5]">{contract.equipment.length} equipo{contract.equipment.length === 1 ? '' : 's'}</em><span className="font-semibold text-[#00587a] dark:text-[#8bd6f2]"><span className="group-open:hidden">Ver equipos</span><span className="hidden group-open:inline">Contraer equipos</span></span></div>
+          </summary>
+          <div className="mt-3 grid gap-2"><Muted>{formatContractMetadata(contract)}</Muted><SourceDetails details={contract.sourceDetails} /></div>
+          <div className="mt-3"><ContractEquipmentTable equipment={contract.equipment} supportByModel={supportByModel} /></div>
         </details>)}
-        {contracts.length === 0 && <p className="empty-inline">Sin contratos registrados para este filtro.</p>}
+        {contracts.length === 0 && <Muted className="text-sm">Sin contratos registrados para este filtro.</Muted>}
       </div>
     </div>
   );
@@ -1030,24 +1046,22 @@ function CustomerPortfolioDetail({
 function ContractEquipmentTable({ equipment, supportByModel }: { equipment: ContractRecord['equipment']; supportByModel: ReadonlyMap<string, ModelDiscontinuationRecord | undefined> }) {
   const paged = usePagedList(equipment, 50);
   return (
-    <>
-      <div className="catalog-table-wrap">
-        <table className="catalog-table operations-table discontinuation-equipment-table">
-          <thead><tr><th>Equipo</th><th>Serie</th><th>Ubicación</th><th>Ciudad / dirección</th><th>Estado Canon</th></tr></thead>
-          <tbody>{paged.items.map((equipment) => {
-            const support = supportByModel.get(equipment.modelLabel);
-            return <tr key={equipment.id}>
-              <td><span className="code-cell">{equipment.modelLabel}</span><small className="table-secondary-text">{[equipment.brand, equipment.description].filter(Boolean).join(' · ') || 'Sin descripción de origen'}</small><SourceDetails details={equipment.sourceDetails} /></td>
-              <td>{equipment.serialNumber || 'Sin serie'}</td>
-              <td><span>{equipment.interior || equipment.location || 'Sin ubicación'}</span><small className="table-secondary-text">{equipment.branch || 'Sin sucursal'}</small></td>
-              <td><span>{equipment.city || 'Sin ciudad'}</span><small className="table-secondary-text">{equipment.address || 'Sin dirección'}</small></td>
-              <td>{support ? <><span className={`badge ${support.status === 'discontinued' ? 'alert' : support.status === 'scheduled' ? 'warning' : 'ok'}`}>{support.status === 'discontinued' ? 'Discontinuado' : support.status === 'scheduled' ? 'Próximo fin' : 'Soporte vigente'}</span><small className="table-secondary-text">{support.endsAt ? `Fin: ${formatDate(support.endsAt)}` : support.sourceName}</small></> : <span className="badge neutral">Sin registro Canon</span>}</td>
-            </tr>;
-          })}</tbody>
-        </table>
-      </div>
+    <div className="grid gap-3">
+      <Table className="min-w-[40rem] [overflow-wrap:normal]">
+        <TableHeader><TableRow><TableHead>Equipo</TableHead><TableHead>Serie</TableHead><TableHead>Ubicación</TableHead><TableHead>Ciudad / dirección</TableHead><TableHead>Estado Canon</TableHead></TableRow></TableHeader>
+        <TableBody>{paged.items.map((equipment) => {
+          const support = supportByModel.get(equipment.modelLabel);
+          return <TableRow key={equipment.id}>
+            <TableCell className="min-w-[10rem]"><div className="font-mono text-xs font-semibold text-navy dark:text-white">{equipment.modelLabel}</div><Muted className="mt-1">{[equipment.brand, equipment.description].filter(Boolean).join(' · ') || 'Sin descripción de origen'}</Muted><SourceDetails details={equipment.sourceDetails} /></TableCell>
+            <TableCell className="whitespace-nowrap">{equipment.serialNumber || 'Sin serie'}</TableCell>
+            <TableCell><div>{equipment.interior || equipment.location || 'Sin ubicación'}</div><Muted className="mt-1">{equipment.branch || 'Sin sucursal'}</Muted></TableCell>
+            <TableCell><div>{equipment.city || 'Sin ciudad'}</div><Muted className="mt-1">{equipment.address || 'Sin dirección'}</Muted></TableCell>
+            <TableCell>{support ? <><Badge className="whitespace-nowrap" tone={support.status === 'discontinued' ? 'danger' : support.status === 'scheduled' ? 'warning' : 'success'}>{support.status === 'discontinued' ? 'Discontinuado' : support.status === 'scheduled' ? 'Próximo fin' : 'Soporte vigente'}</Badge><Muted className="mt-1">{support.endsAt ? `Fin: ${formatDate(support.endsAt)}` : support.sourceName}</Muted></> : <Badge className="whitespace-nowrap">Sin registro Canon</Badge>}</TableCell>
+          </TableRow>;
+        })}</TableBody>
+      </Table>
       {paged.totalPages > 1 && <PaginationControls label="Paginación de equipos del contrato" page={paged.page} pageSize={paged.pageSize} total={paged.total} pageSizeOptions={[25, 50, 100]} onPageChange={paged.setPage} onPageSizeChange={paged.setPageSize} />}
-    </>
+    </div>
   );
 }
 

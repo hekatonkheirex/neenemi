@@ -46,10 +46,6 @@
   line-height: 1.45;
 }
 
-.compact-search {
-  width: min(220px, 100%);
-}
-
 .operations-heading-actions {
   display: flex;
   gap: 0.65rem;

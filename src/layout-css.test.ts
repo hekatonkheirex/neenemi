@@ -17,14 +17,6 @@ describe('layout entre 960 y 1350 px', () => {
     expect(css).not.toMatch(/\.maintenance-(?!print|executive-print|page\b)[a-z-]+/);
   });
 
-  it('los @media de Discontinuador van después de la regla base (si no, pierden por orden de fuente)', () => {
-    const base = css.indexOf('.discontinuation-insights {\n  display: grid;');
-    const overrides = [...css.matchAll(/\.discontinuation-insights\s*{\s*grid-template-columns:\s*(repeat\(2|1fr)/g)].map((m) => m.index ?? -1);
-    expect(base).toBeGreaterThan(-1);
-    expect(overrides.length).toBeGreaterThanOrEqual(2);
-    for (const index of overrides) expect(index).toBeGreaterThan(base);
-  });
-
 
   it('Proformas: bajo 1500 px el lateral pasa a celdas del grid y el Resumen es una barra fija inferior', () => {
     const block = css.match(/@media \(max-width: 1500px\)\s*{\s*\.proforma-layout[\s\S]*?\n}\n/)?.[0] ?? '';
@@ -58,7 +50,6 @@ describe('layout entre 960 y 1350 px', () => {
     });
 
     it.each([
-      '.operations-table', '.discontinuation-table', '.discontinuation-equipment-table',
       '.contract-analytics-table', '.dispatch-equipment-table', '.outputs-table', '.consumables-table',
       '.legacy-ficha-table', '.legacy-equipment-table', 
     ])('%s no fuerza scroll por encima de su contenido', (selector) => {
@@ -112,19 +103,26 @@ describe('botones de texto', () => {
 });
 
 describe('barra de paginación', () => {
-  it('es una barra propia (borde, radio y relleno) con el conteo a la izquierda y los controles agrupados a la derecha', () => {
-    expect(css).toMatch(/\.pagination-controls \{[^}]*justify-content:\s*flex-end[^}]*padding:\s*0\.65rem 0\.9rem[^}]*border:\s*1px solid[^}]*border-radius:\s*var\(--ds-radius-2xl\)/);
-    expect(css).toMatch(/\.pagination-count \{[^}]*margin-right:\s*auto/);
-    expect(css).toMatch(/\.pagination-page \{[^}]*white-space:\s*nowrap/);
+  it('usa utilidades Tailwind y el Button compartido: sin CSS heredado de .pagination-*', () => {
+    const source = fs.readFileSync('src/core/PaginationControls.tsx', 'utf8');
+    expect(source).toContain('flex flex-wrap items-center justify-between gap-3');
+    expect(source).toContain("from './ui/button'");
+    expect(css).not.toMatch(/\.pagination-(controls|count|page|size|actions)/);
+  });
+});
+
+describe('Discontinuador', () => {
+  const module = fs.readFileSync('src/modules/operaciones/DescontinuadorModule.tsx', 'utf8');
+
+  it('las tarjetas de resumen, los modelos y la cartera se adaptan al ancho de su tarjeta', () => {
+    expect(module).toContain('@[44rem]:grid-cols-2 @[68rem]:grid-cols-3');
+    expect(module).toContain('grid-cols-[repeat(auto-fill,minmax(min(100%,13rem),1fr))]');
+    expect(module).toContain('@[56rem]:grid-cols-[minmax(16rem,1fr)_minmax(0,2.2fr)]');
   });
 
-  it('dentro de la tarjeta del contrato (Discontinuador) es un pie plano: sin fondo ni caja propia', () => {
-    expect(css).toMatch(/\.discontinuation-contract-detail \.pagination-controls \{[^}]*border:\s*0[^}]*border-top:\s*1px solid[^}]*border-radius:\s*0[^}]*background:\s*transparent/);
-    expect(readCssBundle('src/theme.css')).toMatch(/\[data-theme='light'\] \.discontinuation-contract-detail \.pagination-controls \{[^}]*background:\s*transparent/);
-  });
-
-  it('la tabla dentro de la tarjeta del contrato no lleva caja redondeada propia (el borde es el de la tarjeta)', () => {
-    expect(css).toMatch(/\.discontinuation-contract-detail \.catalog-table-wrap \{[^}]*border:\s*0[^}]*border-radius:\s*0[^}]*background:\s*transparent[^}]*box-shadow:\s*none/);
-    expect(readCssBundle('src/theme.css')).toMatch(/\[data-theme='light'\] \.discontinuation-contract-detail \.catalog-table-wrap \{[^}]*box-shadow:\s*none/);
+  it('las tablas desplazan dentro de su tarjeta y no parten fechas ni estados', () => {
+    expect(module.match(/<Table className="min-w-\[/g)?.length).toBeGreaterThanOrEqual(3);
+    expect(module).toContain('<Badge className="whitespace-nowrap"');
+    expect(css).not.toMatch(/\.(discontinuation-|stock-table|operations-table)/);
   });
 });

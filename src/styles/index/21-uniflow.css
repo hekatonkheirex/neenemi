@@ -89,15 +89,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
     grid-template-columns: 1fr;
   }
 
-  .source-data-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .source-data-batches {
-    contain: none;
-    max-height: 18rem;
-  }
-
   .service-layout {
     grid-template-columns: 1fr;
   }
@@ -225,17 +216,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
     grid-column: 1 / -1;
   }
 
-  .discontinuation-portfolio-heading-actions {
-    margin-top: 0.8rem;
-    justify-content: stretch;
-  }
-
-  .discontinuation-portfolio-heading-actions .search-field,
-  .discontinuation-portfolio-heading-actions .secondary-button {
-    flex: 1 1 100%;
-    width: 100%;
-  }
-
   .operations-sidebar {
     grid-template-columns: 1fr;
   }
@@ -246,7 +226,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
   }
 
   .source-data-heading,
-  .source-data-viewer-heading,
   .source-data-bundle-heading,
   .source-data-bundle-actions {
     display: grid;
@@ -260,10 +239,6 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
 
   .source-data-panel {
     padding: 1rem;
-  }
-
-  .source-data-pagination {
-    flex-wrap: wrap;
   }
 
   .service-controls {
@@ -287,19 +262,9 @@ html[data-theme] .uniflow-page .uniflow-quantity-control :is(button, input):focu
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-
-  .compact-search {
-    width: 100%;
-    margin-top: 1rem;
-  }
-
   .operations-heading-actions {
     width: 100%;
     justify-content: stretch;
-  }
-
-  .operations-heading-actions .compact-search {
-    flex: 1 1 12rem;
   }
 
 }

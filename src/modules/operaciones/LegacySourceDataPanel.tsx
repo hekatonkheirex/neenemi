@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { readJson, toErrorMessage as describeError } from '../../core/http';
 import { DownloadIcon } from '../../core/ActionButtons';
+import { cn } from '../../core/cn';
+import { Badge, type BadgeTone } from '../../core/ui/badge';
+import { Button, buttonVariants } from '../../core/ui/button';
+import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
 
 type ImportBatchStatus = 'staged' | 'applied' | 'failed';
 
@@ -144,118 +149,107 @@ export default function LegacySourceDataPanel() {
   const canGoForward = Boolean(selectedSheet && (page + 1) * 100 < selectedSheet.rowCount);
 
   return (
-    <section className="sales-card operations-source-data" aria-label="Datos originales de listas Canon y stock Waldbott">
-      <div className="source-data-heading">
-        <div>
-          <div className="eyebrow">DATOS ORIGINALES / OPERACIONES</div>
-          <h2>Filas originales de Canon y Waldbott</h2>
-          <p>Las listas normalizadas no reemplazan los archivos: cada carga conserva sus hojas y filas para revisar columnas históricas, títulos y valores que aún no tienen una vista propia.</p>
-        </div>
-        <div className="source-data-note">
-          <strong>{numberFormat.format(batches.length)}</strong>
-          <span>cargas auditables</span>
-        </div>
-      </div>
+    <Card className="min-w-0 grid-cols-1 [overflow-wrap:anywhere]" aria-label="Datos originales de listas Canon y stock Waldbott">
+      <CardHeader eyebrow="Datos originales / Operaciones" title="Filas originales de Canon y Waldbott" aside={<Badge>{numberFormat.format(batches.length)} cargas auditables</Badge>} />
+      <Muted className="text-sm leading-relaxed">Las listas normalizadas no reemplazan los archivos: cada carga conserva sus hojas y filas para revisar columnas históricas, títulos y valores que aún no tienen una vista propia.</Muted>
 
-      {error ? <div className="source-data-error" role="alert">{error}</div> : null}
+      {error ? <div className="rounded-xl border border-[#b42318]/30 bg-[#b42318]/5 p-4 text-sm text-[#b42318] dark:text-[#ffb0b7]" role="alert">{error}</div> : null}
 
-      <div className="source-data-layout">
-        <div className="source-data-batches">
-          <span className="detail-label">Listas cargadas</span>
-          {loadingBatches ? <p className="analytics-empty">Cargando archivos…</p> : null}
-          {!loadingBatches && batches.length === 0 ? <p className="analytics-empty">Todavía no hay listas Canon o stock Waldbott importados.</p> : null}
-          {batches.map((batch) => (
-            <button
-              className={`source-data-batch ${batch.id === selectedBatchId ? 'active' : ''}`}
-              key={batch.id}
-              type="button"
-              onClick={() => {
-                setSelectedBatchId(batch.id);
-                setSelectedSheetKey('');
-                setRawData(null);
-                setHeaderValues([]);
-                setPage(0);
-              }}
-            >
-              <strong>{batch.sourceName}</strong>
-              <span>{formatImportDomain(batch.domain)} · {formatImportStatus(batch.status)}</span>
-              <small>{numberFormat.format(batch.rawRows)} filas · {numberFormat.format(batch.rawSheets)} hojas originales</small>
-            </button>
-          ))}
-        </div>
+      <div className="@container min-w-0">
+        <div className="grid min-w-0 items-start gap-4 @[56rem]:grid-cols-[minmax(14rem,1fr)_minmax(0,3fr)]">
+          <div className="grid min-w-0 content-start gap-2">
+            <div className="text-xs font-bold uppercase tracking-wider text-ink-2 dark:text-[#9fb2d1]">Listas cargadas</div>
+            {loadingBatches ? <Muted className="text-sm">Cargando archivos…</Muted> : null}
+            {!loadingBatches && batches.length === 0 ? <Muted className="text-sm">Todavía no hay listas Canon o stock Waldbott importados.</Muted> : null}
+            {batches.map((batch) => (
+              <button
+                className={cn('grid min-w-0 gap-0.5 rounded-xl border p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky', batch.id === selectedBatchId ? 'border-sky bg-sky/10' : 'border-navy/10 bg-white hover:bg-sky/5 dark:border-sky/20 dark:bg-transparent')}
+                key={batch.id}
+                type="button"
+                aria-pressed={batch.id === selectedBatchId}
+                onClick={() => {
+                  setSelectedBatchId(batch.id);
+                  setSelectedSheetKey('');
+                  setRawData(null);
+                  setHeaderValues([]);
+                  setPage(0);
+                }}
+              >
+                <div className="font-bold text-navy dark:text-white">{batch.sourceName}</div>
+                <Muted>{formatImportDomain(batch.domain)} · {formatImportStatus(batch.status)}</Muted>
+                <Muted>{numberFormat.format(batch.rawRows)} filas · {numberFormat.format(batch.rawSheets)} hojas originales</Muted>
+              </button>
+            ))}
+          </div>
 
-        <div className="source-data-viewer">
-          {selectedBatch ? (
-            <>
-              <div className="source-data-viewer-heading">
-                <div>
-                  <span className="detail-label">Fuente seleccionada</span>
-                  <h3>{selectedBatch.sourceName}</h3>
-                </div>
-                <div className="source-data-viewer-actions">
-                  <span className={`source-data-status status-${selectedBatch.status}`}>{formatImportStatus(selectedBatch.status)}</span>
-                  {selectedSheet ? <a
-                    className="secondary-button export-button"
-                    href={`/api/imports/${encodeURIComponent(selectedBatch.id)}/files/${encodeURIComponent(selectedSheet.importFileId)}`}
-                    download={selectedSheet.fileName}
-                  >
-                    <DownloadIcon />
-                    Descargar original
-                  </a> : null}
-                </div>
-              </div>
-
-              {rawData?.sheets.length ? (
-                <>
-                  <label className="source-data-sheet-select">
-                    <span>Hoja</span>
-                    <select
-                      value={selectedSheet ? sourceSheetKey(selectedSheet) : ''}
-                      onChange={(event) => {
-                        setSelectedSheetKey(event.target.value);
-                        setPage(0);
-                      }}
+          <div className="grid min-w-0 content-start gap-3">
+            {selectedBatch ? (
+              <>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="grid min-w-0 gap-0.5"><Muted>Fuente seleccionada</Muted><h3 className="m-0 text-base font-bold text-navy dark:text-white">{selectedBatch.sourceName}</h3></div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge tone={importStatusTone(selectedBatch.status)}>{formatImportStatus(selectedBatch.status)}</Badge>
+                    {selectedSheet ? <a
+                      className={cn(buttonVariants({ variant: 'export' }), 'export-button')}
+                      href={`/api/imports/${encodeURIComponent(selectedBatch.id)}/files/${encodeURIComponent(selectedSheet.importFileId)}`}
+                      download={selectedSheet.fileName}
                     >
-                      {rawData.sheets.map((sheet) => <option key={sourceSheetKey(sheet)} value={sourceSheetKey(sheet)}>{sheet.fileName} · {sheet.sheetName} ({numberFormat.format(sheet.rowCount)} filas)</option>)}
-                    </select>
-                  </label>
-                  <div className="source-data-meta">
-                    <span>{selectedSheet?.sheetName}</span>
-                    <span>{numberFormat.format(selectedSheet?.rowCount ?? 0)} filas · {numberFormat.format(selectedSheet?.columnCount ?? 0)} columnas</span>
-                    <span>Filas {page * 100 + 1}–{Math.min((page + 1) * 100, selectedSheet?.rowCount ?? 0)}</span>
+                      <DownloadIcon />
+                      Descargar original
+                    </a> : null}
                   </div>
-                  <div className="catalog-table-wrap source-data-table-wrap">
-                    <table className="catalog-table source-data-table">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          {Array.from({ length: maxColumns }, (_, index) => <th key={index}>{headerLabel(headerValues[index], index)}</th>)}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {loadingRows ? <tr><td className="empty-cell" colSpan={maxColumns + 1}>Leyendo filas originales…</td></tr> : null}
+                </div>
+
+                {rawData?.sheets.length ? (
+                  <>
+                    <label className="grid min-w-0 gap-1.5 text-xs font-semibold text-navy dark:text-white">Hoja
+                      <select
+                        className="h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky dark:border-sky/30 dark:bg-navy/50 dark:text-white"
+                        value={selectedSheet ? sourceSheetKey(selectedSheet) : ''}
+                        onChange={(event) => {
+                          setSelectedSheetKey(event.target.value);
+                          setPage(0);
+                        }}
+                      >
+                        {rawData.sheets.map((sheet) => <option key={sourceSheetKey(sheet)} value={sourceSheetKey(sheet)}>{sheet.fileName} · {sheet.sheetName} ({numberFormat.format(sheet.rowCount)} filas)</option>)}
+                      </select>
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge>{selectedSheet?.sheetName}</Badge>
+                      <Badge>{numberFormat.format(selectedSheet?.rowCount ?? 0)} filas · {numberFormat.format(selectedSheet?.columnCount ?? 0)} columnas</Badge>
+                      <Badge>Filas {page * 100 + 1}–{Math.min((page + 1) * 100, selectedSheet?.rowCount ?? 0)}</Badge>
+                    </div>
+                    <Table className="min-w-max text-xs" wrapperClassName="max-h-[28rem]">
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>#</TableHead>
+                          {Array.from({ length: maxColumns }, (_, index) => <TableHead key={index}>{headerLabel(headerValues[index], index)}</TableHead>)}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {loadingRows ? <TableRow><TableCell className="py-6 text-center" colSpan={maxColumns + 1}>Leyendo filas originales…</TableCell></TableRow> : null}
                         {!loadingRows && rawData.rows.map((row) => (
-                          <tr className={row.rowNumber === headerRowNumber ? 'source-header-row' : ''} key={row.id}>
-                            <td className="source-row-number">{row.rowNumber}</td>
-                            {Array.from({ length: maxColumns }, (_, index) => <td key={index}>{formatRawValue(row.values[index])}</td>)}
-                          </tr>
+                          <TableRow className={row.rowNumber === headerRowNumber ? 'bg-sky/10 font-semibold' : undefined} key={row.id}>
+                            <TableCell className="font-mono tabular-nums">{row.rowNumber}</TableCell>
+                            {Array.from({ length: maxColumns }, (_, index) => <TableCell className="max-w-[16rem] truncate" key={index} title={formatRawValue(row.values[index])}>{formatRawValue(row.values[index])}</TableCell>)}
+                          </TableRow>
                         ))}
-                        {!loadingRows && rawData.rows.length === 0 ? <tr><td className="empty-cell" colSpan={maxColumns + 1}>No hay filas en este tramo.</td></tr> : null}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="source-data-pagination">
-                    <button className="secondary-button" type="button" onClick={() => setPage((value) => value - 1)} disabled={!canGoBack || loadingRows}>Anterior</button>
-                    <span>Página {page + 1}</span>
-                    <button className="secondary-button" type="button" onClick={() => setPage((value) => value + 1)} disabled={!canGoForward || loadingRows}>Siguiente</button>
-                  </div>
-                </>
-              ) : loadingRows ? <p className="analytics-empty">Preparando las hojas originales…</p> : <p className="analytics-empty">Esta carga no contiene filas XLSX conservadas.</p>}
-            </>
-          ) : <p className="analytics-empty">Selecciona una carga para inspeccionar sus datos.</p>}
+                        {!loadingRows && rawData.rows.length === 0 ? <TableRow><TableCell className="py-6 text-center" colSpan={maxColumns + 1}>No hay filas en este tramo.</TableCell></TableRow> : null}
+                      </TableBody>
+                    </Table>
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <Button variant="outline" onClick={() => setPage((value) => value - 1)} disabled={!canGoBack || loadingRows}>Anterior</Button>
+                      <Muted>Página {page + 1}</Muted>
+                      <Button variant="outline" onClick={() => setPage((value) => value + 1)} disabled={!canGoForward || loadingRows}>Siguiente</Button>
+                    </div>
+                  </>
+                ) : loadingRows ? <Muted className="text-sm">Preparando las hojas originales…</Muted> : <Muted className="text-sm">Esta carga no contiene filas XLSX conservadas.</Muted>}
+              </>
+            ) : <Muted className="text-sm">Selecciona una carga para inspeccionar sus datos.</Muted>}
+          </div>
         </div>
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -314,6 +308,12 @@ function formatImportStatus(status: ImportBatchStatus): string {
   if (status === 'applied') return 'Aplicada';
   if (status === 'failed') return 'Fallida';
   return 'Pendiente';
+}
+
+function importStatusTone(status: ImportBatchStatus): BadgeTone {
+  if (status === 'applied') return 'success';
+  if (status === 'failed') return 'danger';
+  return 'warning';
 }
 
 function toErrorMessage(value: unknown): string {

@@ -1679,22 +1679,6 @@
     justify-content: flex-start;
   }
 
-  .discontinuation-filter-bar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .discontinuation-insight-card:first-child {
-    grid-column: 1 / -1;
-  }
-
-  .filter-reset-button {
-    justify-self: start;
-  }
-
-  .discontinuation-portfolio-grid {
-    grid-template-columns: 1fr;
-  }
-
 }
 
 @media (max-width: 720px) {
@@ -1755,12 +1739,6 @@
     display: block;
   }
 
-  .discontinuation-header-metric {
-    width: fit-content;
-    margin-top: 1rem;
-    text-align: left;
-  }
-
   .catalog-header-actions {
     display: grid;
     grid-template-columns: 1fr;
@@ -1817,32 +1795,6 @@
 
   .card-heading {
     display: block;
-  }
-
-  .discontinuation-filter-bar,
-  .discontinuation-portfolio-stats {
-    grid-template-columns: 1fr;
-  }
-
-  .discontinuation-models-heading {
-    display: block;
-  }
-
-  .discontinuation-model-count {
-    margin-top: 0.7rem;
-  }
-
-  .discontinuation-insight-card:first-child {
-    grid-column: auto;
-  }
-
-  .discontinuation-customer-detail-header {
-    display: block;
-  }
-
-  .discontinuation-customer-detail-header .secondary-button {
-    width: 100%;
-    margin-top: 0.8rem;
   }
 
   .overview-backup {

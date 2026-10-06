@@ -322,6 +322,4 @@ html[data-theme='light'] .ai-key-message.error { color: var(--ds-danger); }
   .nav-alert, .nav-alert-core { animation: none; }
   .nav-alert-ring { display: none; }
 }
-
-.source-data-batch .source-data-batch-date { font-variant-numeric: tabular-nums; }
 html[data-theme] .backup-banner .backup-banner-icon { color: #fff; }

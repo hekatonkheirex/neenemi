@@ -1,26 +1,6 @@
 
 
-.discontinuation-portfolio-heading-actions {
-  display: flex;
-  gap: 0.65rem;
-  align-items: end;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-}
-
-.discontinuation-portfolio-heading-actions .secondary-button {
-  min-width: auto;
-  white-space: nowrap;
-}
-
-.impact-label {
-  min-width: 0;
-  display: grid;
-  gap: 0.25rem;
-}
-
-.table-secondary-text,
-.impact-label small {
+.table-secondary-text {
   color: var(--dk-7890b8);
   font-size: 0.68rem;
 }
@@ -60,29 +40,6 @@
   background: rgba(12, 23, 41, 0.72);
 }
 
-.source-detail-item {
-  display: grid;
-  min-width: 0;
-  gap: 0.12rem;
-}
-
-.source-detail-item span {
-  color: var(--dk-7890b8);
-  font-size: 0.6rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.source-detail-item strong {
-  overflow-wrap: anywhere;
-  color: var(--dk-dce8fc);
-  font-size: 0.68rem;
-  font-weight: 500;
-  line-height: 1.35;
-  white-space: pre-wrap;
-}
-
 .text-button {
   display: inline-flex;
   min-height: 1.75rem;
@@ -97,43 +54,6 @@
 
 .text-button:hover {
   color: #c1d8ff;
-}
-
-.operations-table {
-  min-width: 0;
-}
-
-.operations-table td:first-child {
-  color: #d4e1f8;
-  font-weight: 700;
-}
-
-.operations-table td small {
-  display: block;
-  margin-top: 0.25rem;
-  font-weight: 500;
-}
-
-.discontinuation-table {
-  min-width: 0;
-}
-
-.stock-table {
-  min-width: 1040px;
-}
-
-.stock-table .code-cell {
-  display: block;
-  max-width: 250px;
-  white-space: normal;
-}
-
-.source-cell {
-  display: block;
-  max-width: 230px;
-  color: var(--dk-7187aa);
-  font-size: 0.7rem;
-  line-height: 1.45;
 }
 
 .inline-muted {

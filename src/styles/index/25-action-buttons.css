@@ -45,7 +45,3 @@
 .operations-page .sales-actions .upload-button {
   flex: 1 1 10rem;
 }
-
-.discontinuation-source-card .upload-button {
-  align-self: end;
-}

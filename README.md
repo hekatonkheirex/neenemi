@@ -288,6 +288,9 @@ Los filtros de cartera del Discontinuador se distribuyen en filas cuando el espa
 disponible es menor, sin recortar las opciones ni el botón para limpiar filtros.
 En el detalle de un cliente, cada contrato permite contraer o mostrar sus equipos
 por separado desde el encabezado; el resumen y la exportación del cliente no cambian.
+Discontinuador usa los componentes compartidos del rediseño en ambos temas: cartera, modelos
+discontinuados, stock Waldbott y carga de fuentes. La paginación y el detalle de origen son
+componentes comunes con Tailwind; las tablas se ajustan al ancho de su tarjeta.
 Control de viáticos usa los componentes compartidos del rediseño en ambos temas: resumen, viajes,
 rendiciones e histórico. El alta de viajes y la previsualización de importación son diálogos nativos;
 las tablas y los gráficos se ajustan al ancho de su tarjeta.

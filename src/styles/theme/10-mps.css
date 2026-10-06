@@ -1,9 +1,0 @@
-html[data-theme='light'] .impact-label {
-  border-color: #e7c68b;
-  color: var(--ds-warning);
-  background: #fff8e8;
-}
-
-html[data-theme='light'] .impact-label {
-  background: transparent;
-}
