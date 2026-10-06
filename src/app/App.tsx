@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
+import { motion, MotionConfig } from 'framer-motion';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   AiBrain01Icon,
@@ -359,6 +360,8 @@ export default function App() {
           </div>
         </header>
 
+        <MotionConfig reducedMotion="user">
+        <motion.div key={activeModuleId ?? 'inicio'} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, ease: 'easeOut' }}>
         <Suspense fallback={<ModuleSkeleton />}>
           {activeModule ? renderModule(activeModule) : <Dashboard
             onBackupLevel={setBackupLevel}
@@ -370,6 +373,8 @@ export default function App() {
             clearImportsMessage={clearImportsMessage}
           />}
         </Suspense>
+        </motion.div>
+        </MotionConfig>
       </main>
       {paletteOpen ? (
         <CommandPalette

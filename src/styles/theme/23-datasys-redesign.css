@@ -99,3 +99,27 @@ html[data-theme='dark'] .primary-button:hover:not(:disabled) {
 html[data-theme='dark'] .primary-button:disabled {
   box-shadow: none;
 }
+
+/* Encabezados de módulo compactos: título en una línea y menos aire arriba, para dar sitio a los datos. */
+.page-content,
+.sales-page {
+  padding-top: 2.6rem;
+}
+
+.page-content h1,
+.catalog-header h1,
+.discontinuation-page-header h1,
+.coverage-page h1,
+.sla-page h1,
+.software-page h1,
+.uniflow-page > .catalog-header h1 {
+  max-width: none;
+  margin-bottom: 0.6rem;
+  font-size: clamp(1.75rem, 2.4vw, 2.25rem);
+  letter-spacing: -0.035em;
+}
+
+.page-content .lead {
+  font-size: 1rem;
+  line-height: 1.55;
+}

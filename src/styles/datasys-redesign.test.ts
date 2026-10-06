@@ -41,4 +41,13 @@ describe('rediseño Datasys', () => {
   ])('%s cumple 4,5:1', (_n, fg, bg) => {
     expect(ratio(fg, bg)).toBeGreaterThanOrEqual(4.5);
   });
+
+  it('los encabezados de módulo son compactos: sin ancho máximo en ch y título de hasta 2,25rem', () => {
+    const block = theme.match(/\.page-content h1,[^{]*\{([^}]*)\}/)?.[1] ?? '';
+    expect(block).toMatch(/max-width:\s*none/);
+    expect(block).toMatch(/font-size:\s*clamp\(1\.75rem, 2\.4vw, 2\.25rem\)/);
+    for (const cls of ['.catalog-header h1', '.discontinuation-page-header h1', '.coverage-page h1', '.sla-page h1', '.software-page h1', '.uniflow-page > .catalog-header h1']) {
+      expect(theme.match(/\.page-content h1,[^{]*\{/)?.[0], cls).toContain(cls);
+    }
+  });
 });

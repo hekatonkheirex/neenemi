@@ -1,7 +1,8 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { Airplane01Icon } from '@hugeicons/core-free-icons';
-import AnimatedTabs, { centeredScrollLeft } from './AnimatedTabs';
+import fs from 'node:fs';
+import AnimatedTabs, { centeredScrollLeft, followingSiblings } from './AnimatedTabs';
 
 describe('AnimatedTabs', () => {
   const tabs = [{ id: 'a', label: 'Uno', step: '01' }, { id: 'b', label: 'Dos', count: '5' }] as const;
@@ -42,5 +43,23 @@ describe('AnimatedTabs', () => {
     expect(centeredScrollLeft({ ...nav, scrollLeft: 1000 }, { left: 450, width: 100 })).toBe(1100); // tope: 1500 - 400
     expect(centeredScrollLeft({ ...nav, scrollLeft: 300 }, { left: 300, width: 100 })).toBe(300 + 200 - 150);
     expect(centeredScrollLeft({ left: 0, width: 800, scrollLeft: 0, scrollWidth: 800 }, { left: 500, width: 100 })).toBe(0); // sin desborde
+  });
+});
+
+describe('transición de panel', () => {
+  it('followingSiblings devuelve solo lo que sigue a la barra, en orden', () => {
+    expect(followingSiblings(['hero', 'nav', 'status', 'panel'], 'nav')).toEqual(['status', 'panel']);
+    expect(followingSiblings(['nav'], 'nav')).toEqual([]);
+    expect(followingSiblings(['a', 'b'], 'x')).toEqual([]);
+  });
+  it('se anima con Framer Motion y se omite con movimiento reducido', () => {
+    const source = fs.readFileSync('src/core/AnimatedTabs.tsx', 'utf8');
+    expect(source).toMatch(/mounted\.current && !still/);
+    expect(source).toMatch(/animate\(panel as HTMLElement\[\], \{ opacity: \[0, 1\], y: \[8, 0\] \}/);
+  });
+  it('el cambio de módulo entra con fundido y respeta prefers-reduced-motion', () => {
+    const app = fs.readFileSync('src/app/App.tsx', 'utf8');
+    expect(app).toContain('<MotionConfig reducedMotion="user">');
+    expect(app).toMatch(/<motion\.div key=\{activeModuleId \?\? 'inicio'\}/);
   });
 });

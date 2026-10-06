@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { animate, motion, useReducedMotion } from 'framer-motion';
 import { HugeiconsIcon } from '@hugeicons/react';
 import type { IconSvgElement } from '@hugeicons/react';
 
@@ -33,6 +33,12 @@ export function centeredScrollLeft(nav: Box & { scrollLeft: number; scrollWidth:
   return Math.min(Math.max(target, 0), Math.max(nav.scrollWidth - nav.width, 0));
 }
 
+/** Los elementos que siguen a `self` dentro de su contenedor: el panel de la pestaña activa. */
+export function followingSiblings<T>(children: readonly T[], self: T): T[] {
+  const index = children.indexOf(self);
+  return index < 0 ? [] : children.slice(index + 1);
+}
+
 /** Botones de navegación con feedback de pulsación e indicador activo compartido. */
 export default function AnimatedTabs<T extends string>({ tabs, active, onChange, ariaLabel, scroll }: Props<T>) {
   const layoutId = useId();
@@ -47,6 +53,11 @@ export default function AnimatedTabs<T extends string>({ tabs, active, onChange,
       const n = nav.getBoundingClientRect();
       const b = button.getBoundingClientRect();
       nav.scrollTo({ left: centeredScrollLeft({ left: n.left, width: n.width, scrollLeft: nav.scrollLeft, scrollWidth: nav.scrollWidth }, { left: b.left, width: b.width }), behavior: still ? 'auto' : 'smooth' });
+    }
+    // El panel de la pestaña son los hermanos que siguen a la barra: entran con un fundido corto (no en el primer render).
+    if (nav && mounted.current && !still) {
+      const panel = followingSiblings(Array.from(nav.parentElement?.children ?? []), nav);
+      if (panel.length > 0) animate(panel as HTMLElement[], { opacity: [0, 1], y: [8, 0] }, { duration: 0.2, ease: 'easeOut' });
     }
     mounted.current = true;
   }, [active, scroll, still]);
