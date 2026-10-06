@@ -697,18 +697,18 @@ export default function ListadoPreciosModule() {
             )}
           </tbody>
         </table>
-        {pagedItems.totalPages > 1 && (
-          <PaginationControls
-            label="Paginación del listado de precios"
-            page={pagedItems.page}
-            pageSize={pagedItems.pageSize}
-            total={pagedItems.total}
-            pageSizeOptions={[50, 100, 250]}
-            onPageChange={pagedItems.setPage}
-            onPageSizeChange={pagedItems.setPageSize}
-          />
-        )}
       </section>
+      {pagedItems.totalPages > 1 && (
+        <PaginationControls
+          label="Paginación del listado de precios"
+          page={pagedItems.page}
+          pageSize={pagedItems.pageSize}
+          total={pagedItems.total}
+          pageSizeOptions={[50, 100, 250]}
+          onPageChange={pagedItems.setPage}
+          onPageSizeChange={pagedItems.setPageSize}
+        />
+      )}
 
       {displayedServiceItems.length > 0 && (
         <section className="catalog-service-items" aria-labelledby="catalog-service-items-title">

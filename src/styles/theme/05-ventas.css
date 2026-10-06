@@ -105,6 +105,7 @@ html[data-theme='light'] .secondary-button:hover:not(:disabled) {
 
 html[data-theme='light'] .pagination-controls {
   border-color: var(--ds-border);
+  background: var(--ds-surface);
   color: var(--ds-muted);
 }
 
