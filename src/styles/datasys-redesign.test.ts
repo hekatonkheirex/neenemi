@@ -64,4 +64,8 @@ describe('rediseño Datasys', () => {
     }
     expect(theme).not.toMatch(/#4277e9|#77a7ff|rgba\(66, ?119, ?233/);
   });
+
+  it('el changelog gana por especificidad, no por orden de carga', () => {
+    expect(theme).toMatch(/html\[data-theme\] \.changelog-dialog\s*{[^}]*border-radius:\s*var\(--ds-radius-2xl\)[^}]*box-shadow:\s*var\(--ds-shadow-md\)/);
+  });
 });

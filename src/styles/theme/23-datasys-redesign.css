@@ -156,9 +156,10 @@ html[data-theme='dark'] .module-symbol {
   }
 }
 
+/* El changelog trae su propio CSS (ChangelogDialog.css): html[data-theme] sube la especificidad para no depender del orden de carga. */
 .confirm-dialog,
 .command-palette,
-.changelog-dialog {
+html[data-theme] .changelog-dialog {
   border-radius: var(--ds-radius-2xl);
   box-shadow: var(--ds-shadow-md);
 }
