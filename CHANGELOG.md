@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.64 · 2026-10-06
+
+Corrige el desborde entre «Importar perfiles» y «Lectura del perfil» en MPS. Las columnas se adaptan al ancho disponible del contenedor: en la barra lateral de 320 px, las tarjetas quedan una debajo de otra; con espacio suficiente, comparten una fila. Los textos y las acciones de carga y descarga se ajustan al interior de su tarjeta, sin invadir la vecina.
+
 ## 0.1.63 · 2026-10-06
 
 MPS adopta el encabezado, las tarjetas, los campos, las tablas y los botones compartidos del rediseño. El catálogo distingue los perfiles manuales de la fuente importada y conserva la búsqueda, los presets de volumen, las proyecciones a cinco años y el análisis ejecutivo. El editor abre como diálogo nativo, enfoca Marca, mantiene el foco dentro y lo devuelve al cerrar; con muchos consumibles, el cuerpo desplaza sin ocultar las acciones. Conserva la creación, edición y duplicación, los presets monocromo/color y la copia de parámetros. Las exportaciones separan el listado de consumibles del análisis completo. Se retira el CSS anterior de pantalla, conservando el informe PDF horizontal y los estilos usados por otros módulos.

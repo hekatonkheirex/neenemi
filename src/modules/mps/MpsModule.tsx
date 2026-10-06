@@ -339,23 +339,23 @@ export default function MpsModule() {
           </> : null}
         </div>
 
-        <aside className="grid min-w-0 gap-6 md:grid-cols-2 min-[1601px]:grid-cols-1 print:hidden">
-          <Card className="min-w-0">
+        <aside className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,20rem),1fr))] gap-6 print:hidden">
+          <Card className="min-w-0 grid-cols-1">
             <CardHeader eyebrow="MIGRACIÓN DE LEGADO" title="Importar perfiles" />
             <Muted>Selecciona el archivo SQLite <code>canon_mps.db</code> de la calculadora anterior. Se conserva el original y sus modelos pasan a la base unificada.</Muted>
-            <UploadButton id="mps-legacy-database" name="mpsLegacyDatabase" busy={importing} label="Seleccionar base SQLite" accept=".db,.sqlite,.sqlite3,application/vnd.sqlite3" onChange={(event) => void importLegacyFile(event)} />
-            <div className="grid gap-2 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
+            <UploadButton id="mps-legacy-database" name="mpsLegacyDatabase" className="h-auto min-h-10 max-w-full whitespace-normal py-2" busy={importing} label="Seleccionar base SQLite" accept=".db,.sqlite,.sqlite3,application/vnd.sqlite3" onChange={(event) => void importLegacyFile(event)} />
+            <div className="grid min-w-0 grid-cols-1 gap-2 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
               {summary && summary.models > 0 ? <>
                 <strong className="text-sm text-navy dark:text-white">{summary.models.toLocaleString('es-PY')} modelos activos</strong>
-                <Muted>{summary.sourceName ? `${summary.sourceName} · ` : 'Incluye perfiles manuales · '}{summary.linkedEquipmentModels.toLocaleString('es-PY')} enlazados con equipos</Muted>
-                {summary.batchId && summary.sourceFileId ? <Button variant="export" size="sm" className="w-fit" asChild><a
+                <Muted className="break-words">{summary.sourceName ? `${summary.sourceName} · ` : 'Incluye perfiles manuales · '}{summary.linkedEquipmentModels.toLocaleString('es-PY')} enlazados con equipos</Muted>
+                {summary.batchId && summary.sourceFileId ? <Button variant="export" size="sm" className="h-auto min-h-8 w-fit max-w-full whitespace-normal py-1" asChild><a
                   href={`/api/imports/${encodeURIComponent(summary.batchId)}/files/${encodeURIComponent(summary.sourceFileId)}`}
                   download={summary.sourceName ?? undefined}
                 ><DownloadIcon />Descargar base original</a></Button> : null}
               </> : <Muted>Aún no hay una carga MPS en la suite.</Muted>}
             </div>
           </Card>
-          <Card className="min-w-0">
+          <Card className="min-w-0 grid-cols-1">
             <CardHeader eyebrow="RANGO DE FÁBRICA" title={selectedModel ? 'Lectura del perfil' : 'Cómo empezar'} />
             {selectedModel ? <dl className="m-0 grid gap-3">
               <MpsFact label="Volumen mínimo" value={`${integerFormat.format(selectedModel.recVolumeMin)} pág./mes`} />
