@@ -52,7 +52,6 @@ type RawRowsResponse = {
 
 type ImportArchivePanelProps = {
   refreshKey: number;
-  onRemoveBatch: (batch: Pick<ImportBatchSummary, 'id' | 'sourceName'>) => Promise<void>;
 };
 
 type ImportArchiveViewerProps = {
@@ -65,10 +64,8 @@ type ImportArchiveViewerProps = {
   page: number;
   canGoBack: boolean;
   canGoForward: boolean;
-  removingBatchId: string | null;
   onSheetChange: (sheetKey: string) => void;
   onPageChange: (page: number) => void;
-  onRemoveBatch: (batch: ImportBatchSummary) => void;
 };
 
 const numberFormat = new Intl.NumberFormat('es-PY');
@@ -82,7 +79,7 @@ const statusTone: Record<ImportBatchSummary['status'], string> = {
   failed: 'bg-[#d92d20]/15 text-[#912018]! dark:text-[#ffb4ab]!',
 };
 
-export default function ImportArchivePanel({ refreshKey, onRemoveBatch }: ImportArchivePanelProps) {
+export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelProps) {
   const [batches, setBatches] = useState<ImportBatchSummary[]>([]);
   const [selectedBatchId, setSelectedBatchId] = useState('');
   const [selectedSheetKey, setSelectedSheetKey] = useState('');
@@ -92,7 +89,6 @@ export default function ImportArchivePanel({ refreshKey, onRemoveBatch }: Import
   const [page, setPage] = useState(0);
   const [loadingBatches, setLoadingBatches] = useState(true);
   const [loadingRows, setLoadingRows] = useState(false);
-  const [removingBatchId, setRemovingBatchId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [localRefreshKey, setLocalRefreshKey] = useState(0);
 
@@ -192,29 +188,6 @@ export default function ImportArchivePanel({ refreshKey, onRemoveBatch }: Import
   const canGoBack = page > 0;
   const canGoForward = Boolean(selectedSheet && (page + 1) * 100 < selectedSheet.rowCount);
 
-  async function removeBatch(batch: ImportBatchSummary): Promise<void> {
-    const confirmed = await confirmAction({
-      title: 'Quitar carga importada',
-      message: `Se quitará la carga ${batch.sourceName} y sus líneas normalizadas. El XLSX original se conservará en la carpeta de archivados.`,
-      confirmLabel: 'Quitar carga',
-    });
-    if (!confirmed) return;
-
-    setRemovingBatchId(batch.id);
-    setError(null);
-    try {
-      await onRemoveBatch(batch);
-      setSelectedBatchId('');
-      setSelectedSheetKey('');
-      setRawData(null);
-      setLocalRefreshKey((value) => value + 1);
-    } catch (requestError: unknown) {
-      setError(toErrorMessage(requestError));
-    } finally {
-      setRemovingBatchId(null);
-    }
-  }
-
   function selectBatch(batch: ImportBatchSummary): void {
     setSelectedBatchId(batch.id);
     setSelectedSheetKey('');
@@ -250,10 +223,8 @@ export default function ImportArchivePanel({ refreshKey, onRemoveBatch }: Import
           page={page}
           canGoBack={canGoBack}
           canGoForward={canGoForward}
-          removingBatchId={removingBatchId}
           onSheetChange={(sheetKey) => { setSelectedSheetKey(sheetKey); setPage(0); }}
           onPageChange={setPage}
-          onRemoveBatch={(batch) => void removeBatch(batch)}
         />
       </div>
     </section>
@@ -325,10 +296,8 @@ export function ImportArchiveViewer({
   page,
   canGoBack,
   canGoForward,
-  removingBatchId,
   onSheetChange,
   onPageChange,
-  onRemoveBatch,
 }: ImportArchiveViewerProps) {
   const maxColumns = Math.max(...(rawData?.rows.map((row) => row.values.length) ?? [0]), selectedSheet?.columnCount ?? 0, 1);
   const columns = useMemo(
@@ -369,17 +338,6 @@ export function ImportArchiveViewer({
                     <Download aria-hidden="true" />
                     Descargar original
                   </a>
-                </Button>
-              ) : null}
-              {batch.domain === 'consumibles' ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-[#d92d20]/50 text-[#912018]! hover:bg-[#d92d20]/10 dark:text-[#ffb4ab]!"
-                  disabled={removingBatchId !== null}
-                  onClick={() => onRemoveBatch(batch)}
-                >
-                  {removingBatchId === batch.id ? 'Quitando…' : 'Quitar carga'}
                 </Button>
               ) : null}
             </div>

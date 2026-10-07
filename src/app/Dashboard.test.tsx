@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import Dashboard from './Dashboard';
 import type { SuiteOverview } from '../db/overview';
 
-const base = { moduleCount: 12, importsRefreshKey: 0, onBackupLevel: () => {}, onRemoveImport: async () => {}, onClearImports: () => {}, clearingImports: false, clearImportsMessage: null };
+const base = { moduleCount: 12, importsRefreshKey: 0, onBackupLevel: () => {}, onClearImports: () => {}, clearingImports: false, clearImportsMessage: null };
 
 describe('Dashboard', () => {
   it('sin datos muestra guiones y el conteo de módulos', () => {

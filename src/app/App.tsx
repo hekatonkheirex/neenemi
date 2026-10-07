@@ -231,19 +231,6 @@ export default function App() {
     }
   }
 
-  async function removeImportBatch(batch: ImportArchiveBatch): Promise<void> {
-    const response = await fetch(`/api/imports/${encodeURIComponent(batch.id)}`, { method: 'DELETE' });
-    await readJson<unknown>(response);
-
-    try {
-      const overviewResponse = await fetch('/api/overview');
-      if (!overviewResponse.ok) return;
-      setOverview((await overviewResponse.json()) as SuiteOverview);
-    } catch {
-      // The removal succeeded; a later visit to Inicio will refresh its counts.
-    }
-  }
-
   return (
     <div className="app-shell">
       <Sidebar
@@ -274,7 +261,6 @@ export default function App() {
             onBackupLevel={setBackupLevel}
             overview={overview}
             importsRefreshKey={importsRefreshKey}
-            onRemoveImport={removeImportBatch}
             onClearImports={() => void clearImportedFiles()}
             clearingImports={clearingImports}
             clearImportsMessage={clearImportsMessage}

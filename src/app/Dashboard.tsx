@@ -12,7 +12,6 @@ type DashboardProps = {
   overview: SuiteOverview | null;
   onBackupLevel: (level: BackupHealth['level']) => void;
   importsRefreshKey: number;
-  onRemoveImport: (batch: ImportArchiveBatch) => Promise<void>;
   onClearImports: () => void;
   clearingImports: boolean;
   clearImportsMessage: ClearImportsMessage | null;
@@ -43,7 +42,6 @@ export default function Dashboard({
   overview,
   onBackupLevel,
   importsRefreshKey,
-  onRemoveImport,
   onClearImports,
   clearingImports,
   clearImportsMessage,
@@ -74,7 +72,7 @@ export default function Dashboard({
         clearMessage={clearImportsMessage}
       />
 
-      <ImportArchivePanel refreshKey={importsRefreshKey} onRemoveBatch={onRemoveImport} />
+      <ImportArchivePanel refreshKey={importsRefreshKey} />
 
       <div className="mt-6 text-xs text-ink-2 dark:text-[#9fb2d1]">
         Los proyectos actuales permanecen intactos mientras validamos esta nueva aplicación.

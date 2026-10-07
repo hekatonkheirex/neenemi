@@ -14,13 +14,13 @@ const rawData = {
 const viewer = (over = {}) =>
   renderToStaticMarkup(
     <ImportArchiveViewer batch={batch} selectedSheet={sheet} rawData={rawData} headerValues={['Modelo', 'Stock']} headerRowNumber={1}
-      loadingRows={false} page={0} canGoBack={false} canGoForward={false} removingBatchId={null}
-      onSheetChange={() => {}} onPageChange={() => {}} onRemoveBatch={() => {}} {...over} />,
+      loadingRows={false} page={0} canGoBack={false} canGoForward={false}
+      onSheetChange={() => {}} onPageChange={() => {}} {...over} />,
   );
 
 describe('ImportArchivePanel', () => {
   it('estado inicial: región nombrada, contador y aviso de carga', () => {
-    const markup = renderToStaticMarkup(<ImportArchivePanel refreshKey={0} onRemoveBatch={async () => {}} />);
+    const markup = renderToStaticMarkup(<ImportArchivePanel refreshKey={0} />);
     expect(markup).toContain('aria-label="Importaciones y archivos originales"');
     expect(markup).toContain('Archivos y filas de origen');
     expect(markup).toContain('Cargando archivos…');
@@ -47,12 +47,13 @@ describe('ImportArchiveViewer', () => {
     expect(markup).toContain('Filas 1–3');
   });
 
-  it('resalta la fila de encabezado detectada y ofrece descarga y quitar solo en consumibles', () => {
+  it('resalta la fila de encabezado detectada y ofrece descarga y ningún dominio muestra «Quitar carga»', () => {
     const markup = viewer();
     expect(markup).toMatch(/<tr class="[^"]*bg-sky\/10[^"]*"><td[^>]*>1<\/td>/);
     expect(markup).toContain('href="/api/imports/b1/files/f1"');
-    expect(markup).toContain('>Quitar carga<');
-    expect(viewer({ batch: { ...batch, domain: 'viaticos' } })).not.toContain('Quitar carga');
+    for (const domain of ['consumibles', 'viaticos', 'servicios', 'cartera']) {
+      expect(viewer({ batch: { ...batch, domain } })).not.toContain('Quitar carga');
+    }
   });
 
   it('paginación y estados vacíos', () => {
@@ -68,7 +69,7 @@ describe('ImportArchiveViewer', () => {
     expect(list).toContain('lg:absolute');
     expect(list).toContain('lg:inset-0');
     expect(list).toContain('rounded-xl border border-navy/10 p-4');
-    const panel = renderToStaticMarkup(<ImportArchivePanel refreshKey={0} onRemoveBatch={async () => {}} />);
+    const panel = renderToStaticMarkup(<ImportArchivePanel refreshKey={0} />);
     expect(panel).not.toContain('items-start gap-5');
   });
 
