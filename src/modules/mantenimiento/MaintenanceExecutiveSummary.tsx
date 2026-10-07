@@ -50,7 +50,7 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
 
       <div className="grid min-w-0 grid-cols-2 gap-3 min-[640px]:grid-cols-3 min-[1180px]:grid-cols-6">
         <SummaryKpi label="Normal" value={summary.normal} tone="normal" detail="Dentro del óptimo dinámico" />
-        <SummaryKpi label="Críticos" value={summary.critical} tone="critical" detail="Requieren intervención" trend={summary.criticalTrend} />
+        <SummaryKpi label="Críticos" value={summary.critical} tone="critical" detail="Requieren intervención" />
         <SummaryKpi label="Atención" value={summary.attention} tone="attention" detail="Revisión preventiva" />
         <SummaryKpi label="Sin mapeo" value={summary.unrecognized} tone="unrecognized" detail="Configurar regla" />
         <SummaryKpi label="Contador en cero" value={summary.zeroCounters} tone="idle" detail="Auditar telemetría" />
@@ -126,28 +126,14 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
   );
 }
 
-function SummaryKpi({ label, value, tone, detail, trend }: { label: string; value: number; tone: string; detail: string; trend?: readonly { period: string; count: number }[] }) {
+function SummaryKpi({ label, value, tone, detail }: { label: string; value: number; tone: string; detail: string }) {
   return <div className={cn('grid min-w-0 gap-1 rounded-xl border border-navy/10 border-l-4 bg-paper p-3 dark:border-sky/20 dark:bg-navy/30', tones[tone].border)}>
     <div className="flex min-w-0 items-center justify-between gap-2 text-xs font-bold text-ink-2 dark:text-[#9fb2d1]">
       <div className="min-w-0">{label}</div>
-      {trend && trend.length >= 2 ? <CriticalTrend trend={trend} className={tones[tone].accent} /> : null}
     </div>
     <div className={cn('text-3xl font-bold tabular-nums', tones[tone].accent)}>{integerFormat.format(value)}</div>
     <Muted>{detail}</Muted>
   </div>;
-}
-
-function CriticalTrend({ trend, className }: { trend: readonly { period: string; count: number }[]; className?: string }) {
-  const max = Math.max(...trend.map((item) => item.count), 1);
-  const points = trend.map((item, index) => {
-    const x = trend.length === 1 ? 0 : (index / (trend.length - 1)) * 64;
-    const y = 22 - (item.count / max) * 20;
-    return `${x},${y}`;
-  }).join(' ');
-  const label = trend.map((item) => `${item.period}: ${item.count}`).join(' · ');
-  return <svg className={cn('h-6 min-w-10 flex-[0_1_auto]', className)} viewBox="0 0 64 24" role="img" aria-label={`Tendencia de críticos por período: ${label}`}>
-    <polyline fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" points={points} />
-  </svg>;
 }
 
 function PanelHeading({ title, description, count, exportKind, analyses, onExport, exporting }: {
@@ -159,9 +145,9 @@ function PanelHeading({ title, description, count, exportKind, analyses, onExpor
   onExport?: (analyses: readonly MaintenanceAnalysis[], kind: MaintenanceExportKind) => void;
   exporting?: boolean;
 }) {
-  return <div className="flex flex-wrap items-start justify-between gap-3">
-    <div className="grid min-w-0 gap-1"><h3 className="m-0 text-base font-bold text-navy dark:text-white">{title}</h3><Muted>{description}</Muted></div>
-    <div className="flex flex-wrap items-center gap-2"><Badge>{count}</Badge>{onExport && count > 0 ? <ExportButton busy={exporting} onClick={() => onExport(analyses, exportKind)}>Descargar XLSX</ExportButton> : null}</div>
+  return <div className="flex items-start justify-between gap-3">
+    <div className="grid min-w-0 flex-1 gap-1"><h3 className="m-0 text-base font-bold text-navy dark:text-white">{title}</h3><Muted>{description}</Muted></div>
+    <div className="flex shrink-0 items-center gap-2"><Badge>{count}</Badge>{onExport && count > 0 ? <ExportButton busy={exporting} onClick={() => onExport(analyses, exportKind)}>Descargar XLSX</ExportButton> : null}</div>
   </div>;
 }
 
