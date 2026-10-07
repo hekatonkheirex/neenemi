@@ -6,8 +6,9 @@ import { renderCoveragePrintReportMarkup } from './coverage-print-report';
 import type { PdfPageFailure, PdfProgressEvent } from './pdf-analysis';
 import type { CanonColorType, CanonModel, CanonModelDraft, CoverageAnalysis, PageCoverage, YieldEstimate } from './types';
 import { readJson, toErrorMessage } from '../../core/http';
-import { UploadTriggerButton } from '../../core/ActionButtons';
-import { FileText, Pencil, Plus, Printer, RotateCcw, Save, Trash2, X } from 'lucide-react';
+import { PrintButton, UploadTriggerButton } from '../../core/ActionButtons';
+import { useBusy } from '../../core/useBusy';
+import { FileText, Pencil, Plus, RotateCcw, Save, Trash2, X } from 'lucide-react';
 import { Button } from '../../core/ui/button';
 import { Badge } from '../../core/ui/badge';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
@@ -290,6 +291,8 @@ export default function CoberturaModule() {
     }
   }
 
+  const [printing, runPrint] = useBusy();
+
   async function printReport() {
     if (coverage.pages.length === 0) return;
     setError(null);
@@ -303,7 +306,8 @@ export default function CoberturaModule() {
         yieldEstimate,
       });
       const documentHtml = createCoverageReportDocument(reportMarkup);
-      const saved = await printOrSaveHtmlReportAsPdf(documentHtml, `informe-cobertura-toner-${fileName || 'reporte'}`);
+      const saved = await runPrint(() => printOrSaveHtmlReportAsPdf(documentHtml, `informe-cobertura-toner-${fileName || 'reporte'}`));
+      if (saved === undefined) return; // ya hay un PDF en curso
       setMessage(saved === null
         ? 'Diálogo de impresión abierto.'
         : saved.saved
@@ -321,7 +325,7 @@ export default function CoberturaModule() {
     <div className="page-content coverage-page">
       <PageHeader eyebrow="ANÁLISIS / MPS" title="Analizador de cobertura de tóner"
         lead="Sube un PDF para medir la cobertura real de cada página y estimar el rendimiento de tóners Canon."
-        actions={<Button variant="outline" onClick={() => void printReport()} disabled={coverage.pages.length === 0}><Printer />Imprimir / PDF</Button>}
+        actions={<PrintButton busy={printing} onClick={() => void printReport()} disabled={coverage.pages.length === 0} />}
       />
       <StatusLine state={error || uploadError ? 'error' : loading || uploadBusy ? 'pending' : 'ready'}>
         <div className="[overflow-wrap:anywhere]">{error || message || (uploadError ? 'Revisa el mensaje del cargador de PDF.' : loading ? 'Cargando catálogo local…' : 'Carga un PDF para analizar la cobertura.')}</div>

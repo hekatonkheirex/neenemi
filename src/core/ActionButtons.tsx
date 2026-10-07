@@ -1,7 +1,7 @@
-import { Download, Upload } from 'lucide-react';
+import { Download, LoaderCircle, Printer, Upload } from 'lucide-react';
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ChangeEvent, ReactNode, Ref } from 'react';
 import { cn } from './cn';
-import { buttonVariants } from './ui/button';
+import { Button, buttonVariants } from './ui/button';
 
 // Botones por intencion: cargar (UploadButton, acento celeste), exportar (ExportButton, acento verde),
 // procesar (Button default, naranja) y neutro (Button outline). Los ganchos .upload-button y .export-button se conservan:
@@ -14,6 +14,11 @@ export function UploadIcon() {
 
 export function DownloadIcon() {
   return <Download className="size-4" aria-hidden="true" focusable="false" />;
+}
+
+/** Reemplaza el icono mientras el botón está ocupado; sin giro si el sistema pide menos movimiento. */
+export function BusySpinner() {
+  return <LoaderCircle className="size-4 animate-spin motion-reduce:animate-none" aria-hidden="true" focusable="false" data-busy-spinner />;
 }
 
 export interface UploadButtonProps {
@@ -41,7 +46,7 @@ export function UploadButton({ label, busy = false, busyLabel = 'Importando…',
       className={cn(buttonVariants({ variant: 'upload' }), 'upload-button relative cursor-pointer focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-sky', off && 'is-disabled cursor-not-allowed opacity-55', className)}
       title={input.title}
     >
-      <UploadIcon />
+      {busy ? <BusySpinner /> : <UploadIcon />}
       {busy ? busyLabel : label}
       <input
         ref={inputRef}
@@ -68,9 +73,21 @@ export interface ExportButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonE
 export function ExportButton({ busy = false, busyLabel = 'Exportando…', className, children, disabled, ...rest }: ExportButtonProps) {
   return (
     <button {...rest} type="button" className={cn(buttonVariants({ variant: 'export' }), 'export-button', className)} disabled={disabled || busy} aria-busy={busy || undefined}>
-      <DownloadIcon />
+      {busy ? <BusySpinner /> : <DownloadIcon />}
       {busy ? busyLabel : children}
     </button>
+  );
+}
+
+export type PrintButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'children'> & { busy?: boolean; children?: ReactNode };
+
+/** «Imprimir / PDF»: spinner y «Preparando…» mientras se arma y guarda el PDF; evita el doble clic. */
+export function PrintButton({ busy = false, children = 'Imprimir / PDF', disabled, ...rest }: PrintButtonProps) {
+  return (
+    <Button {...rest} variant="outline" disabled={disabled || busy} aria-busy={busy || undefined}>
+      {busy ? <BusySpinner /> : <Printer />}
+      {busy ? 'Preparando…' : children}
+    </Button>
   );
 }
 

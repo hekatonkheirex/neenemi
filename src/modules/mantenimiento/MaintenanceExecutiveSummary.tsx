@@ -1,6 +1,6 @@
 import type { MaintenanceAnalysis } from './analysis';
 import { buildMaintenanceExecutiveSummary } from './maintenance-summary';
-import { ExportButton } from '../../core/ActionButtons';
+import { ExportButton, PrintButton } from '../../core/ActionButtons';
 import { cn } from '../../core/cn';
 import { Button } from '../../core/ui/button';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
@@ -11,7 +11,9 @@ export type MaintenanceExportKind = 'critical' | 'attention' | 'unrecognized' | 
 type MaintenanceExecutiveSummaryProps = {
   analyses: readonly MaintenanceAnalysis[];
   onExport?: (analyses: readonly MaintenanceAnalysis[], kind: MaintenanceExportKind) => void;
+  exporting?: boolean;
   onPrint?: () => void;
+  printing?: boolean;
 };
 
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
@@ -30,7 +32,7 @@ const tones: Record<string, { border: string; accent: string }> = {
 const panelClass = 'grid min-w-0 content-start gap-3 rounded-xl border border-navy/10 border-l-4 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30';
 const rowClass = 'grid min-w-0 grid-cols-[2rem_minmax(0,1fr)_auto] items-start gap-3 border-t border-navy/10 pt-3 dark:border-sky/15';
 
-export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrint }: MaintenanceExecutiveSummaryProps) {
+export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrint, exporting, printing }: MaintenanceExecutiveSummaryProps) {
   const summary = buildMaintenanceExecutiveSummary(analyses);
   if (summary.total === 0) return null;
 
@@ -41,7 +43,7 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
         title="Estado del parque"
         aside={<div className="flex flex-wrap items-center gap-2">
           <Badge>{integerFormat.format(summary.total)} equipos analizados</Badge>
-          {onPrint ? <Button variant="outline" onClick={onPrint}>Imprimir resumen PDF</Button> : null}
+          {onPrint ? <PrintButton busy={printing} onClick={onPrint}>Imprimir resumen PDF</PrintButton> : null}
         </div>}
       />
       <Muted className="text-sm">Lectura priorizada de las mismas reglas y períodos usados en el análisis por equipo.</Muted>
@@ -63,7 +65,7 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
           tone="critical"
           empty="No hay equipos críticos en la ventana seleccionada."
           exportKind="critical"
-          onExport={onExport}
+          onExport={onExport} exporting={exporting}
         />
         <PriorityList
           title="Seguimiento preventivo"
@@ -72,7 +74,7 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
           tone="attention"
           empty="No hay equipos en atención en la ventana seleccionada."
           exportKind="attention"
-          onExport={onExport}
+          onExport={onExport} exporting={exporting}
         />
       </div>
 
@@ -85,7 +87,7 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
           metric={() => 'SIN REGLA'}
           detail={(analysis) => `${analysis.modelLabel} · ${analysis.customerName || 'Cliente sin informar'}`}
           exportKind="unrecognized"
-          onExport={onExport}
+          onExport={onExport} exporting={exporting}
         /> : null}
         {summary.zeroList.length > 0 ? <MaintenanceSubsetPanel
           title="Equipos con contador en cero"
@@ -95,7 +97,7 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
           metric={() => '0 COPIAS'}
           detail={(analysis) => `${analysis.modelLabel} · ${analysis.customerName || 'Cliente sin informar'}`}
           exportKind="zero"
-          onExport={onExport}
+          onExport={onExport} exporting={exporting}
         /> : null}
       </div> : null}
 
@@ -112,7 +114,7 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
         detail={(analysis) => `Prom. ${integerFormat.format(analysis.averageCopies)} · límite ${integerFormat.format(Math.round(analysis.optimalBase / 0.65))}`}
         empty="Ningún equipo supera el volumen óptimo recomendado."
         exportKind="recommended"
-        onExport={onExport}
+        onExport={onExport} exporting={exporting}
       />
 
       <div className="grid min-w-0 gap-2 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
@@ -148,17 +150,18 @@ function CriticalTrend({ trend, className }: { trend: readonly { period: string;
   </svg>;
 }
 
-function PanelHeading({ title, description, count, exportKind, analyses, onExport }: {
+function PanelHeading({ title, description, count, exportKind, analyses, onExport, exporting }: {
   title: string;
   description: string;
   count: number;
   exportKind: MaintenanceExportKind;
   analyses: readonly MaintenanceAnalysis[];
   onExport?: (analyses: readonly MaintenanceAnalysis[], kind: MaintenanceExportKind) => void;
+  exporting?: boolean;
 }) {
   return <div className="flex flex-wrap items-start justify-between gap-3">
     <div className="grid min-w-0 gap-1"><h3 className="m-0 text-base font-bold text-navy dark:text-white">{title}</h3><Muted>{description}</Muted></div>
-    <div className="flex flex-wrap items-center gap-2"><Badge>{count}</Badge>{onExport && count > 0 ? <ExportButton onClick={() => onExport(analyses, exportKind)}>Descargar XLSX</ExportButton> : null}</div>
+    <div className="flex flex-wrap items-center gap-2"><Badge>{count}</Badge>{onExport && count > 0 ? <ExportButton busy={exporting} onClick={() => onExport(analyses, exportKind)}>Descargar XLSX</ExportButton> : null}</div>
   </div>;
 }
 
@@ -170,6 +173,7 @@ function PriorityList({
   empty,
   exportKind,
   onExport,
+  exporting,
 }: {
   title: string;
   description: string;
@@ -178,9 +182,10 @@ function PriorityList({
   empty: string;
   exportKind: MaintenanceExportKind;
   onExport?: (analyses: readonly MaintenanceAnalysis[], kind: MaintenanceExportKind) => void;
+  exporting?: boolean;
 }) {
   return <div className={cn(panelClass, tones[tone].border)}>
-    <PanelHeading title={title} description={description} count={analyses.length} exportKind={exportKind} analyses={analyses} onExport={onExport} />
+    <PanelHeading title={title} description={description} count={analyses.length} exportKind={exportKind} analyses={analyses} onExport={onExport} exporting={exporting} />
     {analyses.length === 0 ? <Muted className="text-sm">{empty}</Muted> : <div className="grid max-h-96 gap-3 overflow-y-auto pr-1">{analyses.map((analysis, index) => <div className={rowClass} key={`${analysis.serialNumber}-${analysis.modelLabel}-${index}`}>
       <div className="font-mono text-xs text-ink-2 dark:text-[#9fb2d1]">{String(index + 1).padStart(2, '0')}</div>
       <div className="grid min-w-0 gap-0.5"><div className="font-bold text-navy dark:text-white">{analysis.modelLabel}</div><Muted>{analysis.customerName || 'Cliente sin informar'} · {analysis.serialNumber || 'Sin serie'}</Muted><Muted>Prom. {integerFormat.format(analysis.averageCopies)} · óptimo {integerFormat.format(analysis.optimalMonthly)}</Muted></div>
@@ -199,6 +204,7 @@ function MaintenanceSubsetPanel({
   empty = 'No hay equipos en esta lista.',
   exportKind,
   onExport,
+  exporting,
 }: {
   title: string;
   description: string;
@@ -209,9 +215,10 @@ function MaintenanceSubsetPanel({
   empty?: string;
   exportKind: MaintenanceExportKind;
   onExport?: (analyses: readonly MaintenanceAnalysis[], kind: MaintenanceExportKind) => void;
+  exporting?: boolean;
 }) {
   return <div className={cn(panelClass, tones[tone].border)}>
-    <PanelHeading title={title} description={description} count={analyses.length} exportKind={exportKind} analyses={analyses} onExport={onExport} />
+    <PanelHeading title={title} description={description} count={analyses.length} exportKind={exportKind} analyses={analyses} onExport={onExport} exporting={exporting} />
     {analyses.length === 0 ? <Muted className="text-sm">{empty}</Muted> : <div className="grid max-h-96 gap-3 overflow-y-auto pr-1">{analyses.map((analysis, index) => <div className={rowClass} key={`${analysis.serialNumber}-${analysis.modelLabel}-${index}`}>
       <div className="font-mono text-xs text-ink-2 dark:text-[#9fb2d1]">{String(index + 1).padStart(2, '0')}</div>
       <div className="grid min-w-0 gap-0.5"><div className="font-bold text-navy dark:text-white">{analysis.modelLabel}</div><Muted>{detail(analysis)}</Muted></div>

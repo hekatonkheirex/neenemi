@@ -1,7 +1,6 @@
 import type { MpsAnalysis } from './analysis';
 import type { MpsModel } from './repository';
-import { ExportButton } from '../../core/ActionButtons';
-import { Printer } from 'lucide-react';
+import { ExportButton, PrintButton } from '../../core/ActionButtons';
 import { Badge } from '../../core/ui/badge';
 import { Button } from '../../core/ui/button';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
@@ -77,7 +76,7 @@ export default function MpsAnalysisPanels({ model, analysis, exporting, exportin
     <Card className="min-w-0">
       <CardHeader eyebrow="ANÁLISIS EJECUTIVO" title="Demanda estimada" aside={
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={onPrint} disabled={!analysis || printing} aria-busy={printing}><Printer />{printing ? 'Preparando…' : 'Imprimir / PDF'}</Button>
+          <PrintButton busy={printing} onClick={onPrint} disabled={!analysis} />
           <ExportButton busy={exporting} busyLabel="Preparando…" onClick={onExport} disabled={!analysis}>Exportar análisis</ExportButton>
         </div>
       } />

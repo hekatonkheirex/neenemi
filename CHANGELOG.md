@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.80 · 2026-10-07
+
+Indicador de actividad en exportaciones, impresiones y cargas. Los botones de exportar, cargar e «Imprimir / PDF» muestran un spinner y el texto «Exportando…», «Importando…», «Leyendo…» o «Preparando…» mientras trabajan, y no admiten un segundo clic hasta terminar. Antes solo cambiaba el texto en algunos botones; ahora lo hacen también Listado de precios, Proformas, uniFLOW, Expedientes técnicos (XLSX por panel y PDF), SLA, Selector de software y Cobertura. El spinner no gira si el sistema pide reducir el movimiento.
+
 ## 0.1.79 · 2026-10-07
 
 El PDF tabular de Expedientes técnicos ya no lleva «xlsx» en el nombre del archivo (`mantenimiento-20260918-120817.pdf`). En el informe ejecutivo, los cuadros de «Eventos y prioridades detectadas» cierran a la derecha y abajo en cada página y la lista ya no salta entera a otra hoja, que dejaba la primera casi vacía.

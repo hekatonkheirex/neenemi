@@ -13,6 +13,7 @@ import { memoizeString } from '../../core/memoize';
 import PaginationControls from '../../core/PaginationControls';
 import { usePagedList } from '../../core/usePagedList';
 import { DownloadIcon, ExportButton, UploadButton } from '../../core/ActionButtons';
+import { useBusy } from '../../core/useBusy';
 import { Check, Minus, RotateCcw, Save } from 'lucide-react';
 import { Button } from '../../core/ui/button';
 import { Badge } from '../../core/ui/badge';
@@ -427,6 +428,8 @@ export default function ListadoPreciosModule() {
     }
   }
 
+  const [exporting, runExport] = useBusy();
+
   async function handleExport() {
     const exportItems = allItems.length > 0 ? allItems : items;
     if (!pricing || selectedModels.length === 0) {
@@ -439,7 +442,7 @@ export default function ListadoPreciosModule() {
     }
     setError(null);
     try {
-      await exportPriceList(exportItems, pricing, selectedModels, serviceItems, modelNotes, families);
+      await runExport(() => exportPriceList(exportItems, pricing, selectedModels, serviceItems, modelNotes, families));
       setMessage(`Listado XLSX generado con ${numberFormat.format(selectedModels.length)} modelos.`);
     } catch (exportError: unknown) {
       setError(toErrorMessage(exportError));
@@ -483,7 +486,7 @@ export default function ListadoPreciosModule() {
             if (file) void handleImportCatalog(file);
           }} />
           <Button variant="outline" onClick={() => void handleRestoreSeed()} disabled={restoringSeed || importingCatalog || allItemsLoading || legacyCatalogLoading} aria-busy={restoringSeed}><RotateCcw />{restoringSeed ? 'Restaurando semilla…' : 'Restaurar semilla heredada'}</Button>
-          <ExportButton onClick={() => void handleExport()} disabled={!pricing || selectedModels.length === 0 || allItemsLoading || legacyCatalogLoading || importingCatalog}>Exportar listado XLSX</ExportButton>
+          <ExportButton busy={exporting} onClick={() => void handleExport()} disabled={!pricing || selectedModels.length === 0 || allItemsLoading || legacyCatalogLoading || importingCatalog}>Exportar listado XLSX</ExportButton>
         </div>}
       />
       <div className="mt-4 flex min-w-0 flex-wrap items-center justify-between gap-x-4">

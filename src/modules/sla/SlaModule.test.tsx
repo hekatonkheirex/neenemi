@@ -22,7 +22,7 @@ describe('SlaModule', () => {
     expect(markup).toContain('Cargando SLA de referencia…');
     expect(markup).toContain('El informe aparecerá aquí.');
     expect(markup).toContain('aria-label="Referencia del SLA base"');
-    expect(markup).toMatch(/<button[^>]*disabled[^>]*>Imprimir \/ PDF<\/button>/);
+    expect(markup).toMatch(/<button[^>]*disabled[^>]*>(?:<svg.*?<\/svg>)?Imprimir \/ PDF<\/button>/);
     expect(markup).toMatch(/<button[^>]*type="submit"[^>]*id="btn-ai"|<button[^>]*id="btn-ai"[^>]*type="submit"/);
     expect(markup).toMatch(/<button[^>]*type="submit"[^>]*id="btn-local"|<button[^>]*id="btn-local"[^>]*type="submit"/);
   });

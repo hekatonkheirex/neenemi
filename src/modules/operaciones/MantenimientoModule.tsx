@@ -18,7 +18,7 @@ import { maintenanceAnalysisMatchesSearch } from '../mantenimiento/search';
 import { confirmAction } from '../../core/confirm';
 import AnimatedTabs from '../../core/AnimatedTabs';
 import { readJson, toErrorMessage } from '../../core/http';
-import { UploadButton, ExportButton, DownloadIcon } from '../../core/ActionButtons';
+import { UploadButton, ExportButton, DownloadIcon, PrintButton } from '../../core/ActionButtons';
 import { cn } from '../../core/cn';
 import { toFileSafeName } from './file-name';
 import { PageHeader } from '../../core/ui/page-header';
@@ -283,6 +283,8 @@ export default function MantenimientoModule() {
     }
   }
 
+  const printing = printableTable !== null || printableAnalysis !== null || printableExecutiveSummary;
+
   function printAnalysis() {
     if (visibleAnalyses.length === 0) return;
     setError(null);
@@ -454,6 +456,8 @@ export default function MantenimientoModule() {
         analyses={analyses}
         onExport={(subset, kind) => void exportMaintenanceSubset(subset, kind)}
         onPrint={printExecutiveSummary}
+        exporting={exportingAnalysis}
+        printing={printing}
       /> : null}
 
       {activeMaintenanceView === 'equipos' ? <Card className={cardClass}>
@@ -466,7 +470,7 @@ export default function MantenimientoModule() {
                 <option value={1}>Último mes</option><option value={3}>Últimos 3 meses</option><option value={6}>Últimos 6 meses</option><option value={12}>Últimos 12 meses</option>
               </select>
             </label>
-            <Button variant="outline" onClick={() => void printAnalysis()} disabled={visibleAnalyses.length === 0}>Imprimir / PDF</Button>
+            <PrintButton busy={printing} onClick={() => void printAnalysis()} disabled={visibleAnalyses.length === 0} />
             <ExportButton busy={exportingAnalysis} onClick={() => void exportAnalysis()} disabled={visibleAnalyses.length === 0}>Exportar XLSX</ExportButton>
           </div>}
         />

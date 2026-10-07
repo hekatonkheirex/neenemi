@@ -20,8 +20,9 @@ import { UNIFLOW_PRICE_TABS } from './types';
 import { confirmAction } from '../../core/confirm';
 import { useUnsavedChanges } from '../../core/unsavedChanges';
 import { readJson, toErrorMessage } from '../../core/http';
-import { ExportButton } from '../../core/ActionButtons';
-import { Calculator, ChevronDown, Copy, Minus, Plus, Printer, RotateCcw, Save, Trash2 } from 'lucide-react';
+import { ExportButton, PrintButton } from '../../core/ActionButtons';
+import { useBusy } from '../../core/useBusy';
+import { Calculator, ChevronDown, Copy, Minus, Plus, RotateCcw, Save, Trash2 } from 'lucide-react';
 import { Badge } from '../../core/ui/badge';
 import { Button } from '../../core/ui/button';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
@@ -220,10 +221,12 @@ export default function UniflowModule() {
     }
   }
 
+  const [exporting, runExport] = useBusy();
+
   async function exportExcel() {
     if (!results) return;
     try {
-      await exportUniflowExcel(results, clientName);
+      await runExport(() => exportUniflowExcel(results, clientName));
       setMessage('Archivo XLSX generado.');
     } catch (exportError: unknown) {
       setError(toErrorMessage(exportError));
@@ -244,8 +247,8 @@ export default function UniflowModule() {
         lead="Calcula licencias por volumen para equipos Canon y conserva las tarifas comerciales en la base local."
         actions={<>
           <Button variant="outline" onClick={() => void copySummary()} disabled={!results}><Copy />Copiar resumen</Button>
-          <Button variant="outline" onClick={printReport} disabled={!results || printableReport !== null}><Printer />{printableReport ? 'Preparando…' : 'Imprimir / PDF'}</Button>
-          <ExportButton onClick={() => void exportExcel()} disabled={!results}>Exportar XLSX</ExportButton>
+          <PrintButton busy={printableReport !== null} onClick={printReport} disabled={!results} />
+          <ExportButton busy={exporting} onClick={() => void exportExcel()} disabled={!results}>Exportar XLSX</ExportButton>
         </>}
       />
       <StatusLine state={error ? 'error' : loading || saving ? 'pending' : 'ready'}>

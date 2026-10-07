@@ -23,6 +23,7 @@ import type {
 } from './types';
 import { readJson, toErrorMessage } from '../../core/http';
 import { ExportButton, ExportLink, UploadTriggerButton } from '../../core/ActionButtons';
+import { useBusy } from '../../core/useBusy';
 import { X } from 'lucide-react';
 import { cn } from '../../core/cn';
 import { PageHeader } from '../../core/ui/page-header';
@@ -632,11 +633,13 @@ export default function ProformasModule() {
     }
   }
 
+  const [exporting, runExport] = useBusy();
+
   async function handleExport() {
     if (!savedProforma) return;
     setError(null);
     try {
-      await exportProforma(savedProforma);
+      await runExport(() => exportProforma(savedProforma));
       setMessage('Proforma XLSX generada.');
     } catch (exportError: unknown) {
       setError(toErrorMessage(exportError));
@@ -654,7 +657,7 @@ export default function ProformasModule() {
           <UploadTriggerButton onClick={() => setReportImportOpen(true)}>Importar informe PDF</UploadTriggerButton>
           <Button variant="outline" onClick={() => setSalesCatalogImportOpen(true)}>Actualizar catálogos</Button>
           <UploadTriggerButton onClick={() => setContractImportOpen(true)}>Importar contrato</UploadTriggerButton>
-          <ExportButton onClick={() => void handleExport()} disabled={!savedProforma}>Exportar XLSX</ExportButton>
+          <ExportButton busy={exporting} onClick={() => void handleExport()} disabled={!savedProforma}>Exportar XLSX</ExportButton>
         </>}
       />
 

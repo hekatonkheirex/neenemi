@@ -16,7 +16,8 @@ import type {
 import { SOFTWARE_CATEGORIES } from './types';
 import AnimatedTabs from '../../core/AnimatedTabs';
 import { readJson, toErrorMessage } from '../../core/http';
-import { UploadButton, ExportButton } from '../../core/ActionButtons';
+import { UploadButton, ExportButton, PrintButton } from '../../core/ActionButtons';
+import { useBusy } from '../../core/useBusy';
 import { ChartBar, ChevronDown, ChevronUp, FileText, Grid2x2, type LucideIcon, Printer, Search, Server, ShieldCheck, Sparkles, Workflow, Wrench } from 'lucide-react';
 import { cn } from '../../core/cn';
 import { Badge } from '../../core/ui/badge';
@@ -212,6 +213,8 @@ export default function SoftwareSelectorModule() {
     }
   }
 
+  const [reading, runRead] = useBusy();
+
   async function loadDocumentFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -226,14 +229,17 @@ export default function SoftwareSelectorModule() {
       return;
     }
     try {
-      const bytes = extension === 'pdf' || extension === 'docx'
-        ? new Uint8Array(await file.arrayBuffer())
-        : null;
-      const contents = extension === 'pdf'
-        ? await extractPdfTextFromBytes(bytes!)
-        : extension === 'docx'
-          ? await extractDocxTextFromBytes(bytes!)
-          : await file.text();
+      const contents = await runRead(async () => {
+        const bytes = extension === 'pdf' || extension === 'docx'
+          ? new Uint8Array(await file.arrayBuffer())
+          : null;
+        return extension === 'pdf'
+          ? await extractPdfTextFromBytes(bytes!)
+          : extension === 'docx'
+            ? await extractDocxTextFromBytes(bytes!)
+            : await file.text();
+      });
+      if (contents === undefined) return;
       if (!contents.trim()) {
         throw new Error(`No se encontró texto legible en ${file.name}.`);
       }
@@ -259,11 +265,14 @@ export default function SoftwareSelectorModule() {
     setMessage('Ejemplo cargado. Ejecuta el análisis local para detectar requisitos.');
   }
 
+  const [printing, runPrint] = useBusy();
+
   async function printReport() {
     if (selectedFeatures.length === 0) return;
     setError(null);
     try {
-      const saved = await printOrSaveCurrentPageAsPdf(`informe-software-selector-${fileName || 'reporte'}`);
+      const saved = await runPrint(() => printOrSaveCurrentPageAsPdf(`informe-software-selector-${fileName || 'reporte'}`));
+      if (saved === undefined) return; // ya hay un PDF en curso
       setMessage(saved === null
         ? 'Diálogo de impresión abierto.'
         : saved.saved
@@ -314,7 +323,7 @@ export default function SoftwareSelectorModule() {
         lead="Cruza los requisitos del cliente con uniFLOW e imageWARE. Analiza el pliego, revisa la selección y compara la cobertura de cada producto."
         actions={(
           <>
-            <Button variant="outline" onClick={() => void printReport()} disabled={selectedFeatures.length === 0}><Printer />Imprimir / PDF</Button>
+            <PrintButton busy={printing} onClick={() => void printReport()} disabled={selectedFeatures.length === 0} />
             <ExportButton onClick={exportReport} disabled={selectedFeatures.length === 0}>Exportar JSON</ExportButton>
           </>
         )}
@@ -349,7 +358,7 @@ export default function SoftwareSelectorModule() {
                 />
               </label>
               <div className="flex flex-wrap items-center gap-2.5">
-                <UploadButton id="software-source-file" name="sourceFile" label="Cargar TXT / PDF / DOCX" accept=".txt,.md,.csv,.json,.pdf,.docx,text/plain,text/markdown,text/csv,application/json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(event) => void loadDocumentFile(event)} />
+                <UploadButton busy={reading} busyLabel="Leyendo…" id="software-source-file" name="sourceFile" label="Cargar TXT / PDF / DOCX" accept=".txt,.md,.csv,.json,.pdf,.docx,text/plain,text/markdown,text/csv,application/json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(event) => void loadDocumentFile(event)} />
                 <Button variant="outline" onClick={loadDemo}>Cargar ejemplo</Button>
                 <Button variant="outline" type="submit" id="btn-local" disabled={analyzing || !text.trim()}><FileText />{analyzing ? 'Procesando…' : 'Analizar localmente'}</Button>
                 <Button type="submit" id="btn-ai" className="ml-auto max-[720px]:ml-0" disabled={analyzing || !text.trim()}><Sparkles />Analizar con IA</Button>

@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { ExportButton, UploadButton } from './ActionButtons';
+import { ExportButton, PrintButton, UploadButton } from './ActionButtons';
 
 function sourceFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -29,6 +29,7 @@ describe('UploadButton', () => {
     expect(html).toContain('Importando…');
     expect(html).toContain('is-disabled');
     expect(html).toMatch(/<input[^>]*disabled/);
+    expect(html).toContain('data-busy-spinner');
   });
 
   it('pasa aria-label, id, name y multiple al input', () => {
@@ -55,6 +56,12 @@ describe('ExportButton', () => {
     expect(html).toContain('Exportando…');
     expect(html).toContain('disabled');
     expect(html).toContain('aria-busy="true"');
+    expect(html).toContain('data-busy-spinner');
+    expect(html).toContain('motion-reduce:animate-none');
+  });
+
+  it('en reposo: icono de descarga y sin spinner', () => {
+    expect(renderToStaticMarkup(<ExportButton onClick={() => {}}>Exportar</ExportButton>)).not.toContain('data-busy-spinner');
   });
 });
 
@@ -104,5 +111,22 @@ describe('normalizacion de botones de carga y exportacion', () => {
         .map(() => file);
     });
     expect(offenders).toEqual([]);
+  });
+});
+
+describe('PrintButton', () => {
+  it('en reposo: icono de impresora, texto y sin aria-busy', () => {
+    const html = renderToStaticMarkup(<PrintButton onClick={() => {}} />);
+    expect(html).toContain('Imprimir / PDF');
+    expect(html).not.toContain('data-busy-spinner');
+    expect(html).not.toContain('aria-busy');
+  });
+
+  it('ocupado: spinner, «Preparando…», deshabilitado y aria-busy', () => {
+    const html = renderToStaticMarkup(<PrintButton busy onClick={() => {}} />);
+    expect(html).toContain('Preparando…');
+    expect(html).toContain('data-busy-spinner');
+    expect(html).toContain('aria-busy="true"');
+    expect(html).toContain('disabled');
   });
 });

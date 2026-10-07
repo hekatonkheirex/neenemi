@@ -7,7 +7,8 @@ import { DEMO_SLA_TEXT, SLA_BASELINE_NOTE, SLA_REFERENCE_SECTIONS } from './cons
 import { buildSlaHtmlReport } from './html-report';
 import type { SlaAnalysis, SlaComplianceItem, SlaReferenceSection, SlaStatus } from './types';
 import { readJson, toErrorMessage } from '../../core/http';
-import { UploadButton, ExportButton } from '../../core/ActionButtons';
+import { UploadButton, ExportButton, PrintButton } from '../../core/ActionButtons';
+import { useBusy } from '../../core/useBusy';
 import { cn } from '../../core/cn';
 import { Badge, type BadgeTone } from '../../core/ui/badge';
 import { Button } from '../../core/ui/button';
@@ -91,6 +92,8 @@ export default function SlaModule() {
     }
   }
 
+  const [reading, runRead] = useBusy();
+
   async function loadDocumentFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -105,9 +108,10 @@ export default function SlaModule() {
       return;
     }
     try {
-      const contents = extension === 'pdf'
+      const contents = await runRead(async () => extension === 'pdf'
         ? await extractPdfTextFromBytes(new Uint8Array(await file.arrayBuffer()))
-        : await file.text();
+        : await file.text());
+      if (contents === undefined) return;
       if (!contents.trim()) {
         throw new Error(`No se encontró texto legible en ${file.name}.`);
       }
@@ -170,11 +174,14 @@ export default function SlaModule() {
     setMessage('Reporte SLA HTML generado.');
   }
 
+  const [printing, runPrint] = useBusy();
+
   async function printReport() {
     if (!analysis) return;
     setError(null);
     try {
-      const saved = await printOrSaveCurrentPageAsPdf(`informe-sla-${fileName || 'reporte'}`);
+      const saved = await runPrint(() => printOrSaveCurrentPageAsPdf(`informe-sla-${fileName || 'reporte'}`));
+      if (saved === undefined) return; // ya hay un PDF en curso
       setMessage(saved === null
         ? 'Diálogo de impresión abierto.'
         : saved.saved
@@ -193,7 +200,7 @@ export default function SlaModule() {
         lead="Compara requisitos de un pliego con el SLA estándar de Data Systems y separa cumplimiento, condiciones parciales y brechas negociables."
         actions={(
           <>
-            <Button variant="outline" onClick={() => void printReport()} disabled={!analysis}>Imprimir / PDF</Button>
+            <PrintButton busy={printing} onClick={() => void printReport()} disabled={!analysis} />
             <ExportButton onClick={exportHtmlReport} disabled={!analysis}>Exportar HTML</ExportButton>
             <ExportButton onClick={exportReport} disabled={!analysis}>Exportar JSON</ExportButton>
           </>
@@ -225,7 +232,7 @@ export default function SlaModule() {
                 />
               </label>
               <div className="flex flex-wrap items-center gap-2.5">
-                <UploadButton label="Cargar TXT / PDF" accept=".txt,.md,.csv,.json,.pdf,text/plain,text/markdown,text/csv,application/json,application/pdf" onChange={(event) => void loadDocumentFile(event)} />
+                <UploadButton busy={reading} busyLabel="Leyendo…" label="Cargar TXT / PDF" accept=".txt,.md,.csv,.json,.pdf,text/plain,text/markdown,text/csv,application/json,application/pdf" onChange={(event) => void loadDocumentFile(event)} />
                 <Button variant="outline" onClick={loadDemo}>Cargar ejemplo</Button>
                 <Button variant="outline" type="submit" id="btn-local" disabled={analyzing || !text.trim()}>{analyzing ? 'Procesando…' : 'Ejecutar análisis local'}</Button>
                 <Button type="submit" id="btn-ai" className="ml-auto max-[720px]:ml-0" disabled={analyzing || !text.trim()}>Analizar con IA</Button>
