@@ -74,6 +74,23 @@ describe('OverviewRepository', () => {
 
   });
 
+  it('reports the latest applied load even when newer loads are not applied', () => {
+    const database = makeDatabase();
+    const imports = new ImportRepository(database);
+    const overview = new OverviewRepository(database);
+    expect(overview.get().lastAppliedAt).toBeNull();
+
+    const applied = imports.createBatch({ domain: 'catalog', sourceName: 'applied.xlsx' });
+    imports.markApplied(applied);
+    for (let i = 0; i < 7; i += 1) imports.createBatch({ domain: 'catalog', sourceName: `staged-${i}.xlsx` });
+    database.prepare("UPDATE import_batches SET created_at = '2999-01-01T00:00:00.000Z' WHERE id <> ?").run(applied);
+
+    const result = overview.get();
+    expect(result.recentImports.some((item) => item.appliedAt)).toBe(false);
+    const row = database.prepare('SELECT applied_at FROM import_batches WHERE id = ?').get(applied) as { applied_at: string };
+    expect(result.lastAppliedAt).toBe(row.applied_at);
+  });
+
   it('keeps unavailable business sources null even when generic parts and unrelated imports exist', () => {
     const database = makeDatabase();
     const imports = new ImportRepository(database);
@@ -108,8 +125,6 @@ describe('OverviewRepository', () => {
     expect(overview.get('2026-10-07').dashboard.portfolio).toBeNull();
     imports.markApplied(batchId);
     expect(overview.get('2026-10-07').dashboard.portfolio).toEqual({
-      equipment: 0,
-      equipmentWithoutSerial: 0,
       activeEquipment: 0,
       activeEquipmentWithReadings: 0,
       activeContracts: 0,
@@ -127,8 +142,6 @@ describe('OverviewRepository', () => {
     `).run();
 
     expect(new OverviewRepository(database).get('2026-10-07').dashboard.portfolio).toEqual({
-      equipment: 0,
-      equipmentWithoutSerial: 0,
       activeEquipment: 0,
       activeEquipmentWithReadings: 0,
       activeContracts: 0,
@@ -205,8 +218,6 @@ describe('OverviewRepository', () => {
     const result = new OverviewRepository(database).get('2026-10-07');
 
     expect(result.dashboard.portfolio).toEqual({
-      equipment: 5,
-      equipmentWithoutSerial: 3,
       activeEquipment: 2,
       activeEquipmentWithReadings: 1,
       activeContracts: 2,

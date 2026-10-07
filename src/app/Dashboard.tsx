@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ArrowUpRight, TriangleAlert } from 'lucide-react';
 import type { SuiteOverview } from '../db/overview';
+import { ACTIVE_CONTRACT_TYPES_TEXT } from '../db/contract-types';
 import { cn } from '../core/cn';
 import type { BackupHealth } from './DatabaseRecoveryPanel';
 import { Button } from '../core/ui/button';
@@ -41,7 +42,7 @@ function MetricCard({ label, value, note, onClick }: { label: string; value: num
 }
 
 export default function Dashboard({ moduleCount, overview, overviewError, backupLevel, onNavigate }: DashboardProps) {
-  const lastApplied = overview?.recentImports.find((item) => item.appliedAt)?.appliedAt;
+  const lastApplied = overview?.lastAppliedAt;
   const portfolio = overview?.dashboard.portfolio;
   const canon = overview?.dashboard.canon;
   const missing = overview ? 'Sin datos' : overviewError ? 'No disponible' : 'Cargando…';
@@ -74,7 +75,7 @@ export default function Dashboard({ moduleCount, overview, overviewError, backup
         <CardHeader eyebrow="CARTERA Y EQUIPOS" title="Base instalada y contratos" />
         <Muted>Resumen general de la cartera, sin los filtros particulares de cada módulo.</Muted>
         <div className={cn('grid min-w-0 gap-3 sm:grid-cols-2', portfolio?.contractsByType.length && 'xl:grid-cols-3')}>
-          <MetricCard label="Equipos con contrato activo" value={portfolio?.activeEquipment ?? missing} note={portfolio ? 'Series únicas en contratos activos (Abierto, Alquiler, Leasing y Mantenimiento).' : 'Carga la cartera para consultar los equipos.'} onClick={() => onNavigate('descontinuador')} />
+          <MetricCard label="Equipos con contrato activo" value={portfolio?.activeEquipment ?? missing} note={portfolio ? `Series únicas en contratos activos (${ACTIVE_CONTRACT_TYPES_TEXT}). No incluye equipos sin serie.` : 'Carga la cartera para consultar los equipos.'} onClick={() => onNavigate('descontinuador')} />
           <MetricCard label="Contratos activos" value={portfolio?.activeContracts ?? missing} note={portfolio ? `Solo los marcados como activos. Contratos sin estado: ${numberFormat.format(portfolio.unknownContracts)} (excluidos).` : 'El estado activo se toma de la cartera cargada.'} onClick={() => onNavigate('descontinuador')} />
           {portfolio?.contractsByType.map(item => <MetricCard key={item.type} label={`Contratos activos · ${item.type}`} value={item.count} note="Contratos activos de este tipo en la cartera." onClick={() => onNavigate('descontinuador')} />)}
         </div>

@@ -1,6 +1,7 @@
 import type { SuiteDatabase } from './database';
 import type { ImportBatchStatus } from './repositories';
 import { normalizeSerial } from '../modules/consumibles/analysis';
+import { ACTIVE_CONTRACT_TYPES_SQL } from './contract-types';
 
 export type SuiteOverviewCounts = {
   parts: number;
@@ -29,11 +30,10 @@ export type SuiteRecentImport = {
 export type SuiteOverview = {
   counts: SuiteOverviewCounts;
   appliedImports: number;
+  lastAppliedAt: string | null;
   recentImports: SuiteRecentImport[];
   dashboard: {
     portfolio: null | {
-      equipment: number;
-      equipmentWithoutSerial: number;
       // Series on active contracts of the four department types, and how many have counter readings in the current maintenance load.
       activeEquipment: number;
       activeEquipmentWithReadings: number;
@@ -59,6 +59,7 @@ type SuiteOverviewCountRow = {
   model_support_items: number;
   waldbott_stock_items: number;
   applied_imports: number;
+  last_applied_at: string | null;
 };
 
 type SuiteRecentImportRow = {
@@ -97,7 +98,8 @@ export class OverviewRepository {
              ORDER BY COALESCE(batch.applied_at, batch.created_at) DESC, batch.id DESC
              LIMIT 1
            )) AS waldbott_stock_items,
-          (SELECT COUNT(*) FROM import_batches WHERE status = 'applied') AS applied_imports
+          (SELECT COUNT(*) FROM import_batches WHERE status = 'applied') AS applied_imports,
+          (SELECT MAX(applied_at) FROM import_batches WHERE status = 'applied') AS last_applied_at
       `)
       .get() as SuiteOverviewCountRow;
 
@@ -134,6 +136,7 @@ export class OverviewRepository {
         waldbottStockItems: counts.waldbott_stock_items,
       },
       appliedImports: counts.applied_imports,
+      lastAppliedAt: counts.last_applied_at,
       recentImports: recentImports.map((row) => ({
         id: row.id,
         domain: row.domain,
@@ -163,22 +166,10 @@ export class OverviewRepository {
       if (!source) return null;
     }
 
-    const equipment = this.database.prepare('SELECT serial_number FROM contract_equipment').all() as {
-      serial_number: string | null;
-    }[];
-    const serials = new Set<string>();
-    let equipmentWithoutSerial = 0;
-    for (const item of equipment) {
-      const serial = normalizeSerial(item.serial_number ?? '');
-      if (serial) serials.add(serial);
-      // Without a serial, each stored equipment ID remains a separate item.
-      else equipmentWithoutSerial += 1;
-    }
-
     const activeSerials = new Set<string>();
     const activeRows = this.database.prepare(`
       SELECT ce.serial_number FROM contract_equipment ce JOIN contracts c ON c.id = ce.contract_id
-      WHERE c.is_active = 1 AND c.contract_type IN ('Abierto', 'Alquiler', 'Leasing', 'Mantenimiento')
+      WHERE c.is_active = 1 AND c.contract_type IN (${ACTIVE_CONTRACT_TYPES_SQL})
     `).all() as { serial_number: string | null }[];
     for (const row of activeRows) {
       const serial = normalizeSerial(row.serial_number ?? '');
@@ -203,13 +194,13 @@ export class OverviewRepository {
         COUNT(DISTINCT CASE WHEN is_active = 1 THEN COALESCE(NULLIF(reference, ''), id) END) AS count,
         COUNT(DISTINCT CASE WHEN is_active IS NULL THEN COALESCE(NULLIF(reference, ''), id) END) AS unknown
       FROM contracts
-      WHERE contract_type IN ('Abierto', 'Alquiler', 'Leasing', 'Mantenimiento')
+      WHERE contract_type IN (${ACTIVE_CONTRACT_TYPES_SQL})
       GROUP BY contract_type
       ORDER BY contract_type
     `).all() as { type: string; count: number; unknown: number }[];
     const { total: activeCustomers } = this.database.prepare(`
       SELECT COUNT(DISTINCT customer_id) AS total FROM contracts
-      WHERE is_active = 1 AND contract_type IN ('Abierto', 'Alquiler', 'Leasing', 'Mantenimiento')
+      WHERE is_active = 1 AND contract_type IN (${ACTIVE_CONTRACT_TYPES_SQL})
     `).get() as { total: number };
     let activeContracts = 0;
     let unknownContracts = 0;
@@ -220,8 +211,6 @@ export class OverviewRepository {
     });
 
     return {
-      equipment: serials.size + equipmentWithoutSerial,
-      equipmentWithoutSerial,
       activeEquipment: activeSerials.size,
       activeEquipmentWithReadings,
       activeContracts,

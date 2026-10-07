@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import DatabaseRecoveryPanel, { describeReminder, type BackupHealth } from './DatabaseRecoveryPanel';
+import DatabaseRecoveryPanel, { canBackup, describeReminder, type BackupHealth } from './DatabaseRecoveryPanel';
 
 const health = (over: Partial<BackupHealth>): BackupHealth => ({
   lastBackupAt: '2026-10-06T12:00:00Z', lastLoadAt: null, lastChangeAt: null,
@@ -44,5 +44,20 @@ describe('DatabaseRecoveryPanel (estado inicial)', () => {
   it('usa tokens de marca y sin clases heredadas del panel', () => {
     expect(markup).not.toMatch(/database-recovery|backup-banner|database-backup-cta|global-clear-button/);
     expect(markup).toContain('dark:bg-panel');
+  });
+});
+
+describe('canBackup', () => {
+  it('espera mientras consulta los originales', () => {
+    expect(canBackup(null, true)).toBe(false);
+  });
+
+  it('bloquea si faltan originales y permite si están completos', () => {
+    expect(canBackup({ missingFiles: 2 }, false)).toBe(false);
+    expect(canBackup({ missingFiles: 0 }, false)).toBe(true);
+  });
+
+  it('permite respaldar si la consulta de originales falló', () => {
+    expect(canBackup(null, false)).toBe(true);
   });
 });

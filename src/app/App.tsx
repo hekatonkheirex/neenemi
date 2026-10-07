@@ -12,7 +12,7 @@ import CommandPalette from './CommandPalette';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import Dashboard from './Dashboard';
-import Configuration, { type ClearImportsMessage } from './Configuration';
+import Configuration, { clearMessageAfterNavigation, type ClearImportsMessage } from './Configuration';
 import ModuleSkeleton from './ModuleSkeleton';
 import ChangelogDialog from './ChangelogDialog';
 import { persistLastModule, readLastModule } from './lastModule';
@@ -116,6 +116,7 @@ export default function App() {
       });
       if (!leave) return;
     }
+    setClearImportsMessage((current) => clearMessageAfterNavigation(current, id));
     setActiveModuleId(id);
   }
 

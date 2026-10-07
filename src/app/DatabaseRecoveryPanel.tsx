@@ -44,6 +44,11 @@ const byteFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1 });
 const dateTimeFormat = new Intl.DateTimeFormat('es-PY', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
 
 const formatStamp = (value: string | null) => (value ? dateTimeFormat.format(new Date(value)) : 'Nunca');
+/** Con el estado de originales caído se permite respaldar: el aviso de error ya se muestra y bloquear el respaldo agrava el problema. */
+export function canBackup(status: Pick<ImportFileContentStatus, 'missingFiles'> | null, loadingStatus: boolean): boolean {
+  return !loadingStatus && (status === null || status.missingFiles === 0);
+}
+
 const plural = (n: number, one: string, many: string) => `${n.toLocaleString('es-PY')} ${n === 1 ? one : many}`;
 
 // Colores de estado (no de marca): rojo = sin respaldar, ámbar = antiguo, verde = al día. El texto del CTA se elige por contraste.
@@ -238,7 +243,7 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
   }
 
   const missingFiles = status?.missingFiles ?? 0;
-  const backupReady = status !== null && missingFiles === 0;
+  const backupReady = canBackup(status, loadingStatus);
 
   const clearedSinceBackup = clearMessage?.tone === 'success' && health?.level === 'pending' && health.loadsSinceBackup === 0;
   const reminder = clearedSinceBackup

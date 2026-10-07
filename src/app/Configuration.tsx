@@ -4,6 +4,11 @@ import { PageHeader } from '../core/ui/page-header';
 
 export type ClearImportsMessage = { tone: 'success' | 'error'; text: string };
 
+/** El resultado de la limpieza solo vale mientras se está en Configuración. */
+export function clearMessageAfterNavigation(current: ClearImportsMessage | null, targetId: string | null): ClearImportsMessage | null {
+  return targetId === 'configuracion' ? current : null;
+}
+
 type ConfigurationProps = {
   refreshKey: number;
   onBackupLevel: (level: BackupHealth['level']) => void;
