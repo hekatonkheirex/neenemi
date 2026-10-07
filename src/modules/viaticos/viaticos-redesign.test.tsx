@@ -53,8 +53,13 @@ describe('rediseño de Viáticos', () => {
     expect(html).toContain('₲ 400.000');
   });
 
+  it('el histórico muestra fecha y hora de la carga de la fuente', () => {
+    const html = renderToStaticMarkup(<TravelHistoricalView summaries={[] as HistoricalSummary[]} sourceName="viaticos.xlsx" sourceImportedAt="2026-10-07T14:32:00" sourceBatchId="batch-1" />);
+    expect(html).toMatch(/viaticos\.xlsx · Cargado el 07\/10\/2026.*14:32/);
+  });
+
   it('el histórico sin datos avisa y conserva el archivo de fuente', () => {
-    const html = renderToStaticMarkup(<TravelHistoricalView summaries={[] as HistoricalSummary[]} sourceName={null} sourceBatchId={null} />);
+    const html = renderToStaticMarkup(<TravelHistoricalView summaries={[] as HistoricalSummary[]} sourceName={null} sourceImportedAt={null} sourceBatchId={null} />);
     expect(html).toContain('No hay resúmenes históricos cargados.');
     expect(html).toContain('Hojas auxiliares de la planilla');
   });

@@ -12,6 +12,7 @@ import { FileText, Pencil, Plus, RotateCcw, Save, Trash2, X } from 'lucide-react
 import { Button } from '../../core/ui/button';
 import { Badge } from '../../core/ui/badge';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { formatLoadedAt } from '../../core/loaded-at';
 import { Input } from '../../core/ui/input';
 import { PageHeader } from '../../core/ui/page-header';
 import { StatusLine } from '../../core/ui/status-line';
@@ -366,6 +367,7 @@ export default function CoberturaModule() {
             </div>
             {fileName && <div className="grid min-w-0 grid-cols-1 gap-1 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
               <Muted>Archivo</Muted><strong className="break-words text-sm text-navy dark:text-white" title={fileName}>{fileName}</strong>
+              {analysis && formatLoadedAt(analysis.analyzedAt) ? <Muted>{formatLoadedAt(analysis.analyzedAt)}</Muted> : null}
             </div>}
             {uploadBusy && <div className="grid min-w-0 gap-2" aria-live="polite">
               <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-navy dark:text-white"><div>{uploadStatus === 'saving' ? 'Guardando en SQLite' : uploadProgress.currentPage ? `Procesando página ${uploadProgress.currentPage}` : 'Abriendo documento'}</div><Badge>{progressPercent}%</Badge></div>

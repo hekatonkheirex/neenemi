@@ -133,6 +133,7 @@ export type TravelImportResult = {
 export type TravelSummary = {
   operationalYear: number | null;
   sourceName: string | null;
+  sourceImportedAt: string | null;
   records: number;
   totalCost: number;
   averageCost: number;

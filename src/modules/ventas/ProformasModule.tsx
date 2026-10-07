@@ -34,6 +34,7 @@ import { Textarea } from '../../core/ui/textarea';
 import { Badge, type BadgeTone } from '../../core/ui/badge';
 import { StatusLine } from '../../core/ui/status-line';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
+import { formatLoadedAt } from '../../core/loaded-at';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
 const usdNumberFormat = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -712,6 +713,7 @@ export default function ProformasModule() {
               <div className={cn(subCardClass, 'flex flex-wrap items-center justify-between gap-3')}>
                 <div className="grid min-w-0 gap-0.5">
                   <div className="font-bold text-navy dark:text-white">{openContract ? openContract.meta.fileName : 'Sin contrato cargado'}</div>
+                  {openContract && formatLoadedAt(openContract.meta.updatedAt) ? <Muted>{formatLoadedAt(openContract.meta.updatedAt)}</Muted> : null}
                   <Muted>{openContract ? `${numberFormat.format(openContract.items.length)} líneas · precio fijo original en ${currencyLabel(openContract.meta.priceCurrency)}` : 'Importa un XLSX o PDF para habilitar la búsqueda contractual.'}</Muted>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -840,7 +842,7 @@ export default function ProformasModule() {
                 <div className="grid gap-1.5 text-sm text-ink-2 dark:text-[#d6e2f5]">
                   <div><b className="text-navy dark:text-white">{numberFormat.format(openContract.items.length)}</b> líneas</div>
                   <div>Precio original: <b className="text-navy dark:text-white">{currencyLabel(openContract.meta.priceCurrency)}</b></div>
-                  <div>Última carga: <b className="text-navy dark:text-white">{formatDate(openContract.meta.updatedAt)}</b></div>
+                  <div className="text-navy dark:text-white">{formatLoadedAt(openContract.meta.updatedAt)}</div>
                   {openContract.meta.sourceBatchId && openContract.meta.sourceFileId ? <ExportLink size="sm" href={`/api/imports/${encodeURIComponent(openContract.meta.sourceBatchId)}/files/${encodeURIComponent(openContract.meta.sourceFileId)}`} download={openContract.meta.fileName} /> : null}
                 </div>
               ) : null}
@@ -859,6 +861,7 @@ export default function ProformasModule() {
                     <div className={cn(subCardClass, 'grid gap-0.5 p-3')} key={kind}>
                       <div className="font-bold text-navy dark:text-white">{kind === 'consumibles' ? 'Consumibles' : 'Repuestos'}</div>
                       <Muted>{meta ? `${numberFormat.format(meta.rowCount)} registros · ${meta.fileName}` : 'Sin planilla específica cargada'}</Muted>
+                      {meta && formatLoadedAt(meta.updatedAt) ? <Muted>{formatLoadedAt(meta.updatedAt)}</Muted> : null}
                     </div>
                   );
                 })}

@@ -19,6 +19,7 @@ import { Input } from '../../core/ui/input';
 import { PageHeader } from '../../core/ui/page-header';
 import { StatusLine } from '../../core/ui/status-line';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
+import { formatLoadedAt } from '../../core/loaded-at';
 
 const numberFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1 });
 const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 });
@@ -348,6 +349,7 @@ export default function MpsModule() {
               {summary && summary.models > 0 ? <>
                 <strong className="text-sm text-navy dark:text-white">{summary.models.toLocaleString('es-PY')} modelos activos</strong>
                 <Muted className="break-words">{summary.sourceName ? `${summary.sourceName} · ` : 'Incluye perfiles manuales · '}{summary.linkedEquipmentModels.toLocaleString('es-PY')} enlazados con equipos</Muted>
+                {formatLoadedAt(summary.importedAt) ? <Muted>{formatLoadedAt(summary.importedAt)}</Muted> : null}
                 {summary.batchId && summary.sourceFileId ? <Button variant="export" size="sm" className="h-auto min-h-8 w-fit max-w-full whitespace-normal py-1" asChild><a
                   href={`/api/imports/${encodeURIComponent(summary.batchId)}/files/${encodeURIComponent(summary.sourceFileId)}`}
                   download={summary.sourceName ?? undefined}

@@ -12,6 +12,7 @@ import { dialogPanel } from '../../core/dialog';
 import { Badge, type BadgeTone } from '../../core/ui/badge';
 import { Button, buttonVariants } from '../../core/ui/button';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { formatLoadedAt } from '../../core/loaded-at';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
 
 export type TravelView = 'resumen' | 'viajes' | 'rendiciones' | 'historico';
@@ -346,10 +347,12 @@ function RenditionStat({ label, value, tone }: { label: string; value: number; t
 export function TravelHistoricalView({
   summaries,
   sourceName,
+  sourceImportedAt,
   sourceBatchId,
 }: {
   summaries: HistoricalSummary[];
   sourceName: string | null;
+  sourceImportedAt: string | null;
   sourceBatchId: string | null;
 }) {
   const orderedSummaries = useMemo(() => summaries.slice().sort((left, right) => left.year - right.year), [summaries]);
@@ -388,7 +391,7 @@ export function TravelHistoricalView({
         </>
       )}
 
-      <TravelSourceArchive batchId={sourceBatchId} sourceName={sourceName} />
+      <TravelSourceArchive batchId={sourceBatchId} sourceName={sourceName} sourceImportedAt={sourceImportedAt} />
     </div>
   );
 }
@@ -504,7 +507,7 @@ function HistoricalTravelTable({ summaries }: { summaries: HistoricalSummary[] }
   );
 }
 
-function TravelSourceArchive({ batchId, sourceName }: { batchId: string | null; sourceName: string | null }) {
+function TravelSourceArchive({ batchId, sourceName, sourceImportedAt }: { batchId: string | null; sourceName: string | null; sourceImportedAt: string | null }) {
   const [sheets, setSheets] = useState<SourceSheet[]>([]);
   const [selectedSheetKey, setSelectedSheetKey] = useState('');
   const [rows, setRows] = useState<SourceRow[]>([]);
@@ -609,7 +612,7 @@ function TravelSourceArchive({ batchId, sourceName }: { batchId: string | null; 
           </a>
         </div> : null}
       />
-      <Muted className="text-sm">{batchId ? `${sheets.length} hojas disponibles desde ${sourceName ?? 'la importación local'}.` : 'Importá la planilla para consultar cada hoja y sus filas originales.'}</Muted>
+      <Muted className="text-sm">{batchId ? `${sheets.length} hojas disponibles desde ${sourceName ?? 'la importación local'}${formatLoadedAt(sourceImportedAt) ? ` · ${formatLoadedAt(sourceImportedAt)}` : ''}.` : 'Importá la planilla para consultar cada hoja y sus filas originales.'}</Muted>
       {!batchId ? <Muted className="text-sm">No hay una importación de Viáticos aplicada todavía.</Muted> : error ? <div className="rounded-xl border border-[#b42318]/30 bg-[#b42318]/5 p-4 text-sm text-[#b42318] dark:text-[#ffb0b7]" role="alert">{error}</div> : sheets.length === 0 ? <Muted className="text-sm">{loading ? 'Leyendo hojas…' : 'La importación no tiene filas de fuente disponibles.'}</Muted> : (
         <>
           <div className="flex min-w-0 gap-2 overflow-x-auto pb-1" role="list" aria-label="Hojas de la fuente">

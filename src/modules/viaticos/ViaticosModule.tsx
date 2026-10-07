@@ -486,7 +486,7 @@ export default function ViaticosModule() {
       </Card>}
 
       {activeView === 'rendiciones' && <TravelRenditionsView trips={trips} onEdit={beginEdit} onStatusChange={(trip, status) => void updateStatus(trip, status)} />}
-      {activeView === 'historico' && <TravelHistoricalView summaries={historical} sourceName={summary?.sourceName ?? null} sourceBatchId={sourceBatchId} />}
+      {activeView === 'historico' && <TravelHistoricalView summaries={historical} sourceName={summary?.sourceName ?? null} sourceImportedAt={summary?.sourceImportedAt ?? null} sourceBatchId={sourceBatchId} />}
 
       {formOpen ? (
         <TravelDrawer

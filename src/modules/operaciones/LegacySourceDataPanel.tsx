@@ -5,6 +5,7 @@ import { cn } from '../../core/cn';
 import { Badge, type BadgeTone } from '../../core/ui/badge';
 import { Button, buttonVariants } from '../../core/ui/button';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { formatLoadedAt } from '../../core/loaded-at';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
 
 type ImportBatchStatus = 'staged' | 'applied' | 'failed';
@@ -15,6 +16,7 @@ type ImportBatchSummary = {
   sourceName: string;
   sourceType: string | null;
   status: ImportBatchStatus;
+  createdAt: string;
   files: number;
   rawRows: number;
   rawSheets: number;
@@ -176,7 +178,7 @@ export default function LegacySourceDataPanel() {
                 }}
               >
                 <div className="font-bold text-navy dark:text-white">{batch.sourceName}</div>
-                <Muted>{formatImportDomain(batch.domain)} · {formatImportStatus(batch.status)}</Muted>
+                <Muted>{formatImportDomain(batch.domain)} · {formatImportStatus(batch.status)}{formatLoadedAt(batch.createdAt) ? ` · ${formatLoadedAt(batch.createdAt)}` : ''}</Muted>
                 <Muted>{numberFormat.format(batch.rawRows)} filas · {numberFormat.format(batch.rawSheets)} hojas originales</Muted>
               </button>
             ))}

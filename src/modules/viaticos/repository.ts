@@ -577,12 +577,13 @@ export class TravelRepository {
       totalCost: row.total_cost,
     }));
     const source = this.database
-      .prepare("SELECT source_name FROM import_batches WHERE domain = 'viaticos' AND status = 'applied' ORDER BY applied_at DESC, id DESC LIMIT 1")
-      .get() as { source_name: string } | undefined;
+      .prepare("SELECT source_name, created_at FROM import_batches WHERE domain = 'viaticos' AND status = 'applied' ORDER BY applied_at DESC, id DESC LIMIT 1")
+      .get() as { source_name: string; created_at: string } | undefined;
 
     return {
       operationalYear,
       sourceName: source?.source_name ?? null,
+      sourceImportedAt: source?.created_at ?? null,
       records: summary.records,
       totalCost: summary.total_cost,
       averageCost: summary.average_cost,

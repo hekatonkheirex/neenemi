@@ -28,6 +28,7 @@ import { UploadButton, ExportButton } from '../../core/ActionButtons';
 import { cn } from '../../core/cn';
 import { PageHeader } from '../../core/ui/page-header';
 import { Card, CardHeader, Eyebrow, Muted } from '../../core/ui/card';
+import { formatLoadedAt } from '../../core/loaded-at';
 import { Button } from '../../core/ui/button';
 import { Input } from '../../core/ui/input';
 import { Badge, type BadgeTone } from '../../core/ui/badge';
@@ -55,6 +56,7 @@ type ImportBatchSummary = {
   sourceName: string;
   sourceType: string | null;
   status: 'staged' | 'applied' | 'failed';
+  createdAt: string;
   files: number;
   rawRows: number;
   rawSheets: number;
@@ -140,7 +142,7 @@ function DiscontinuationSourceCard({
           {!loadingBatches && !sourceBatchesError && loadedBatches.length === 0 ? <span>Sin archivo cargado</span> : null}
           {!loadingBatches && !sourceBatchesError && loadedBatches.length > 0 ? (
             <ul className="m-0 grid list-none gap-1 p-0">
-              {loadedBatches.map((batch) => <li className="flex min-w-0 items-center gap-1.5 text-[#14532d] before:content-none dark:text-[#9be3b9]" key={batch.id} title={batch.sourceName}><Check className="shrink-0" size={14} strokeWidth={2.5} aria-hidden="true" /><span className="min-w-0 truncate font-semibold">{batch.sourceName}</span></li>)}
+              {loadedBatches.map((batch) => <li className="flex min-w-0 items-center gap-1.5 text-[#14532d] before:content-none dark:text-[#9be3b9]" key={batch.id} title={batch.sourceName}><Check className="shrink-0" size={14} strokeWidth={2.5} aria-hidden="true" /><span className="min-w-0 truncate font-semibold">{batch.sourceName}</span>{formatLoadedAt(batch.createdAt) ? <span className="shrink-0 text-xs font-normal">{formatLoadedAt(batch.createdAt)}</span> : null}</li>)}
             </ul>
           ) : null}
         </SourceFact>

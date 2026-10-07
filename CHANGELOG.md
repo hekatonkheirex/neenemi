@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.81 · 2026-10-07
+
+Fecha y hora de carga junto al nombre del archivo en las secciones de carga. Se ve en Expedientes técnicos, MPS, Descontinuador (fuentes y archivos originales), Proformas (contrato abierto y planillas de consumibles y repuestos), Listado de precios, Viáticos (fuente histórica), Cobertura, SLA y Selector de software. Formato «Cargado el 07/10/2026, 14:32». Consumibles no muestra el nombre del archivo cargado, así que no cambia.
+
 ## 0.1.80 · 2026-10-07
 
 Indicador de actividad en exportaciones, impresiones y cargas. Los botones de exportar, cargar e «Imprimir / PDF» muestran un spinner y el texto «Exportando…», «Importando…», «Leyendo…» o «Preparando…» mientras trabajan, y no admiten un segundo clic hasta terminar. Antes solo cambiaba el texto en algunos botones; ahora lo hacen también Listado de precios, Proformas, uniFLOW, Expedientes técnicos (XLSX por panel y PDF), SLA, Selector de software y Cobertura. El spinner no gira si el sistema pide reducir el movimiento. Corrige el nombre del origen del XLSX de Expedientes técnicos: «SGS - Evolución de Copias - Rankings».

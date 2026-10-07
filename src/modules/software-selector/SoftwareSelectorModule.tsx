@@ -23,6 +23,7 @@ import { cn } from '../../core/cn';
 import { Badge } from '../../core/ui/badge';
 import { Button } from '../../core/ui/button';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { formatLoadedAt } from '../../core/loaded-at';
 import { Input } from '../../core/ui/input';
 import { PageHeader } from '../../core/ui/page-header';
 import { StatusLine } from '../../core/ui/status-line';
@@ -364,7 +365,7 @@ export default function SoftwareSelectorModule() {
                 <Button type="submit" id="btn-ai" className="ml-auto max-[720px]:ml-0" disabled={analyzing || !text.trim()}><Sparkles />Analizar con IA</Button>
               </div>
               <Muted className="break-words leading-relaxed">
-                Fuente actual: {fileName}. PDF y DOCX se extraen localmente. El análisis local busca expresiones técnicas conocidas y guarda el resultado en SQLite; el análisis con IA envía el texto a OpenRouter.
+                Fuente actual: {fileName}{analysis && analysis.fileName === fileName && formatLoadedAt(analysis.analyzedAt) ? ` (${formatLoadedAt(analysis.analyzedAt)})` : ''}. PDF y DOCX se extraen localmente. El análisis local busca expresiones técnicas conocidas y guarda el resultado en SQLite; el análisis con IA envía el texto a OpenRouter.
               </Muted>
             </form>
           </Card>

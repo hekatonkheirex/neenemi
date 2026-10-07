@@ -23,6 +23,7 @@ import { cn } from '../../core/cn';
 import { toFileSafeName } from './file-name';
 import { PageHeader } from '../../core/ui/page-header';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { formatLoadedAt } from '../../core/loaded-at';
 import { Button, buttonVariants } from '../../core/ui/button';
 import { Input } from '../../core/ui/input';
 import { Badge, type BadgeTone } from '../../core/ui/badge';
@@ -407,6 +408,7 @@ export default function MantenimientoModule() {
             <Muted className="text-sm">{maintenanceSummary?.batchId
               ? `${maintenanceSummary.records.toLocaleString('es-PY')} lecturas · ${maintenanceSummary.equipment.toLocaleString('es-PY')} equipos · ${maintenanceSummary.matchedRecords.toLocaleString('es-PY')} reglas reconocidas`
               : 'El archivo cargado se conserva y se normaliza en la base local.'}</Muted>
+            {formatLoadedAt(maintenanceSummary?.importedAt) ? <Muted className="text-sm">{formatLoadedAt(maintenanceSummary?.importedAt)}</Muted> : null}
             <Muted>Origen del XLSX: <code>Superset &gt; SGS - Evolución de Copias - Rankings</code></Muted>
           </div>
           <div

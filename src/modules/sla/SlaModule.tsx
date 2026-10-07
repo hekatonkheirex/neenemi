@@ -13,6 +13,7 @@ import { cn } from '../../core/cn';
 import { Badge, type BadgeTone } from '../../core/ui/badge';
 import { Button } from '../../core/ui/button';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { formatLoadedAt } from '../../core/loaded-at';
 import { PageHeader } from '../../core/ui/page-header';
 import { StatusLine } from '../../core/ui/status-line';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
@@ -295,7 +296,7 @@ export function SlaResults({ analysis, statusCounts }: { analysis: SlaAnalysis; 
   return (
     <div className="grid gap-5">
       <section aria-label="Resumen de cumplimiento SLA" className="grid gap-3 min-[640px]:grid-cols-2 min-[1101px]:grid-cols-4">
-        <Stat label="Cumplimiento estimado" value={percentage.format(analysis.complianceScore / 100)} note={analysis.fileName} />
+        <Stat label="Cumplimiento estimado" value={percentage.format(analysis.complianceScore / 100)} note={[analysis.fileName, formatLoadedAt(analysis.analyzedAt)].filter(Boolean).join(' · ')} />
         <Stat label="Riesgo general" value={riskLabel(analysis.overallRisk)} note={`${analysis.items.length} cláusulas revisadas`} tone={riskTone[analysis.overallRisk]} />
         <Stat label="Brechas" value={statusCounts.gap} note="requieren aclaración" />
         <Stat label="Parciales" value={statusCounts.partial} note="requieren condición" />

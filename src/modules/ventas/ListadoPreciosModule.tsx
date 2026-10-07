@@ -18,6 +18,7 @@ import { Check, Minus, RotateCcw, Save } from 'lucide-react';
 import { Button } from '../../core/ui/button';
 import { Badge } from '../../core/ui/badge';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
+import { formatLoadedAt } from '../../core/loaded-at';
 import { Input } from '../../core/ui/input';
 import { PageHeader } from '../../core/ui/page-header';
 import { StatusLine } from '../../core/ui/status-line';
@@ -493,6 +494,7 @@ export default function ListadoPreciosModule() {
         <StatusLine state={error ? 'error' : savingSelection || loading || legacyCatalogLoading || importingCatalog || restoringSeed ? 'pending' : 'ready'}>
           <div className="[overflow-wrap:anywhere]">{error || (savingSelection ? 'Guardando selección…' : message || (loading || legacyCatalogLoading ? 'Consultando catálogo…' : `${numberFormat.format(displayedItems.length)} precios y ${numberFormat.format(displayedServiceItems.length)} opciones visibles${selectedFamily?.exchangeRate ? ` · T.C. ${numberFormat.format(selectedFamily.exchangeRate)} de ${selectedFamily.familyName}` : ''}`))}</div>
         </StatusLine>
+        {sourceFile && formatLoadedAt(sourceFile.updatedAt) ? <Muted className="mb-4 text-sm">{sourceFile.fileName} · {formatLoadedAt(sourceFile.updatedAt)}</Muted> : null}
         {sourceFile && <Button variant="export" size="sm" className="mb-4" asChild><a href={`/api/imports/${encodeURIComponent(sourceFile.batchId)}/files/${encodeURIComponent(sourceFile.fileId)}`} download={sourceFile.fileName}><DownloadIcon />Descargar original</a></Button>}
       </div>
       <div className="grid min-w-0 gap-6">
