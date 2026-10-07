@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.2.0 · 2026-10-07
+
+Inicio pasa a ser el tablero general con los gráficos de Mantenimiento, Consumibles y Control de viáticos, y los respaldos se mueven a Configuración. Esta versión cierra esa serie de ajustes (0.1.95 a 0.1.100) sin cambios funcionales nuevos.
+
 ## 0.1.100 · 2026-10-07
 
 El gráfico «Estado del parque» de Inicio queda centrado en su tarjeta: etiquetas y barras ocupan el ancho disponible sin el hueco de la izquierda y las filas se reparten por igual arriba y abajo.
