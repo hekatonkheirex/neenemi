@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { SuiteDatabase } from '../../db/database';
+import { MAX_LIST_LIMIT } from '../../core/list-limit';
 import { DEFAULT_TRAVEL_COST_CATALOG } from './catalog';
 import {
   createTravelIdentityKey,
@@ -505,7 +506,7 @@ export class TravelRepository {
       )`);
       parameters.push(value, value, value, value, value, value, value);
     }
-    const limit = Number.isInteger(query.limit) ? Math.max(1, Math.min(10000, query.limit as number)) : undefined;
+    const limit = Number.isInteger(query.limit) ? Math.max(1, Math.min(MAX_LIST_LIMIT, query.limit as number)) : undefined;
     if (limit !== undefined) parameters.push(limit);
     const rows = this.database.prepare(`
       SELECT *

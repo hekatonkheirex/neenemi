@@ -4,6 +4,7 @@ import type { SuiteDatabase } from '../../db/database';
 import { ImportRepository } from '../../db/repositories';
 import { restoreArchivedImportFiles, type ArchivedImportFile } from '../../core/import-storage';
 import { archiveBatchImportFiles, storeSpreadsheetImport } from '../../core/import-routes';
+import { MAX_LIST_LIMIT } from '../../core/list-limit';
 import { parseListLimit, parseOperationalFilters, parsePageRequest } from '../../core/request-parsing';
 import { decodeBase64, isNonEmptyString, isRecord, queryString } from '../../core/validation';
 import { ServiceRepository } from './repository';
@@ -41,7 +42,7 @@ export function registerServiceRoutes(app: Express, database: SuiteDatabase, dat
     }
     const limit = parseListLimit(request.query.limit);
     if (limit === null) {
-      response.status(400).json({ error: 'limit debe ser un entero entre 1 y 10000.' });
+      response.status(400).json({ error: `limit debe ser un entero entre 1 y ${MAX_LIST_LIMIT}.` });
       return;
     }
     response.json(services.list({ ...query, limit }));

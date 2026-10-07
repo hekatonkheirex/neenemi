@@ -115,6 +115,32 @@ describe('ServiceRepository', () => {
     expect(repository.list({ query: 'sucursal norte', limit: 10 })).toHaveLength(1);
   });
 
+  it('lists more than 10 000 services when asked, so analysis views keep the oldest months', () => {
+    const database = makeTemporaryDatabase();
+    const operations = new OperationsRepository(database);
+    const customer = operations.saveCustomer({ name: 'Cliente Historial', customerType: 'Publico', commercialArea: 'Strategic' });
+    operations.saveContract({
+      customerId: customer.id,
+      reference: 'OV-HISTORY',
+      contractType: 'Mantenimiento',
+      equipment: [{ modelLabel: 'iR ADV C3325i', serialNumber: 'SER-HISTORY' }],
+    });
+    const batchId = new ImportRepository(database).createBatch({ domain: 'services', sourceName: 'Historial.xlsx' });
+    const repository = new ServiceRepository(database);
+    const rows = Array.from({ length: 10500 }, (_, index) => makeRow({
+      serialNumber: 'SER-HISTORY',
+      serviceNumber: 100000 + index,
+      month: index === 0 ? '2024-01' : '2026-06',
+      recordedAt: index === 0 ? '2024-01-02' : '2026-06-01',
+    }));
+
+    repository.importRows(batchId, 'Historial.xlsx', rows);
+
+    const listed = repository.list({ limit: 100000 });
+    expect(listed).toHaveLength(10500);
+    expect(listed.some((record) => record.month === '2024-01')).toBe(true);
+  });
+
   it('applies the shared operational filters to service history', () => {
     const database = makeTemporaryDatabase();
     const operations = new OperationsRepository(database);

@@ -4,8 +4,8 @@ import { parseListLimit, parseOperationalFilters, parsePageRequest, parsePositiv
 describe('request parsing', () => {
   it('parses list limits with a default and bounds', () => {
     expect(parseListLimit(undefined)).toBe(500);
-    expect(parseListLimit('10000')).toBe(10000);
-    expect([parseListLimit('0'), parseListLimit('10001'), parseListLimit('1.5'), parseListLimit(5)]).toEqual([null, null, null, null]);
+    expect(parseListLimit('100000')).toBe(100000);
+    expect([parseListLimit('0'), parseListLimit('100001'), parseListLimit('1.5'), parseListLimit(5)]).toEqual([null, null, null, null]);
   });
 
   it('parses page requests with defaults and caps', () => {

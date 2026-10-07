@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { SuiteDatabase } from '../../db/database';
+import { MAX_LIST_LIMIT } from '../../core/list-limit';
 import { buildOperationalFilter, type OperationalFilters } from '../../core/operational-filters';
 import type { PageRequest, PaginatedResult } from '../../core/pagination';
 import { parseSourceDetails, serializeSourceDetails, type SourceDetail } from '../../core/source-details';
@@ -276,7 +277,7 @@ export class ServiceRepository {
 
   list(query: ServiceQuery = {}): ServiceRecord[] {
     const { conditions, parameters } = buildServiceRecordFilter(query);
-    const limit = Number.isInteger(query.limit) ? Math.max(1, Math.min(10000, query.limit!)) : 500;
+    const limit = Number.isInteger(query.limit) ? Math.max(1, Math.min(MAX_LIST_LIMIT, query.limit!)) : 500;
     const offset = Number.isInteger(query.offset) ? Math.max(0, query.offset!) : 0;
     parameters.push(limit, offset);
     const rows = this.database

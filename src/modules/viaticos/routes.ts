@@ -4,6 +4,7 @@ import type { SuiteDatabase } from '../../db/database';
 import { ImportRepository } from '../../db/repositories';
 import { archiveImportFiles, restoreArchivedImportFiles } from '../../core/import-storage';
 import { archiveBatchImportFiles, storeSpreadsheetImport } from '../../core/import-routes';
+import { MAX_LIST_LIMIT } from '../../core/list-limit';
 import { parseListLimit } from '../../core/request-parsing';
 import { decodeBase64, isNonEmptyString, isNonNegativeInteger, isNonNegativeNumber, isPositiveInteger, isRecord, queryString } from '../../core/validation';
 import { estimateTravelCosts } from './catalog';
@@ -102,7 +103,7 @@ export function registerTravelRoutes(app: Express, database: SuiteDatabase, data
   app.get('/api/travel/trips', (request, response) => {
     const limit = request.query.limit === undefined ? undefined : parseListLimit(request.query.limit);
     if (limit === null) {
-      response.status(400).json({ error: 'limit debe ser un entero entre 1 y 10000.' });
+      response.status(400).json({ error: `limit debe ser un entero entre 1 y ${MAX_LIST_LIMIT}.` });
       return;
     }
     const status = parseTravelStatus(request.query.status);

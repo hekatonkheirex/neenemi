@@ -11,6 +11,7 @@ import { CONSUMABLES_SOURCE_TYPES, type ConsumablesRecordKind, type ConsumablesS
 import { archiveBatchImportFiles, enqueueImportJob, storeSpreadsheetImport } from '../../core/import-routes';
 import { createHash } from 'node:crypto';
 import { decodeBase64, isNonEmptyString, isRecord, queryString } from '../../core/validation';
+import { MAX_LIST_LIMIT } from '../../core/list-limit';
 import { parseListLimit, parseOperationalFilters, parsePageRequest } from '../../core/request-parsing';
 
 function parseConsumablesSourceType(value: unknown): ConsumablesSourceType | null {
@@ -85,7 +86,7 @@ export function registerConsumablesRoutes(app: Express, database: SuiteDatabase,
     }
     const limit = parseListLimit(request.query.limit);
     if (limit === null) {
-      response.status(400).json({ error: 'limit debe ser un entero entre 1 y 10000.' });
+      response.status(400).json({ error: `limit debe ser un entero entre 1 y ${MAX_LIST_LIMIT}.` });
       return;
     }
     response.json(consumables.listOutputs({ ...query, limit }));
@@ -118,7 +119,7 @@ export function registerConsumablesRoutes(app: Express, database: SuiteDatabase,
     }
     const limit = parseListLimit(request.query.limit);
     if (limit === null) {
-      response.status(400).json({ error: 'limit debe ser un entero entre 1 y 10000.' });
+      response.status(400).json({ error: `limit debe ser un entero entre 1 y ${MAX_LIST_LIMIT}.` });
       return;
     }
     response.json(consumables.listRecords({ ...query, limit }));

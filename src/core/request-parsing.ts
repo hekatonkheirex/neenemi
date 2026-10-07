@@ -1,5 +1,6 @@
 import type { OperationalFilters } from './operational-filters';
 import { isRecord, queryString } from './validation';
+import { MAX_LIST_LIMIT } from './list-limit';
 
 export function parseOperationalFilters(value: unknown): OperationalFilters {
   if (!isRecord(value)) return {};
@@ -17,7 +18,7 @@ export function parseListLimit(value: unknown): number | null {
   if (value === undefined) return 500;
   if (typeof value !== 'string' || !/^\d+$/.test(value)) return null;
   const limit = Number(value);
-  return Number.isInteger(limit) && limit >= 1 && limit <= 10000 ? limit : null;
+  return Number.isInteger(limit) && limit >= 1 && limit <= MAX_LIST_LIMIT ? limit : null;
 }
 
 

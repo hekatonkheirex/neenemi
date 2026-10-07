@@ -18,6 +18,7 @@ import type {
 import { PYG_USD_RATE_DATE, usdToPyg } from './analysis';
 import { submitImportJob } from '../../core/import-job-client';
 import type { OperationalFilters } from '../../core/operational-filters';
+import { MAX_LIST_LIMIT } from '../../core/list-limit';
 import PaginationControls from '../../core/PaginationControls';
 import { buildPaginatedUrl, type PaginatedResult } from '../../core/pagination';
 import { usePagedList } from '../../core/usePagedList';
@@ -263,15 +264,15 @@ export default function ConsumiblesModule() {
     setAnalysisLoading(true);
     const requests: Promise<unknown>[] = [
       needsRecords
-        ? fetch(withQuery('/api/consumables/records', filterQuery, 10000), { signal: controller.signal })
+        ? fetch(withQuery('/api/consumables/records', filterQuery, MAX_LIST_LIMIT), { signal: controller.signal })
           .then((response) => readJson<ConsumablesRecord[]>(response))
         : Promise.resolve([] as ConsumablesRecord[]),
       needsOutputs
-        ? fetch(withQuery('/api/consumables/outputs', filterQuery, 10000), { signal: controller.signal })
+        ? fetch(withQuery('/api/consumables/outputs', filterQuery, MAX_LIST_LIMIT), { signal: controller.signal })
           .then((response) => readJson<ConsumablesOutputRecord[]>(response))
         : Promise.resolve([] as ConsumablesOutputRecord[]),
       needsServices
-        ? fetch(withQuery('/api/services/records', filterQuery, 10000), { signal: controller.signal })
+        ? fetch(withQuery('/api/services/records', filterQuery, MAX_LIST_LIMIT), { signal: controller.signal })
           .then((response) => readJson<ServiceRecord[]>(response))
         : Promise.resolve([] as ServiceRecord[]),
     ];
