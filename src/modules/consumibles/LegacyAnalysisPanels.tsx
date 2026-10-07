@@ -608,7 +608,7 @@ function DetailRow({ colSpan, children }: { colSpan: number; children: ReactNode
 }
 
 function SwapFlag() {
-  return <span className="inline-grid size-5 place-items-center rounded-full bg-[#e08a00] text-xs font-extrabold text-navy" title="Posible reemplazo: compatible seguido de original en tres días" aria-label="Posible reemplazo detectado">!</span>;
+  return <span className="inline-grid size-5 place-items-center rounded-full bg-status-warn text-xs font-extrabold text-navy" title="Posible reemplazo: compatible seguido de original en tres días" aria-label="Posible reemplazo detectado">!</span>;
 }
 
 function TimelineEvent({ children }: { children: ReactNode }) {
@@ -672,7 +672,7 @@ function SummaryMetric({ value, label }: { value: string; label: string }) {
 
 /** Lectura destacada de una vista (en amarillo cuando es una alerta de revisión). */
 function Note({ children, label, warning = false }: { children: ReactNode; label: string; warning?: boolean }) {
-  return <section className={cn('rounded-xl border p-4 text-sm leading-relaxed text-ink-2 dark:text-[#d6e2f5]', warning ? 'border-[#e08a00]/40 bg-[#e08a00]/10' : 'border-sky/40 bg-sky/10')} aria-label={label}>{children}</section>;
+  return <section className={cn('rounded-xl border p-4 text-sm leading-relaxed text-ink-2 dark:text-[#d6e2f5]', warning ? 'border-status-warn/40 bg-status-warn/10' : 'border-sky/40 bg-sky/10')} aria-label={label}>{children}</section>;
 }
 
 function Sub({ children, className }: { children: ReactNode; className?: string }) {

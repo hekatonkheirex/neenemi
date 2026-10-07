@@ -142,7 +142,7 @@ function DiscontinuationSourceCard({
           {!loadingBatches && !sourceBatchesError && loadedBatches.length === 0 ? <span>Sin archivo cargado</span> : null}
           {!loadingBatches && !sourceBatchesError && loadedBatches.length > 0 ? (
             <ul className="m-0 grid list-none gap-1 p-0">
-              {loadedBatches.map((batch) => <li className="flex min-w-0 items-center gap-1.5 text-[#14532d] before:content-none dark:text-[#9be3b9]" key={batch.id} title={batch.sourceName}><Check className="shrink-0" size={14} strokeWidth={2.5} aria-hidden="true" /><span className="min-w-0 truncate font-semibold">{batch.sourceName}</span>{formatLoadedAt(batch.createdAt) ? <span className="shrink-0 text-xs font-normal">{formatLoadedAt(batch.createdAt)}</span> : null}</li>)}
+              {loadedBatches.map((batch) => <li className="flex min-w-0 items-center gap-1.5 text-status-ok-ink before:content-none dark:text-status-ok-ink-dark" key={batch.id} title={batch.sourceName}><Check className="shrink-0" size={14} strokeWidth={2.5} aria-hidden="true" /><span className="min-w-0 truncate font-semibold">{batch.sourceName}</span>{formatLoadedAt(batch.createdAt) ? <span className="shrink-0 text-xs font-normal">{formatLoadedAt(batch.createdAt)}</span> : null}</li>)}
             </ul>
           ) : null}
         </SourceFact>
@@ -819,7 +819,7 @@ export default function DescontinuadorModule() {
         <Table className="min-w-[52rem] [overflow-wrap:normal]">
           <TableHeader><TableRow><TableHead>Modelo</TableHead><TableHead>Código de parte</TableHead><TableHead>Tensión</TableHead><TableHead>Fecha fin</TableHead><TableHead>Equipos instalados</TableHead><TableHead>Notas de fuente</TableHead><TableHead>Estado</TableHead></TableRow></TableHeader>
           <TableBody>
-            {pagedModelItems.items.map((item) => <TableRow key={item.id} className={item.status === 'discontinued' ? 'bg-[#d92d20]/5' : undefined}>
+            {pagedModelItems.items.map((item) => <TableRow key={item.id} className={item.status === 'discontinued' ? 'bg-status-danger/5' : undefined}>
               <TableCell className="min-w-[10rem]"><div className="font-mono text-xs font-semibold text-navy dark:text-white">{item.modelLabel}</div><Muted className="mt-1" title={item.sourceLabel ?? item.sourceName}>{item.sourceLabel ?? item.sourceName}</Muted></TableCell>
               <TableCell>{item.partCode || <Muted>Sin código</Muted>}</TableCell>
               <TableCell>{item.voltage || <Muted>Sin dato</Muted>}</TableCell>
@@ -944,10 +944,10 @@ function stockStatusTone(status: WaldbottStockRecord['canonStatus']): BadgeTone 
 }
 
 function HeaderMetric({ value, label, tone }: { value: string; label: string; tone?: 'danger' }) {
-  return <div className={cn('grid min-w-36 gap-0.5 rounded-xl border border-navy/10 bg-white px-4 py-3 shadow-md dark:border-sky/20 dark:bg-panel', tone === 'danger' && 'border-l-4 border-l-[#d92d20]!')}><div className={cn('text-3xl font-bold tabular-nums', tone === 'danger' ? 'text-[#912018] dark:text-[#ff8a93]' : 'text-navy dark:text-white')}>{value}</div><Muted>{label}</Muted></div>;
+  return <div className={cn('grid min-w-36 gap-0.5 rounded-xl border border-navy/10 bg-white px-4 py-3 shadow-md dark:border-sky/20 dark:bg-panel', tone === 'danger' && 'border-l-4 border-l-status-danger!')}><div className={cn('text-3xl font-bold tabular-nums', tone === 'danger' ? 'text-status-danger-ink dark:text-[#ff8a93]' : 'text-navy dark:text-white')}>{value}</div><Muted>{label}</Muted></div>;
 }
 
-const statTone = { danger: 'border-l-[#d92d20]', warning: 'border-l-[#e08a00]' } as const;
+const statTone = { danger: 'border-l-status-danger', warning: 'border-l-status-warn' } as const;
 
 function Stat({ label, value, tone }: { label: string; value: string; tone?: keyof typeof statTone }) {
   return <div className={cn(subCardClass, 'grid gap-1 p-3', tone && `border-l-4 ${statTone[tone]}`)}><Muted>{label}</Muted><div className="text-2xl font-bold tabular-nums text-navy dark:text-white">{value}</div></div>;

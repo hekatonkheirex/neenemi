@@ -131,7 +131,7 @@ export default function SourceDataPanel({ onImportBundle, onBundleFilesChange, o
       </div>
 
       {error ? <div className="rounded-xl border border-[#b42318]/30 bg-[#b42318]/5 p-4 text-sm text-[#b42318] dark:text-[#ffb0b7]" role="alert">{error}</div> : null}
-      {reindexMessage ? <div className="rounded-xl border border-[#2f8f5b]/40 bg-[#2f8f5b]/10 p-4 text-sm text-[#14532d] dark:text-[#9be3b9]" role="status">{reindexMessage}</div> : null}
+      {reindexMessage ? <div className="rounded-xl border border-status-ok/40 bg-status-ok/10 p-4 text-sm text-status-ok-ink dark:text-status-ok-ink-dark" role="status">{reindexMessage}</div> : null}
 
       <div className="border-t border-navy/10 pt-4 dark:border-sky/20">
         <ConsumablesBundlePanel

@@ -32,10 +32,20 @@ describe('tokens de estado', () => {
     expect(ratio(token(`status-${tone}-ink-dark`), over(accent, '#0e1b31', 0.15))).toBeGreaterThanOrEqual(4.5);
   });
 
-  it('Configuración y Badge usan los tokens, no hex de estado sueltos', () => {
+  // Colores de datos (series de un gráfico junto a colores que no son de estado): se quedan en hex.
+  const dataColorFiles = ['src/modules/mantenimiento/DashboardMaintenanceChart.tsx'];
+
+  it('ningún componente pega un hex de estado en una clase: usan los tokens', () => {
     const status = /#(d92d20|e08a00|2f8f5b|912018|14532d|7a4a00|ffb4ab|9be3b9|ffd28a|6b7a90)/i;
-    for (const file of ['src/app/DatabaseRecoveryPanel.tsx', 'src/app/ImportArchivePanel.tsx', 'src/core/ui/badge.tsx']) {
-      expect(fs.readFileSync(file, 'utf8'), file).not.toMatch(status);
-    }
+    const walk = (dir: string): string[] => fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+      const path = `${dir}/${entry.name}`;
+      return entry.isDirectory() ? walk(path) : /\.tsx?$/.test(entry.name) && !/\.test\./.test(entry.name) ? [path] : [];
+    });
+    const offenders = walk('src').filter((file) => !dataColorFiles.includes(file) && status.test(fs.readFileSync(file, 'utf8')));
+    expect(offenders).toEqual([]);
+  });
+
+  it('las excepciones siguen necesitándolo (si no, sácalas de la lista)', () => {
+    for (const file of dataColorFiles) expect(fs.readFileSync(file, 'utf8')).toMatch(/#(d92d20|e08a00|2f8f5b)/i);
   });
 });

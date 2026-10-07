@@ -775,7 +775,7 @@ export default function ProformasModule() {
                         </div>
                       ) : null}
                     </TableCell>
-                    <TableCell className="min-w-[12rem]">{line.part ? <><div className="font-semibold text-navy dark:text-white">{line.part.description || 'Sin descripción'}</div>{line.part.group ? <Muted className="mt-1">{line.part.group}</Muted> : null}</> : line.code ? <span className="font-semibold text-[#912018] dark:text-[#ffb4ab]">Código no encontrado</span> : <Muted>La descripción aparecerá aquí</Muted>}</TableCell>
+                    <TableCell className="min-w-[12rem]">{line.part ? <><div className="font-semibold text-navy dark:text-white">{line.part.description || 'Sin descripción'}</div>{line.part.group ? <Muted className="mt-1">{line.part.group}</Muted> : null}</> : line.code ? <span className="font-semibold text-status-danger-ink dark:text-status-danger-ink-dark">Código no encontrado</span> : <Muted>La descripción aparecerá aquí</Muted>}</TableCell>
                     <TableCell className="min-w-[10rem]">
                       {line.part ? (
                         <div className="grid justify-items-start gap-1">

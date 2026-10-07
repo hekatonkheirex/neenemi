@@ -191,8 +191,8 @@ export default function TrackingModule() {
         <Muted>CSV UTF-8 o XLSX · máximo 18 MB por archivo · horas locales literales de SGS, sin convertir de zona horaria.</Muted>
       </div>
     </Card>
-    {error && <Card className={`${cardClass} border-[#d92d20]/30`} role="alert">
-      <div className="text-sm text-[#912018] dark:text-[#ffb4ab]">{error}</div>
+    {error && <Card className={`${cardClass} border-status-danger/30`} role="alert">
+      <div className="text-sm text-status-danger-ink dark:text-status-danger-ink-dark">{error}</div>
       <div><Button variant="outline" disabled={busy} onClick={() => { setLoading(true); fetchState('/api/tracking').then(value => { setState(value); setError(''); }).catch(err => setError(err.message)).finally(() => setLoading(false)); }}>Reintentar consulta</Button></div>
     </Card>}
     {notice && <StatusLine state="ready"><div className="[overflow-wrap:anywhere]">{notice}</div></StatusLine>}
@@ -209,7 +209,7 @@ export default function TrackingModule() {
         <div className="min-w-0 border-t border-navy/10 pt-4 dark:border-sky/20">
           <div className="font-semibold text-navy dark:text-white">{snapshot.reportFile} + {snapshot.geolocationFile}</div>
           <Muted className="mt-2">Carga: {new Date(snapshot.importedAt).toLocaleString('es-PY')} · {snapshot.reports.length} filas de informes</Muted>
-          {snapshot.warnings.length > 0 && <ul className="mt-3 grid gap-2 pl-5 text-sm text-[#7a4a00] dark:text-[#ffd28a] list-disc">{snapshot.warnings.map(warning => <li key={warning}>{warning}</li>)}</ul>}
+          {snapshot.warnings.length > 0 && <ul className="mt-3 grid gap-2 pl-5 text-sm text-status-warn-ink dark:text-status-warn-ink-dark list-disc">{snapshot.warnings.map(warning => <li key={warning}>{warning}</li>)}</ul>}
         </div>
       </Card>
       <Card className={cardClass} aria-label="Filtros de recorrido">
@@ -220,8 +220,8 @@ export default function TrackingModule() {
           <label className="flex min-h-10 min-w-0 items-center gap-2 text-sm text-navy dark:text-white"><input className="size-4 shrink-0 accent-sky" type="checkbox" checked={onsiteOnly} disabled={busy} onChange={e => setOnsiteOnly(e.target.checked)} /> Sólo servicios en sitio</label>
         </div>
       </Card>
-      {!onsiteOnly && <Card className={`${cardClass} border-[#e08a00]/30`}><Muted className="text-sm">Incluye servicios remotos, internos, de taller o sin tipo. Sus puntos no demuestran desplazamientos a clientes.</Muted></Card>}
-      {analysis.suspectVisitKeys.length > 0 && <Card className={`${cardClass} border-[#d92d20]/30`} role="alert"><div className="text-sm text-[#912018] dark:text-[#ffb4ab]">GPS dudoso en {analysis.suspectVisitKeys.length} servicio(s): {analysis.visits.filter(v => analysis.suspectVisitKeys.includes(v.key)).map(v => `I.S. ${v.reportId}`).join(', ')}. Su entrada y su salida están a más de 5 km entre sí, por lo que no describen un solo lugar (marcación remota o ubicación errónea). Los tramos entre marcaciones de servicios dudosos se muestran en rojo discontinuo; los que tocan solo uno se dibujan normales. Esas rutas rojas y su distancia no son confiables.</div></Card>}
+      {!onsiteOnly && <Card className={`${cardClass} border-status-warn/30`}><Muted className="text-sm">Incluye servicios remotos, internos, de taller o sin tipo. Sus puntos no demuestran desplazamientos a clientes.</Muted></Card>}
+      {analysis.suspectVisitKeys.length > 0 && <Card className={`${cardClass} border-status-danger/30`} role="alert"><div className="text-sm text-status-danger-ink dark:text-status-danger-ink-dark">GPS dudoso en {analysis.suspectVisitKeys.length} servicio(s): {analysis.visits.filter(v => analysis.suspectVisitKeys.includes(v.key)).map(v => `I.S. ${v.reportId}`).join(', ')}. Su entrada y su salida están a más de 5 km entre sí, por lo que no describen un solo lugar (marcación remota o ubicación errónea). Los tramos entre marcaciones de servicios dudosos se muestran en rojo discontinuo; los que tocan solo uno se dibujan normales. Esas rutas rojas y su distancia no son confiables.</div></Card>}
       <div className="min-w-0">
         <div className="grid min-w-0 grid-cols-1 items-start gap-4 min-[1201px]:grid-cols-[minmax(0,1fr)_19rem]">
           <div className="min-w-0">

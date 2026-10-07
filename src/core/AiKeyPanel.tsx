@@ -83,8 +83,8 @@ export default function AiKeyPanel() {
           <div
             role={message.kind === 'error' ? 'alert' : 'status'}
             className={cn('rounded-xl border px-4 py-2.5 text-sm', message.kind === 'error'
-              ? 'border-[#d92d20]/40 bg-[#d92d20]/10 text-[#912018] dark:text-[#ffb4ab]'
-              : 'border-[#2f8f5b]/40 bg-[#2f8f5b]/10 text-[#14532d] dark:text-[#9be3b9]')}
+              ? 'border-status-danger/40 bg-status-danger/10 text-status-danger-ink dark:text-status-danger-ink-dark'
+              : 'border-status-ok/40 bg-status-ok/10 text-status-ok-ink dark:text-status-ok-ink-dark')}
           >
             {message.text}
           </div>

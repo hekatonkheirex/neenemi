@@ -493,7 +493,7 @@ export default function SoftwareSelectorModule() {
             <CardHeader eyebrow="REVISIÓN" title="Requisitos sin cobertura" aside={<Badge tone={gaps.length > 0 ? 'warning' : 'neutral'}>{gaps.length}</Badge>} />
             {gaps.length > 0 ? (
               <div className="grid gap-2">
-                {gaps.map((feature) => <div className="rounded-xl border border-[#e08a00]/30 bg-[#e08a00]/10 p-3 text-sm text-[#7a4a00] dark:text-[#ffd28a]" key={feature.id}>{feature.label}</div>)}
+                {gaps.map((feature) => <div className="rounded-xl border border-status-warn/30 bg-status-warn/10 p-3 text-sm text-status-warn-ink dark:text-status-warn-ink-dark" key={feature.id}>{feature.label}</div>)}
               </div>
             ) : (
               <Muted className="leading-relaxed">No hay requisitos seleccionados que queden sin cobertura en las cuatro opciones de la matriz.</Muted>

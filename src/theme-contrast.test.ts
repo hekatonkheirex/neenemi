@@ -37,7 +37,7 @@ describe('contraste del tema claro', () => {
   it('botones por intencion (cargar celeste, exportar verde): texto >= 4,5:1 en los dos temas', () => {
     // Colores de src/core/ui/button.tsx (variantes upload y export) sobre su fondo: acento al 10 % sobre blanco o sobre #0e1b31.
     const button = fs.readFileSync('src/core/ui/button.tsx', 'utf8');
-    for (const token of ['text-[#00587a]!', 'dark:text-[#8bd6f2]!', 'text-[#14532d]!', 'dark:text-[#86e0b0]!']) expect(button).toContain(token);
+    for (const token of ['text-[#00587a]!', 'dark:text-[#8bd6f2]!', 'text-status-ok-ink!', 'dark:text-[#86e0b0]!']) expect(button).toContain(token);
     expect(ratio('#8bd6f2', '#0d2942')).toBeGreaterThanOrEqual(4.5);   // oscuro: cargar
     expect(ratio('#86e0b0', '#112735')).toBeGreaterThanOrEqual(4.5);   // oscuro: exportar
     expect(ratio('#00587a', '#e6f6fc')).toBeGreaterThanOrEqual(4.5);   // claro: cargar

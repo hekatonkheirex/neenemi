@@ -53,8 +53,8 @@ describe('SlaResults', () => {
   });
 
   it('el riesgo tiñe su tarjeta sin conservar el fondo base (que ganaría en tema oscuro)', () => {
-    expect(markup).toMatch(/<div class="[^"]*bg-\[#d92d20\]\/10[^"]*"[^>]*><div[^>]*>Riesgo general/);
-    expect(markup).not.toMatch(/bg-\[#d92d20\]\/10[^"]*dark:bg-panel/);
+    expect(markup).toMatch(/<div class="[^"]*bg-status-danger\/10[^"]*"[^>]*><div[^>]*>Riesgo general/);
+    expect(markup).not.toMatch(/bg-status-danger\/10[^"]*dark:bg-panel/);
   });
 
   it('la tabla mantiene su ancho mínimo y marca cada estado con su tono', () => {

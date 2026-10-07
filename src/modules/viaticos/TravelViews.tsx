@@ -151,7 +151,7 @@ export function TravelImportPreviewDialog({
           </div>
 
           {preview.duplicate ? (
-            <div className="grid gap-1 rounded-xl border border-[#e08a00]/40 bg-[#e08a00]/10 p-4 text-sm" role="status"><div className="font-bold text-[#7a4a00] dark:text-[#ffd28a]">Esta planilla ya está importada.</div><div className="text-ink-2 dark:text-[#d6e2f5]">No se crearán filas duplicadas. Podés cancelar esta operación.</div></div>
+            <div className="grid gap-1 rounded-xl border border-status-warn/40 bg-status-warn/10 p-4 text-sm" role="status"><div className="font-bold text-status-warn-ink dark:text-status-warn-ink-dark">Esta planilla ya está importada.</div><div className="text-ink-2 dark:text-[#d6e2f5]">No se crearán filas duplicadas. Podés cancelar esta operación.</div></div>
           ) : (
             <div className="grid gap-1 rounded-xl border border-sky/40 bg-sky/10 p-4 text-sm" role="status"><div className="font-bold text-navy dark:text-white">{preview.currentSourceBatchId ? 'La fuente aplicada será reemplazada.' : 'La importación agregará los registros nuevos.'}</div><div className="text-ink-2 dark:text-[#d6e2f5]">{preview.currentSourceBatchId ? 'Los viajes manuales se conservarán y los estados/notas locales de los viajes importados que sigan existiendo se mantendrán.' : 'Los archivos, hojas, filas originales, históricos y catálogo de costos quedarán guardados localmente.'}</div></div>
           )}
@@ -334,7 +334,7 @@ function RenditionDetailItem({ label, value }: { label: string; value: string })
   return <div className="grid min-w-0 gap-0.5"><dt className="text-xs text-ink-2 dark:text-[#9fb2d1]">{label}</dt><dd className="m-0 text-sm font-semibold text-navy dark:text-white">{value}</dd></div>;
 }
 
-const statDot: Record<TravelStatus, string> = { pending: 'bg-[#e08a00]', review: 'bg-sky', approved: 'bg-[#2f8f5b]' };
+const statDot: Record<TravelStatus, string> = { pending: 'bg-status-warn', review: 'bg-sky', approved: 'bg-status-ok' };
 
 function RenditionStat({ label, value, tone }: { label: string; value: number; tone: TravelStatus }) {
   return (
@@ -397,7 +397,7 @@ export function TravelHistoricalView({
   );
 }
 
-const metricTone = { neutral: 'border-l-navy/30! dark:border-l-sky/40!', positive: 'border-l-[#2f8f5b]!', warning: 'border-l-[#e08a00]!' } as const;
+const metricTone = { neutral: 'border-l-navy/30! dark:border-l-sky/40!', positive: 'border-l-status-ok!', warning: 'border-l-status-warn!' } as const;
 
 function HistoryMetric({ label, value, detail, tone = 'neutral' }: { label: string; value: string; detail: string; tone?: 'neutral' | 'positive' | 'warning' }) {
   return <Card className={cn('min-w-0 gap-1 border-l-4 p-4', metricTone[tone])}><Muted>{label}</Muted><div className="text-2xl font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{detail}</Muted></Card>;
@@ -448,7 +448,7 @@ function HistoricalTravelTable({ summaries }: { summaries: HistoricalSummary[] }
             <TableCell className="whitespace-nowrap tabular-nums">{integerFormat.format(summary.distanceKm)} km</TableCell>
             <TableCell className="whitespace-nowrap text-right tabular-nums">₲ {moneyFormat.format(Math.round(summary.generalCost))}</TableCell>
             <TableCell className="whitespace-nowrap text-right tabular-nums">₲ {moneyFormat.format(Math.round(summary.averageCostPerService))}</TableCell>
-            <TableCell className={cn('text-right font-bold tabular-nums', variation !== null && variation > 0 ? 'text-[#912018]! dark:text-[#ffb4ab]!' : 'text-[#14532d]! dark:text-[#9be3b9]!')}>{variation === null ? '—' : `${variation > 0 ? '+' : ''}${Math.round(variation * 100)}%`}</TableCell>
+            <TableCell className={cn('text-right font-bold tabular-nums', variation !== null && variation > 0 ? 'text-status-danger-ink! dark:text-status-danger-ink-dark!' : 'text-status-ok-ink! dark:text-status-ok-ink-dark!')}>{variation === null ? '—' : `${variation > 0 ? '+' : ''}${Math.round(variation * 100)}%`}</TableCell>
           </TableRow>;
         })}</TableBody>
       </Table>

@@ -33,7 +33,7 @@ export function ConfirmDialogView({ request, onResolve }: { request: ConfirmRequ
           <Button variant="outline" autoFocus onClick={() => onResolve(false)}>
             {request.cancelLabel ?? 'Cancelar'}
           </Button>
-          <Button variant={danger ? 'destructive' : 'default'} className={cn(danger && 'dark:bg-[#d92d20]')} onClick={() => onResolve(true)}>
+          <Button variant={danger ? 'destructive' : 'default'} className={cn(danger && 'dark:bg-status-danger')} onClick={() => onResolve(true)}>
             {request.confirmLabel}
           </Button>
         </div>

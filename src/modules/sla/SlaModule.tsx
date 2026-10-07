@@ -273,10 +273,10 @@ export default function SlaModule() {
 }
 
 const riskTone: Record<SlaAnalysis['overallRisk'], string> = {
-  low: 'border-[#2f8f5b]/50 bg-[#2f8f5b]/10',
-  medium: 'border-[#e08a00]/50 bg-[#e08a00]/10',
-  high: 'border-[#d92d20]/50 bg-[#d92d20]/10',
-  critical: 'border-[#d92d20]/70 bg-[#d92d20]/15',
+  low: 'border-status-ok/50 bg-status-ok/10',
+  medium: 'border-status-warn/50 bg-status-warn/10',
+  high: 'border-status-danger/50 bg-status-danger/10',
+  critical: 'border-status-danger/70 bg-status-danger/15',
 };
 
 const statusTone: Record<SlaStatus, BadgeTone> = { complies: 'success', partial: 'warning', gap: 'danger', na: 'neutral' };

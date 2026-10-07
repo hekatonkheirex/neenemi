@@ -483,7 +483,7 @@ function CoverageResults({ coverage, failedPages, hasSavedAnalysis, onClear }: {
         <div className="flex flex-wrap items-center gap-2"><Badge>{coverage.pages.length} páginas</Badge>{hasSavedAnalysis && <Button variant="ghost" size="sm" onClick={onClear}><Trash2 />Borrar análisis</Button>}</div>
       } />
       <Muted>Promedio de tinta estimada por canal en cada página analizada.</Muted>
-      {failedPages.length > 0 && <div className="grid min-w-0 gap-1 break-words rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-[#7a4a00] dark:text-[#ffe4a8]" role="status"><strong>{failedPages.length === 1 ? 'Una página fue excluida.' : `${failedPages.length} páginas fueron excluidas.`}</strong><div>{failedPages.map(({ page }) => `pág. ${page}`).join(', ')}</div></div>}
+      {failedPages.length > 0 && <div className="grid min-w-0 gap-1 break-words rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-status-warn-ink dark:text-[#ffe4a8]" role="status"><strong>{failedPages.length === 1 ? 'Una página fue excluida.' : `${failedPages.length} páginas fueron excluidas.`}</strong><div>{failedPages.map(({ page }) => `pág. ${page}`).join(', ')}</div></div>}
       {coverage.pages.length === 0 ? <div className="rounded-xl border border-dashed border-navy/20 p-6 text-center dark:border-sky/30"><Muted>Sube un PDF para ver la cobertura por página.</Muted></div> : (
         <Table className="min-w-[36rem] tabular-nums" wrapperClassName="min-w-0" aria-label="Cobertura por página">
           <TableHeader><TableRow><TableHead scope="col">Página</TableHead>{['Negro', 'Cian', 'Magenta', 'Amarillo', 'Total'].map(label => <TableHead className="text-right" scope="col" key={label}>{label}</TableHead>)}</TableRow></TableHeader>

@@ -66,8 +66,8 @@ export default function ConsumablesBundlePanel({ importing, busy, files, loaded 
                 <div className="font-bold text-navy dark:text-white">{source.label}</div>
                 <Muted>{definition?.expectedFiles[0] ?? 'Archivo XLSX'}</Muted>
                 <Muted>{definition?.origin ?? 'Origen documentado en la matriz de fuentes.'}</Muted>
-                {loadedSource ? <div className="text-xs font-semibold text-[#14532d] dark:text-[#9be3b9]">Cargado: {loadedSource.sourceName}{formatLoadedAt(loadedSource.createdAt) ? ` · ${formatLoadedAt(loadedSource.createdAt)?.replace('Cargado el ', '')}` : ''}</div> : <Muted>Sin archivo cargado</Muted>}
-                {selectedFile ? <div className="text-xs font-semibold text-[#14532d] dark:text-[#9be3b9]">{selectedFile.name} · {formatFileSize(selectedFile.size)}</div> : null}
+                {loadedSource ? <div className="text-xs font-semibold text-status-ok-ink dark:text-status-ok-ink-dark">Cargado: {loadedSource.sourceName}{formatLoadedAt(loadedSource.createdAt) ? ` · ${formatLoadedAt(loadedSource.createdAt)?.replace('Cargado el ', '')}` : ''}</div> : <Muted>Sin archivo cargado</Muted>}
+                {selectedFile ? <div className="text-xs font-semibold text-status-ok-ink dark:text-status-ok-ink-dark">{selectedFile.name} · {formatFileSize(selectedFile.size)}</div> : null}
               </div>
               <UploadButton
                 label={selectedFile ? 'Cambiar' : 'Seleccionar'}

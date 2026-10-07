@@ -20,9 +20,9 @@ const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 
 
 // Tono de cada ficha y lista: borde y color del indicador. Los textos usan los tokens de marca en ambos temas.
 const tones: Record<string, { border: string; accent: string }> = {
-  normal: { border: 'border-l-[#2f8f5b]', accent: 'text-[#14532d] dark:text-[#9be3b9]' },
-  critical: { border: 'border-l-[#d92d20]', accent: 'text-[#912018] dark:text-[#ff8a93]' },
-  attention: { border: 'border-l-[#e08a00]', accent: 'text-[#7a4a00] dark:text-[#f0b44c]' },
+  normal: { border: 'border-l-status-ok', accent: 'text-status-ok-ink dark:text-status-ok-ink-dark' },
+  critical: { border: 'border-l-status-danger', accent: 'text-status-danger-ink dark:text-[#ff8a93]' },
+  attention: { border: 'border-l-status-warn', accent: 'text-status-warn-ink dark:text-[#f0b44c]' },
   unrecognized: { border: 'border-l-[#6b5bd6]', accent: 'text-[#4a3fa8] dark:text-[#b9afff]' },
   idle: { border: 'border-l-[#73869f]', accent: 'text-ink-2 dark:text-[#9fb3d4]' },
   overworked: { border: 'border-l-brand', accent: 'text-[#b84d00] dark:text-[#ff9a4d]' },

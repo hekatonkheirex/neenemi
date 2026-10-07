@@ -549,7 +549,7 @@ function MaintenanceInspectionRow({ analysis, onPrint }: { analysis: Maintenance
                 <TableCell className="text-right tabular-nums">{period.copies.toLocaleString('es-PY')}</TableCell>
                 <TableCell className="text-right tabular-nums">{period.counter.toLocaleString('es-PY')}</TableCell>
                 <TableCell className="text-right tabular-nums">{period.optimalMonthly.toLocaleString('es-PY')}</TableCell>
-                <TableCell className={cn('text-right tabular-nums', isOver && 'font-bold text-[#912018]! dark:text-[#ffb4ab]!')}>{period.ratio.toFixed(2)}{isOver ? <> <TriangleAlert className="inline" size={14} aria-label="Excede el límite" /></> : null}</TableCell>
+                <TableCell className={cn('text-right tabular-nums', isOver && 'font-bold text-status-danger-ink! dark:text-status-danger-ink-dark!')}>{period.ratio.toFixed(2)}{isOver ? <> <TriangleAlert className="inline" size={14} aria-label="Excede el límite" /></> : null}</TableCell>
               </TableRow>;
             })}</TableBody>
           </Table>
@@ -562,10 +562,10 @@ function MaintenanceInspectionRow({ analysis, onPrint }: { analysis: Maintenance
 }
 
 const gaugeTone: Record<string, string> = {
-  critical: 'text-[#d92d20]',
-  attention: 'text-[#e08a00]',
+  critical: 'text-status-danger',
+  attention: 'text-status-warn',
   unrecognized: 'text-[#6b5bd6] dark:text-[#b9afff]',
-  normal: 'text-[#2f8f5b]',
+  normal: 'text-status-ok',
 };
 
 function MaintenanceWearGauge({ ratio, status }: { ratio: number; status: MaintenanceAnalysis['status'] }) {

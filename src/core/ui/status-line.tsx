@@ -3,7 +3,7 @@ import { BusySpinner } from '../ActionButtons';
 
 type StatusState = 'ready' | 'pending' | 'error';
 
-const dot = { ready: 'bg-[#2f8f5b]', error: 'bg-[#d92d20]' };
+const dot = { ready: 'bg-status-ok', error: 'bg-status-danger' };
 
 /** Región en vivo: spinner durante la carga y punto de color al terminar. */
 export function StatusLine({ state, children }: { state: StatusState; children: React.ReactNode }) {
