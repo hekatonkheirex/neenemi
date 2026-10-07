@@ -1,17 +1,11 @@
 /* Orden de carga = orden de cascada: no reordenar. Ver src/styles/README.md */
 @import './styles/theme/01-mantenimiento.css';
-@import './styles/theme/02-operaciones.css';
-@import './styles/theme/03-operaciones.css';
 @import './styles/theme/04-viaticos.css';
 @import './styles/theme/05-ventas.css';
 @import './styles/theme/07-ventas.css';
 @import './styles/theme/08-operaciones.css';
-@import './styles/theme/09-ventas.css';
-@import './styles/theme/10-mps.css';
-@import './styles/theme/11-viaticos.css';
 @import './styles/theme/12-cobertura.css';
 @import './styles/theme/13-consumibles.css';
-@import './styles/theme/14-viaticos.css';
 @import './styles/theme/17-viaticos.css';
 @import './styles/theme/19-mantenimiento.css';
 @import './styles/theme/20-software-selector.css';

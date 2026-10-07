@@ -1,9 +1,7 @@
 /* Orden de carga = orden de cascada: no reordenar. Ver src/styles/README.md */
 @import './styles/index/01-ventas.css';
 @import './styles/index/02-ventas.css';
-@import './styles/index/03-viaticos.css';
 @import './styles/index/04-ventas.css';
-@import './styles/index/05-operaciones.css';
 @import './styles/index/06-ventas.css';
 @import './styles/index/07-operaciones.css';
 @import './styles/index/08-consumibles.css';
@@ -13,7 +11,6 @@
 @import './styles/index/12-operaciones.css';
 @import './styles/index/13-mantenimiento.css';
 @import './styles/index/14-operaciones.css';
-@import './styles/index/15-mps.css';
 @import './styles/index/16-consumibles.css';
 @import './styles/index/17-viaticos.css';
 @import './styles/index/18-consumibles.css';

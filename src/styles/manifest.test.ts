@@ -10,6 +10,13 @@ describe.each(['index', 'theme'])('src/%s.css', (name) => {
     expect(rest).toEqual([]);
   });
 
+  it('ningún trozo está vacío ni solo con comentarios (Vite avisa "is empty")', () => {
+    for (const file of files) {
+      const text = fs.readFileSync(`src/styles/${name}/${file}`, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+      expect(text.trim(), file).not.toBe('');
+    }
+  });
+
   it('ningún trozo empieza con una regla cortada a la mitad', () => {
     for (const file of files) {
       const text = fs.readFileSync(`src/styles/${name}/${file}`, 'utf8');
