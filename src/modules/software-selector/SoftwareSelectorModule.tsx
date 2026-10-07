@@ -319,7 +319,7 @@ export default function SoftwareSelectorModule() {
   return (
     <div className="page-content software-page">
       <PageHeader
-        eyebrow="SOPORTE / SELECCIÓN DE SOFTWARE"
+        eyebrow="SOFTWARE / SELECCIÓN"
         title="Canon Software Selector"
         lead="Cruza los requisitos del cliente con uniFLOW e imageWARE. Analiza el pliego, revisa la selección y compara la cobertura de cada producto."
         actions={(

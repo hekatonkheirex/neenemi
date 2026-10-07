@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.93 · 2026-10-07
+
+La línea pequeña sobre el título de cada módulo ahora empieza por su sección del sidebar (Servicio Técnico, Administrativo, Software, Herramientas). Antes Listado de precios decía «Ventas», Tracking «Operaciones», MPS y Cobertura «Análisis», y Software Selector y SLA «Soporte».
+
 ## 0.1.92 · 2026-10-07
 
 El título de cada módulo ahora es el mismo nombre que tiene en la barra lateral: Gestor de mantenimiento, Analítica de consumibles, Calculadora de insumos MPS, Cobertura de tóner y Discontinuador. Un test compara cada título con el sidebar para que no vuelvan a divergir.

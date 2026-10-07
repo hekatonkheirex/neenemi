@@ -242,7 +242,7 @@ export default function UniflowModule() {
   return (
     <div className="page-content uniflow-page">
       <PageHeader
-        eyebrow="VENTAS / CONFIGURACIÓN"
+        eyebrow="SOFTWARE / CONFIGURACIÓN"
         title="Configurador uniFLOW Online"
         lead="Calcula licencias por volumen para equipos Canon y conserva las tarifas comerciales en la base local."
         actions={<>

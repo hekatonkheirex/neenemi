@@ -196,7 +196,7 @@ export default function SlaModule() {
   return (
     <div className="page-content">
       <PageHeader
-        eyebrow="SOPORTE / COMPLIANCE"
+        eyebrow="HERRAMIENTAS / COMPLIANCE"
         title="SLA Compliance Analyzer"
         lead="Compara requisitos de un pliego con el SLA estándar de Data Systems y separa cumplimiento, condiciones parciales y brechas negociables."
         actions={(

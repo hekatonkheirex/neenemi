@@ -324,7 +324,7 @@ export default function CoberturaModule() {
 
   return (
     <div className="page-content coverage-page">
-      <PageHeader eyebrow="ANÁLISIS / MPS" title="Cobertura de tóner"
+      <PageHeader eyebrow="HERRAMIENTAS / COBERTURA" title="Cobertura de tóner"
         lead="Sube un PDF para medir la cobertura real de cada página y estimar el rendimiento de tóners Canon."
         actions={<PrintButton busy={printing} onClick={() => void printReport()} disabled={coverage.pages.length === 0} />}
       />

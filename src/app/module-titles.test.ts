@@ -26,4 +26,8 @@ describe('títulos de módulo', () => {
     const src = readFileSync(files[id], 'utf8');
     expect(src).toContain(`title="${label}"`);
   });
+  it.each(suiteModules.map((m) => [m.id, m.section] as const))('%s: el eyebrow empieza por su sección del sidebar', (id, section) => {
+    const src = readFileSync(files[id], 'utf8');
+    expect(src).toContain(`eyebrow="${section.toUpperCase()} / `);
+  });
 });

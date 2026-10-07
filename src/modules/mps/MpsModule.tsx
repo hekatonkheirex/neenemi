@@ -265,7 +265,7 @@ export default function MpsModule() {
 
   return (
     <div className="page-content mps-page">
-      <PageHeader eyebrow="ANÁLISIS / MPS" title="Calculadora de insumos MPS"
+      <PageHeader eyebrow="HERRAMIENTAS / INSUMOS MPS" title="Calculadora de insumos MPS"
         lead="Proyecta reemplazos de consumibles por modelo y volumen mensual usando el perfil Canon guardado en la SQLite compartida."
         actions={<Button variant="outline" onClick={() => void refresh()} disabled={loading} aria-busy={loading}><RefreshCw />{loading ? 'Actualizando…' : 'Actualizar modelos'}</Button>}
       />

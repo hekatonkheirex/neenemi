@@ -478,7 +478,7 @@ export default function ListadoPreciosModule() {
 
   return (
     <div className="page-content sales-page price-list-page">
-      <PageHeader eyebrow="VENTAS / CATÁLOGO CALCULADO" title="Listado de precios"
+      <PageHeader eyebrow="ADMINISTRATIVO / CATÁLOGO CALCULADO" title="Listado de precios"
         lead="Consulta el catálogo común y calcula el precio comercial con reglas guardadas localmente."
         actions={<div className="flex min-w-0 flex-wrap gap-2">
           <UploadButton busy={importingCatalog} busyLabel="Importando listado…" label="Cargar listado" accept=".xlsx,.json" disabled={restoringSeed} onChange={(event) => {

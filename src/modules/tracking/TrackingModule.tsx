@@ -168,7 +168,7 @@ export default function TrackingModule() {
   const unmatchedReports = snapshot?.reports.filter(report => !linkedIds.has(JSON.stringify([report.reportId, normalizeIdentity(report.customer), normalizeIdentity(report.technician)]))) ?? [];
   const undated = (visits ?? []).filter(v => !v.checkIn && !v.checkOut);
   return <div className="page-content tracking-module grid min-w-0 grid-cols-1 gap-6 [overflow-wrap:anywhere] [&_li]:before:content-none">
-    <PageHeader eyebrow="OPERACIONES / TRAZABILIDAD" title="Tracking de técnicos" lead="Marcaciones diarias, intervalos entre visitas y proximidad a la sede del cliente." />
+    <PageHeader eyebrow="SERVICIO TÉCNICO / TRAZABILIDAD" title="Tracking de técnicos" lead="Marcaciones diarias, intervalos entre visitas y proximidad a la sede del cliente." />
     <Card className={cardClass}>
       <CardHeader eyebrow="Importación" title="Cargar fuentes originales" aside={<Badge>CSV / XLSX</Badge>} />
       <Muted className="text-sm leading-relaxed">Selecciona el detalle de informes y las marcaciones de geolocalización. Se vinculan por Nº I.S., técnico y cliente; las filas sin coincidencia se conservan. Una nueva carga reemplaza el análisis vigente, no el archivo histórico ni las sedes confirmadas.</Muted>
