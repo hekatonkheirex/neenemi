@@ -71,7 +71,7 @@ const directSources: readonly DirectSource[] = [
   { kind: 'repuestos', eyebrow: 'Fuente complementaria', title: 'Detalle de repuestos', origin: 'Superset > SGS Cliente 360 > Repuestos > Repuestos, Detalles', note: 'También puede producir consumibles migrados, como rodillos y cilindros.' },
   { kind: 'uso-repuestos', eyebrow: 'Fuente histórica', title: 'Uso de repuestos', origin: 'Superset > SGS Uso de Repuestos > Consolidados y selectores > Detalle de Repuestos', note: `Totales en PYG; se muestran en guaraníes usando la tasa referencial ${PYG_USD_RATE_DATE}.` },
   { kind: 'salida-consumibles', eyebrow: 'Despachos', title: 'Salida de consumibles', origin: 'SGS > REPORTES > Consumibles > Rango de fechas', note: 'Importa remisiones de tóner, cilindros y rodillos como entregas separadas.' },
-  { kind: 'salida-repuestos', eyebrow: 'Despachos', title: 'Salida de repuestos', origin: 'SGS > REPORTES > Consumibles > Rango de fechas', note: 'Rodillos y cilindros se clasifican como consumibles; las demás piezas quedan como repuestos.' },
+  { kind: 'salida-repuestos', eyebrow: 'Despachos', title: 'Salida de repuestos', origin: 'SGS > REPORTES > Repuestos', note: 'Rodillos y cilindros se clasifican como consumibles; las demás piezas quedan como repuestos.' },
 ];
 
 type ImportResponse = ConsumablesImportResult & {

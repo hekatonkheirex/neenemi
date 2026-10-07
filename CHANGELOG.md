@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.83 · 2026-10-07
+
+Corrige el origen de «Salida de repuestos»: es «SGS > REPORTES > Repuestos», no «Consumibles > Rango de fechas». Se corrige en la carga coordinada y en la tarjeta de Despachos de Consumibles.
+
 ## 0.1.82 · 2026-10-07
 
 Consumibles muestra qué archivo está cargado en cada una de las nueve fuentes de la carga coordinada, con su fecha y hora («Cargado: Detalles de consumibles.xlsx · 07/10/2026, 14:32»). Las fuentes sin carga dicen «Sin archivo cargado». Se toma la última carga aplicada de cada fuente.

@@ -212,7 +212,7 @@ export const SOURCE_CATALOG: readonly SourceDefinition[] = [
     importTypes: ['salida-repuestos'],
     importDomains: ['consumibles'],
     filePrefixes: ['salida de repuestos'],
-    origin: 'SGS > REPORTES > Consumibles > Rango de fechas',
+    origin: 'SGS > REPORTES > Repuestos',
     purpose: 'Registra comprobante, fecha, pieza, cantidad, precio, cliente, equipo, técnico y Nº de informe.',
     normalizedFields: [
       { source: 'Comprobante / fecha', target: 'Documento y fecha de salida' },
