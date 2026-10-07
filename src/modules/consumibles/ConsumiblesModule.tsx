@@ -52,6 +52,7 @@ import { PageHeader } from '../../core/ui/page-header';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
 import { Button } from '../../core/ui/button';
 import { Input } from '../../core/ui/input';
+import { MonthPicker } from '../../core/ui/month-picker';
 import { Badge } from '../../core/ui/badge';
 import { StatusLine } from '../../core/ui/status-line';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../core/ui/table';
@@ -511,8 +512,8 @@ export default function ConsumiblesModule() {
           <label className={fieldClass}>Sector<select className={selectClass} value={filters.sector ?? ''} onChange={(event) => updateFilter(setFilters, 'sector', event.target.value)}><option value="">Todos</option><option value="Publico">Público</option><option value="Privado">Privado</option></select></label>
           <label className={fieldClass}>Departamento<select className={selectClass} value={filters.department ?? ''} onChange={(event) => updateFilter(setFilters, 'department', event.target.value)}><option value="">Todos</option><option value="Strategic">Strategic</option><option value="Commercial">Commercial</option></select></label>
           <label className={fieldClass}>Tipo de contrato<select className={selectClass} value={filters.contractType ?? ''} onChange={(event) => updateFilter(setFilters, 'contractType', event.target.value)}><option value="">Todos</option><option value="Alquiler">Alquiler</option><option value="Leasing">Leasing</option><option value="Mantenimiento">Mantenimiento</option></select></label>
-          <label className={fieldClass}>Desde<Input type="month" value={filters.dateFrom ?? ''} onChange={(event) => updateFilter(setFilters, 'dateFrom', event.target.value)} /></label>
-          <label className={fieldClass}>Hasta<Input type="month" value={filters.dateTo ?? ''} onChange={(event) => updateFilter(setFilters, 'dateTo', event.target.value)} /></label>
+          <div className={fieldClass}>Desde<MonthPicker label="Desde" value={filters.dateFrom ?? ''} onChange={(value) => updateFilter(setFilters, 'dateFrom', value)} /></div>
+          <div className={fieldClass}>Hasta<MonthPicker label="Hasta" value={filters.dateTo ?? ''} onChange={(value) => updateFilter(setFilters, 'dateTo', value)} /></div>
           <Button variant="outline" onClick={() => setFilters({})} disabled={Object.values(filters).every((value) => !value)}>Limpiar filtros</Button>
         </div>
       </Card>

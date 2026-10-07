@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.86 · 2026-10-07
+
+Mejora los filtros Desde y Hasta de Consumibles. El calendario nativo del navegador (campo `---------- ----`, cuadrícula de meses sin estilo) se reemplaza por un selector propio: muestra el mes elegido en texto («octubre 2026»), con flechas de año, cuadrícula de 12 meses en los colores de la marca, el mes actual marcado y los atajos «Limpiar» y «Este mes». Se cierra con Escape o al hacer clic fuera. El filtro sigue guardando `AAAA-MM`, así que no cambia qué datos se muestran.
+
 ## 0.1.85 · 2026-10-07
 
 Corrige el recorte de los gráficos de Servicios vs. Consumibles. La vista de análisis pedía como máximo 10 000 registros y el servidor no aceptaba más, así que con 21 023 servicios cargados solo se veían los últimos 10 000 (desde 2025-10) y los meses anteriores salían en cero aunque estaban importados. Lo mismo recortaba las primeras salidas de consumibles (10 951 registros). El tope sube a 100 000 en un solo lugar (`MAX_LIST_LIMIT`) para Consumibles, Salidas, Servicios y Viáticos.
