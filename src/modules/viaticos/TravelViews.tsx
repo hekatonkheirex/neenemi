@@ -7,6 +7,7 @@ import type { HistoricalSummary, TravelStatus, TravelTrip } from './types';
 import { readJson, toErrorMessage as describeError } from '../../core/http';
 import { DownloadIcon } from '../../core/ActionButtons';
 import { ChartColumn, Clock, type LucideIcon, Plane, Receipt, X } from 'lucide-react';
+import { AnnualActivityChart, AnnualCostChart } from './TravelAnnualCharts';
 import { cn } from '../../core/cn';
 import { dialogPanel } from '../../core/dialog';
 import { Badge, type BadgeTone } from '../../core/ui/badge';
@@ -402,58 +403,6 @@ function HistoryMetric({ label, value, detail, tone = 'neutral' }: { label: stri
   return <Card className={cn('min-w-0 gap-1 border-l-4 p-4', metricTone[tone])}><Muted>{label}</Muted><div className="text-2xl font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{detail}</Muted></Card>;
 }
 
-const chartArea = 'grid h-56 min-w-0 auto-cols-fr grid-flow-col items-end gap-3 border-b border-navy/15 pb-1 dark:border-sky/25';
-
-function AnnualActivityChart({ summaries }: { summaries: HistoricalSummary[] }) {
-  const maxValue = Math.max(...summaries.flatMap((summary) => [summary.services, summary.trips]), 1);
-  return (
-    <Card className={cardClass}>
-      <CardHeader eyebrow="Actividad" title="Servicios y viajes" aside={<Badge>Por año</Badge>} />
-      <div className={chartArea} role="img" aria-label="Comparativa anual de servicios y viajes">
-        {summaries.map((summary) => (
-          <div className="grid h-full min-w-0 grid-rows-[minmax(0,1fr)_auto_auto] justify-items-center gap-1" key={summary.year}>
-            <div className="flex h-full w-full items-end justify-center gap-1">
-              <div className="w-1/3 max-w-8 rounded-t bg-sky" style={{ height: `${summary.services ? Math.max((summary.services / maxValue) * 100, 4) : 0}%` }} title={`${summary.services} servicios`} />
-              <div className="w-1/3 max-w-8 rounded-t bg-brand" style={{ height: `${summary.trips ? Math.max((summary.trips / maxValue) * 100, 4) : 0}%` }} title={`${summary.trips} viajes`} />
-            </div>
-            <div className="text-sm font-bold text-navy dark:text-white">{summary.year}</div>
-            <Muted>{summary.partial ? 'En curso' : 'Cerrado'}</Muted>
-          </div>
-        ))}
-      </div>
-      <div className="flex flex-wrap gap-4 text-xs text-ink-2 dark:text-[#d6e2f5]"><div className="flex items-center gap-1.5"><i className="size-2.5 rounded-sm bg-sky" />Servicios</div><div className="flex items-center gap-1.5"><i className="size-2.5 rounded-sm bg-brand" />Viajes</div></div>
-    </Card>
-  );
-}
-
-type CostMetric = 'generalCost' | 'fuelCost' | 'renditions';
-
-function AnnualCostChart({ summaries }: { summaries: HistoricalSummary[] }) {
-  const [metric, setMetric] = useState<CostMetric>('generalCost');
-  const labels: Record<CostMetric, string> = { generalCost: 'Costo general', fuelCost: 'Combustible', renditions: 'Rendiciones' };
-  const maxValue = Math.max(...summaries.map((summary) => summary[metric]), 1);
-  return (
-    <Card className={cardClass}>
-      <CardHeader
-        eyebrow="Costos"
-        title="Comparativa anual"
-        aside={<label className={cn(fieldClass, 'w-44')}>Métrica<select className={selectClass} value={metric} onChange={(event) => setMetric(event.target.value as CostMetric)}><option value="generalCost">Costo general</option><option value="fuelCost">Combustible</option><option value="renditions">Rendiciones</option></select></label>}
-      />
-      <div className={chartArea} role="img" aria-label={`Comparativa anual de ${labels[metric]}`}>
-        {summaries.map((summary) => (
-          <div className="grid h-full min-w-0 grid-rows-[auto_minmax(0,1fr)_auto_auto] justify-items-center gap-1" key={summary.year}>
-            <div className="text-xs font-semibold tabular-nums text-ink-2 dark:text-[#d6e2f5]">₲ {compactMoney(summary[metric])}</div>
-            <div className="flex h-full w-full items-end justify-center"><div className="w-1/2 max-w-12 rounded-t bg-sky" style={{ height: `${summary[metric] ? Math.max((summary[metric] / maxValue) * 100, 4) : 0}%` }} title={`${summary.year}: ₲ ${moneyFormat.format(Math.round(summary[metric]))}`} /></div>
-            <div className="text-sm font-bold text-navy dark:text-white">{summary.year}</div>
-            <Muted>{summary.partial ? 'En curso' : 'Cerrado'}</Muted>
-          </div>
-        ))}
-      </div>
-      <Muted>{labels[metric]} en guaraníes. El período en curso queda identificado en la tabla.</Muted>
-    </Card>
-  );
-}
-
 function MonthlyTrendChart({ summaries }: { summaries: HistoricalSummary[] }) {
   const [metric, setMetric] = useState<'monthlyServices' | 'monthlyTrips'>('monthlyServices');
   const label = metric === 'monthlyServices' ? 'Servicios' : 'Viajes';
@@ -664,10 +613,6 @@ function normalizeTravelSourceHeader(value: unknown): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
-}
-
-function compactMoney(value: number): string {
-  return new Intl.NumberFormat('es-PY', { notation: 'compact', maximumFractionDigits: 1 }).format(Math.round(value));
 }
 
 function formatDate(value: string): string {

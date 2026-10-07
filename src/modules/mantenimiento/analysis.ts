@@ -195,7 +195,6 @@ export function calcAppliedWaste(counter: number, usefulLife: number, maxWaste: 
 export function analyzeEquipmentCounters(
   records: readonly MaintenanceCounterRecord[],
   rules: readonly MaintenanceModelRule[],
-  limitMonths = 3,
 ): MaintenanceAnalysis[] {
   const grouped = new Map<string, MaintenanceCounterRecord[]>();
   for (const record of records) {
@@ -208,7 +207,7 @@ export function analyzeEquipmentCounters(
   const analyses: MaintenanceAnalysis[] = [];
   for (const deviceRecords of grouped.values()) {
     const sortedRecords = [...deviceRecords].sort((left, right) => left.period.localeCompare(right.period));
-    const targetRecords = sortedRecords.slice(-limitMonths);
+    const targetRecords = sortedRecords.slice(-3);
     if (targetRecords.length === 0) continue;
 
     const latest = targetRecords[targetRecords.length - 1];

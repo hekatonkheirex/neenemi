@@ -18,10 +18,12 @@ import { isDataChange, readBackupHealth, recordBackup, recordChange } from './ba
 // Claves de API (p. ej. ai/openrouter_api_key): nunca salen de la instalación en respaldos ni lecturas.
 export const SECRET_SETTINGS_NAMESPACE = 'ai';
 
-function stripSecrets(snapshotPath: string): void {
+function prepareBackupSnapshot(snapshotPath: string, at: Date): void {
   const snapshot = new Database(snapshotPath);
   try {
     snapshot.prepare('DELETE FROM app_settings WHERE namespace = ?').run(SECRET_SETTINGS_NAMESPACE);
+    // La copia debe recordar este respaldo, no el anterior de la base activa.
+    recordBackup(snapshot, at);
     snapshot.exec('VACUUM');
   } finally {
     snapshot.close();
@@ -107,7 +109,7 @@ export function registerSystemRoutes(
       temporaryDirectory = fs.mkdtempSync(path.join(dataDirectory, '.dcss-backup-'));
       const snapshotPath = path.join(temporaryDirectory, 'dcss.sqlite');
       await database.backup(snapshotPath);
-      stripSecrets(snapshotPath);
+      prepareBackupSnapshot(snapshotPath, startedAt);
 
       response.setHeader('Cache-Control', 'no-store');
       response.setHeader('Content-Type', 'application/vnd.sqlite3');

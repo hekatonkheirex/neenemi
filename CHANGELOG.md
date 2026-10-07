@@ -2,6 +2,26 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.95 · 2026-10-07
+
+Los respaldos SQLite descargados guardan su propia fecha de respaldo. Al restaurarlos ya no se recupera la fecha del respaldo anterior ni aparece un falso aviso de «Cambios sin respaldar» por datos que ya están incluidos en el archivo. La base activa solo se marca como respaldada cuando la descarga termina correctamente.
+
+Gestor de mantenimiento calcula siempre sobre los últimos 3 meses disponibles por equipo. Se elimina el selector de 1, 3, 6 y 12 meses y se muestra el período fijo; el tablero, los expedientes y los informes PDF/XLSX usan el mismo alcance.
+
+Consultar Tracking de técnicos y pasar a Control de viáticos ya no activa «Cambios sin respaldar». Las consultas de rutas y direcciones no modifican SQLite y quedan fuera del detector; importar datos o guardar y quitar sedes confirmadas siguen marcándose como cambios pendientes.
+
+El panel de respaldo actualiza su estado mientras está visible y al volver a la ventana. Una descarga que tarda más de 2,5 segundos ya no deja el aviso «Cambios sin respaldar» en pantalla después de completar el respaldo.
+
+Respaldo y recuperación muestra spinner, estado de la operación y tiempo transcurrido al guardar un respaldo, restaurarlo, incorporar originales o limpiar cargas. Los resultados de éxito, cancelación y error quedan visibles; no se inventan porcentajes ni tiempos restantes. En Electron el respaldo se escribe por streaming y solo reemplaza un archivo existente tras completar la transferencia. Tras limpiar cargas, el aviso explica que se retiraron datos activos y se conservaron los originales y el trabajo manual, en lugar de hablar de datos agregados.
+
+Tracking de técnicos recupera la disposición amplia del mapa: el panel de sede ocupa 19 rem y el recorrido utiliza el ancho restante, en lugar de reservar el 40 % de la pantalla para la sede. En ventanas de hasta 1200 px, la sede vuelve a aparecer debajo del mapa.
+
+La barra lateral muestra un solo contorno al enfocar el módulo activo con teclado: el anillo de foco queda dentro del botón y sustituye la barra de selección mientras tiene foco. Se conserva el indicador activo al usar el ratón y el foco visible en los demás módulos.
+
+Inicio pasa a ser el dashboard general y conserva las tres fichas superiores. Añade equipos únicos con contrato, contratos activos por tipo, referencias activas de repuestos y consumibles de Proformas y modelos Canon con fin de soporte ocurrido o futuro. No duplica series, códigos ni modelos; separa los estados desconocidos y distingue fuentes ausentes de conteos reales en cero. Cada ficha abre su módulo. Configuración, al pie del menú y disponible en la paleta de navegación, reúne respaldos, restauración, originales y limpieza de cargas; Inicio conserva solo un aviso compacto. La limpieza mantiene su resultado visible en Configuración.
+
+Inicio muestra tres gráficos tomados de los datos de cada módulo, sin filtros: el estado del tablero de Mantenimiento, el Top 10 de clientes por costo de Analítica de consumibles (originales, compatibles y repuestos, en guaraníes) y, de Control de viáticos, servicios y viajes por año con la comparativa de costos reales. Los años en curso se rotulan como parciales para no confundirlos con un ahorro frente a un año cerrado. Cada gráfico abre su módulo y el del ranking se desplaza con el teclado en pantallas angostas.
+
 ## 0.1.94 · 2026-10-07
 
 Los informes impresos (expedientes, dictamen y diagnóstico de Mantenimiento, MPS, Cobertura de tóner, uniFLOW y SLA) llevan en la línea superior el nombre del módulo tal como aparece en el sidebar. El título de cada documento no cambia.

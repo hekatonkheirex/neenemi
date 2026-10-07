@@ -222,8 +222,8 @@ export default function TrackingModule() {
       </Card>
       {!onsiteOnly && <Card className={`${cardClass} border-[#e08a00]/30`}><Muted className="text-sm">Incluye servicios remotos, internos, de taller o sin tipo. Sus puntos no demuestran desplazamientos a clientes.</Muted></Card>}
       {analysis.suspectVisitKeys.length > 0 && <Card className={`${cardClass} border-[#d92d20]/30`} role="alert"><div className="text-sm text-[#912018] dark:text-[#ffb4ab]">GPS dudoso en {analysis.suspectVisitKeys.length} servicio(s): {analysis.visits.filter(v => analysis.suspectVisitKeys.includes(v.key)).map(v => `I.S. ${v.reportId}`).join(', ')}. Su entrada y su salida están a más de 5 km entre sí, por lo que no describen un solo lugar (marcación remota o ubicación errónea). Los tramos entre marcaciones de servicios dudosos se muestran en rojo discontinuo; los que tocan solo uno se dibujan normales. Esas rutas rojas y su distancia no son confiables.</div></Card>}
-      <div className="min-w-0 @container">
-        <div className="grid min-w-0 grid-cols-1 items-start gap-4 @[840px]:grid-cols-[minmax(0,3fr)_minmax(20rem,2fr)]">
+      <div className="min-w-0">
+        <div className="grid min-w-0 grid-cols-1 items-start gap-4 min-[1201px]:grid-cols-[minmax(0,1fr)_19rem]">
           <div className="min-w-0">
             <RouteMap events={analysis.events} roadSegments={analysis.roadSegments} suspectVisitKeys={analysis.suspectVisitKeys} sites={mapSites} selectedVisit={selectedKey} candidate={selected ? candidate : null} editing={editing && !busy} onPick={point => { setLatitude(point.latitude.toFixed(7)); setLongitude(point.longitude.toFixed(7)); }} onSelect={key => { const visit = visits?.find(v => v.key === key); if (visit) selectVisit(visit); }} />
           </div>

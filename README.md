@@ -321,20 +321,40 @@ contratos.xlsx` y la clasificación de clientes, conservando OV, división, vige
 área comercial y requisito de cierre en la base compartida. Discontinuador ofrece además la
 carga directa de una o varias clasificaciones para mantener la opción del proyecto original. Ambas rutas
 conservan los archivos originales y sus filas para repetir o revisar una carga cuando sea necesario.
-La pantalla Resumen consulta la misma base y muestra métricas de cartera, inventario, soporte e
-importaciones recientes, para verificar el estado de la instalación antes de entrar a cada módulo.
-Desde ese resumen se puede descargar un respaldo consistente de la SQLite normalizada; los
-originales activos se conservan también en `data/imports/` y pueden consultarse, inspeccionar
-por hoja y descargar desde el visor global de archivos y filas de origen que aparece en Resumen.
-El respaldo incluye los originales activos y retirados. Se puede restaurar desde Resumen en otra
-instalación: primero valida integridad, versión y hashes, guarda una copia de seguridad automática
-de la base actual y luego la sustituye y reinicia la Suite.
+Inicio es el dashboard general. Conserva arriba las tres fichas de módulos funcionales, contratos
+en cartera y última carga aplicada; debajo agrupa los indicadores de cartera y equipos, referencias
+activas y soporte Canon. Cada ficha abre el módulo correspondiente. Los equipos se deduplican por
+serie normalizada entre contratos; los registros sin serie se cuentan individualmente y se indican
+aparte. Los contratos activos y su desglose por tipo incluyen únicamente los marcados como activos.
+Los repuestos y consumibles se cuentan por códigos distintos de sus catálogos de Proformas, no por
+unidades en stock; los estados desconocidos se excluyen y se muestran aparte. Canon cuenta modelos
+distintos de las listas aplicadas, separando el fin de soporte ocurrido (incluido hoy), futuro y sin
+fecha. Una fuente ausente muestra «Sin datos», una fuente cargada vacía muestra cero y un fallo de
+consulta muestra «No disponible». `GET /api/overview` expone estos indicadores en `dashboard`.
+
+Configuración aparece al pie de la barra lateral y en la paleta de navegación. Su pantalla de Datos
+y respaldos reúne el estado del respaldo, la descarga y restauración de SQLite, la incorporación
+de originales, la limpieza de cargas y el visor global de archivos y filas de origen. Inicio solo
+conserva un aviso compacto de respaldo pendiente o antiguo con acceso a Configuración.
+Los originales activos se conservan también en `data/imports/` y pueden consultarse, inspeccionar
+por hoja y descargar desde el visor. El respaldo incluye los originales activos y retirados.
+Al restaurarlo se valida integridad, versión y hashes, se guarda una copia de seguridad automática
+de la base actual y luego se sustituye y reinicia la Suite.
+Las operaciones del panel muestran un spinner y tiempo transcurrido, y dejan un resultado de éxito,
+cancelación o error. Solo la incorporación de originales muestra un porcentaje medido; las demás
+operaciones no estiman cuánto falta. Electron solicita el destino y confirma el guardado después de
+escribir el archivo completo por streaming; un fallo no sustituye un respaldo existente. En navegadores
+sin acceso directo a archivos, la confirmación indica que el respaldo se envió al administrador de
+descargas, que debe verificarse allí.
 La pestaña Datos de Consumibles conserva únicamente las herramientas de carga coordinada y
 mantenimiento de sus fuentes.
-El encabezado global permite limpiar las cargas importadas y sus datos derivados con confirmación;
+Configuración permite limpiar las cargas importadas y sus datos derivados con confirmación;
 los archivos originales se mueven al archivo recuperable `data/imports/.removed/` y sus BLOB
 permanecen en SQLite, mientras se conservan los perfiles MPS manuales, los viajes manuales y las
 configuraciones locales.
+Limpiar cargas también modifica la base: el respaldo anterior conserva el estado previo a la limpieza.
+No hace falta descargar otro para restaurar ese respaldo; uno nuevo conserva el estado limpio y el
+trabajo manual actual. La restauración sustituye toda la base, incluido el trabajo manual.
 
 Catálogo acepta la planilla técnica XLSX y también el respaldo JSON con la estructura de familias
 de `Listado de Precios`. Además reconoce el XLSX que el catálogo web antiguo exporta por modelo,

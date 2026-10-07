@@ -1,5 +1,6 @@
 import type { SuiteDatabase } from './database';
 import type { ImportBatchStatus } from './repositories';
+import { normalizeSerial } from '../modules/consumibles/analysis';
 
 export type SuiteOverviewCounts = {
   parts: number;
@@ -29,6 +30,16 @@ export type SuiteOverview = {
   counts: SuiteOverviewCounts;
   appliedImports: number;
   recentImports: SuiteRecentImport[];
+  dashboard: {
+    portfolio: null | {
+      equipment: number;
+      equipmentWithoutSerial: number;
+      activeContracts: number;
+      unknownContracts: number;
+      contractsByType: { type: string; count: number }[];
+    };
+    canon: null | { discontinued: number; scheduled: number; unknown: number };
+  };
 };
 
 type SuiteOverviewCountRow = {
@@ -59,7 +70,7 @@ type SuiteRecentImportRow = {
 export class OverviewRepository {
   constructor(private readonly database: SuiteDatabase) {}
 
-  get(): SuiteOverview {
+  get(today = new Date().toISOString().slice(0, 10)): SuiteOverview {
     const counts = this.database
       .prepare(`
         SELECT
@@ -128,6 +139,99 @@ export class OverviewRepository {
         appliedAt: row.applied_at,
         files: row.files,
       })),
+      dashboard: {
+        portfolio: this.getPortfolio(counts),
+        canon: this.getCanon(today),
+      },
+    };
+  }
+
+  private getPortfolio(counts: SuiteOverviewCountRow): SuiteOverview['dashboard']['portfolio'] {
+    if (counts.customers === 0 && counts.contracts === 0 && counts.equipment === 0) {
+      const source = this.database.prepare(`
+        SELECT 1 FROM import_batches
+        WHERE status = 'applied' AND domain IN (
+          'operations', 'operations-fleet-contracts',
+          'operations-fleet-contract-details', 'operations-fleet-classification'
+        )
+        LIMIT 1
+      `).get();
+      if (!source) return null;
+    }
+
+    const equipment = this.database.prepare('SELECT serial_number FROM contract_equipment').all() as {
+      serial_number: string | null;
+    }[];
+    const serials = new Set<string>();
+    let equipmentWithoutSerial = 0;
+    for (const item of equipment) {
+      const serial = normalizeSerial(item.serial_number ?? '');
+      if (serial) serials.add(serial);
+      // Without a serial, each stored equipment ID remains a separate item.
+      else equipmentWithoutSerial += 1;
+    }
+
+    const contractTypes = this.database.prepare(`
+      SELECT contract_type AS type,
+        COUNT(CASE WHEN is_active = 1 THEN 1 END) AS count,
+        COUNT(CASE WHEN is_active IS NULL THEN 1 END) AS unknown
+      FROM contracts
+      GROUP BY contract_type
+      ORDER BY contract_type
+    `).all() as { type: string; count: number; unknown: number }[];
+    let activeContracts = 0;
+    let unknownContracts = 0;
+    const contractsByType = contractTypes.map(({ type, count, unknown }) => {
+      activeContracts += count;
+      unknownContracts += unknown;
+      return { type, count };
+    });
+
+    return {
+      equipment: serials.size + equipmentWithoutSerial,
+      equipmentWithoutSerial,
+      activeContracts,
+      unknownContracts,
+      contractsByType,
+    };
+  }
+
+  private getCanon(today: string): SuiteOverview['dashboard']['canon'] {
+    const result = this.database.prepare(`
+      WITH models AS (
+        SELECT item.normalized_model,
+          MAX(CASE
+            WHEN trim(item.ends_at) <> '' AND trim(item.ends_at) <= ? THEN 2
+            WHEN trim(item.ends_at) <> '' THEN 1
+            ELSE 0
+          END) AS status
+        FROM canon_discontinuation_items item
+        JOIN import_batches batch ON batch.id = item.source_batch_id
+        WHERE batch.status = 'applied'
+        GROUP BY item.normalized_model
+      )
+      SELECT
+        COUNT(*) AS models,
+        COALESCE(SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END), 0) AS discontinued,
+        COALESCE(SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END), 0) AS scheduled,
+        COALESCE(SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END), 0) AS unknown,
+        EXISTS (
+          SELECT 1 FROM import_batches
+          WHERE domain = 'operations-canon' AND status = 'applied'
+        ) AS available_source
+      FROM models
+    `).get(today) as {
+      models: number;
+      discontinued: number;
+      scheduled: number;
+      unknown: number;
+      available_source: number;
+    };
+    if (result.models === 0 && !result.available_source) return null;
+    return {
+      discontinued: result.discontinued,
+      scheduled: result.scheduled,
+      unknown: result.unknown,
     };
   }
 }

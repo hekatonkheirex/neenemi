@@ -9,6 +9,7 @@ import {
   Plane,
   Printer,
   ReceiptText,
+  Settings,
   ShieldCheck,
   Tag,
   TriangleAlert,
@@ -109,7 +110,7 @@ export default function Sidebar({
         aria-label="Módulos de la suite"
         className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto max-[720px]:grid max-[720px]:max-h-48 max-[720px]:grid-cols-2"
       >
-        {navButton(null, 'Inicio', LayoutGrid, backupDue ? <BackupAlertDot /> : null)}
+        {navButton(null, 'Inicio', LayoutGrid)}
 
         {sections.map((section) => (
           <div className="mt-4 flex flex-col gap-1 max-[720px]:contents" key={section}>
@@ -121,6 +122,9 @@ export default function Sidebar({
               .map((module) => navButton(module.id, module.label, moduleIcons[module.id]))}
           </div>
         ))}
+        <div className="mt-auto border-t border-navy/10 pt-4 dark:border-sky/20 max-[720px]:col-span-2">
+          {navButton('configuracion', 'Configuración', Settings, backupDue ? <BackupAlertDot /> : null)}
+        </div>
       </nav>
 
       {sqliteWarning && (

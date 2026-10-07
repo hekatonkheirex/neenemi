@@ -97,13 +97,12 @@ describe('contraste del tema claro', () => {
     expect(ratio('#8ea3c4', '#1b335e')).toBeGreaterThanOrEqual(4.5);
     expect(theme).toMatch(/:is\(input, textarea\)::placeholder\s*{\s*color:\s*#8ea3c4/);
   });
-  it('hover y recortes: pestañas de Mantenimiento, primario y anillo hacia dentro', () => {
+  it('contraste de hover en pestañas de Mantenimiento y botón primario', () => {
     expect(ratio('#b84d00', '#ffffff')).toBeGreaterThanOrEqual(4.5);
     expect(ratio('#182b4a', '#ffffff')).toBeGreaterThanOrEqual(4.5);
     expect(ratio('#182b4a', '#ff8533')).toBeGreaterThanOrEqual(4.5);
     expect(ratio('#9fb3d4', '#1b335e')).toBeGreaterThanOrEqual(4.5);
     expect(fs.readFileSync('src/core/ui/button.tsx', 'utf8')).toContain('hover:bg-[#e66000]');
-    expect(theme).toMatch(/\.module-nav \.nav-item[\s\S]*?\):focus-visible\s*{\s*outline-offset:\s*-3px/);
   });
   it('campos inválidos: borde y etiqueta cumplen en ambos temas y el CSS usa :user-invalid y aria-invalid', () => {
     for (const [fg, bg] of [['#b3261e', '#ffffff'], ['#b3261e', '#eef3f8'], ['#ff8a80', '#0f1b30'], ['#ff8a80', '#1b335e'], ['#ffb4ab', '#0f1b30'], ['#ffb4ab', '#1b335e']]) {

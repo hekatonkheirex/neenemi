@@ -543,7 +543,7 @@ export class MaintenanceRepository {
     return this.listRules(batch.id);
   }
 
-  listCurrentAnalyses(query?: string, limitMonths = 3): MaintenanceAnalysis[] {
+  listCurrentAnalyses(query?: string): MaintenanceAnalysis[] {
     const batch = this.getCurrentBatch();
     if (!batch) return [];
 
@@ -588,7 +588,6 @@ export class MaintenanceRepository {
         optimalBase: rule.optimal_base,
         maxWaste: rule.max_waste,
       })),
-      Math.max(1, Math.min(12, Math.floor(limitMonths))),
     );
 
     const normalizedQuery = query?.trim() ?? '';

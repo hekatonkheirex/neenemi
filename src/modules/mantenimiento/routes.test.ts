@@ -73,7 +73,7 @@ describe('maintenance API', () => {
         analyzedEquipment: 1,
       });
 
-      const analysisResponse = await fetch(`${baseUrl}/api/maintenance/analysis?months=2&query=SER-HIST-001`);
+      const analysisResponse = await fetch(`${baseUrl}/api/maintenance/analysis?query=SER-HIST-001`);
       expect(await analysisResponse.json()).toEqual([
         expect.objectContaining({
           serialNumber: 'SER-HIST-001',

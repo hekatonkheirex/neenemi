@@ -36,6 +36,11 @@ html[data-theme] .app-shell .proforma-page :is(input, textarea)::placeholder {
 }
 
 /* Los ítems que llenan contenedores con overflow llevan el anillo hacia dentro. */
-html[data-theme] :is(.module-nav .nav-item, .anim-tabs button):focus-visible {
+html[data-theme] :is(.sidebar nav button, .anim-tabs button):focus-visible {
   outline-offset: -3px;
+}
+
+/* El anillo de teclado sustituye la barra activa, no se superpone a ella. */
+html[data-theme] .sidebar nav button[aria-current='page']:focus-visible {
+  box-shadow: none;
 }

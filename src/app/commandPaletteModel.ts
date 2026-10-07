@@ -8,6 +8,7 @@ export function buildPaletteEntries(modules: readonly SuiteModule[], sectionLabe
   return [
     { id: null, label: 'Inicio', hint: 'Panel general' },
     ...modules.map((module) => ({ id: module.id, label: module.label, hint: sectionLabels[module.section] })),
+    { id: 'configuracion', label: 'Configuración', hint: 'Datos y respaldos · archivos originales · limpieza de cargas' },
   ];
 }
 

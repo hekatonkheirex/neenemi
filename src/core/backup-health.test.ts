@@ -42,6 +42,14 @@ describe('cambios manuales', () => {
     expect(isDataChange('POST', '/api/system/import-originals/backfill')).toBe(false);
     expect(isDataChange('POST', '/index.html')).toBe(false);
   });
+  it('las consultas de rutas y direcciones de Tracking no son cambios de datos', () => {
+    expect(isDataChange('POST', '/api/tracking/route')).toBe(false);
+    expect(isDataChange('POST', '/api/tracking/route/')).toBe(false);
+    expect(isDataChange('post', '/api/tracking/geocode')).toBe(false);
+    expect(isDataChange('POST', '/api/tracking/import')).toBe(true);
+    expect(isDataChange('PUT', '/api/tracking/sites')).toBe(true);
+    expect(isDataChange('DELETE', '/api/tracking/sites/site-1')).toBe(true);
+  });
 });
 
 describe('readBackupHealth', () => {

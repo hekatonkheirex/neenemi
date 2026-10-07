@@ -6,6 +6,7 @@ const { migrateLegacyDataDirectory, listLegacyDataSources } = require('./migrate
 const { attachUnloadGuard } = require('./unload-guard.cjs');
 const { openExternalSafely } = require('./external-url.cjs');
 const { isLocalUrl, assertTrustedSender } = require('./trusted-sender.cjs');
+const { saveBackupFile } = require('./backup-download.cjs');
 
 const WINDOW_BACKGROUND_COLOR = '#0b1220';
 let localApiProcess;
@@ -95,6 +96,25 @@ function createWindow(rendererUrl) {
 
   void window.loadURL(rendererUrl);
 }
+
+ipcMain.handle('datasystems:save-backup', async (event) => {
+  assertTrustedSender(event);
+  const window = BrowserWindow.fromWebContents(event.sender);
+  if (!window || !activeRendererUrl || !isLocalUrl(activeRendererUrl)) {
+    throw new Error('No se encontró la ventana local de DCSS Suite.');
+  }
+  const defaultFileName = `dcss-suite-backup-${new Date().toISOString().replaceAll(':', '-')}.sqlite`;
+  const result = await dialog.showSaveDialog(window, {
+    title: 'Guardar respaldo completo',
+    defaultPath: path.join(app.getPath('documents'), defaultFileName),
+    filters: [{ name: 'Respaldo SQLite', extensions: ['sqlite'] }],
+    properties: ['showOverwriteConfirmation'],
+  });
+  if (result.canceled || !result.filePath) return { saved: false };
+  const filePath = result.filePath.toLowerCase().endsWith('.sqlite') ? result.filePath : `${result.filePath}.sqlite`;
+  await saveBackupFile(new URL('/api/system/backup', activeRendererUrl), filePath);
+  return { saved: true, filePath };
+});
 
 ipcMain.handle('datasystems:save-current-page-as-pdf', async (event, options) => {
   assertTrustedSender(event);

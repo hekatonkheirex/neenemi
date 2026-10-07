@@ -8,6 +8,7 @@ import type { SuiteDatabase } from '../../db/database';
 import { ImportRepository } from '../../db/repositories';
 import type { TrackingState } from './types';
 import { siteKey, validateEvent } from './analysis';
+import { recordBackup } from '../../core/backup-health';
 
 const resources: { server: Server; database: SuiteDatabase; directory: string }[] = [];
 afterEach(async () => {
@@ -36,6 +37,16 @@ describe('tracking persisted analysis', () => {
     expect(initial.snapshot?.visits[0]).toMatchObject({ matchedReport: true, branch: 'Centro' });
     const confirmed = await fetch(`${base}/api/tracking/sites`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ visitKey: initial.snapshot!.visits[0].key, latitude: -25, longitude: -57, address: 'Referencia independiente' }) });
     expect(confirmed.status).toBe(200);
+    recordBackup(database);
+    const route = await fetch(`${base}/api/tracking/route`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ legs: [] }),
+    });
+    expect(route.status).toBe(200);
+    await route.json();
+    const afterReading = await (await fetch(`${base}/api/system/backup/status`)).json();
+    expect(afterReading).toMatchObject({ level: 'ok', changedSinceBackup: false });
     const badCoordinate = await fetch(`${base}/api/tracking/sites`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ visitKey: initial.snapshot!.visits[0].key, latitude: 999, longitude: -57 }) });
     expect(badCoordinate.status).toBe(400);
     const invalid = await fetch(`${base}/api/tracking/import`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...payload, geolocation: { fileName: 'bad.csv', contentBase64: Buffer.from('sin encabezados').toString('base64') } }) });
@@ -47,6 +58,8 @@ describe('tracking persisted analysis', () => {
     expect(imports.listBatches().map(batch => batch.status)).toEqual(['applied']);
     const removed = await fetch(`${base}/api/tracking/sites/${encodeURIComponent(persisted.sites[0].key)}`, { method: 'DELETE' });
     expect((await removed.json() as TrackingState).sites).toEqual([]);
+    const afterRemovingSite = await (await fetch(`${base}/api/system/backup/status`)).json();
+    expect(afterRemovingSite).toMatchObject({ level: 'pending', changedSinceBackup: true });
   });
   it('reuses a manually confirmed equipment location across reports and later imports', async () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dcss-tracking-serial-api-'));

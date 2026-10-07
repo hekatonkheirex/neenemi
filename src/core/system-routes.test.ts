@@ -8,6 +8,7 @@ import { ImportRepository, SettingsRepository } from '../db/repositories';
 import { storeImportFile } from './import-storage';
 import { openDatabase } from '../db/database';
 import { makeTemporaryDataDirectory, resolveImportJob } from '../test-support/api-helpers';
+import { readBackupHealth, recordBackup, recordChange } from './backup-health';
 
 describe('system API', () => {
   it('reports that the shared SQLite database is ready', async () => {
@@ -170,6 +171,9 @@ describe('system API', () => {
       contentBlob: removedOriginal,
     });
     imports.removeBatch(removedBatchId);
+    imports.markApplied(batchId);
+    recordBackup(database, new Date('2026-09-10T12:00:00.000Z'));
+    recordChange(database, new Date('2026-09-10T12:01:00.000Z'));
     const settings = new SettingsRepository(database);
     settings.set('ai', 'openrouter_api_key', 'secret-key');
     settings.set('keep', 'value', 'ok');
@@ -205,6 +209,12 @@ describe('system API', () => {
       fs.writeFileSync(downloadedPath, backup);
       const downloadedDatabase = new Database(downloadedPath, { readonly: true, fileMustExist: true });
       try {
+        expect(readBackupHealth(downloadedDatabase)).toMatchObject({
+          level: 'ok',
+          lastBackupAt: health.lastBackupAt,
+          loadsSinceBackup: 0,
+          changedSinceBackup: false,
+        });
         const saved = downloadedDatabase.prepare('SELECT content_blob FROM import_files WHERE file_name = ?').get('catalogo.xlsx') as { content_blob: Buffer };
         expect(new Uint8Array(saved.content_blob)).toEqual(original);
         const archived = downloadedDatabase.prepare('SELECT content_blob FROM archived_import_files WHERE id = ?').get(removedFileId) as { content_blob: Buffer };

@@ -16,11 +16,12 @@ describe('maintenance analysis', () => {
     expect(calcAppliedWaste(750_000, 1_500_000, 0.68)).toBeCloseTo(0.34);
 
     const records: MaintenanceCounterRecord[] = [
+      record('2026-04', 100_000, 500_000),
       record('2026-05', 20_000, 600_000),
       record('2026-06', 25_000, 700_000),
       record('2026-07', 30_000, 800_000),
     ];
-    const [analysis] = analyzeEquipmentCounters(records, rules, 3);
+    const [analysis] = analyzeEquipmentCounters(records, rules);
 
     expect(analysis).toMatchObject({
       serialNumber: 'SER-001',
@@ -29,7 +30,7 @@ describe('maintenance analysis', () => {
       status: 'CRÍTICO',
       latestCounter: 800_000,
     });
-    expect(analysis.periods).toHaveLength(3);
+    expect(analysis.periods.map((period) => period.period)).toEqual(['2026-05', '2026-06', '2026-07']);
   });
 });
 

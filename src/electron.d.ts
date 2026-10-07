@@ -3,6 +3,7 @@ export {};
 declare global {
   interface Window {
     dataSystemsDesktop?: {
+      saveBackup?: () => Promise<{ saved: boolean; filePath?: string }>;
       saveCurrentPageAsPdf: (options?: { defaultFileName?: string; landscape?: boolean }) => Promise<{
         saved: boolean;
         filePath?: string;

@@ -2,23 +2,44 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { openDatabase } from './database';
+import { openDatabase, type SuiteDatabase } from './database';
 import { OverviewRepository } from './overview';
 import { ImportRepository } from './repositories';
 
 const temporaryDirectories: string[] = [];
+const temporaryDatabases: SuiteDatabase[] = [];
 
 function makeDatabase() {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'datasystems-suite-overview-'));
   temporaryDirectories.push(directory);
-  return openDatabase(path.join(directory, 'suite.sqlite'));
+  const database = openDatabase(path.join(directory, 'suite.sqlite'));
+  temporaryDatabases.push(database);
+  return database;
 }
 
 afterEach(() => {
+  for (const database of temporaryDatabases.splice(0)) {
+    database.close();
+  }
   for (const directory of temporaryDirectories.splice(0)) {
     fs.rmSync(directory, { recursive: true, force: true });
   }
 });
+
+function insertCanonItems(
+  database: SuiteDatabase,
+  batchId: string,
+  items: Array<{ id: string; model: string; endsAt: string; code?: string; voltage?: string }>,
+) {
+  const insert = database.prepare(`
+    INSERT INTO canon_discontinuation_items (
+      id, model_label, normalized_model, part_code, ends_at, voltage, source_batch_id, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, '2026-01-01T00:00:00Z')
+  `);
+  for (const item of items) {
+    insert.run(item.id, item.model, item.model, item.code ?? '', item.endsAt, item.voltage ?? null, batchId);
+  }
+}
 
 describe('OverviewRepository', () => {
   it('summarizes shared records and the latest import sources', () => {
@@ -51,6 +72,197 @@ describe('OverviewRepository', () => {
       })],
     }));
 
-    database.close();
+  });
+
+  it('keeps unavailable business sources null even when generic parts and unrelated imports exist', () => {
+    const database = makeDatabase();
+    const imports = new ImportRepository(database);
+    const batchId = imports.createBatch({ domain: 'sales-catalog', sourceName: 'catalog.xlsx' });
+    imports.markApplied(batchId);
+    database.prepare(`
+      INSERT INTO parts (id, brand, code, normalized_code, description, category, created_at, updated_at)
+      VALUES ('part-1', 'Canon', 'ABC', 'ABC', 'Generic part', NULL, '2026-01-01', '2026-01-01')
+    `).run();
+
+    const result = new OverviewRepository(database).get('2026-10-07');
+
+    expect(result.dashboard).toEqual({
+      portfolio: null,
+      canon: null,
+    });
+    expect(result.counts.parts).toBe(1);
+    expect(result.appliedImports).toBe(1);
+  });
+
+  it.each([
+    'operations',
+    'operations-fleet-contracts',
+    'operations-fleet-contract-details',
+    'operations-fleet-classification',
+  ])('distinguishes an applied empty portfolio source from a staged source: %s', (domain) => {
+    const database = makeDatabase();
+    const imports = new ImportRepository(database);
+    const overview = new OverviewRepository(database);
+    const batchId = imports.createBatch({ domain, sourceName: 'empty-portfolio.xlsx' });
+
+    expect(overview.get('2026-10-07').dashboard.portfolio).toBeNull();
+    imports.markApplied(batchId);
+    expect(overview.get('2026-10-07').dashboard.portfolio).toEqual({
+      equipment: 0,
+      equipmentWithoutSerial: 0,
+      activeContracts: 0,
+      unknownContracts: 0,
+      contractsByType: [],
+    });
+  });
+
+  it('uses manual portfolio records even without a source import', () => {
+    const database = makeDatabase();
+    database.prepare(`
+      INSERT INTO customers (id, name, normalized_name, created_at, updated_at)
+      VALUES ('customer-1', 'Cliente Uno', 'CLIENTE UNO', '2026-01-01', '2026-01-01')
+    `).run();
+
+    expect(new OverviewRepository(database).get('2026-10-07').dashboard.portfolio).toEqual({
+      equipment: 0,
+      equipmentWithoutSerial: 0,
+      activeContracts: 0,
+      unknownContracts: 0,
+      contractsByType: [],
+    });
+  });
+
+  it('deduplicates equipment across contracts and counts only explicitly active contracts by their actual types', () => {
+    const database = makeDatabase();
+    const imports = new ImportRepository(database);
+    for (const sourceName of ['portfolio-old.xlsx', 'portfolio-new.xlsx']) {
+      imports.markApplied(imports.createBatch({ domain: 'operations', sourceName }));
+    }
+    database.prepare(`
+      INSERT INTO customers (id, name, normalized_name, created_at, updated_at)
+      VALUES ('customer-1', 'Cliente Uno', 'CLIENTE UNO', '2026-01-01', '2026-01-01')
+    `).run();
+    const insertContract = database.prepare(`
+      INSERT INTO contracts (id, customer_id, contract_type, is_active, starts_at, ends_at, created_at, updated_at)
+      VALUES (?, 'customer-1', ?, ?, '2025-01-01', '2030-01-01', '2026-01-01', '2026-01-01')
+    `);
+    insertContract.run('active-1', 'Alquiler', 1);
+    insertContract.run('active-2', 'Servicio especial', 1);
+    insertContract.run('inactive', 'Leasing', 0);
+    insertContract.run('unknown-1', 'Alquiler', null);
+    insertContract.run('unknown-2', 'Mantenimiento', null);
+    const insertEquipment = database.prepare(`
+      INSERT INTO contract_equipment (id, contract_id, model_label, serial_number, brand, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, '2026-01-01', '2026-01-01')
+    `);
+    insertEquipment.run('equipment-1', 'active-1', 'Model One', ' ser  001 ', 'Canon');
+    insertEquipment.run('equipment-2', 'unknown-1', 'Model Two', 'ＳＥＲ　００１', 'Other brand');
+    insertEquipment.run('equipment-3', 'active-2', 'Model Three', 'serial-002', 'Canon');
+    insertEquipment.run('equipment-4', 'inactive', 'Model Three', ' SERIAL-002 ', 'Canon');
+    insertEquipment.run('equipment-5', 'active-1', 'Same model', null, 'Canon');
+    insertEquipment.run('equipment-6', 'active-1', 'Same model', '', 'Canon');
+    insertEquipment.run('equipment-7', 'unknown-2', 'Same model', ' \t ', 'Canon');
+
+    const result = new OverviewRepository(database).get('2026-10-07');
+
+    expect(result.dashboard.portfolio).toEqual({
+      equipment: 5,
+      equipmentWithoutSerial: 3,
+      activeContracts: 2,
+      unknownContracts: 2,
+      contractsByType: [
+        { type: 'Alquiler', count: 1 },
+        { type: 'Leasing', count: 0 },
+        { type: 'Mantenimiento', count: 0 },
+        { type: 'Servicio especial', count: 1 },
+      ],
+    });
+    expect(result.counts.contracts).toBe(5);
+    expect(result.counts.equipment).toBe(7);
+    expect(result.appliedImports).toBe(2);
+  });
+
+  it('distinguishes an applied empty Canon source from an unavailable source', () => {
+    const database = makeDatabase();
+    const imports = new ImportRepository(database);
+    const overview = new OverviewRepository(database);
+    const batchId = imports.createBatch({ domain: 'operations-canon', sourceName: 'empty-canon.xlsx' });
+
+    expect(overview.get('2026-10-07').dashboard.canon).toBeNull();
+    imports.markApplied(batchId);
+    expect(overview.get('2026-10-07').dashboard.canon).toEqual({
+      discontinued: 0,
+      scheduled: 0,
+      unknown: 0,
+    });
+  });
+
+  it('ignores Canon rows belonging to staged or failed imports', () => {
+    const database = makeDatabase();
+    const imports = new ImportRepository(database);
+    const staged = imports.createBatch({ domain: 'operations-canon', sourceName: 'staged.xlsx' });
+    const failed = imports.createBatch({ domain: 'operations-canon', sourceName: 'failed.xlsx' });
+    insertCanonItems(database, staged, [{ id: 'staged', model: 'STAGED', endsAt: '2020-01-01' }]);
+    insertCanonItems(database, failed, [{ id: 'failed', model: 'FAILED', endsAt: '2020-01-01' }]);
+    imports.markFailed(failed);
+
+    expect(new OverviewRepository(database).get('2026-10-07').dashboard.canon).toBeNull();
+  });
+
+  it('counts distinct Canon models with inclusive date boundaries and discontinued then scheduled precedence', () => {
+    const database = makeDatabase();
+    const imports = new ImportRepository(database);
+    const older = imports.createBatch({ domain: 'operations-canon', sourceName: 'older-canon.xlsx' });
+    const newer = imports.createBatch({ domain: 'operations-canon', sourceName: 'newer-canon.xlsx' });
+    const staged = imports.createBatch({ domain: 'operations-canon', sourceName: 'staged-canon.xlsx' });
+    insertCanonItems(database, older, [
+      { id: 'boundary', model: 'BOUNDARY', endsAt: '2026-10-07', code: 'A', voltage: '120' },
+      { id: 'past', model: 'PAST', endsAt: '2026-10-06' },
+      { id: 'scheduled', model: 'SCHEDULED', endsAt: '2026-10-08' },
+      { id: 'undated', model: 'UNDATED', endsAt: '' },
+      { id: 'whitespace', model: 'WHITESPACE', endsAt: '   ' },
+    ]);
+    insertCanonItems(database, newer, [
+      { id: 'boundary-duplicate', model: 'BOUNDARY', endsAt: '2026-10-07', code: 'A', voltage: '220' },
+      { id: 'boundary-other-code', model: 'BOUNDARY', endsAt: '2026-10-07', code: 'B', voltage: '220' },
+      { id: 'boundary-future', model: 'BOUNDARY', endsAt: '2027-01-01' },
+      { id: 'boundary-undated', model: 'BOUNDARY', endsAt: '' },
+      { id: 'scheduled-duplicate', model: 'SCHEDULED', endsAt: '2026-10-08', code: 'C' },
+      { id: 'scheduled-undated', model: 'SCHEDULED', endsAt: '' },
+      { id: 'undated-duplicate', model: 'UNDATED', endsAt: '', code: 'D' },
+    ]);
+    insertCanonItems(database, staged, [
+      { id: 'ignored-past', model: 'SCHEDULED', endsAt: '2020-01-01' },
+      { id: 'ignored-extra', model: 'NOT APPLIED', endsAt: '2020-01-01' },
+    ]);
+    imports.markApplied(older);
+    imports.markApplied(newer);
+    const overview = new OverviewRepository(database);
+
+    expect(overview.get('2026-10-07').dashboard.canon).toEqual({
+      discontinued: 2,
+      scheduled: 1,
+      unknown: 2,
+    });
+    expect(overview.get('2026-10-08').dashboard.canon).toEqual({
+      discontinued: 3,
+      scheduled: 0,
+      unknown: 2,
+    });
+    expect(overview.get('2026-10-07').counts.modelSupportItems).toBe(14);
+  });
+
+  it('recognizes eligible Canon records from an applied batch independently of its historical domain', () => {
+    const database = makeDatabase();
+    const imports = new ImportRepository(database);
+    const batchId = imports.createBatch({ domain: 'historical-support', sourceName: 'support.xlsx' });
+    insertCanonItems(database, batchId, [{ id: 'historical', model: 'HISTORICAL', endsAt: '2026-10-07' }]);
+    imports.markApplied(batchId);
+
+    expect(new OverviewRepository(database).get('2026-10-07').dashboard.canon).toEqual({
+      discontinued: 1,
+      scheduled: 0,
+      unknown: 0,
+    });
   });
 });

@@ -4,6 +4,8 @@ import type { ServiceRecord } from '../servicios/types';
 import { usdToPyg } from './analysis';
 import { buildContractCostGroups, buildFamilyAnalysis, buildServiceTrendRows, buildSwapFlags, isServiceConsumable } from './legacy-analysis';
 import { LegacyDonutChart, LegacyHorizontalStackedBars, LegacyLineChart, LegacyStackedBarChart } from './LegacyCharts';
+import ConsumablesClientRankingChart from './ConsumablesClientRankingChart';
+import { addRecordToCostParts, buildClientRows, CONSUMABLES_COST_COLORS, emptyCostParts, formatPygValue, rankClientRows, type CostParts, type RankingClientRow } from './client-ranking';
 import { outputOperationalDetail } from './output-display';
 import { buildClientHistory, type ClientHistoryEntry } from './client-history';
 import { sourceOperationalValues } from '../../core/source-details';
@@ -25,11 +27,8 @@ const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 
 const decimalFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 1 });
 
 const FAMILY_COLORS = {
-  // Azul medio: el azul marino de la marca desaparecía sobre el panel oscuro.
-  original: '#4f7bc4',
-  compatible: '#ff6b00',
+  ...CONSUMABLES_COST_COLORS,
   other: '#00a3e0',
-  parts: '#7c3aed',
 };
 
 export function ConsumablesFamilyAnalysisPanel({ records, family }: { records: ConsumablesRecord[]; family: ConsumablesFamily }) {
@@ -414,7 +413,7 @@ export function ConsumablesRankingPanel({ records, query }: { records: Consumabl
   const filteredEquipment = useMemo(() => filterRankingRows(equipmentRows, search), [equipmentRows, search]);
   const sortedClients = useMemo(() => sortRows(filteredClients, (row) => rankingSortValue(row, sortKey), sortDirection), [filteredClients, sortDirection, sortKey]);
   const sortedEquipment = useMemo(() => sortRows(filteredEquipment, (row) => rankingSortValue(row, sortKey), sortDirection), [filteredEquipment, sortDirection, sortKey]);
-  const rankedClients = useMemo(() => sortRows(clientRows, (row) => row.totalCostUsd, 'desc'), [clientRows]);
+  const rankedClients = useMemo(() => rankClientRows(clientRows), [clientRows]);
   const rankedEquipment = useMemo(() => sortRows(equipmentRows, (row) => row.totalCostUsd, 'desc'), [equipmentRows]);
   const totalCost = records.reduce((sum, record) => sum + record.costUsd, 0);
   const compatibleEquipment = equipmentRows.filter((row) => row.compatibleQuantity > 0).length;
@@ -449,16 +448,7 @@ export function ConsumablesRankingPanel({ records, query }: { records: Consumabl
         <div className="grid min-w-0 gap-4 @[44rem]:grid-cols-2">
           <section className="min-w-0 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
             <div className="mb-2 grid gap-0.5"><div className="text-sm font-bold text-navy dark:text-white">Top 10 clientes por costo</div><Muted>originales, compatibles y repuestos</Muted></div>
-            <LegacyHorizontalStackedBars
-              labels={rankedClients.slice(0, 10).map((row) => row.clientName)}
-              series={[
-                { label: 'Originales', color: FAMILY_COLORS.original, values: rankedClients.slice(0, 10).map((row) => usdToPyg(row.originalCostUsd)) },
-                { label: 'Compatibles', color: FAMILY_COLORS.compatible, values: rankedClients.slice(0, 10).map((row) => usdToPyg(row.compatibleCostUsd)) },
-                { label: 'Repuestos', color: FAMILY_COLORS.parts, values: rankedClients.slice(0, 10).map((row) => usdToPyg(row.partCostUsd)) },
-              ]}
-              valueFormatter={formatPygValue}
-              ariaLabel="Top 10 clientes por costo de consumibles y repuestos"
-            />
+            <ConsumablesClientRankingChart rankedClients={rankedClients} />
           </section>
           <section className="min-w-0 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30">
             <div className="mb-2 grid gap-0.5"><div className="text-sm font-bold text-navy dark:text-white">Top 10 equipos por costo</div><Muted>ordenados por total acumulado</Muted></div>
@@ -785,44 +775,9 @@ function buildServiceRows(services: ServiceRecord[], outputs: ConsumablesOutputR
   return [...bySerial.values()];
 }
 
-type CostParts = { originalQuantity: number; originalCostUsd: number; compatibleQuantity: number; compatibleCostUsd: number; partQuantity: number; partCostUsd: number; totalCostUsd: number; records: number; equipment: number };
-type RankingClientRow = CostParts & { key: string; clientName: string; customerType: string; commercialArea: string; equipmentIds: Set<string> };
 type RankingEquipmentRow = CostParts & { key: string; modelLabel: string; serialNumber: string; clientName: string; customerType: string; commercialArea: string; contractReference: string; orderReference: string; contractCommercialArea: string; division: string; family: string };
 type RankingSortKey = 'client' | 'model' | 'serial' | 'original' | 'compatible' | 'parts' | 'equipment' | 'cost';
 
-function emptyCostParts(): CostParts {
-  return { originalQuantity: 0, originalCostUsd: 0, compatibleQuantity: 0, compatibleCostUsd: 0, partQuantity: 0, partCostUsd: 0, totalCostUsd: 0, records: 0, equipment: 0 };
-}
-
-function addRecordToCostParts(target: CostParts, record: ConsumablesRecord) {
-  target.records += 1;
-  target.totalCostUsd += record.costUsd;
-  if (record.recordKind === 'part') {
-    target.partQuantity += record.quantity;
-    target.partCostUsd += record.costUsd;
-  } else if (record.classification === 'original') {
-    target.originalQuantity += record.quantity;
-    target.originalCostUsd += record.costUsd;
-  } else {
-    target.compatibleQuantity += record.quantity;
-    target.compatibleCostUsd += record.costUsd;
-  }
-}
-
-function buildClientRows(records: ConsumablesRecord[]): RankingClientRow[] {
-  const byClient = new Map<string, RankingClientRow>();
-  for (const record of records) {
-    const key = record.customerName || 'Sin cliente';
-    const current = byClient.get(key) ?? { key, clientName: key, customerType: record.customerType, commercialArea: record.commercialArea, equipmentIds: new Set<string>(), ...emptyCostParts() };
-    addRecordToCostParts(current, record);
-    current.equipmentIds.add(record.equipmentId || record.serialNumber);
-    current.equipment = current.equipmentIds.size;
-    if (!current.customerType && record.customerType) current.customerType = record.customerType;
-    if (!current.commercialArea && record.commercialArea) current.commercialArea = record.commercialArea;
-    byClient.set(key, current);
-  }
-  return [...byClient.values()];
-}
 
 function buildEquipmentRows(records: ConsumablesRecord[]): RankingEquipmentRow[] {
   const byEquipment = new Map<string, RankingEquipmentRow>();
@@ -959,9 +914,6 @@ function formatPyg(valueUsd: number): string {
   return `₲ ${integerFormat.format(usdToPyg(valueUsd))}`;
 }
 
-function formatPygValue(valuePyg: number): string {
-  return `₲ ${integerFormat.format(Math.round(valuePyg))}`;
-}
 
 function percentage(value: number, total: number): string {
   return `${total > 0 ? Math.round((value / total) * 100) : 0}%`;

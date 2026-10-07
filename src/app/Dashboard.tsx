@@ -1,82 +1,99 @@
 import type { ReactNode } from 'react';
+import { ArrowUpRight, TriangleAlert } from 'lucide-react';
 import type { SuiteOverview } from '../db/overview';
 import { cn } from '../core/cn';
-import DatabaseRecoveryPanel, { type BackupHealth } from './DatabaseRecoveryPanel';
-import ImportArchivePanel from './ImportArchivePanel';
-
-export type ClearImportsMessage = { tone: 'success' | 'error'; text: string };
-export type ImportArchiveBatch = { id: string; sourceName: string };
+import type { BackupHealth } from './DatabaseRecoveryPanel';
+import { Button } from '../core/ui/button';
+import { Card, CardHeader, Muted } from '../core/ui/card';
+import DashboardMaintenanceChart from '../modules/mantenimiento/DashboardMaintenanceChart';
+import DashboardConsumablesChart from '../modules/consumibles/DashboardConsumablesChart';
+import DashboardTravelCharts from '../modules/viaticos/DashboardTravelCharts';
 
 type DashboardProps = {
   moduleCount: number;
   overview: SuiteOverview | null;
-  onBackupLevel: (level: BackupHealth['level']) => void;
-  importsRefreshKey: number;
-  onClearImports: () => void;
-  clearingImports: boolean;
-  clearImportsMessage: ClearImportsMessage | null;
+  overviewError: string;
+  backupLevel: BackupHealth['level'] | null;
+  onNavigate: (id: string) => void;
 };
 
 const numberFormat = new Intl.NumberFormat('es-PY');
 const dateFormat = new Intl.DateTimeFormat('es-PY', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-// ponytail: texto en <div>, no <span>/<p>/<strong>: el CSS heredado del tema claro les pone color con más especificidad.
 function SummaryCard({ value, label, accent }: { value: ReactNode; label: string; accent?: boolean }) {
   return (
-    <div
-      className={cn(
-        '@container flex min-h-30 flex-col justify-between rounded-2xl border p-5 shadow-md',
-        accent
-          ? 'border-brand/60 bg-linear-to-br from-navy to-[#25406b] text-white'
-          : 'border-navy/10 bg-white text-navy dark:border-sky/20 dark:bg-panel dark:text-white',
-      )}
-    >
+    <div className={cn(
+      '@container flex min-h-30 flex-col justify-between rounded-2xl border p-5 shadow-md',
+      accent ? 'border-brand/60 bg-linear-to-br from-navy to-[#25406b] text-white' : 'border-navy/10 bg-white text-navy dark:border-sky/20 dark:bg-panel dark:text-white',
+    )}>
       <div className="whitespace-nowrap text-[clamp(1.1rem,12cqi,2.5rem)] font-extrabold tracking-tight">{value}</div>
       <div className={cn('text-xs', accent ? 'text-white/80' : 'text-ink-2 dark:text-[#9fb2d1]')}>{label}</div>
     </div>
   );
 }
 
-export default function Dashboard({
-  moduleCount,
-  overview,
-  onBackupLevel,
-  importsRefreshKey,
-  onClearImports,
-  clearingImports,
-  clearImportsMessage,
-}: DashboardProps) {
+function MetricCard({ label, value, note, onClick }: { label: string; value: number | string; note: string; onClick: () => void }) {
+  return <button type="button" onClick={onClick} className="grid min-w-0 content-start gap-3 rounded-xl border border-navy/10 bg-paper p-4 text-left text-navy transition-colors hover:border-sky hover:bg-sky/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky dark:border-sky/20 dark:bg-navy/30 dark:text-white">
+    <div className="flex items-start justify-between gap-3 text-sm font-semibold"><div>{label}</div><ArrowUpRight className="size-4 shrink-0 text-sky" aria-hidden="true" /></div>
+    <div className="text-3xl font-bold tracking-tight tabular-nums">{typeof value === 'number' ? numberFormat.format(value) : value}</div>
+    <div className="text-xs leading-relaxed text-ink-2 dark:text-[#9fb2d1]">{note}</div>
+  </button>;
+}
+
+export default function Dashboard({ moduleCount, overview, overviewError, backupLevel, onNavigate }: DashboardProps) {
   const lastApplied = overview?.recentImports.find((item) => item.appliedAt)?.appliedAt;
+  const portfolio = overview?.dashboard.portfolio;
+  const canon = overview?.dashboard.canon;
+  const missing = overview ? 'Sin datos' : overviewError ? 'No disponible' : 'Cargando…';
+  const hasData = overview && (overview.appliedImports > 0 || Object.values(overview.counts).some(value => value > 0));
+  const backupWarning = backupLevel === 'pending' || backupLevel === 'stale' || (backupLevel === 'never' && hasData);
 
-  return (
-    <div className="page-content">
-      <section>
-        <div className="eyebrow">DCSS SUITE / DATA SYSTEMS</div>
-        <h1>DCSS Suite</h1>
-        <div className="max-w-3xl text-base leading-relaxed text-ink-2 dark:text-[#b4c3dc]">
-          Un solo Electron, una base local y todos los módulos de trabajo en el mismo lugar.
+  return <div className="page-content min-w-0">
+    <section>
+      <div className="eyebrow">DCSS SUITE / DATA SYSTEMS</div>
+      <h1>DCSS Suite</h1>
+      <div className="max-w-3xl text-base leading-relaxed text-ink-2 dark:text-[#b4c3dc]">Un solo Electron, una base local y todos los módulos de trabajo en el mismo lugar.</div>
+    </section>
+
+    <section aria-label="Resumen de la suite" className="my-6 grid gap-3 md:grid-cols-3">
+      <SummaryCard accent value={moduleCount} label="módulos funcionales" />
+      <SummaryCard value={overview ? numberFormat.format(overview.counts.contracts) : '—'} label="contratos en cartera" />
+      <SummaryCard value={lastApplied ? dateFormat.format(new Date(lastApplied)) : '—'} label="última carga aplicada" />
+    </section>
+
+    {backupWarning && <div role="status" className="mb-6 flex min-w-0 flex-wrap items-center gap-3 rounded-xl border border-brand/30 bg-brand/5 p-4 text-sm text-navy dark:text-white">
+      <TriangleAlert className="size-5 shrink-0 text-brand" aria-hidden="true" />
+      <div className="min-w-0 flex-1">{backupLevel === 'pending' ? 'La base cambió desde el último respaldo.' : backupLevel === 'stale' ? 'El último respaldo tiene una semana o más.' : 'Hay información cargada y todavía no se generó un respaldo.'} Revisa su estado en Configuración.</div>
+      <Button variant="outline" size="sm" onClick={() => onNavigate('configuracion')}>Datos y respaldos</Button>
+    </div>}
+
+    {overviewError && <div role="alert" className="mb-6 rounded-xl border border-brand/30 p-4 text-sm text-navy dark:text-white">{overviewError} Los indicadores no están disponibles; no se muestran como cero.</div>}
+
+    <div className="grid min-w-0 gap-6" aria-label="Indicadores de los módulos" aria-busy={!overview && !overviewError}>
+      <Card className="min-w-0 grid-cols-1">
+        <CardHeader eyebrow="CARTERA Y EQUIPOS" title="Base instalada y contratos" />
+        <Muted>Resumen general de la cartera, sin los filtros particulares de cada módulo.</Muted>
+        <div className={cn('grid min-w-0 gap-3 sm:grid-cols-2', portfolio?.contractsByType.length && 'xl:grid-cols-3')}>
+          <MetricCard label="Equipos con contrato" value={portfolio?.equipment ?? missing} note={portfolio ? `Series únicas entre contratos. Registros sin serie: ${numberFormat.format(portfolio.equipmentWithoutSerial)} (contados por separado).` : 'Carga la cartera para consultar los equipos.'} onClick={() => onNavigate('descontinuador')} />
+          <MetricCard label="Contratos activos" value={portfolio?.activeContracts ?? missing} note={portfolio ? `Solo los marcados como activos. Contratos sin estado: ${numberFormat.format(portfolio.unknownContracts)} (excluidos).` : 'El estado activo se toma de la cartera cargada.'} onClick={() => onNavigate('descontinuador')} />
+          {portfolio?.contractsByType.map(item => <MetricCard key={item.type} label={`Contratos activos · ${item.type}`} value={item.count} note="Contratos activos de este tipo en la cartera." onClick={() => onNavigate('descontinuador')} />)}
         </div>
-      </section>
+      </Card>
 
-      <section aria-label="Resumen de la suite" className="my-6 grid gap-3 md:grid-cols-3">
-        <SummaryCard accent value={moduleCount} label="módulos funcionales" />
-        <SummaryCard value={overview ? numberFormat.format(overview.counts.contracts) : '—'} label="contratos en cartera" />
-        <SummaryCard value={lastApplied ? dateFormat.format(new Date(lastApplied)) : '—'} label="última carga aplicada" />
-      </section>
-
-      <DatabaseRecoveryPanel
-        refreshKey={importsRefreshKey}
-        onHealthChange={onBackupLevel}
-        onClearImports={onClearImports}
-        clearingImports={clearingImports}
-        clearMessage={clearImportsMessage}
-      />
-
-      <ImportArchivePanel refreshKey={importsRefreshKey} />
-
-      <div className="mt-6 text-xs text-ink-2 dark:text-[#9fb2d1]">
-        Los proyectos actuales permanecen intactos mientras validamos esta nueva aplicación.
+      <div className="grid min-w-0 items-start gap-6 min-[1920px]:grid-cols-2" aria-label="Gráficos de los módulos">
+        <DashboardMaintenanceChart onNavigate={onNavigate} />
+        <DashboardConsumablesChart onNavigate={onNavigate} />
+        <DashboardTravelCharts onNavigate={onNavigate} />
       </div>
+
+      <Card className="min-w-0 grid-cols-1">
+        <CardHeader eyebrow="SOPORTE CANON" title="Ciclo de vida de los modelos" />
+        <Muted>Modelos distintos de las listas Canon aplicadas, sin duplicar códigos de parte ni tensiones.</Muted>
+        <div className="grid min-w-0 gap-3 sm:grid-cols-2">
+          <MetricCard label="Modelos Canon discontinuados" value={canon?.discontinued ?? missing} note="Modelos cuyo fin de soporte ya ocurrió, incluida la fecha de hoy." onClick={() => onNavigate('descontinuador')} />
+          <MetricCard label="Modelos Canon con fin de soporte futuro" value={canon?.scheduled ?? missing} note={canon ? `Modelos sin fecha de fin: ${numberFormat.format(canon.unknown)} (excluidos).` : 'Carga las listas Canon en Discontinuador.'} onClick={() => onNavigate('descontinuador')} />
+        </div>
+      </Card>
     </div>
-  );
+  </div>;
 }

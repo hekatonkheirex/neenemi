@@ -196,7 +196,7 @@ export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelPro
   }
 
   return (
-    <section aria-label="Importaciones y archivos originales" className="mt-6 grid gap-5 rounded-2xl border border-navy/10 bg-white p-5 shadow-md dark:border-sky/20 dark:bg-panel">
+    <section aria-label="Importaciones y archivos originales" className="grid min-w-0 grid-cols-1 gap-5 rounded-2xl border border-navy/10 bg-white p-5 shadow-md dark:border-sky/20 dark:bg-panel">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
           <div className="eyebrow">DATOS / ORIGINALES CONSERVADOS</div>
@@ -211,7 +211,7 @@ export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelPro
 
       {error ? <div role="alert" className="rounded-xl border border-[#d92d20]/40 bg-[#d92d20]/10 px-4 py-3 text-sm text-[#912018] dark:text-[#ffb4ab]">{error}</div> : null}
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(16rem,22rem)_minmax(0,1fr)]">
+      <div className="grid min-w-0 grid-cols-1 gap-5 lg:grid-cols-[minmax(16rem,22rem)_minmax(0,1fr)]">
         <ImportBatchList batches={batches} selectedBatchId={selectedBatchId} loading={loadingBatches} onSelect={selectBatch} />
         <ImportArchiveViewer
           batch={selectedBatch}

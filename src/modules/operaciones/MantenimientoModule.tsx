@@ -47,6 +47,7 @@ type MaintenanceView = 'dashboard' | 'equipos' | 'modelos';
 const cardClass = 'min-w-0 grid-cols-1 [overflow-wrap:anywhere]';
 const fieldClass = 'grid min-w-0 gap-2 text-sm font-semibold text-navy dark:text-white';
 const selectClass = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky disabled:opacity-50 dark:border-sky/30 dark:bg-navy/50 dark:text-white';
+const analysisMonths = 3;
 
 export default function MantenimientoModule() {
   const [customers, setCustomers] = useState<CustomerRecord[]>([]);
@@ -67,7 +68,6 @@ export default function MantenimientoModule() {
   const [isCounterFileDragging, setIsCounterFileDragging] = useState(false);
   const [clearingImport, setClearingImport] = useState(false);
   const [exportingAnalysis, setExportingAnalysis] = useState(false);
-  const [analysisMonths, setAnalysisMonths] = useState(3);
   const [printableAnalysis, setPrintableAnalysis] = useState<MaintenanceAnalysis | null>(null);
   const [printableExecutiveSummary, setPrintableExecutiveSummary] = useState(false);
   const [printableTable, setPrintableTable] = useState<MaintenanceTablePrintReportProps | null>(null);
@@ -220,7 +220,7 @@ export default function MantenimientoModule() {
       const [portfolioResponse, summaryResponse, analysisResponse, rulesResponse] = await Promise.all([
         fetch('/api/operations/portfolio-snapshot'),
         fetch('/api/maintenance/summary'),
-        fetch(`/api/maintenance/analysis?months=${analysisMonths}`),
+        fetch('/api/maintenance/analysis'),
         fetch('/api/maintenance/rules'),
       ]);
       const portfolio = await readJson<OperationsPortfolioSnapshot>(portfolioResponse);
@@ -236,16 +236,6 @@ export default function MantenimientoModule() {
       setError(toErrorMessage(requestError));
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function loadAnalyses(months: number) {
-    setError(null);
-    try {
-      const response = await fetch(`/api/maintenance/analysis?months=${months}`);
-      setAnalyses(await readJson<MaintenanceAnalysis[]>(response));
-    } catch (requestError: unknown) {
-      setError(toErrorMessage(requestError));
     }
   }
 
@@ -467,11 +457,10 @@ export default function MantenimientoModule() {
           eyebrow="Expedientes técnicos"
           title="Expedientes técnicos"
           aside={<div className="flex flex-wrap items-end gap-2">
-            <label className="grid gap-1 text-xs font-semibold text-navy dark:text-white">Período
-              <select className={cn(selectClass, 'w-auto')} value={analysisMonths} onChange={(event) => { const months = Number(event.target.value); setAnalysisMonths(months); void loadAnalyses(months); }}>
-                <option value={1}>Último mes</option><option value={3}>Últimos 3 meses</option><option value={6}>Últimos 6 meses</option><option value={12}>Últimos 12 meses</option>
-              </select>
-            </label>
+            <div className="grid gap-1 text-xs font-semibold text-navy dark:text-white">
+              <span>Período de cálculo</span>
+              <span className="flex h-10 items-center text-sm">Últimos 3 meses</span>
+            </div>
             <PrintButton busy={printing} onClick={() => void printAnalysis()} disabled={visibleAnalyses.length === 0} />
             <ExportButton busy={exportingAnalysis} onClick={() => void exportAnalysis()} disabled={visibleAnalyses.length === 0}>Exportar XLSX</ExportButton>
           </div>}

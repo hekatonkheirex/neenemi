@@ -19,14 +19,6 @@ function isFiniteFraction(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 1;
 }
 
-function parseAnalysisMonths(value: unknown): number | null {
-  if (value === undefined) return 3;
-  if (typeof value !== 'string' || !/^\d+$/.test(value)) return null;
-  const months = Number(value);
-  return Number.isInteger(months) && months >= 1 && months <= 12 ? months : null;
-}
-
-
 function parseLegacyMaintenanceImport(value: unknown): {
   sourceName: string;
   contentBase64: string;
@@ -108,12 +100,7 @@ export function registerMaintenanceRoutes(app: Express, database: SuiteDatabase,
   });
 
   app.get('/api/maintenance/analysis', (request, response) => {
-    const months = parseAnalysisMonths(request.query.months);
-    if (!months) {
-      response.status(400).json({ error: 'months debe ser un entero entre 1 y 12.' });
-      return;
-    }
-    response.json(maintenance.listCurrentAnalyses(queryString(request.query.query), months));
+    response.json(maintenance.listCurrentAnalyses(queryString(request.query.query)));
   });
 
   app.post('/api/maintenance/import-legacy', (request, response) => {

@@ -86,7 +86,7 @@ describe('MaintenanceRepository', () => {
       unmatchedRecords: 0,
       analyzedEquipment: 1,
     });
-    expect(maintenance.listCurrentAnalyses(undefined, 3)).toEqual([
+    expect(maintenance.listCurrentAnalyses()).toEqual([
       expect.objectContaining({
         serialNumber: 'SER-001',
         customerName: 'Cliente de prueba',
@@ -99,8 +99,8 @@ describe('MaintenanceRepository', () => {
         })]),
       }),
     ]);
-    expect(maintenance.listCurrentAnalyses('mra', 3)).toHaveLength(1);
-    expect(maintenance.listCurrentAnalyses('negro a4', 3)).toHaveLength(1);
+    expect(maintenance.listCurrentAnalyses('mra')).toHaveLength(1);
+    expect(maintenance.listCurrentAnalyses('negro a4')).toHaveLength(1);
     expect(database.prepare('SELECT status FROM import_batches WHERE id = ?').get(batchId)).toEqual({ status: 'applied' });
 
     database.close();

@@ -65,9 +65,11 @@ export function recordChange(database: SuiteDatabase, at = new Date()): void {
   new SettingsRepository(database).set(BACKUP_SETTINGS_NAMESPACE, LAST_CHANGE_KEY, at.toISOString());
 }
 
-/** Solicitudes que modifican datos respaldables. La clave de IA y la restauración quedan fuera: ni se respaldan ni son trabajo del usuario. */
+/** Solicitudes que modifican datos respaldables; no consultas POST, IA ni operaciones de respaldo. */
 export function isDataChange(method: string, urlPath: string): boolean {
   if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(method.toUpperCase())) return false;
   if (!urlPath.startsWith('/api/')) return false;
+  // Tracking consulta servicios externos mediante POST sin modificar la base.
+  if (method.toUpperCase() === 'POST' && /^\/api\/tracking\/(?:route|geocode)\/?$/i.test(urlPath)) return false;
   return !/^\/api\/(ai\/|system\/(restore|backup|import-originals))/.test(urlPath);
 }

@@ -18,7 +18,7 @@ describe('describeReminder', () => {
   });
 
   it('cambios sin cargas, respaldo antiguo y al día tienen textos distintos', () => {
-    expect(describeReminder(health({ level: 'pending' })).title).toBe('Cambios sin respaldar');
+    expect(describeReminder(health({ level: 'pending' })).title).toBe('Base modificada desde el último respaldo');
     expect(describeReminder(health({ level: 'stale', daysSinceBackup: 9 })).title).toBe('Último respaldo hace 9 días');
     expect(describeReminder(health({ level: 'ok' })).title).toBe('Información respaldada');
   });

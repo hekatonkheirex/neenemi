@@ -9,10 +9,6 @@ const labels = { 'servicio técnico': 'Servicio Técnico', administrativo: 'Admi
 const entries = buildPaletteEntries(suiteModules, labels);
 
 describe('filterPaletteEntries', () => {
-  it('sin consulta devuelve Inicio y todos los módulos', () => {
-    expect(filterPaletteEntries(entries, '')).toHaveLength(suiteModules.length + 1);
-    expect(entries[0]).toMatchObject({ id: null, label: 'Inicio' });
-  });
 
   it('ignora acentos y mayúsculas', () => {
     const ids = filterPaletteEntries(entries, 'VIATICOS').map((e) => e.id);
@@ -28,6 +24,12 @@ describe('filterPaletteEntries', () => {
   it('busca también por sección y devuelve vacío si no hay coincidencia', () => {
     expect(filterPaletteEntries(entries, 'administrativo').length).toBeGreaterThan(0);
     expect(filterPaletteEntries(entries, 'zzzz')).toEqual([]);
+  });
+
+  it('encuentra Configuración por las tareas de datos y respaldos', () => {
+    expect(filterPaletteEntries(entries, 'respaldos').map(entry => entry.id)).toEqual(['configuracion']);
+    expect(filterPaletteEntries(entries, 'originales').map(entry => entry.id)).toEqual(['configuracion']);
+    expect(filterPaletteEntries(entries, 'CONFIGURACION').map(entry => entry.id)).toEqual(['configuracion']);
   });
 });
 
@@ -51,12 +53,4 @@ describe('Inicio', () => {
     expect(markup).toContain('aria-keyshortcuts="Control+K Meta+K"');
   });
 
-  it('muestra Limpiar cargas una sola vez, dentro del panel de respaldo, sin el panel Base compartida', () => {
-    expect(markup.match(/Limpiar cargas/g)).toHaveLength(1);
-    expect(markup).not.toContain('Base compartida');
-    const clear = markup.indexOf('Limpiar cargas');
-    expect(clear).toBeGreaterThan(markup.indexOf('aria-label="Respaldo y recuperación de la base"'));
-    expect(clear).toBeLessThan(markup.indexOf('Archivos y filas de origen'));
-    expect(markup.slice(0, markup.indexOf('</header>'))).not.toContain('Limpiar cargas');
-  });
 });

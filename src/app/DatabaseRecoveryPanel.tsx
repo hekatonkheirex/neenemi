@@ -4,6 +4,8 @@ import { cn } from '../core/cn';
 import { Button } from '../core/ui/button';
 import { submitImportJob, type ImportJobSnapshot } from '../core/import-job-client';
 import { confirmAction } from '../core/confirm';
+import { BusySpinner } from '../core/ActionButtons';
+import { downloadBackup } from '../core/backup-download';
 
 type ImportFileContentStatus = {
   totalFiles: number;
@@ -69,7 +71,7 @@ export function describeReminder(health: BackupHealth): { title: string; text: s
       const when = `El último respaldo es del ${formatStamp(health.lastBackupAt)}.`;
       return health.loadsSinceBackup > 0
         ? { title: plural(health.loadsSinceBackup, 'carga sin respaldar', 'cargas sin respaldar'), text: `${when} Genera uno nuevo para no perder esos datos.` }
-        : { title: 'Cambios sin respaldar', text: `${when} Hay datos agregados o editados desde entonces (modelos, viajes, ajustes). Genera uno nuevo para no perderlos.` };
+        : { title: 'Base modificada desde el último respaldo', text: `${when} Hay altas, ediciones o eliminaciones posteriores, incluidas las cargas retiradas. Un nuevo respaldo guarda el estado actual de la base.` };
     }
     case 'stale':
       return { title: `Último respaldo ${describeAge(health.daysSinceBackup)}`, text: 'Pasó una semana o más. Genera uno nuevo: viajes, proformas y ajustes manuales también cuentan.' };
@@ -85,9 +87,21 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
   const [backfillJob, setBackfillJob] = useState<ImportJobSnapshot<BackfillResult> | null>(null);
   const [backfilling, setBackfilling] = useState(false);
   const [restoring, setRestoring] = useState(false);
-  const [message, setMessage] = useState<{ tone: 'success' | 'error'; text: string } | null>(null);
+  const [downloading, setDownloading] = useState(false);
+  const [restoreStage, setRestoreStage] = useState('');
+  const [message, setMessage] = useState<{ tone: 'success' | 'error' | 'info'; text: string } | null>(() => {
+    try {
+      const text = sessionStorage.getItem('dcss-restored-message');
+      return text ? { tone: 'success', text } : null;
+    } catch {
+      return null;
+    }
+  });
   const restoreInput = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    try { sessionStorage.removeItem('dcss-restored-message'); } catch { /* almacenamiento no disponible */ }
+  }, []);
   useEffect(() => {
     let cancelled = false;
     setLoadingStatus(true);
@@ -106,10 +120,22 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
         if (!cancelled) setLoadingStatus(false);
       });
 
-    void refreshHealth().catch(() => undefined);
+    const updateHealth = () => {
+      if (!cancelled && document.visibilityState === 'visible') {
+        void refreshHealth().catch(() => undefined);
+      }
+    };
+    updateHealth();
+    // La descarga puede tardar más que una consulta diferida única.
+    const healthInterval = window.setInterval(updateHealth, 5000);
+    window.addEventListener('focus', updateHealth);
+    document.addEventListener('visibilitychange', updateHealth);
 
     return () => {
       cancelled = true;
+      window.clearInterval(healthInterval);
+      window.removeEventListener('focus', updateHealth);
+      document.removeEventListener('visibilitychange', updateHealth);
     };
   }, [refreshKey]);
 
@@ -121,11 +147,36 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
     onHealthChange?.(value.level);
   }
 
+  async function saveBackup() {
+    if (downloading || restoring || backfilling || clearingImports) return;
+    setDownloading(true);
+    setMessage(null);
+    const startedAt = Date.now();
+    try {
+      const result = await downloadBackup();
+      const duration = formatDuration(Date.now() - startedAt);
+      setMessage({
+        tone: result.status === 'cancelled' ? 'info' : 'success',
+        text: result.status === 'cancelled'
+          ? 'Guardado del respaldo cancelado. No se generó un nuevo archivo.'
+          : result.status === 'saved'
+            ? `Respaldo guardado${result.filePath ? ` en ${result.filePath}` : ''}. Duración: ${duration}.`
+            : `Respaldo enviado al navegador en ${duration}. Comprueba que la descarga termine en su administrador de descargas.`,
+      });
+      if (result.status !== 'cancelled') await refreshHealth().catch(() => undefined);
+    } catch (error) {
+      setMessage({ tone: 'error', text: `No se pudo guardar el respaldo: ${errorMessage(error)}` });
+    } finally {
+      setDownloading(false);
+    }
+  }
+
   async function backfillOriginals() {
-    if (backfilling) return;
+    if (backfilling || downloading || restoring || clearingImports) return;
     setBackfilling(true);
     setBackfillJob(null);
     setMessage(null);
+    const startedAt = Date.now();
     try {
       const result = await submitImportJob<BackfillResult>(
         '/api/system/import-originals/backfill',
@@ -134,7 +185,7 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
       );
       setMessage(result.failed > 0
         ? { tone: 'error', text: `${result.embedded} originales guardados; ${result.failed} no se pudieron verificar. ${result.errors.slice(0, 2).join(' ')} Puedes reintentar.` }
-        : { tone: 'success', text: `${result.embedded} originales incorporados y verificados dentro de SQLite.` });
+        : { tone: 'success', text: `${result.embedded} originales incorporados y verificados dentro de SQLite. Duración: ${formatDuration(Date.now() - startedAt)}.` });
       await refreshStatus();
     } catch (error) {
       setMessage({ tone: 'error', text: errorMessage(error) });
@@ -144,7 +195,7 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
   }
 
   async function restoreBackup(file: File | undefined) {
-    if (!file || restoring) return;
+    if (!file || restoring || downloading || backfilling || clearingImports) return;
     if (!/\.(sqlite|db)$/i.test(file.name)) {
       setMessage({ tone: 'error', text: 'Selecciona un archivo .sqlite o .db.' });
       return;
@@ -157,7 +208,9 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
     if (!confirmed) return;
 
     setRestoring(true);
+    setRestoreStage('Enviando y validando el respaldo SQLite.');
     setMessage(null);
+    const startedAt = Date.now();
     try {
       const response = await fetch('/api/system/restore', {
         method: 'POST',
@@ -166,11 +219,14 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
       });
       const body = await response.json() as { error?: string; message?: string };
       if (!response.ok) throw new Error(body.error ?? 'No se pudo restaurar el respaldo.');
-      setMessage({ tone: 'success', text: body.message ?? 'Restaurando la base. La Suite se reiniciará…' });
+      setRestoreStage('Respaldo validado. Reiniciando la Suite para activar la base.');
       await waitForRestoredService();
+      const text = `Respaldo restaurado. La base está disponible. Duración: ${formatDuration(Date.now() - startedAt)}.`;
+      setMessage({ tone: 'success', text });
+      try { sessionStorage.setItem('dcss-restored-message', text); } catch { /* almacenamiento no disponible */ }
       window.location.reload();
     } catch (error) {
-      setMessage({ tone: 'error', text: errorMessage(error) });
+      setMessage({ tone: 'error', text: `La restauración falló tras ${formatDuration(Date.now() - startedAt)}: ${errorMessage(error)}` });
       setRestoring(false);
     }
   }
@@ -184,22 +240,24 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
   const missingFiles = status?.missingFiles ?? 0;
   const backupReady = status !== null && missingFiles === 0;
 
-  const reminder = health ? describeReminder(health) : null;
+  const clearedSinceBackup = clearMessage?.tone === 'success' && health?.level === 'pending' && health.loadsSinceBackup === 0;
+  const reminder = clearedSinceBackup
+    ? { title: 'Cargas retiradas desde el último respaldo', text: 'La limpieza quitó las cargas activas, pero conserva los originales archivados y el trabajo manual. El respaldo anterior guarda el estado previo. Descarga uno nuevo solo si quieres guardar también el estado limpio; no hace falta para restaurar el anterior.' }
+    : health ? describeReminder(health) : null;
   const level = health?.level ?? 'loading';
   const tone = levelTone[level];
-  const ctaClass = cn('h-11 px-5 font-extrabold bg-(--accent) hover:brightness-110 hover:bg-(--accent)', tone.ink);
+  const ctaClass = cn('h-auto min-h-11 max-w-full whitespace-normal px-5 py-2 font-extrabold bg-(--accent) hover:brightness-110 hover:bg-(--accent)', tone.ink);
+  const busy = restoring || backfilling || downloading || clearingImports;
+  const operationTitle = clearingImports ? 'Limpiando cargas' : downloading ? 'Guardando respaldo' : restoring ? 'Restaurando respaldo' : backfilling ? 'Incorporando originales' : null;
+  const operationDetail = clearingImports
+    ? 'Retirando las cargas y archivando sus originales. El trabajo manual se conserva.'
+    : downloading
+      ? 'Selecciona el destino si se solicita. Se prepara y transfiere la base completa.'
+      : restoring ? restoreStage : backfillJob?.stage ?? 'Preparando archivos originales.';
   const downloadButton = backupReady ? (
-    <Button
-      asChild
-      className={ctaClass}
-    >
-      <a
-        href="/api/system/backup"
-        download
-        onClick={() => { window.setTimeout(() => void refreshHealth().catch(() => undefined), 2500); }}
-      >
-        Descargar respaldo completo
-      </a>
+    <Button className={ctaClass} disabled={busy} aria-busy={downloading} onClick={() => void saveBackup()}>
+      {downloading ? <BusySpinner /> : null}
+      {downloading ? 'Guardando respaldo…' : 'Descargar respaldo completo'}
     </Button>
   ) : (
     <Button className={ctaClass} disabled>
@@ -207,18 +265,19 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
     </Button>
   );
   const attention = health && (health.changedSinceBackup || health.loadsSinceBackup > 0);
-  const busy = restoring || backfilling;
+  const initialLoading = loadingStatus || health === null;
 
   return (
     <section
+      aria-busy={busy || initialLoading}
       data-level={level}
       style={{ '--accent': tone.accent } as React.CSSProperties}
-      className="grid gap-4 rounded-2xl border border-l-[6px] border-navy/10 border-l-(--accent) bg-white p-5 shadow-md dark:border-sky/20 dark:border-l-(--accent) dark:bg-panel"
+      className="grid min-w-0 grid-cols-1 gap-4 rounded-2xl border border-l-[6px] border-navy/10 border-l-(--accent) bg-white p-5 shadow-md dark:border-sky/20 dark:border-l-(--accent) dark:bg-panel"
       aria-label="Respaldo y recuperación de la base"
     >
       <div role="status" className="flex flex-wrap items-center gap-x-5 gap-y-4 rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] px-5 py-4">
         <div aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-full bg-(--accent) text-white">
-          {level === 'ok' ? <Check className="size-6" strokeWidth={2.75} /> : <TriangleAlert className="size-6" strokeWidth={2.5} />}
+          {initialLoading ? <BusySpinner /> : level === 'ok' ? <Check className="size-6" strokeWidth={2.75} /> : <TriangleAlert className="size-6" strokeWidth={2.5} />}
         </div>
         <div className="min-w-0 flex-[1_1_18rem]">
           <div className="text-[0.7rem] font-extrabold uppercase tracking-[0.14em] text-ink-2 dark:text-[#8fa5c7]">Respaldo y recuperación</div>
@@ -248,24 +307,27 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
       ) : null}
 
       <div className="grid gap-2">
-        <div className="flex flex-wrap items-center justify-end gap-2 max-[720px]:[&>*]:w-full">
+        <div className="flex flex-wrap items-center justify-end gap-2 max-[720px]:[&>*]:w-full max-[720px]:[&_button]:h-auto max-[720px]:[&_button]:min-h-10 max-[720px]:[&_button]:whitespace-normal">
           {missingFiles > 0 ? (
-            <Button variant="outline" disabled={backfilling || loadingStatus} onClick={() => void backfillOriginals()}>
-              {backfilling ? `${backfillJob?.progress ?? 0}% · ${backfillJob?.stage ?? 'Preparando…'}` : 'Incluir originales en SQLite'}
+            <Button variant="outline" disabled={busy || loadingStatus} aria-busy={backfilling} onClick={() => void backfillOriginals()}>
+              {backfilling ? <BusySpinner /> : null}
+              {backfilling ? 'Incorporando originales…' : 'Incluir originales en SQLite'}
             </Button>
           ) : null}
-          <Button variant="outline" disabled={busy} onClick={() => restoreInput.current?.click()}>
+          <Button variant="outline" disabled={busy} aria-busy={restoring} onClick={() => restoreInput.current?.click()}>
+            {restoring ? <BusySpinner /> : null}
             {restoring ? 'Validando y restaurando…' : 'Restaurar respaldo SQLite'}
           </Button>
           {onClearImports ? (
             <Button
               variant="outline"
               className="border-brand/60 bg-[#fff0e6] text-[#8f3b00]! hover:bg-[#ffe4d2] dark:border-brand/50 dark:bg-brand/10 dark:text-brand! dark:hover:bg-brand/20"
-              onClick={onClearImports}
+              onClick={() => { setMessage(null); onClearImports(); }}
               disabled={clearingImports || busy}
               aria-busy={clearingImports}
               title="Quita todas las cargas importadas y sus datos derivados. Los originales quedan en el archivo recuperable."
             >
+              {clearingImports ? <BusySpinner /> : null}
               {clearingImports ? 'Limpiando…' : 'Limpiar cargas'}
             </Button>
           ) : null}
@@ -285,12 +347,32 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
         <div className={cn('text-right text-xs max-[720px]:text-left', mutedText)}>Máximo 2 GB. La restauración sustituye toda la base y reinicia la Suite.</div>
       </div>
 
-      {backfilling && backfillJob ? (
-        <progress className="h-2 w-full accent-sky" max={100} value={backfillJob.progress} aria-label="Progreso de archivo" />
-      ) : null}
-      {clearMessage ? <Message tone={clearMessage.tone} text={clearMessage.text} /> : null}
-      {message ? <Message tone={message.tone} text={message.text} /> : null}
+      {operationTitle ? <OperationStatus key={operationTitle} title={operationTitle} detail={operationDetail} progress={backfilling ? backfillJob?.progress : undefined} /> : null}
+      {!busy && clearMessage && !message ? <Message tone={clearMessage.tone} text={clearMessage.text} /> : null}
+      {!busy && message ? <Message tone={message.tone} text={message.text} /> : null}
     </section>
+  );
+}
+
+function formatDuration(milliseconds: number): string {
+  const seconds = Math.floor(milliseconds / 1000);
+  return seconds < 60 ? `${seconds} s` : `${Math.floor(seconds / 60)} min ${seconds % 60} s`;
+}
+
+function OperationStatus({ title, detail, progress }: { title: string; detail: string; progress?: number }) {
+  const [startedAt] = useState(Date.now);
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    const timer = window.setInterval(() => setElapsed(Date.now() - startedAt), 1000);
+    return () => window.clearInterval(timer);
+  }, [startedAt]);
+  return (
+    <div className="grid gap-3 rounded-xl border border-sky/40 bg-sky/10 p-4 text-navy dark:text-white" role="status">
+      <div className="flex items-center gap-2 font-semibold"><BusySpinner />{title}…</div>
+      <div className="text-sm">{detail}</div>
+      <progress className="h-2 w-full accent-sky" max={100} value={progress} aria-label={title} />
+      <div className="text-xs" aria-live="off">Tiempo transcurrido: {formatDuration(elapsed)}{progress === undefined ? ' · El tiempo restante no está disponible.' : ` · ${Math.round(progress)}% completado.`}</div>
+    </div>
   );
 }
 
@@ -305,7 +387,7 @@ function Stat({ label, value, note, attention = false }: { label: string; value:
   );
 }
 
-function Message({ tone, text }: { tone: 'success' | 'error'; text: string }) {
+function Message({ tone, text }: { tone: 'success' | 'error' | 'info'; text: string }) {
   return (
     <div
       role={tone === 'error' ? 'alert' : 'status'}
@@ -313,7 +395,9 @@ function Message({ tone, text }: { tone: 'success' | 'error'; text: string }) {
         'rounded-xl border px-4 py-3 text-sm',
         tone === 'error'
           ? 'border-[#d92d20]/40 bg-[#d92d20]/10 text-[#912018] dark:text-[#ffb4ab]'
-          : 'border-[#2f8f5b]/40 bg-[#2f8f5b]/10 text-[#14532d] dark:text-[#9be3b9]',
+          : tone === 'info'
+            ? 'border-navy/20 bg-sky/10 text-navy dark:text-white'
+            : 'border-[#2f8f5b]/40 bg-[#2f8f5b]/10 text-[#14532d] dark:text-[#9be3b9]',
       )}
     >
       {text}
