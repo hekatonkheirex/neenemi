@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.98 · 2026-10-07
+
+En Inicio, los gráficos de Control de viáticos (título, botón, gráficos y nota) quedan dentro de una sola tarjeta, igual que Estado del parque y Top 10 clientes.
+
 ## 0.1.97 · 2026-10-07
 
 En Inicio, los gráficos que comparten fila tienen el mismo ancho y la misma altura: Estado del parque y Top 10 clientes, y Servicios y viajes con Comparativa anual. Ambos usan el mismo tamaño de texto en las descripciones, el gráfico queda centrado en el espacio disponible y los botones de cada módulo se alinean al pie.

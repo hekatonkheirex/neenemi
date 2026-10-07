@@ -37,12 +37,12 @@ export default function DashboardTravelCharts({ onNavigate }: { onNavigate: (id:
     </Card>;
   }
 
-  return <section className="grid min-w-0 gap-4 @[1400px]:col-span-2" aria-label="Control de viáticos · actividad y costos">
+  return <Card className="min-w-0 grid-cols-1 @[1400px]:col-span-2" aria-label="Control de viáticos · actividad y costos">
     {heading}
     <div className="grid min-w-0 items-stretch gap-6 lg:grid-cols-2">
       <AnnualActivityChart summaries={state.summaries} />
       <AnnualCostChart summaries={state.summaries} />
     </div>
     <Muted>Datos del histórico de Control de viáticos, sin filtros. Servicios y viajes son cantidades; la comparación de gastos usa importes reales en guaraníes. Para evaluar una reducción anual, compara años cerrados: un período en curso es un acumulado parcial, no un ahorro frente a un año completo.</Muted>
-  </section>;
+  </Card>;
 }
