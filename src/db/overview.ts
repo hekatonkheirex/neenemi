@@ -35,6 +35,7 @@ export type SuiteOverview = {
       equipment: number;
       equipmentWithoutSerial: number;
       activeContracts: number;
+      activeCustomers: number;
       unknownContracts: number;
       contractsByType: { type: string; count: number }[];
     };
@@ -181,6 +182,10 @@ export class OverviewRepository {
       GROUP BY contract_type
       ORDER BY contract_type
     `).all() as { type: string; count: number; unknown: number }[];
+    const { total: activeCustomers } = this.database.prepare(`
+      SELECT COUNT(DISTINCT customer_id) AS total FROM contracts
+      WHERE is_active = 1 AND contract_type IN ('Abierto', 'Alquiler', 'Leasing', 'Mantenimiento')
+    `).get() as { total: number };
     let activeContracts = 0;
     let unknownContracts = 0;
     const contractsByType = contractTypes.map(({ type, count, unknown }) => {
@@ -193,6 +198,7 @@ export class OverviewRepository {
       equipment: serials.size + equipmentWithoutSerial,
       equipmentWithoutSerial,
       activeContracts,
+      activeCustomers,
       unknownContracts,
       contractsByType,
     };

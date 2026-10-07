@@ -8,7 +8,7 @@ const withData = (over: object = {}) => ({
   counts: { contracts: 1234 },
   appliedImports: 1,
   recentImports: [{ appliedAt: '2026-03-04T12:00:00Z' }],
-  dashboard: { portfolio: { equipment: 50, equipmentWithoutSerial: 3, activeContracts: 20, unknownContracts: 2, contractsByType: [{ type: 'MPS', count: 7 }] }, canon: { discontinued: 4, scheduled: 6, unknown: 1 } },
+  dashboard: { portfolio: { equipment: 50, equipmentWithoutSerial: 3, activeContracts: 20, activeCustomers: 15, unknownContracts: 2, contractsByType: [{ type: 'MPS', count: 7 }] }, canon: { discontinued: 4, scheduled: 6, unknown: 1 } },
   ...over,
 }) as unknown as SuiteOverview;
 
@@ -29,8 +29,8 @@ describe('Dashboard', () => {
 
   it('con datos formatea contratos, fecha, cartera y Canon', () => {
     const markup = renderToStaticMarkup(<Dashboard {...base} overview={withData()} />);
-    expect(markup).toContain('>20</div>');
-    expect(markup).toContain('contratos activos · MPS 7');
+    expect(markup).toContain('>15</div>');
+    expect(markup).toContain('clientes con contrato activo');
     expect(markup).not.toContain('1.234');
     expect(markup).toContain('>04/03/2026</div>');
     expect(markup).toContain('Contratos activos · MPS');

@@ -111,6 +111,7 @@ describe('OverviewRepository', () => {
       equipment: 0,
       equipmentWithoutSerial: 0,
       activeContracts: 0,
+      activeCustomers: 0,
       unknownContracts: 0,
       contractsByType: [],
     });
@@ -127,6 +128,7 @@ describe('OverviewRepository', () => {
       equipment: 0,
       equipmentWithoutSerial: 0,
       activeContracts: 0,
+      activeCustomers: 0,
       unknownContracts: 0,
       contractsByType: [],
     });
@@ -151,6 +153,7 @@ describe('OverviewRepository', () => {
 
     const portfolio = new OverviewRepository(database).get('2026-10-07').dashboard.portfolio;
     expect(portfolio?.activeContracts).toBe(3);
+    expect(portfolio?.activeCustomers).toBe(1);
     expect(portfolio?.unknownContracts).toBe(1);
   });
 
@@ -192,6 +195,7 @@ describe('OverviewRepository', () => {
       equipment: 5,
       equipmentWithoutSerial: 3,
       activeContracts: 2,
+      activeCustomers: 1,
       unknownContracts: 2,
       contractsByType: [
         { type: 'Abierto', count: 1 },
