@@ -22,7 +22,7 @@ html[data-theme='dark'] .tracking-module {
 .tracking-map-grid text { fill: var(--tracking-muted); font-size: 12px; }
 .tracking-road-line { fill: none; stroke: #000; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
 html[data-theme='dark'] .tracking-road-line { stroke: #00a3e0; }
-.tracking-suspect-line { fill: none; stroke: #d92d20; stroke-width: 3.5; stroke-dasharray: 12 7; stroke-linejoin: round; }
+.tracking-suspect-line { fill: none; stroke: var(--color-status-danger); stroke-width: 3.5; stroke-dasharray: 12 7; stroke-linejoin: round; }
 .tracking-route-line { fill: none; stroke: #1a2c4c; stroke-width: 3; stroke-dasharray: 8 5; }
 html[data-theme='dark'] .tracking-route-line { stroke: #00a3e0; }
 .tracking-event-pin { cursor: pointer; }

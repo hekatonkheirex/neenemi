@@ -35,11 +35,11 @@ describe('tokens de estado', () => {
   // Colores de datos (series de un gráfico junto a colores que no son de estado): se quedan en hex.
   const dataColorFiles = ['src/modules/mantenimiento/DashboardMaintenanceChart.tsx'];
 
-  it('ningún componente pega un hex de estado en una clase: usan los tokens', () => {
+  it('ningún componente ni CSS pega un hex de estado: usan los tokens', () => {
     const status = /#(d92d20|e08a00|2f8f5b|912018|14532d|7a4a00|ffb4ab|9be3b9|ffd28a|6b7a90)/i;
     const walk = (dir: string): string[] => fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
       const path = `${dir}/${entry.name}`;
-      return entry.isDirectory() ? walk(path) : /\.tsx?$/.test(entry.name) && !/\.test\./.test(entry.name) ? [path] : [];
+      return entry.isDirectory() ? walk(path) : /\.(tsx?|css)$/.test(entry.name) && entry.name !== 'tailwind.css' && !/\.test\./.test(entry.name) ? [path] : [];
     });
     const offenders = walk('src').filter((file) => !dataColorFiles.includes(file) && status.test(fs.readFileSync(file, 'utf8')));
     expect(offenders).toEqual([]);

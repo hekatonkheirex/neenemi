@@ -16,7 +16,7 @@ html[data-theme] label:has(:is(input, select, textarea):is(:user-invalid, [aria-
 }
 
 html:not([data-theme='light']) label:has(:is(input, select, textarea):is(:user-invalid, [aria-invalid='true'])) > span:first-child {
-  color: #ffb4ab;
+  color: var(--color-status-danger-ink-dark);
 }
 
 /* Mensaje persistente de campo inválido (src/core/fieldErrors.ts): texto rojo sobre ambos temas, >= 4,5:1. */
@@ -32,5 +32,5 @@ html[data-theme] .field-error {
 }
 
 html:not([data-theme='light']) .field-error {
-  color: #ffb4ab;
+  color: var(--color-status-danger-ink-dark);
 }
