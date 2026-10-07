@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import ImportArchivePanel, { ImportArchiveViewer, ImportBatchList } from './ImportArchivePanel';
+import ImportArchivePanel, { findSheet, ImportArchiveViewer, ImportBatchList, pickBatchId } from './ImportArchivePanel';
 
 const batch = {
   id: 'b1', domain: 'consumibles', sourceName: 'consumibles.xlsx', sourceType: null, sourceHash: null,
@@ -75,5 +75,38 @@ describe('ImportArchiveViewer', () => {
 
   it('sin clases heredadas del visor', () => {
     expect(viewer()).not.toMatch(/source-data|catalog-table|secondary-button|export-button/);
+  });
+});
+
+describe('pickBatchId', () => {
+  const batches = [{ id: 'b2' }, { id: 'b1' }];
+
+  it('conserva la importación elegida si sigue en la lista', () => {
+    expect(pickBatchId(batches, 'b1')).toBe('b1');
+  });
+
+  it('cae a la más reciente si la elegida desapareció o no había ninguna', () => {
+    expect(pickBatchId(batches, 'gone')).toBe('b2');
+    expect(pickBatchId(batches, '')).toBe('b2');
+  });
+
+  it('devuelve vacío sin importaciones', () => {
+    expect(pickBatchId([], 'b1')).toBe('');
+  });
+});
+
+describe('findSheet', () => {
+  const sheet = (importFileId: string, sheetName: string) => ({ importFileId, fileName: 'f.xlsx', sheetName, sheetIndex: 0, rowCount: 1, columnCount: 1 });
+  const sheets = [sheet('f1', 'A'), sheet('f1', 'B'), sheet('f2', 'A')];
+
+  it('distingue hojas con el mismo nombre en archivos distintos', () => {
+    expect(findSheet(sheets, 'f2::A')).toBe(sheets[2]);
+    expect(findSheet(sheets, 'f1::B')).toBe(sheets[1]);
+  });
+
+  it('no encuentra clave vacía, ajena o sin hojas', () => {
+    expect(findSheet(sheets, '')).toBeUndefined();
+    expect(findSheet(sheets, 'f9::A')).toBeUndefined();
+    expect(findSheet(undefined, 'f1::A')).toBeUndefined();
   });
 });

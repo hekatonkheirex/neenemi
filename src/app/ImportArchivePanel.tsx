@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { findSourceHeaderRow } from '../core/source-header-row';
 import { confirmAction } from '../core/confirm';
 import { readJson, toErrorMessage as describeError } from '../core/http';
@@ -79,6 +79,15 @@ const statusTone: Record<ImportBatchSummary['status'], string> = {
   failed: 'bg-[#d92d20]/15 text-[#912018]! dark:text-[#ffb4ab]!',
 };
 
+/** Mantiene la importación elegida si sigue en la lista; si no, cae a la más reciente. */
+export function pickBatchId(batches: readonly { id: string }[], current: string): string {
+  return batches.some((batch) => batch.id === current) ? current : batches[0]?.id ?? '';
+}
+
+export function findSheet<T extends ImportSourceSheet>(sheets: readonly T[] | undefined, key: string): T | undefined {
+  return sheets?.find((sheet) => sourceSheetKey(sheet) === key);
+}
+
 export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelProps) {
   const [batches, setBatches] = useState<ImportBatchSummary[]>([]);
   const [selectedBatchId, setSelectedBatchId] = useState('');
@@ -91,6 +100,11 @@ export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelPro
   const [loadingRows, setLoadingRows] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [localRefreshKey, setLocalRefreshKey] = useState(0);
+  // Los efectos leen el valor vigente sin volver a dispararse cuando cambia.
+  const selectedBatchIdRef = useRef(selectedBatchId);
+  selectedBatchIdRef.current = selectedBatchId;
+  const rawDataRef = useRef(rawData);
+  rawDataRef.current = rawData;
 
   useEffect(() => {
     let cancelled = false;
@@ -101,8 +115,9 @@ export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelPro
       .then((value) => {
         if (cancelled) return;
         setBatches(value.batches);
-        setSelectedBatchId((current) => value.batches.some((batch) => batch.id === current) ? current : value.batches[0]?.id ?? '');
-        if (!value.batches.some((batch) => batch.id === selectedBatchId)) {
+        const nextBatchId = pickBatchId(value.batches, selectedBatchIdRef.current);
+        setSelectedBatchId(nextBatchId);
+        if (nextBatchId !== selectedBatchIdRef.current) {
           setSelectedSheetKey('');
           setRawData(null);
         }
@@ -120,7 +135,9 @@ export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelPro
   }, [localRefreshKey, refreshKey]);
 
   const selectedBatch = batches.find((batch) => batch.id === selectedBatchId);
-  const selectedSheet = rawData?.sheets.find((sheet) => sourceSheetKey(sheet) === selectedSheetKey) ?? rawData?.sheets[0];
+  const selectedSheet = findSheet(rawData?.sheets, selectedSheetKey) ?? rawData?.sheets[0];
+  const sourceType = selectedBatch?.sourceType;
+  const sourceName = selectedBatch?.sourceName;
 
   useEffect(() => {
     if (!selectedBatchId) {
@@ -134,7 +151,7 @@ export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelPro
     setLoadingRows(true);
     setError(null);
     const params = new URLSearchParams({ limit: '100', offset: String(page * 100) });
-    const requestedSheet = rawData?.sheets.find((sheet) => sourceSheetKey(sheet) === selectedSheetKey);
+    const requestedSheet = findSheet(rawDataRef.current?.sheets, selectedSheetKey);
     if (requestedSheet) {
       params.set('fileId', requestedSheet.importFileId);
       params.set('sheet', requestedSheet.sheetName);
@@ -157,14 +174,14 @@ export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelPro
         if (headerData) {
           const headerIndex = findSourceHeaderRow(
             headerData.rows.map((row) => row.values),
-            selectedBatch?.sourceType,
-            selectedBatch?.sourceName,
+            sourceType,
+            sourceName,
           );
           const headerRow = headerData.rows[headerIndex] ?? headerData.rows[0];
           setHeaderValues(headerRow?.values ?? []);
           setHeaderRowNumber(headerRow?.rowNumber ?? 1);
         }
-        if (!value.sheets.some((sheet) => sourceSheetKey(sheet) === selectedSheetKey)) {
+        if (!findSheet(value.sheets, selectedSheetKey)) {
           setSelectedSheetKey(value.sheets[0] ? sourceSheetKey(value.sheets[0]) : '');
           if (page !== 0 && value.rows.length === 0) setPage(0);
         }
@@ -179,12 +196,8 @@ export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelPro
     return () => {
       cancelled = true;
     };
-  }, [page, selectedBatchId, selectedSheetKey]);
+  }, [page, selectedBatchId, selectedSheetKey, sourceType, sourceName]);
 
-  const maxColumns = useMemo(() => {
-    const rowWidth = Math.max(...(rawData?.rows.map((row) => row.values.length) ?? [0]), selectedSheet?.columnCount ?? 0, 1);
-    return rowWidth;
-  }, [rawData?.rows, selectedSheet?.columnCount]);
   const canGoBack = page > 0;
   const canGoForward = Boolean(selectedSheet && (page + 1) * 100 < selectedSheet.rowCount);
 
