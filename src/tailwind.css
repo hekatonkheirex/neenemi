@@ -15,3 +15,18 @@
   --radius-xl: 0.75rem;
   --radius-2xl: 1rem;
 }
+
+/* Colores de estado (no de marca): verde = bien, ámbar = atención, rojo = error. `*-ink` es el texto sobre su tinte claro,
+   `*-ink-dark` el texto sobre el tema oscuro. `static` porque también se leen con var() desde estilos en línea. */
+@theme static {
+  --color-status-ok: #2f8f5b;
+  --color-status-ok-ink: #14532d;
+  --color-status-ok-ink-dark: #9be3b9;
+  --color-status-warn: #e08a00;
+  --color-status-warn-ink: #7a4a00;
+  --color-status-warn-ink-dark: #ffd28a;
+  --color-status-danger: #d92d20;
+  --color-status-danger-ink: #912018;
+  --color-status-danger-ink-dark: #ffb4ab;
+  --color-status-idle: #6b7a90;
+}

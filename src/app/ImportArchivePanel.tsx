@@ -5,6 +5,7 @@ import { readJson, toErrorMessage as describeError } from '../core/http';
 import { Download } from 'lucide-react';
 import { createColumnHelper, tableFeatures, useTable } from '@tanstack/react-table';
 import { cn } from '../core/cn';
+import { Badge, type BadgeTone } from '../core/ui/badge';
 import { Button } from '../core/ui/button';
 import { Card, CardHeader, Muted } from '../core/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../core/ui/table';
@@ -74,11 +75,7 @@ const features = tableFeatures({});
 const EMPTY_ROWS: ImportSourceRow[] = [];
 const columnHelper = createColumnHelper<typeof features, ImportSourceRow>();
 const mutedText = 'text-ink-2! dark:text-[#9fb2d1]!';
-const statusTone: Record<ImportBatchSummary['status'], string> = {
-  applied: 'bg-[#2f8f5b]/15 text-[#14532d]! dark:text-[#9be3b9]!',
-  staged: 'bg-[#e08a00]/15 text-[#7a4a00]! dark:text-[#ffd28a]!',
-  failed: 'bg-[#d92d20]/15 text-[#912018]! dark:text-[#ffb4ab]!',
-};
+const statusTone: Record<ImportBatchSummary['status'], BadgeTone> = { applied: 'success', staged: 'warning', failed: 'danger' };
 
 /** Mantiene la importación elegida si sigue en la lista; si no, cae a la más reciente. */
 export function pickBatchId(batches: readonly { id: string }[], current: string): string {
@@ -221,7 +218,7 @@ export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelPro
       />
       <Muted className={cn('max-w-3xl text-sm', mutedText)}>Consulta las importaciones de todos los módulos, inspecciona sus hojas y filas originales o descarga el archivo fuente.</Muted>
 
-      {error ? <div role="alert" className="rounded-xl border border-[#d92d20]/40 bg-[#d92d20]/10 px-4 py-3 text-sm text-[#912018] dark:text-[#ffb4ab]">{error}</div> : null}
+      {error ? <div role="alert" className="rounded-xl border border-status-danger/40 bg-status-danger/10 px-4 py-3 text-sm text-status-danger-ink dark:text-status-danger-ink-dark">{error}</div> : null}
 
       <div className="grid min-w-0 grid-cols-1 gap-5 lg:grid-cols-[minmax(16rem,22rem)_minmax(0,1fr)]">
         <ImportBatchList batches={batches} selectedBatchId={selectedBatchId} loading={loadingBatches} onSelect={selectBatch} />
@@ -340,7 +337,7 @@ export function ImportArchiveViewer({
               <h3 className="break-words text-lg font-bold text-navy dark:text-white">{batch.sourceName}</h3>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <div className={cn('rounded-full px-3 py-1 text-xs font-bold', statusTone[batch.status])}>{formatImportStatus(batch.status)}</div>
+              <Badge tone={statusTone[batch.status]} className="px-3 py-1">{formatImportStatus(batch.status)}</Badge>
               {selectedSheet ? (
                 <Button asChild variant="outline" size="sm">
                   <a

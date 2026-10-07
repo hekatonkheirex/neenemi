@@ -56,11 +56,11 @@ const plural = (n: number, one: string, many: string) => `${n.toLocaleString('es
 
 // Colores de estado (no de marca): rojo = sin respaldar, ámbar = antiguo, verde = al día. El texto del CTA se elige por contraste.
 const levelTone = {
-  never: { accent: '#d92d20', ink: 'text-white!' },
-  pending: { accent: '#d92d20', ink: 'text-white!' },
-  stale: { accent: '#e08a00', ink: 'text-navy!' },
-  ok: { accent: '#2f8f5b', ink: 'text-white!' },
-  loading: { accent: '#6b7a90', ink: 'text-white!' },
+  never: { accent: 'var(--color-status-danger)', ink: 'text-white!' },
+  pending: { accent: 'var(--color-status-danger)', ink: 'text-white!' },
+  stale: { accent: 'var(--color-status-warn)', ink: 'text-navy!' },
+  ok: { accent: 'var(--color-status-ok)', ink: 'text-white!' },
+  loading: { accent: 'var(--color-status-idle)', ink: 'text-white!' },
 } as const;
 
 const mutedText = 'text-ink-2 dark:text-[#9fb2d1]';
@@ -387,7 +387,7 @@ function OperationStatus({ title, detail, progress }: { title: string; detail: s
 // ponytail: <div>/<dt>/<dd> y no <p>/<span>/<small>: el CSS heredado del tema claro (theme/01-mantenimiento.css) les pone color con más especificidad.
 function Stat({ label, value, note, attention = false }: { label: string; value: string; note: string; attention?: boolean }) {
   return (
-    <div className={cn('grid gap-1 rounded-xl border px-4 py-3', attention ? 'border-[#d92d20]' : 'border-navy/10 dark:border-sky/20')}>
+    <div className={cn('grid gap-1 rounded-xl border px-4 py-3', attention ? 'border-status-danger' : 'border-navy/10 dark:border-sky/20')}>
       <dt className="m-0 text-[0.7rem] font-extrabold uppercase tracking-wider text-ink-2 dark:text-[#9fb2d1]">{label}</dt>
       <dd className="m-0 text-lg font-extrabold text-navy dark:text-white">{value}</dd>
       <div className={cn('text-[0.7rem]', mutedText)}>{note}</div>
@@ -402,10 +402,10 @@ function Message({ tone, text }: { tone: 'success' | 'error' | 'info'; text: str
       className={cn(
         'rounded-xl border px-4 py-3 text-sm',
         tone === 'error'
-          ? 'border-[#d92d20]/40 bg-[#d92d20]/10 text-[#912018] dark:text-[#ffb4ab]'
+          ? 'border-status-danger/40 bg-status-danger/10 text-status-danger-ink dark:text-status-danger-ink-dark'
           : tone === 'info'
             ? 'border-navy/20 bg-sky/10 text-navy dark:text-white'
-            : 'border-[#2f8f5b]/40 bg-[#2f8f5b]/10 text-[#14532d] dark:text-[#9be3b9]',
+            : 'border-status-ok/40 bg-status-ok/10 text-status-ok-ink dark:text-status-ok-ink-dark',
       )}
     >
       {text}

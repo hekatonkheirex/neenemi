@@ -59,8 +59,8 @@ describe('SlaResults', () => {
 
   it('la tabla mantiene su ancho mínimo y marca cada estado con su tono', () => {
     expect(markup).toContain('min-w-[600px]');
-    expect(markup).toMatch(/text-\[#912018\]![^>]*>Brecha</);
-    expect(markup).toMatch(/text-\[#14532d\]![^>]*>Cumple</);
+    expect(markup).toMatch(/text-status-danger-ink![^>]*>Brecha</);
+    expect(markup).toMatch(/text-status-ok-ink![^>]*>Cumple</);
   });
 
   it('lista brechas y negociación, y avisa cuando una lista está vacía', () => {
