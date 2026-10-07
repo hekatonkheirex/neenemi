@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.88 · 2026-10-07
+
+Quita de la pestaña Resumen de Consumibles la columna lateral de cargas (las cinco fuentes directas, las fuentes relacionadas del legado y las reglas de cruce). Todas las cargas se hacen desde la pestaña Cargas, así que la tabla de registros ocupa todo el ancho.
+
 ## 0.1.87 · 2026-10-07
 
 El filtro «Mes» de Viáticos usa el mismo selector de mes que Consumibles (texto del mes, flechas de año, cuadrícula de 12 meses, «Limpiar» y «Este mes») en lugar del calendario nativo del navegador. Sigue guardando `AAAA-MM`, así que no cambia qué viáticos se muestran.

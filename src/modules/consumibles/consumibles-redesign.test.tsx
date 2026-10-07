@@ -17,7 +17,7 @@ describe('rediseño de Consumibles', () => {
     const text = readFileSync('src/modules/consumibles/ConsumiblesModule.tsx', 'utf8');
     expect(classesOf(text).match(legacy)?.[0]).toBeUndefined();
     expect(text).toContain('<PageHeader');
-    expect(text).toContain('min-[1500px]:grid-cols-[minmax(0,1fr)_22rem]');
+    expect(text).not.toContain('Seleccionar XLSX');
   });
 
   it.each(['src/modules/consumibles/ConsumiblesBundlePanel.tsx', 'src/modules/consumibles/SourceDataPanel.tsx', 'src/modules/consumibles/LegacyAnalysisPanels.tsx', 'src/modules/consumibles/LegacyCharts.tsx', 'src/core/SourceLocationLabel.tsx'])('%s no usa clases heredadas', (file) => {

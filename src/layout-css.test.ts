@@ -49,9 +49,10 @@ describe('layout entre 960 y 1350 px', () => {
     });
   });
 
-  it('Consumibles: la columna lateral de importaciones baja bajo 1500 px', () => {
+  it('Consumibles: el resumen no tiene columna lateral de cargas (viven en la pestaña Cargas)', () => {
     const module = fs.readFileSync('src/modules/consumibles/ConsumiblesModule.tsx', 'utf8');
-    expect(module).toContain('min-[1500px]:grid-cols-[minmax(0,1fr)_22rem]');
+    expect(module).not.toContain('min-[1500px]:grid-cols-[minmax(0,1fr)_22rem]');
+    expect(module).not.toContain('Seleccionar XLSX');
     expect(css).not.toMatch(/\.consumables-layout/);
   });
 

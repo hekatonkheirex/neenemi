@@ -1,5 +1,5 @@
 import { Database, FileText, LayoutDashboard, Medal, Package, Printer, Settings, Tag, Wrench, type LucideIcon } from 'lucide-react';
-import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import type {
   ConsumablesAggregate,
   ConsumablesAnalytics,
@@ -15,14 +15,13 @@ import type {
   ConsumablesSourceOperational,
   ConsumablesSummary,
 } from './types';
-import { PYG_USD_RATE_DATE, usdToPyg } from './analysis';
+import { usdToPyg } from './analysis';
 import { submitImportJob } from '../../core/import-job-client';
 import type { OperationalFilters } from '../../core/operational-filters';
 import { MAX_LIST_LIMIT } from '../../core/list-limit';
 import PaginationControls from '../../core/PaginationControls';
 import { buildPaginatedUrl, type PaginatedResult } from '../../core/pagination';
 import { usePagedList } from '../../core/usePagedList';
-import { SOURCE_CATALOG } from '../../core/source-catalog';
 import SourceDetails from '../../core/SourceDetails';
 import SourceLocationLabel from '../../core/SourceLocationLabel';
 import { sourceOperationalValues } from '../../core/source-details';
@@ -46,7 +45,6 @@ import {
   ConsumablesServicePanel,
 } from './LegacyAnalysisPanels';
 import { readJson, toErrorMessage } from '../../core/http';
-import { UploadButton } from '../../core/ActionButtons';
 import { cn } from '../../core/cn';
 import { PageHeader } from '../../core/ui/page-header';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
@@ -63,18 +61,6 @@ const cardClass = 'min-w-0 grid-cols-1 [overflow-wrap:anywhere]';
 const fieldClass = 'grid min-w-0 gap-1.5 text-xs font-semibold text-navy dark:text-white';
 const selectClass = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-white px-3 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky disabled:opacity-50 dark:border-sky/30 dark:bg-navy/50 dark:text-white';
 const subCardClass = 'min-w-0 rounded-xl border border-navy/10 bg-paper p-4 dark:border-sky/20 dark:bg-navy/30';
-const spreadsheetAccept = '.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-
-type DirectSource = { kind: ConsumablesSourceType; eyebrow: string; title: string; origin: string; note: string };
-
-// Las cinco fuentes directas del flujo; el texto de cada tarjeta es el mismo que mostraba el diseño anterior.
-const directSources: readonly DirectSource[] = [
-  { kind: 'consumibles', eyebrow: 'Fuente principal', title: 'Detalle de consumibles', origin: 'Superset > SGS Cliente 360 > Consumibles > Consumibles, Detalles', note: 'Se filtran papel y modelos fuera de las familias analizadas.' },
-  { kind: 'repuestos', eyebrow: 'Fuente complementaria', title: 'Detalle de repuestos', origin: 'Superset > SGS Cliente 360 > Repuestos > Repuestos, Detalles', note: 'También puede producir consumibles migrados, como rodillos y cilindros.' },
-  { kind: 'uso-repuestos', eyebrow: 'Fuente histórica', title: 'Uso de repuestos', origin: 'Superset > SGS Uso de Repuestos > Consolidados y selectores > Detalle de Repuestos', note: `Totales en PYG; se muestran en guaraníes usando la tasa referencial ${PYG_USD_RATE_DATE}.` },
-  { kind: 'salida-consumibles', eyebrow: 'Despachos', title: 'Salida de consumibles', origin: 'SGS > REPORTES > Consumibles > Rango de fechas', note: 'Importa remisiones de tóner, cilindros y rodillos como entregas separadas.' },
-  { kind: 'salida-repuestos', eyebrow: 'Despachos', title: 'Salida de repuestos', origin: 'SGS > REPORTES > Repuestos', note: 'Rodillos y cilindros se clasifican como consumibles; las demás piezas quedan como repuestos.' },
-];
 
 type ImportResponse = ConsumablesImportResult & {
   duplicate: boolean;
@@ -133,13 +119,6 @@ const consumablesTabs: readonly { id: ConsumablesTabId; label: string; icon: Luc
   { id: 'ranking', label: 'Ranking', icon: Medal },
   { id: 'equipment', label: 'Equipos', icon: Printer },
   { id: 'data', label: 'Datos', icon: Database },
-];
-
-const legacyConsumablesSources: readonly { type: LegacyConsumablesSourceType; sourceId: string; title: string }[] = [
-  { type: 'fleet.equipment', sourceId: 'fleet.equipment', title: 'Equipos en contrato' },
-  { type: 'contracts', sourceId: 'fleet.contracts', title: 'Contratos afectados' },
-  { type: 'contract-details', sourceId: 'fleet.contract-details', title: 'Detalles de contratos' },
-  { type: 'services', sourceId: 'services.lam', title: 'Servicios LAM' },
 ];
 
 const consumablesSourceLabels: Record<ConsumablesSourceType, string> = {
@@ -314,13 +293,6 @@ export default function ConsumiblesModule() {
     }
   }
 
-  async function importFile(sourceType: ConsumablesSourceType, event: ChangeEvent<HTMLInputElement>) {
-    const files = event.target.files ? Array.from(event.target.files) : [];
-    event.target.value = '';
-    if (files.length === 0) return;
-    await importConsumablesFiles(sourceType, files);
-  }
-
   async function importConsumablesFiles(sourceType: ConsumablesSourceType, files: readonly File[]) {
     setImporting(sourceType);
     setError(null);
@@ -354,13 +326,6 @@ export default function ConsumiblesModule() {
     } finally {
       setImporting(null);
     }
-  }
-
-  async function importLegacySource(sourceType: LegacyConsumablesSourceType, event: ChangeEvent<HTMLInputElement>) {
-    const files = event.target.files ? Array.from(event.target.files) : [];
-    event.target.value = '';
-    if (files.length === 0) return;
-    await importLegacyFiles(sourceType, files);
   }
 
   async function importLegacyFiles(sourceType: LegacyConsumablesSourceType, files: readonly File[]) {
@@ -550,8 +515,7 @@ export default function ConsumiblesModule() {
           onPageSizeChange={(size) => { setOutputPageSize(size); setOutputPage(1); }}
         /> : null}
 
-        {/* Bajo 1500 px la columna lateral de importaciones baja bajo la tabla. */}
-        <section className="grid min-w-0 items-start gap-4 min-[1500px]:grid-cols-[minmax(0,1fr)_22rem]">
+        <section className="grid min-w-0 items-start gap-4">
           <Card className={cardClass}>
             <CardHeader eyebrow="Registros normalizados" title="Consumibles y repuestos" aside={<Badge>{summary?.firstMonth && summary.lastMonth ? `${summary.firstMonth} → ${summary.lastMonth}` : 'Sin período'}</Badge>} />
             <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] items-end gap-4">
@@ -601,41 +565,6 @@ export default function ConsumiblesModule() {
             /> : null}
           </Card>
 
-          <aside className="grid min-w-0 gap-4">
-            {directSources.map((source) => (
-              <Card className={cardClass} key={source.kind}>
-                <CardHeader eyebrow={source.eyebrow} title={source.title} />
-                <Muted className="text-sm leading-relaxed">Origen: <code>{source.origin}</code>. {source.note}</Muted>
-                <div><UploadButton busy={importing === source.kind} label="Seleccionar XLSX" accept={spreadsheetAccept} multiple onChange={(event) => void importFile(source.kind, event)} disabled={importing !== null} /></div>
-              </Card>
-            ))}
-
-            <Card className={cardClass}>
-              <CardHeader eyebrow="Fuentes relacionadas" title="Completar base del legado" />
-              <Muted className="text-sm leading-relaxed">El análisis original dependía también de estos exports. Cárgalos desde la ubicación indicada para que los cruces no dependan de una cartera ya preparada.</Muted>
-              <div className="grid gap-3">
-                {legacyConsumablesSources.map((source) => {
-                  const definition = SOURCE_CATALOG.find((item) => item.id === source.sourceId);
-                  return (
-                    <div className={cn(subCardClass, 'grid gap-2 p-3')} key={source.type}>
-                      <div className="flex flex-wrap items-baseline justify-between gap-2"><div className="font-bold text-navy dark:text-white">{source.title}</div><Muted>{definition?.expectedFiles[0] ?? 'Archivo XLSX'}</Muted></div>
-                      <Muted>{definition?.origin}</Muted>
-                      <div><UploadButton busy={importing === source.type} label="Seleccionar XLSX" accept={spreadsheetAccept} multiple onChange={(event) => void importLegacySource(source.type, event)} disabled={importing !== null} /></div>
-                    </div>
-                  );
-                })}
-              </div>
-            </Card>
-
-            <Card className={cardClass}>
-              <CardHeader eyebrow="Reglas de cruce" title="Una fuente común" />
-              <dl className="m-0 grid gap-2">
-                <MethodFact label="Equipos" value="Se busca por número de serie" />
-                <MethodFact label="Contratos" value="Alquiler · Leasing · Mantenimiento" />
-                <MethodFact label="Deduplicación" value="Código + serie + fecha" />
-              </dl>
-            </Card>
-          </aside>
         </section>
       </> : null}
 
@@ -664,10 +593,6 @@ export default function ConsumiblesModule() {
 function SummaryStat({ value, label, accent = false, note }: { value: string; label: string; accent?: boolean; note?: string }) {
   // El monto en guaraníes puede tener 13 dígitos: el tamaño sigue el ancho de la ficha y no parte la cifra.
   return <Card className={cn('@container min-w-0 gap-1 p-4', accent && 'border-l-4 border-l-brand!')}><div className="whitespace-nowrap text-[clamp(1.1rem,10cqw,1.875rem)] font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{label}</Muted>{note ? <Muted>{note}</Muted> : null}</Card>;
-}
-
-function MethodFact({ label, value }: { label: string; value: string }) {
-  return <div className={cn(subCardClass, 'grid gap-0.5 p-3')}><dt className="text-xs text-ink-2 dark:text-[#9fb2d1]">{label}</dt><dd className="m-0 text-sm font-semibold text-navy dark:text-white">{value}</dd></div>;
 }
 
 function ConsumablesLegacyTab({
