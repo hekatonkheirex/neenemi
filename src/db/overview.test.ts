@@ -110,7 +110,6 @@ describe('OverviewRepository', () => {
     expect(overview.get('2026-10-07').dashboard.portfolio).toEqual({
       equipment: 0,
       equipmentWithoutSerial: 0,
-      totalContracts: 0,
       activeContracts: 0,
       unknownContracts: 0,
       contractsByType: [],
@@ -127,32 +126,32 @@ describe('OverviewRepository', () => {
     expect(new OverviewRepository(database).get('2026-10-07').dashboard.portfolio).toEqual({
       equipment: 0,
       equipmentWithoutSerial: 0,
-      totalContracts: 0,
       activeContracts: 0,
       unknownContracts: 0,
       contractsByType: [],
     });
   });
 
-  it('counts a contract once per type and reference, however many rows it has', () => {
+  it('counts an active contract once per type and reference, however many rows it has', () => {
     const database = makeDatabase();
     database.prepare(`
       INSERT INTO customers (id, name, normalized_name, created_at, updated_at)
       VALUES ('customer-1', 'Cliente Uno', 'CLIENTE UNO', '2026-01-01', '2026-01-01')
     `).run();
     const insert = database.prepare(`
-      INSERT INTO contracts (id, customer_id, contract_type, reference, created_at, updated_at)
-      VALUES (?, 'customer-1', ?, ?, '2026-01-01', '2026-01-01')
+      INSERT INTO contracts (id, customer_id, contract_type, reference, is_active, created_at, updated_at)
+      VALUES (?, 'customer-1', ?, ?, ?, '2026-01-01', '2026-01-01')
     `);
-    insert.run('a1', 'Alquiler', 'SR079/22-R2');
-    insert.run('a2', 'Alquiler', 'SR079/22-R2');
-    insert.run('a3', 'Alquiler', 'SR080/22-R0');
-    insert.run('m1', 'Mantenimiento', '103179');
-    insert.run('o1', 'Abierto', '103179');
-    insert.run('n1', 'Leasing', null);
-    insert.run('n2', 'Leasing', null);
+    insert.run('a1', 'Alquiler', 'SR079/22-R2', 1);
+    insert.run('a2', 'Alquiler', 'SR079/22-R2', 1);
+    insert.run('a3', 'Alquiler', 'SR080/22-R0', 0);
+    insert.run('m1', 'Mantenimiento', '103179', 1);
+    insert.run('o1', 'Abierto', '103179', 1);
+    insert.run('u1', 'Leasing', 'LC1', null);
 
-    expect(new OverviewRepository(database).get('2026-10-07').dashboard.portfolio?.totalContracts).toBe(6);
+    const portfolio = new OverviewRepository(database).get('2026-10-07').dashboard.portfolio;
+    expect(portfolio?.activeContracts).toBe(3);
+    expect(portfolio?.unknownContracts).toBe(1);
   });
 
   it('deduplicates equipment across contracts and counts only explicitly active contracts by their actual types', () => {
@@ -191,7 +190,6 @@ describe('OverviewRepository', () => {
     expect(result.dashboard.portfolio).toEqual({
       equipment: 5,
       equipmentWithoutSerial: 3,
-      totalContracts: 5,
       activeContracts: 2,
       unknownContracts: 2,
       contractsByType: [

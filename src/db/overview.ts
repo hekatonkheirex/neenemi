@@ -34,7 +34,6 @@ export type SuiteOverview = {
     portfolio: null | {
       equipment: number;
       equipmentWithoutSerial: number;
-      totalContracts: number;
       activeContracts: number;
       unknownContracts: number;
       contractsByType: { type: string; count: number }[];
@@ -172,18 +171,15 @@ export class OverviewRepository {
       else equipmentWithoutSerial += 1;
     }
 
+    // One contract = one reference per type; the table holds one row per line or revision.
     const contractTypes = this.database.prepare(`
       SELECT contract_type AS type,
-        COUNT(CASE WHEN is_active = 1 THEN 1 END) AS count,
-        COUNT(CASE WHEN is_active IS NULL THEN 1 END) AS unknown
+        COUNT(DISTINCT CASE WHEN is_active = 1 THEN COALESCE(NULLIF(reference, ''), id) END) AS count,
+        COUNT(DISTINCT CASE WHEN is_active IS NULL THEN COALESCE(NULLIF(reference, ''), id) END) AS unknown
       FROM contracts
       GROUP BY contract_type
       ORDER BY contract_type
     `).all() as { type: string; count: number; unknown: number }[];
-    // A contract is one reference per type; the table holds one row per line or revision.
-    const { total: totalContracts } = this.database.prepare(
-      "SELECT COUNT(DISTINCT contract_type || '|' || COALESCE(NULLIF(reference, ''), id)) AS total FROM contracts",
-    ).get() as { total: number };
     let activeContracts = 0;
     let unknownContracts = 0;
     const contractsByType = contractTypes.map(({ type, count, unknown }) => {
@@ -195,7 +191,6 @@ export class OverviewRepository {
     return {
       equipment: serials.size + equipmentWithoutSerial,
       equipmentWithoutSerial,
-      totalContracts,
       activeContracts,
       unknownContracts,
       contractsByType,

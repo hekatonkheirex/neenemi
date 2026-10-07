@@ -57,7 +57,7 @@ export default function Dashboard({ moduleCount, overview, overviewError, backup
 
     <section aria-label="Resumen de la suite" className="my-6 grid gap-3 md:grid-cols-3">
       <SummaryCard accent value={moduleCount} label="módulos funcionales" />
-      <SummaryCard value={portfolio ? numberFormat.format(portfolio.totalContracts) : '—'} label="contratos (abiertos, leasing, alquiler, mantenimiento)" />
+      <SummaryCard value={portfolio ? numberFormat.format(portfolio.activeContracts) : '—'} label="contratos activos" />
       <SummaryCard value={lastApplied ? dateFormat.format(new Date(lastApplied)) : '—'} label="última carga aplicada" />
     </section>
 
