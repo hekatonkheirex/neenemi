@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.82 · 2026-10-07
+
+Consumibles muestra qué archivo está cargado en cada una de las nueve fuentes de la carga coordinada, con su fecha y hora («Cargado: Detalles de consumibles.xlsx · 07/10/2026, 14:32»). Las fuentes sin carga dicen «Sin archivo cargado». Se toma la última carga aplicada de cada fuente.
+
 ## 0.1.81 · 2026-10-07
 
 Fecha y hora de carga junto al nombre del archivo en las secciones de carga. Se ve en Expedientes técnicos, MPS, Descontinuador (fuentes y archivos originales), Proformas (contrato abierto y planillas de consumibles y repuestos), Listado de precios, Viáticos (fuente histórica), Cobertura, SLA y Selector de software. Formato «Cargado el 07/10/2026, 14:32». Consumibles no muestra el nombre del archivo cargado, así que no cambia.

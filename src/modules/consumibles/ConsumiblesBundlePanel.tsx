@@ -5,7 +5,9 @@ import {
   isConsumablesBundleComplete,
   type ConsumablesBundleFiles,
   type ConsumablesBundleSourceId,
+  type LoadedBundleSources,
 } from './bundle';
+import { formatLoadedAt } from '../../core/loaded-at';
 import { confirmAction } from '../../core/confirm';
 import { UploadButton } from '../../core/ActionButtons';
 import { cn } from '../../core/cn';
@@ -17,6 +19,7 @@ type ConsumablesBundlePanelProps = {
   importing: boolean;
   busy: boolean;
   files: ConsumablesBundleFiles;
+  loaded?: LoadedBundleSources;
   onFilesChange: (files: ConsumablesBundleFiles) => void;
   progressMessage: string;
   onImportBundle: (files: Record<ConsumablesBundleSourceId, File>) => void | Promise<void>;
@@ -24,7 +27,7 @@ type ConsumablesBundlePanelProps = {
 
 const spreadsheetAccept = '.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
-export default function ConsumablesBundlePanel({ importing, busy, files, onFilesChange, progressMessage, onImportBundle }: ConsumablesBundlePanelProps) {
+export default function ConsumablesBundlePanel({ importing, busy, files, loaded = {}, onFilesChange, progressMessage, onImportBundle }: ConsumablesBundlePanelProps) {
   const selectedCount = useMemo(() => Object.keys(files).length, [files]);
   const complete = isConsumablesBundleComplete(files);
 
@@ -55,6 +58,7 @@ export default function ConsumablesBundlePanel({ importing, busy, files, onFiles
         {CONSUMABLES_BUNDLE_SOURCES.map((source, index) => {
           const definition = SOURCE_CATALOG.find((item) => item.id === source.catalogId);
           const selectedFile = files[source.id];
+          const loadedSource = loaded[source.id];
           return (
             <div className={cn('grid min-w-0 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border p-3', selectedFile ? 'border-sky bg-sky/10' : 'border-navy/10 bg-paper dark:border-sky/20 dark:bg-navy/30')} key={source.id}>
               <div className="font-mono text-xs text-ink-2 dark:text-[#9fb2d1]">{String(index + 1).padStart(2, '0')}</div>
@@ -62,6 +66,7 @@ export default function ConsumablesBundlePanel({ importing, busy, files, onFiles
                 <div className="font-bold text-navy dark:text-white">{source.label}</div>
                 <Muted>{definition?.expectedFiles[0] ?? 'Archivo XLSX'}</Muted>
                 <Muted>{definition?.origin ?? 'Origen documentado en la matriz de fuentes.'}</Muted>
+                {loadedSource ? <div className="text-xs font-semibold text-[#14532d] dark:text-[#9be3b9]">Cargado: {loadedSource.sourceName}{formatLoadedAt(loadedSource.createdAt) ? ` · ${formatLoadedAt(loadedSource.createdAt)?.replace('Cargado el ', '')}` : ''}</div> : <Muted>Sin archivo cargado</Muted>}
                 {selectedFile ? <div className="text-xs font-semibold text-[#14532d] dark:text-[#9be3b9]">{selectedFile.name} · {formatFileSize(selectedFile.size)}</div> : null}
               </div>
               <UploadButton

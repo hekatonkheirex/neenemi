@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { SourceMetadataBackfillSummary } from '../../core/source-metadata-backfill';
-import type { ConsumablesBundleFiles, ConsumablesBundleSourceId } from './bundle';
+import { latestLoadedBySource, type ConsumablesBundleFiles, type ConsumablesBundleSourceId, type LoadedBundleSources } from './bundle';
 import ConsumablesBundlePanel from './ConsumiblesBundlePanel';
 import { confirmAction } from '../../core/confirm';
 import { readJson, toErrorMessage as describeError } from '../../core/http';
@@ -11,6 +11,10 @@ export { findSourceHeaderRow } from '../../core/source-header-row';
 
 type ImportBatchSummary = {
   domain: string;
+  sourceName: string;
+  sourceType: string | null;
+  status: string;
+  createdAt: string;
 };
 
 type ClearConsumablesResult = {
@@ -35,6 +39,7 @@ const numberFormat = new Intl.NumberFormat('es-PY');
 
 export default function SourceDataPanel({ onImportBundle, onBundleFilesChange, onReindexSources, onClearConsumables, importing, bundleImporting, bundleFiles, bundleProgress, refreshKey }: SourceDataPanelProps) {
   const [consumablesBatchCount, setConsumablesBatchCount] = useState(0);
+  const [loadedSources, setLoadedSources] = useState<LoadedBundleSources>({});
   const [reindexing, setReindexing] = useState(false);
   const [clearing, setClearing] = useState(false);
   const [reindexMessage, setReindexMessage] = useState<string | null>(null);
@@ -44,11 +49,13 @@ export default function SourceDataPanel({ onImportBundle, onBundleFilesChange, o
     let cancelled = false;
     setError(null);
     setConsumablesBatchCount(0);
+    setLoadedSources({});
     fetch('/api/imports?limit=300')
       .then((response) => readJson<{ batches: ImportBatchSummary[] }>(response))
       .then((value) => {
         if (cancelled) return;
         setConsumablesBatchCount(value.batches.filter((batch) => batch.domain === 'consumibles').length);
+        setLoadedSources(latestLoadedBySource(value.batches));
       })
       .catch((requestError: unknown) => {
         if (!cancelled) setError(toErrorMessage(requestError));
@@ -102,6 +109,7 @@ export default function SourceDataPanel({ onImportBundle, onBundleFilesChange, o
     try {
       const result = await onClearConsumables();
       setConsumablesBatchCount(0);
+      setLoadedSources({});
       setReindexMessage(`${numberFormat.format(result.batches)} cargas de Consumibles quitadas; ${numberFormat.format(result.archivedFiles)} originales archivados.`);
     } catch (requestError: unknown) {
       setError(toErrorMessage(requestError));
@@ -130,6 +138,7 @@ export default function SourceDataPanel({ onImportBundle, onBundleFilesChange, o
           importing={bundleImporting}
           busy={busy}
           files={bundleFiles}
+          loaded={loadedSources}
           onFilesChange={onBundleFilesChange}
           progressMessage={bundleProgress}
           onImportBundle={onImportBundle}
