@@ -19,7 +19,7 @@ type ConfigurationProps = {
 
 export default function Configuration({ refreshKey, onBackupLevel, onClearImports, clearingImports, clearImportsMessage }: ConfigurationProps) {
   return <div className="page-content grid min-w-0 grid-cols-1 gap-6 [overflow-wrap:anywhere] [&>*]:min-w-0">
-    <PageHeader eyebrow="CONFIGURACIÓN / DATOS Y RESPALDOS" title="Configuración" lead="Administra la base local, sus respaldos y los archivos originales. Las cargas de trabajo permanecen en cada módulo." />
+    <PageHeader eyebrow="CONFIGURACIÓN / DATOS Y RESPALDOS" title="Configuración" lead="Respalda y restaura la base local, limpia las cargas importadas y consulta los archivos originales de todos los módulos. Cada módulo carga sus propios datos." />
     <DatabaseRecoveryPanel refreshKey={refreshKey} onHealthChange={onBackupLevel} onClearImports={onClearImports} clearingImports={clearingImports} clearMessage={clearImportsMessage} />
     <ImportArchivePanel refreshKey={refreshKey} />
   </div>;

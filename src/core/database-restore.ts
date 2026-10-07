@@ -4,9 +4,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { Transform, type Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import { MAX_RESTORE_BYTES, MAX_RESTORE_LABEL } from './restore-limit';
 import { CORE_MIGRATIONS, resolveDatabasePath, type SuiteDatabase } from '../db/database';
 
-const MAX_RESTORE_BYTES = 2 * 1024 * 1024 * 1024;
 const sqliteHeader = Buffer.from('SQLite format 3\0', 'utf8');
 
 export async function stageDatabaseRestore(
@@ -22,7 +22,7 @@ export async function stageDatabaseRestore(
     transform(chunk: Buffer, _encoding, callback) {
       receivedBytes += chunk.byteLength;
       if (receivedBytes > MAX_RESTORE_BYTES) {
-        callback(new Error('El respaldo supera el máximo permitido de 2 GB.'));
+        callback(new Error(`El respaldo supera el máximo permitido de ${MAX_RESTORE_LABEL}.`));
         return;
       }
       callback(null, chunk);

@@ -6,6 +6,7 @@ import { submitImportJob, type ImportJobSnapshot } from '../core/import-job-clie
 import { confirmAction } from '../core/confirm';
 import { BusySpinner } from '../core/ActionButtons';
 import { downloadBackup } from '../core/backup-download';
+import { MAX_RESTORE_LABEL } from '../core/restore-limit';
 import { STALE_BACKUP_PHRASE } from './backupCopy';
 
 type ImportFileContentStatus = {
@@ -350,7 +351,7 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
             void restoreBackup(file);
           }}
         />
-        <div className={cn('text-right text-xs max-[720px]:text-left', mutedText)}>Máximo 2 GB. La restauración sustituye toda la base y reinicia la Suite.</div>
+        <div className={cn('text-right text-xs max-[720px]:text-left', mutedText)}>Máximo {MAX_RESTORE_LABEL}. La restauración sustituye toda la base y reinicia la Suite.</div>
       </div>
 
       {operationTitle ? <OperationStatus key={operationTitle} title={operationTitle} detail={operationDetail} progress={backfilling ? backfillJob?.progress : undefined} /> : null}

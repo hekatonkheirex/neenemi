@@ -1,5 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+import { MAX_RESTORE_LABEL } from '../core/restore-limit';
 import DatabaseRecoveryPanel, { canBackup, describeReminder, type BackupHealth } from './DatabaseRecoveryPanel';
 
 const health = (over: Partial<BackupHealth>): BackupHealth => ({
@@ -33,6 +34,10 @@ describe('DatabaseRecoveryPanel (estado inicial)', () => {
     expect(markup).toContain('role="status"');
     expect(markup).toContain('Consultando el estado del respaldo…');
     expect(markup).toMatch(/<button[^>]*disabled[^>]*>Completa los originales para respaldar<\/button>/);
+  });
+
+  it('muestra el límite de restauración que aplica el servidor', () => {
+    expect(markup).toContain(`Máximo ${MAX_RESTORE_LABEL}.`);
   });
 
   it('ofrece restaurar y limpiar cargas, con el selector de archivo oculto', () => {
