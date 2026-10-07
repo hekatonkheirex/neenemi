@@ -671,14 +671,13 @@ export default function DescontinuadorModule() {
     }
   }
 
-  const title = activeView === 'discontinued' ? 'Equipos discontinuados' : activeView === 'stock' ? 'Stock Waldbott' : 'Archivos del flujo de discontinuación';
   const lead = activeView === 'discontinued' ? 'Identifica contratos que requieren revisión y prioriza los modelos afectados.' : activeView === 'stock' ? 'Cruza el stock recuperable con el soporte Canon y la cartera instalada.' : 'Conserva cada exportación, muestra su origen y deja las filas originales disponibles para inspección.';
 
   return (
     <div className="page-content grid min-w-0 grid-cols-1 gap-6 [overflow-wrap:anywhere]">
       <PageHeader
         eyebrow="ADMINISTRATIVO / CICLO DE VIDA"
-        title={title}
+        title="Discontinuador"
         lead={lead}
         actions={activeView === 'discontinued'
           ? <HeaderMetric value={numberFormat.format(portfolioStats.discontinued)} label="equipos discontinuados" tone="danger" />

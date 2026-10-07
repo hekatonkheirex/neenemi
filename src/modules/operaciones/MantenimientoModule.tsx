@@ -391,7 +391,7 @@ export default function MantenimientoModule() {
     <div className="page-content maintenance-page grid min-w-0 grid-cols-1 gap-6 [overflow-wrap:anywhere]">
       <PageHeader
         eyebrow="SERVICIO TÉCNICO / BASE INSTALADA"
-        title="Mantenimiento"
+        title="Gestor de mantenimiento"
         lead="Estado del parque instalado según las lecturas de contadores: expedientes por equipo y límites por modelo."
         actions={<Button variant="outline" onClick={() => void refresh()} disabled={loading || clearingImport}>{loading ? 'Actualizando…' : 'Actualizar'}</Button>}
       />

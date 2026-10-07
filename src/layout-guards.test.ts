@@ -11,11 +11,10 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
     expect(r).toMatch(/max-height:\s*22rem/);
     expect(r).toMatch(/overflow-y:\s*auto/);
   });
-  it('Mantenimiento: las fichas KPI y el gráfico de tendencia pueden encogerse en celdas estrechas', () => {
+  it('Mantenimiento: las fichas KPI pueden encogerse en celdas estrechas', () => {
     const summary = fs.readFileSync('src/modules/mantenimiento/MaintenanceExecutiveSummary.tsx', 'utf8');
     expect(summary).toContain('grid-cols-2 gap-3 min-[640px]:grid-cols-3 min-[1180px]:grid-cols-6');
     expect(summary).toMatch(/grid min-w-0 gap-1 rounded-xl/);
-    expect(summary).toContain('h-6 min-w-10 flex-[0_1_auto]');
   });
   it('960 px: la cabecera de módulo envuelve sus acciones', () => {
     expect(fs.readFileSync('src/core/ui/page-header.tsx', 'utf8')).toContain('flex flex-wrap items-end justify-between gap-4');

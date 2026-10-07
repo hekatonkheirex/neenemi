@@ -465,7 +465,7 @@ export default function ConsumiblesModule() {
     <div className="page-content operations-page grid min-w-0 grid-cols-1 gap-6 [overflow-wrap:anywhere]">
       <PageHeader
         eyebrow="SERVICIO TÉCNICO / CONSUMIBLES"
-        title="Consumo real"
+        title="Analítica de consumibles"
         lead="Carga los detalles XLSX, crúzalos con la base instalada y consulta consumibles y repuestos sobre la misma SQLite de la suite."
         actions={<Button variant="outline" onClick={() => void refresh()} disabled={loading}>{loading ? 'Actualizando…' : 'Actualizar datos'}</Button>}
       />

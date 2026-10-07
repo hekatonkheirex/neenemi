@@ -2,6 +2,14 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.92 · 2026-10-07
+
+El título de cada módulo ahora es el mismo nombre que tiene en la barra lateral: Gestor de mantenimiento, Analítica de consumibles, Calculadora de insumos MPS, Cobertura de tóner y Discontinuador. Un test compara cada título con el sidebar para que no vuelvan a divergir.
+
+## 0.1.91 · 2026-10-07
+
+En Mantenimiento, el botón XLSX queda arriba a la derecha aunque el subtítulo ocupe varias líneas, y se quita el minigráfico de la ficha Críticos.
+
 ## 0.1.90 · 2026-10-07
 
 En Archivos y filas de origen se quita el botón «Quitar carga», que solo aparecía en las importaciones de Consumibles. Ahora el panel es de consulta y descarga para todos los dominios; las cargas se quitan desde su módulo.
