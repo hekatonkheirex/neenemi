@@ -122,10 +122,11 @@
 }
 
 .maintenance-executive-print-list {
-  break-inside: avoid;
   border: 1px solid var(--ds-border);
   border-radius: 0.25rem;
-  overflow: hidden;
+  /* La lista de equipos ocupa varias páginas: cada tramo repite el borde para que el cuadro cierre en todas. */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .maintenance-executive-print-list-heading {
@@ -134,6 +135,7 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.55rem 0.65rem;
+  border-radius: 0.25rem 0.25rem 0 0;
   background: #edf2f8;
 }
 

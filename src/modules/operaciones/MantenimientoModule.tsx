@@ -20,6 +20,7 @@ import AnimatedTabs from '../../core/AnimatedTabs';
 import { readJson, toErrorMessage } from '../../core/http';
 import { UploadButton, ExportButton, DownloadIcon } from '../../core/ActionButtons';
 import { cn } from '../../core/cn';
+import { toFileSafeName } from './file-name';
 import { PageHeader } from '../../core/ui/page-header';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
 import { Button, buttonVariants } from '../../core/ui/button';
@@ -671,15 +672,6 @@ function uniqueMaintenanceSourceDetails(analysis: MaintenanceAnalysis): string[]
     });
   });
   return [...values];
-}
-
-function toFileSafeName(value: string): string {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-zA-Z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 72) || 'equipo';
 }
 
 function maintenanceStatusTone(status: MaintenanceAnalysis['status']): BadgeTone {

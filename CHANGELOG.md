@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.79 · 2026-10-07
+
+El PDF tabular de Expedientes técnicos ya no lleva «xlsx» en el nombre del archivo (`mantenimiento-20260918-120817.pdf`). En el informe ejecutivo, los cuadros de «Eventos y prioridades detectadas» cierran a la derecha y abajo en cada página y la lista ya no salta entera a otra hoja, que dejaba la primera casi vacía.
+
 ## 0.1.78 · 2026-10-07
 
 Alinea la suite con el stack de la marca. Los iconos pasan de Hugeicons a Lucide (`lucide-react`) y se retiran `@hugeicons/react` y `@hugeicons/core-free-icons`; una prueba falla si vuelve a importarse Hugeicons. Los dos manejadores de PDF del proceso principal solo atienden al marco principal de la ventana cargado desde el servidor local, y rechazan iframes y orígenes externos. No cambia el comportamiento visible salvo la forma de los iconos.
