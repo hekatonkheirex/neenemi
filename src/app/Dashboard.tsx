@@ -80,11 +80,11 @@ export default function Dashboard({ moduleCount, overview, overviewError, backup
         </div>
       </Card>
 
-      <div className="grid min-w-0 items-start gap-6 min-[1920px]:grid-cols-2" aria-label="Gráficos de los módulos">
+      <div className="@container min-w-0" aria-label="Gráficos de los módulos"><div className="grid min-w-0 items-start gap-6 @[1400px]:grid-cols-2">
         <DashboardMaintenanceChart onNavigate={onNavigate} />
         <DashboardConsumablesChart onNavigate={onNavigate} />
         <DashboardTravelCharts onNavigate={onNavigate} />
-      </div>
+      </div></div>
 
       <Card className="min-w-0 grid-cols-1">
         <CardHeader eyebrow="SOPORTE CANON" title="Ciclo de vida de los modelos" />

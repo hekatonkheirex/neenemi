@@ -29,7 +29,7 @@ export default function DashboardTravelCharts({ onNavigate }: { onNavigate: (id:
   const heading = <CardHeader eyebrow="Control de viáticos" title="Actividad y costos de viajes" aside={<Button variant="outline" className="max-w-full whitespace-normal" onClick={() => onNavigate('viaticos')}>Ver Control de viáticos</Button>} />;
 
   if (state.status !== 'ready' || state.summaries.length === 0) {
-    return <Card className="min-w-0 grid-cols-1 min-[1920px]:col-span-2" aria-label="Control de viáticos · actividad y costos" aria-busy={state.status === 'loading'}>
+    return <Card className="min-w-0 grid-cols-1 @[1400px]:col-span-2" aria-label="Control de viáticos · actividad y costos" aria-busy={state.status === 'loading'}>
       {heading}
       {state.status === 'loading' ? <StatusLine state="pending">Cargando actividad y costos históricos de viáticos…</StatusLine>
         : state.status === 'error' ? <StatusLine state="error">No se pudo cargar el histórico de viáticos. {state.message}</StatusLine>
@@ -37,7 +37,7 @@ export default function DashboardTravelCharts({ onNavigate }: { onNavigate: (id:
     </Card>;
   }
 
-  return <section className="grid min-w-0 gap-4 min-[1920px]:col-span-2" aria-label="Control de viáticos · actividad y costos">
+  return <section className="grid min-w-0 gap-4 @[1400px]:col-span-2" aria-label="Control de viáticos · actividad y costos">
     {heading}
     <div className="grid min-w-0 items-start gap-6 lg:grid-cols-2">
       <AnnualActivityChart summaries={state.summaries} />

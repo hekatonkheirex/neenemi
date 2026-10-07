@@ -60,8 +60,8 @@ export default function DashboardMaintenanceChart({ onNavigate }: { onNavigate: 
     {state.status === 'error' ? <StatusLine state="error">No se pudo cargar el análisis de mantenimiento: {state.message}</StatusLine> : null}
     {state.status === 'ready' && state.total === 0 ? <Muted role="status">No hay equipos cargados en Gestor de mantenimiento.</Muted> : null}
     {state.status === 'ready' && state.total > 0 ? <>
-      <div className="min-w-0 overflow-x-auto [&_figcaption]:hidden" role="region" aria-label="Gráfico desplazable del estado del parque" tabIndex={0}>
-        <div className="min-w-[760px]">
+      <div className="min-w-0 overflow-x-auto [&_figcaption]:hidden [&_svg]:min-h-0" role="region" aria-label="Gráfico desplazable del estado del parque" tabIndex={0}>
+        <div className="min-w-[600px]">
           <LegacyHorizontalStackedBars
             labels={labels}
             series={state.series}
