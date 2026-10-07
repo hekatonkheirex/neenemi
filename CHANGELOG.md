@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.89 · 2026-10-07
+
+En Archivos y filas de origen, la lista de importaciones ocupa la misma altura que el visor de la fuente seleccionada y hace scroll por dentro, en lugar de quedar con una altura fija más corta. Además va dentro de un recuadro con borde, igual que el visor.
+
 ## 0.1.88 · 2026-10-07
 
 Quita de la pestaña Resumen de Consumibles la columna lateral de cargas (las cinco fuentes directas, las fuentes relacionadas del legado y las reglas de cruce). Todas las cargas se hacen desde la pestaña Cargas, así que la tabla de registros ocupa todo el ancho.

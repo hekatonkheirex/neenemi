@@ -238,7 +238,7 @@ export default function ImportArchivePanel({ refreshKey, onRemoveBatch }: Import
 
       {error ? <div role="alert" className="rounded-xl border border-[#d92d20]/40 bg-[#d92d20]/10 px-4 py-3 text-sm text-[#912018] dark:text-[#ffb4ab]">{error}</div> : null}
 
-      <div className="grid items-start gap-5 lg:grid-cols-[minmax(16rem,22rem)_minmax(0,1fr)]">
+      <div className="grid gap-5 lg:grid-cols-[minmax(16rem,22rem)_minmax(0,1fr)]">
         <ImportBatchList batches={batches} selectedBatchId={selectedBatchId} loading={loadingBatches} onSelect={selectBatch} />
         <ImportArchiveViewer
           batch={selectedBatch}
@@ -272,7 +272,9 @@ export function ImportBatchList({
   onSelect: (batch: ImportBatchSummary) => void;
 }) {
   return (
-    <div className="grid max-h-[32rem] gap-2 overflow-y-auto pr-1">
+    <div className="relative min-h-0">
+      {/* ponytail: absolute inset-0 on lg so the list scrolls inside the viewer's height instead of driving the row height */}
+      <div className="grid max-h-[32rem] content-start gap-2 overflow-y-auto rounded-xl border border-navy/10 p-4 dark:border-sky/20 lg:absolute lg:inset-0 lg:max-h-none">
       <div className="text-[0.7rem] font-extrabold uppercase tracking-[0.14em] text-ink-2 dark:text-[#8fa5c7]">Importaciones</div>
       {loading ? <div className={cn('text-sm', mutedText)}>Cargando archivos…</div> : null}
       {!loading && batches.length === 0 ? <div className={cn('text-sm', mutedText)}>Todavía no hay archivos importados.</div> : null}
@@ -298,6 +300,7 @@ export function ImportBatchList({
           </button>
         );
       })}
+      </div>
     </div>
   );
 }

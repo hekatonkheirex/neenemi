@@ -63,6 +63,15 @@ describe('ImportArchiveViewer', () => {
     expect(viewer({ batch: undefined })).toContain('Selecciona una importación');
   });
 
+  it('en pantallas grandes la lista se estira a la altura del visor y hace scroll por dentro', () => {
+    const list = renderToStaticMarkup(<ImportBatchList batches={[batch]} selectedBatchId="b1" loading={false} onSelect={() => {}} />);
+    expect(list).toContain('lg:absolute');
+    expect(list).toContain('lg:inset-0');
+    expect(list).toContain('rounded-xl border border-navy/10 p-4');
+    const panel = renderToStaticMarkup(<ImportArchivePanel refreshKey={0} onRemoveBatch={async () => {}} />);
+    expect(panel).not.toContain('items-start gap-5');
+  });
+
   it('sin clases heredadas del visor', () => {
     expect(viewer()).not.toMatch(/source-data|catalog-table|secondary-button|export-button/);
   });
