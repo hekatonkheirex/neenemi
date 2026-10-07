@@ -34,6 +34,9 @@ export type SuiteOverview = {
     portfolio: null | {
       equipment: number;
       equipmentWithoutSerial: number;
+      // Series on active contracts of the four department types, and how many have counter readings in the current maintenance load.
+      activeEquipment: number;
+      activeEquipmentWithReadings: number;
       activeContracts: number;
       activeCustomers: number;
       unknownContracts: number;
@@ -172,6 +175,28 @@ export class OverviewRepository {
       else equipmentWithoutSerial += 1;
     }
 
+    const activeSerials = new Set<string>();
+    const activeRows = this.database.prepare(`
+      SELECT ce.serial_number FROM contract_equipment ce JOIN contracts c ON c.id = ce.contract_id
+      WHERE c.is_active = 1 AND c.contract_type IN ('Abierto', 'Alquiler', 'Leasing', 'Mantenimiento')
+    `).all() as { serial_number: string | null }[];
+    for (const row of activeRows) {
+      const serial = normalizeSerial(row.serial_number ?? '');
+      if (serial) activeSerials.add(serial);
+    }
+    // Same batch the maintenance analysis reads: the latest applied one.
+    const readingRows = this.database.prepare(`
+      SELECT DISTINCT serial_number FROM maintenance_counter_records
+      WHERE source_batch_id = (
+        SELECT id FROM import_batches WHERE domain = 'maintenance' AND status = 'applied'
+        ORDER BY created_at DESC, id DESC LIMIT 1
+      )
+    `).all() as { serial_number: string | null }[];
+    const readingSerials = new Set<string>();
+    for (const row of readingRows) readingSerials.add(normalizeSerial(row.serial_number ?? ''));
+    let activeEquipmentWithReadings = 0;
+    for (const serial of activeSerials) if (readingSerials.has(serial)) activeEquipmentWithReadings += 1;
+
     // One contract = one reference per type; the table holds one row per line or revision.
     const contractTypes = this.database.prepare(`
       SELECT contract_type AS type,
@@ -197,6 +222,8 @@ export class OverviewRepository {
     return {
       equipment: serials.size + equipmentWithoutSerial,
       equipmentWithoutSerial,
+      activeEquipment: activeSerials.size,
+      activeEquipmentWithReadings,
       activeContracts,
       activeCustomers,
       unknownContracts,

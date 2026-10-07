@@ -74,14 +74,14 @@ export default function Dashboard({ moduleCount, overview, overviewError, backup
         <CardHeader eyebrow="CARTERA Y EQUIPOS" title="Base instalada y contratos" />
         <Muted>Resumen general de la cartera, sin los filtros particulares de cada módulo.</Muted>
         <div className={cn('grid min-w-0 gap-3 sm:grid-cols-2', portfolio?.contractsByType.length && 'xl:grid-cols-3')}>
-          <MetricCard label="Equipos con contrato" value={portfolio?.equipment ?? missing} note={portfolio ? `Series únicas entre contratos. Registros sin serie: ${numberFormat.format(portfolio.equipmentWithoutSerial)} (contados por separado).` : 'Carga la cartera para consultar los equipos.'} onClick={() => onNavigate('descontinuador')} />
+          <MetricCard label="Equipos con contrato activo" value={portfolio?.activeEquipment ?? missing} note={portfolio ? 'Series únicas en contratos activos (Abierto, Alquiler, Leasing y Mantenimiento).' : 'Carga la cartera para consultar los equipos.'} onClick={() => onNavigate('descontinuador')} />
           <MetricCard label="Contratos activos" value={portfolio?.activeContracts ?? missing} note={portfolio ? `Solo los marcados como activos. Contratos sin estado: ${numberFormat.format(portfolio.unknownContracts)} (excluidos).` : 'El estado activo se toma de la cartera cargada.'} onClick={() => onNavigate('descontinuador')} />
           {portfolio?.contractsByType.map(item => <MetricCard key={item.type} label={`Contratos activos · ${item.type}`} value={item.count} note="Contratos activos de este tipo en la cartera." onClick={() => onNavigate('descontinuador')} />)}
         </div>
       </Card>
 
       <div className="@container min-w-0" aria-label="Gráficos de los módulos"><div className="grid min-w-0 items-stretch gap-6 @[1400px]:grid-cols-2">
-        <DashboardMaintenanceChart onNavigate={onNavigate} />
+        <DashboardMaintenanceChart onNavigate={onNavigate} coverage={portfolio} />
         <DashboardConsumablesChart onNavigate={onNavigate} />
         <DashboardTravelCharts onNavigate={onNavigate} />
       </div></div>

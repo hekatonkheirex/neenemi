@@ -110,6 +110,8 @@ describe('OverviewRepository', () => {
     expect(overview.get('2026-10-07').dashboard.portfolio).toEqual({
       equipment: 0,
       equipmentWithoutSerial: 0,
+      activeEquipment: 0,
+      activeEquipmentWithReadings: 0,
       activeContracts: 0,
       activeCustomers: 0,
       unknownContracts: 0,
@@ -127,6 +129,8 @@ describe('OverviewRepository', () => {
     expect(new OverviewRepository(database).get('2026-10-07').dashboard.portfolio).toEqual({
       equipment: 0,
       equipmentWithoutSerial: 0,
+      activeEquipment: 0,
+      activeEquipmentWithReadings: 0,
       activeContracts: 0,
       activeCustomers: 0,
       unknownContracts: 0,
@@ -188,12 +192,23 @@ describe('OverviewRepository', () => {
     insertEquipment.run('equipment-5', 'active-1', 'Same model', null, 'Canon');
     insertEquipment.run('equipment-6', 'active-1', 'Same model', '', 'Canon');
     insertEquipment.run('equipment-7', 'unknown-2', 'Same model', ' \t ', 'Canon');
+    const readingsBatch = imports.createBatch({ domain: 'maintenance', sourceName: 'counters.xlsx' });
+    imports.markApplied(readingsBatch);
+    const insertReading = database.prepare(`
+      INSERT INTO maintenance_counter_records (id, customer_name, model_label, serial_number, period, copies, counter, source_batch_id, created_at)
+      VALUES (?, 'Cliente Uno', 'Model One', ?, '2026-09', 10, 100, ?, '2026-10-01')
+    `);
+    insertReading.run('reading-1', 'SER 001', readingsBatch);
+    insertReading.run('reading-2', 'ser  001', readingsBatch);
+    insertReading.run('reading-3', 'unrelated-serial', readingsBatch);
 
     const result = new OverviewRepository(database).get('2026-10-07');
 
     expect(result.dashboard.portfolio).toEqual({
       equipment: 5,
       equipmentWithoutSerial: 3,
+      activeEquipment: 2,
+      activeEquipmentWithReadings: 1,
       activeContracts: 2,
       activeCustomers: 1,
       unknownContracts: 2,
@@ -206,7 +221,7 @@ describe('OverviewRepository', () => {
     });
     expect(result.counts.contracts).toBe(6);
     expect(result.counts.equipment).toBe(7);
-    expect(result.appliedImports).toBe(2);
+    expect(result.appliedImports).toBe(3);
   });
 
   it('distinguishes an applied empty Canon source from an unavailable source', () => {

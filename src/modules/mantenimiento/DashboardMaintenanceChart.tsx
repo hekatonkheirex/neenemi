@@ -24,7 +24,15 @@ type AnalysisState =
   | { status: 'error'; message: string }
   | { status: 'ready'; total: number; series: LegacyChartSeries[] };
 
-export default function DashboardMaintenanceChart({ onNavigate }: { onNavigate: (id: string) => void }) {
+type Coverage = { activeEquipment: number; activeEquipmentWithReadings: number };
+
+export function coverageNote(coverage?: Coverage | null): string | null {
+  if (!coverage || coverage.activeEquipment <= 0) return null;
+  const percent = Math.round((coverage.activeEquipmentWithReadings / coverage.activeEquipment) * 100);
+  return `${integerFormat.format(coverage.activeEquipmentWithReadings)} de ${integerFormat.format(coverage.activeEquipment)} equipos en contratos activos tienen lecturas de contadores (${percent} %). El resto no entra en este análisis.`;
+}
+
+export default function DashboardMaintenanceChart({ onNavigate, coverage }: { onNavigate: (id: string) => void; coverage?: Coverage | null }) {
   const [state, setState] = useState<AnalysisState>({ status: 'loading' });
 
   useEffect(() => {
@@ -71,6 +79,7 @@ export default function DashboardMaintenanceChart({ onNavigate }: { onNavigate: 
           />
         </div>
       </div>
+      {coverageNote(coverage) ? <Muted>{coverageNote(coverage)}</Muted> : null}
       <Muted>El análisis usa los últimos 3 meses disponibles por equipo (o menos si no hay 3), no todo el historial.</Muted>
       <Muted>Contador en cero y Sobre el óptimo pueden coincidir con otras categorías. Las barras son independientes: sus cantidades no se suman para obtener el total de equipos.</Muted>
     </> : null}
