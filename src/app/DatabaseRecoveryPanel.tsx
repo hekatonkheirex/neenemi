@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Check, TriangleAlert } from 'lucide-react';
 import { cn } from '../core/cn';
 import { Button } from '../core/ui/button';
+import { Card } from '../core/ui/card';
 import { submitImportJob, type ImportJobSnapshot } from '../core/import-job-client';
 import { confirmAction } from '../core/confirm';
 import { BusySpinner } from '../core/ActionButtons';
@@ -275,11 +276,11 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
   const initialLoading = loadingStatus || health === null;
 
   return (
-    <section
+    <Card
       aria-busy={busy || initialLoading}
       data-level={level}
       style={{ '--accent': tone.accent } as React.CSSProperties}
-      className="grid min-w-0 grid-cols-1 gap-4 rounded-2xl border border-l-[6px] border-navy/10 border-l-(--accent) bg-white p-5 shadow-md dark:border-sky/20 dark:border-l-(--accent) dark:bg-panel"
+      className="min-w-0 grid-cols-1 border-l-[6px] border-l-(--accent) dark:border-l-(--accent)"
       aria-label="Respaldo y recuperación de la base"
     >
       <div role="status" className="flex flex-wrap items-center gap-x-5 gap-y-4 rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] px-5 py-4">
@@ -288,7 +289,7 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
         </div>
         <div className="min-w-0 flex-[1_1_18rem]">
           <div className="text-[0.7rem] font-extrabold uppercase tracking-[0.14em] text-ink-2 dark:text-[#8fa5c7]">Respaldo y recuperación</div>
-          <h3 className="my-1 text-xl font-bold text-navy dark:text-white">{reminder?.title ?? 'Consultando el estado del respaldo…'}</h3>
+          <h2 className="my-1 text-xl font-bold text-navy dark:text-white">{reminder?.title ?? 'Consultando el estado del respaldo…'}</h2>
           {reminder ? <div className="max-w-3xl text-sm leading-relaxed text-navy dark:text-[#d6e2f5]">{reminder.text}</div> : null}
         </div>
         {downloadButton}
@@ -357,7 +358,7 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
       {operationTitle ? <OperationStatus key={operationTitle} title={operationTitle} detail={operationDetail} progress={backfilling ? backfillJob?.progress : undefined} /> : null}
       {!busy && clearMessage && !message ? <Message tone={clearMessage.tone} text={clearMessage.text} /> : null}
       {!busy && message ? <Message tone={message.tone} text={message.text} /> : null}
-    </section>
+    </Card>
   );
 }
 

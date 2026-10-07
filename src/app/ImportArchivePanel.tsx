@@ -6,6 +6,7 @@ import { Download } from 'lucide-react';
 import { createColumnHelper, tableFeatures, useTable } from '@tanstack/react-table';
 import { cn } from '../core/cn';
 import { Button } from '../core/ui/button';
+import { Card, CardHeader, Muted } from '../core/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../core/ui/table';
 
 type ImportBatchSummary = {
@@ -209,18 +210,16 @@ export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelPro
   }
 
   return (
-    <section aria-label="Importaciones y archivos originales" className="grid min-w-0 grid-cols-1 gap-5 rounded-2xl border border-navy/10 bg-white p-5 shadow-md dark:border-sky/20 dark:bg-panel">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="min-w-0">
-          <div className="eyebrow">DATOS / ORIGINALES CONSERVADOS</div>
-          <h2 className="text-navy dark:text-white">Archivos y filas de origen</h2>
-          <div className={cn('max-w-3xl text-sm', mutedText)}>Consulta las importaciones de todos los módulos, inspecciona sus hojas y filas originales o descarga el archivo fuente.</div>
-        </div>
-        <div className="rounded-xl border border-navy/10 px-4 py-2 text-right dark:border-sky/20">
+    <Card aria-label="Importaciones y archivos originales" className="min-w-0 grid-cols-1 gap-5">
+      <CardHeader
+        eyebrow="DATOS / ORIGINALES CONSERVADOS"
+        title="Archivos y filas de origen"
+        aside={<div className="rounded-xl border border-navy/10 px-4 py-2 text-right dark:border-sky/20">
           <div className="text-2xl font-extrabold text-navy dark:text-white">{numberFormat.format(batches.length)}</div>
           <div className={cn('text-xs', mutedText)}>importaciones registradas</div>
-        </div>
-      </div>
+        </div>}
+      />
+      <Muted className={cn('max-w-3xl text-sm', mutedText)}>Consulta las importaciones de todos los módulos, inspecciona sus hojas y filas originales o descarga el archivo fuente.</Muted>
 
       {error ? <div role="alert" className="rounded-xl border border-[#d92d20]/40 bg-[#d92d20]/10 px-4 py-3 text-sm text-[#912018] dark:text-[#ffb4ab]">{error}</div> : null}
 
@@ -240,7 +239,7 @@ export default function ImportArchivePanel({ refreshKey }: ImportArchivePanelPro
           onPageChange={setPage}
         />
       </div>
-    </section>
+    </Card>
   );
 }
 
