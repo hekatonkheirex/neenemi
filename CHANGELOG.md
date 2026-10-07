@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.100 · 2026-10-07
+
+El gráfico «Estado del parque» de Inicio queda centrado en su tarjeta: etiquetas y barras ocupan el ancho disponible sin el hueco de la izquierda y las filas se reparten por igual arriba y abajo.
+
 ## 0.1.99 · 2026-10-07
 
 El gráfico «Servicios y viajes» por año muestra la cantidad sobre cada barra, sin necesidad de pasar el cursor, tanto en Inicio como en el Histórico de Control de viáticos. Las barras dejan espacio arriba para el valor y la letra se reduce en pantallas angostas para que los números no se pisen.

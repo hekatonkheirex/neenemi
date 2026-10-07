@@ -20,6 +20,15 @@ describe('LegacyHorizontalStackedBars', () => {
     expect(Math.max(...xs) + widest).toBeLessThanOrEqual(760);
   });
 
+  it('margin reduce el margen izquierdo y mueve las filas (centrado de etiquetas cortas)', () => {
+    const render = (margin?: { left: number; top: number }) => renderToStaticMarkup(<LegacyHorizontalStackedBars ariaLabel="t" labels={['A']} series={[{ label: 's', color: '#000', values: [5] }]} margin={margin} />);
+    const barX = (html: string) => Number(/<rect class="fill-navy\/10[^"]*" x="([\d.]+)" y="([\d.]+)"/.exec(html)![1]);
+    const barY = (html: string) => Number(/<rect class="fill-navy\/10[^"]*" x="([\d.]+)" y="([\d.]+)"/.exec(html)![2]);
+    expect(barX(render())).toBe(170);
+    expect(barX(render({ left: 110, top: 30 }))).toBe(110);
+    expect(barY(render({ left: 110, top: 30 }))).toBe(barY(render()) + 12);
+  });
+
   it('Línea y barras apiladas: las marcas del eje Y no se salen por la izquierda', () => {
     const series = [{ label: 's', color: '#000', values: [2_723_113_406, 100] }];
     for (const chart of [

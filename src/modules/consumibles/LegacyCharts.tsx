@@ -125,17 +125,20 @@ export function LegacyHorizontalStackedBars({
   series,
   valueFormatter = formatChartNumber,
   ariaLabel,
+  margin: marginOverride,
 }: {
   labels: readonly string[];
   series: readonly LegacyChartSeries[];
   valueFormatter?: (value: number) => string;
   ariaLabel: string;
+  // Para etiquetas cortas: reduce el margen izquierdo y centra las filas en vertical.
+  margin?: Partial<{ top: number; right: number; bottom: number; left: number }>;
 }) {
   if (labels.length === 0 || series.length === 0) return <LegacyChartEmpty />;
 
   const rowHeight = 30;
   const height = Math.max(220, labels.length * rowHeight + 54);
-  const margin = { top: 18, right: 18, bottom: 28, left: 170 };
+  const margin = { top: 18, right: 18, bottom: 28, left: 170, ...marginOverride };
   const plotWidth = CHART_WIDTH - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   const totals = labels.map((_, index) => series.reduce((sum, item) => sum + (item.values[index] ?? 0), 0));

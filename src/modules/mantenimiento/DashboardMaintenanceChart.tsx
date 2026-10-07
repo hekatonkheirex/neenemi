@@ -67,6 +67,7 @@ export default function DashboardMaintenanceChart({ onNavigate }: { onNavigate: 
             series={state.series}
             valueFormatter={(value) => integerFormat.format(value)}
             ariaLabel="Estado del parque: cantidad de equipos por indicador"
+            margin={{ left: 110, top: 30 }}
           />
         </div>
       </div>
