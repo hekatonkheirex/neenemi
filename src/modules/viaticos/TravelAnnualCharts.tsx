@@ -10,6 +10,18 @@ const selectClass = 'h-10 w-full min-w-0 rounded-xl border border-navy/20 bg-whi
 const fieldClass = 'grid min-w-0 gap-1.5 text-xs font-semibold text-navy dark:text-white';
 const cardClass = 'min-w-0 grid-cols-1 [overflow-wrap:anywhere]';
 
+const countFormat = new Intl.NumberFormat('es-PY');
+// Deja el 12 % superior libre para el valor impreso sobre la barra más alta.
+const BAR_AREA = 88;
+
+function barHeight(value: number, maxValue: number, area = BAR_AREA): number {
+  return value ? Math.max((value / maxValue) * area, 4) : 0;
+}
+
+function BarValue({ children }: { children: string }) {
+  return <div className="absolute bottom-full left-1/2 -translate-x-1/2 whitespace-nowrap pb-0.5 text-[10px] font-semibold tabular-nums sm:text-xs text-ink-2 dark:text-[#d6e2f5]">{children}</div>;
+}
+
 function compactMoney(value: number): string {
   return compactMoneyFormat.format(Math.round(value));
 }
@@ -24,9 +36,9 @@ export function AnnualActivityChart({ summaries }: { summaries: HistoricalSummar
       <div className={chartArea} role="img" aria-label="Comparativa anual de servicios y viajes">
         {summaries.map((summary) => (
           <div className="grid h-full min-w-0 grid-rows-[minmax(0,1fr)_auto_auto] justify-items-center gap-1" key={summary.year}>
-            <div className="flex h-full w-full items-end justify-center gap-1">
-              <div className="w-1/3 max-w-8 rounded-t bg-sky" style={{ height: `${summary.services ? Math.max((summary.services / maxValue) * 100, 4) : 0}%` }} title={`${summary.services} servicios`} />
-              <div className="w-1/3 max-w-8 rounded-t bg-brand" style={{ height: `${summary.trips ? Math.max((summary.trips / maxValue) * 100, 4) : 0}%` }} title={`${summary.trips} viajes`} />
+            <div className="flex h-full w-full items-end justify-center gap-1.5">
+              <div className="relative w-1/3 max-w-8 rounded-t bg-sky" style={{ height: `${barHeight(summary.services, maxValue)}%` }} title={`${summary.services} servicios`}><BarValue>{countFormat.format(summary.services)}</BarValue></div>
+              <div className="relative w-1/3 max-w-8 rounded-t bg-brand" style={{ height: `${barHeight(summary.trips, maxValue)}%` }} title={`${summary.trips} viajes`}><BarValue>{countFormat.format(summary.trips)}</BarValue></div>
             </div>
             <div className="text-sm font-bold text-navy dark:text-white">{summary.year}</div>
             <Muted>{summary.partial ? 'En curso' : 'Cerrado'}</Muted>
@@ -55,7 +67,7 @@ export function AnnualCostChart({ summaries }: { summaries: HistoricalSummary[] 
         {summaries.map((summary) => (
           <div className="grid h-full min-w-0 grid-rows-[auto_minmax(0,1fr)_auto_auto] justify-items-center gap-1" key={summary.year}>
             <div className="text-xs font-semibold tabular-nums text-ink-2 dark:text-[#d6e2f5]">₲ {compactMoney(summary[metric])}</div>
-            <div className="flex h-full w-full items-end justify-center"><div className="w-1/2 max-w-12 rounded-t bg-sky" style={{ height: `${summary[metric] ? Math.max((summary[metric] / maxValue) * 100, 4) : 0}%` }} title={`${summary.year}: ₲ ${moneyFormat.format(Math.round(summary[metric]))}`} /></div>
+            <div className="flex h-full w-full items-end justify-center"><div className="w-1/2 max-w-12 rounded-t bg-sky" style={{ height: `${barHeight(summary[metric], maxValue, 100)}%` }} title={`${summary.year}: ₲ ${moneyFormat.format(Math.round(summary[metric]))}`} /></div>
             <div className="text-sm font-bold text-navy dark:text-white">{summary.year}</div>
             <Muted>{summary.partial ? 'En curso' : 'Cerrado'}</Muted>
           </div>
