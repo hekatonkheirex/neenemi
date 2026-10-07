@@ -969,6 +969,16 @@ export const CORE_MIGRATIONS: readonly Migration[] = [
       END;
     `,
   },
+  {
+    version: 44,
+    name: 'contract-equipment-serial-lookup-index',
+    sql: `
+      -- Consumibles, Servicios y las salidas buscan el equipo por esta expresión exacta.
+      -- Sin índice cada fila recorría todos los equipos y el paquete de nueve fuentes tardaba minutos.
+      CREATE INDEX IF NOT EXISTS idx_contract_equipment_serial_lookup
+        ON contract_equipment (UPPER(TRIM(COALESCE(serial_number, ''))));
+    `,
+  },
 ];
 
 function ensureMigrationsTable(database: SuiteDatabase) {

@@ -19,6 +19,21 @@ afterEach(() => {
   }
 });
 
+describe('contract_equipment serial lookup', () => {
+  // Regresión: sin este índice cada fila de Consumibles/Servicios recorría todos los equipos
+  // y el paquete de nueve fuentes dejaba el servidor bloqueado minutos.
+  it.each([
+    ['consumibles/servicios', 'equipment.serial_number'],
+  ])('uses the expression index for %s', (_label, column) => {
+    const database = openDatabase(makeTemporaryDatabasePath());
+    const plan = database.prepare(`EXPLAIN QUERY PLAN
+      SELECT equipment.id FROM contract_equipment equipment
+      WHERE UPPER(TRIM(COALESCE(${column}, ''))) = ?
+      ORDER BY equipment.updated_at DESC, equipment.id DESC LIMIT 1`).all('SER-1') as Array<{ detail: string }>;
+    expect(plan.map((row) => row.detail).join(' ')).toContain('idx_contract_equipment_serial_lookup');
+  });
+});
+
 describe('openDatabase', () => {
   it('creates the local database and applies the core schema', () => {
     const databasePath = makeTemporaryDatabasePath();

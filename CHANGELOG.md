@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.84 · 2026-10-07
+
+Corrige el cuelgue de la carga coordinada de las nueve fuentes, que se quedaba minutos en «Validando fuente 9 de 9». Causa: al guardar, cada fila de Consumibles, Salidas y Servicios buscaba su equipo por número de serie recorriendo toda la tabla de equipos, y mientras tanto el servidor no respondía y la barra no avanzaba. Ahora la búsqueda usa un índice (migración 44) y el guardado de las nueve fuentes con los archivos reales pasa de unos 165 s a unos 6 s. Además la lectura de cabeceras de los XLSX se calcula una vez por hoja y no por fila: validar Servicios LAM baja de 13 s a 3 s. No cambia qué filas se aceptan.
+
 ## 0.1.83 · 2026-10-07
 
 Corrige el origen de «Salida de repuestos»: es «SGS > REPORTES > Repuestos», no «Consumibles > Rango de fechas». Se corrige en la carga coordinada y en la tarjeta de Despachos de Consumibles.

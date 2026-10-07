@@ -79,8 +79,20 @@ export function safeNumber(value: unknown): number {
  * The aliases remain explicit in each parser; this only makes punctuation,
  * ordinal abbreviations and common Spanish filler words equivalent.
  */
+const normalizedNameCache = new Map<string, string>();
+
 export function normalizeHeader(value: unknown): string {
-  return String(value ?? '')
+  const raw = String(value ?? '');
+  const cached = normalizedNameCache.get(raw);
+  if (cached !== undefined) return cached;
+  const normalized = normalizeHeaderUncached(raw);
+  // Las cabeceras y alias son pocos; el tope evita crecer sin límite si llegan textos libres.
+  if (normalizedNameCache.size < 5000) normalizedNameCache.set(raw, normalized);
+  return normalized;
+}
+
+function normalizeHeaderUncached(raw: string): string {
+  return raw
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
@@ -92,10 +104,31 @@ export function normalizeHeader(value: unknown): string {
     .trim();
 }
 
+// Los parsers llaman findHeaderIndex/readHeaderValue por fila con el mismo array de cabeceras.
+// Normalizar todas las cabeceras en cada llamada era O(filas × lecturas × columnas) y dejaba
+// la validación de Servicios LAM minutos al 100% de CPU. Se normaliza una vez por array.
+const headerIndexCache = new WeakMap<unknown[], { length: number; firstByName: Map<string, number> }>();
+
+function headerIndexFor(headers: unknown[]): Map<string, number> {
+  const cached = headerIndexCache.get(headers);
+  if (cached && cached.length === headers.length) return cached.firstByName;
+  const firstByName = new Map<string, number>();
+  headers.forEach((header, index) => {
+    const name = normalizeHeader(header);
+    if (!firstByName.has(name)) firstByName.set(name, index);
+  });
+  headerIndexCache.set(headers, { length: headers.length, firstByName });
+  return firstByName;
+}
+
 export function findHeaderIndex(headers: unknown[], names: readonly string[], fallback: number): number {
-  const normalizedNames = new Set(names.map(normalizeHeader));
-  const index = headers.findIndex((header) => normalizedNames.has(normalizeHeader(header)));
-  return index >= 0 ? index : fallback;
+  const firstByName = headerIndexFor(headers);
+  let best = -1;
+  for (const name of names) {
+    const index = firstByName.get(normalizeHeader(name));
+    if (index !== undefined && (best < 0 || index < best)) best = index;
+  }
+  return best >= 0 ? best : fallback;
 }
 
 export function readHeaderValue(headers: unknown[], row: unknown[], names: readonly string[]): unknown {
