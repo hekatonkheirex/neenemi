@@ -407,7 +407,7 @@ export default function MantenimientoModule() {
             <Muted className="text-sm">{maintenanceSummary?.batchId
               ? `${maintenanceSummary.records.toLocaleString('es-PY')} lecturas · ${maintenanceSummary.equipment.toLocaleString('es-PY')} equipos · ${maintenanceSummary.matchedRecords.toLocaleString('es-PY')} reglas reconocidas`
               : 'El archivo cargado se conserva y se normaliza en la base local.'}</Muted>
-            <Muted>Origen del XLSX: <code>Superset &gt; SGS - Evaluación de Copias - Rankings</code></Muted>
+            <Muted>Origen del XLSX: <code>Superset &gt; SGS - Evolución de Copias - Rankings</code></Muted>
           </div>
           <div
             className={cn('grid min-w-0 content-start gap-3 rounded-xl border border-dashed p-4', isCounterFileDragging ? 'border-sky bg-sky/10' : 'border-navy/25 bg-paper dark:border-sky/30 dark:bg-navy/30')}

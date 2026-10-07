@@ -4,7 +4,7 @@ Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigu
 
 ## 0.1.80 · 2026-10-07
 
-Indicador de actividad en exportaciones, impresiones y cargas. Los botones de exportar, cargar e «Imprimir / PDF» muestran un spinner y el texto «Exportando…», «Importando…», «Leyendo…» o «Preparando…» mientras trabajan, y no admiten un segundo clic hasta terminar. Antes solo cambiaba el texto en algunos botones; ahora lo hacen también Listado de precios, Proformas, uniFLOW, Expedientes técnicos (XLSX por panel y PDF), SLA, Selector de software y Cobertura. El spinner no gira si el sistema pide reducir el movimiento.
+Indicador de actividad en exportaciones, impresiones y cargas. Los botones de exportar, cargar e «Imprimir / PDF» muestran un spinner y el texto «Exportando…», «Importando…», «Leyendo…» o «Preparando…» mientras trabajan, y no admiten un segundo clic hasta terminar. Antes solo cambiaba el texto en algunos botones; ahora lo hacen también Listado de precios, Proformas, uniFLOW, Expedientes técnicos (XLSX por panel y PDF), SLA, Selector de software y Cobertura. El spinner no gira si el sistema pide reducir el movimiento. Corrige el nombre del origen del XLSX de Expedientes técnicos: «SGS - Evolución de Copias - Rankings».
 
 ## 0.1.79 · 2026-10-07
 

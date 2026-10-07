@@ -278,7 +278,7 @@ export const SOURCE_CATALOG: readonly SourceDefinition[] = [
     expectedFiles: ['Contadores.csv', 'Contadores.xlsx'],
     filePrefixes: ['database sqlite', 'contadores'],
     importDomains: ['maintenance'],
-    origin: 'Superset > SGS - Evaluación de Copias - Rankings.',
+    origin: 'Superset > SGS - Evolución de Copias - Rankings.',
     purpose: 'Analiza lecturas por equipo, período, tipo de papel, vida útil, óptimo y merma.',
     normalizedFields: [
       { source: 'Cliente / Nº O.V.', target: 'Cliente y contrato compartidos' },
