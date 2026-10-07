@@ -177,6 +177,7 @@ export class OverviewRepository {
         COUNT(DISTINCT CASE WHEN is_active = 1 THEN COALESCE(NULLIF(reference, ''), id) END) AS count,
         COUNT(DISTINCT CASE WHEN is_active IS NULL THEN COALESCE(NULLIF(reference, ''), id) END) AS unknown
       FROM contracts
+      WHERE contract_type IN ('Abierto', 'Alquiler', 'Leasing', 'Mantenimiento')
       GROUP BY contract_type
       ORDER BY contract_type
     `).all() as { type: string; count: number; unknown: number }[];

@@ -154,7 +154,7 @@ describe('OverviewRepository', () => {
     expect(portfolio?.unknownContracts).toBe(1);
   });
 
-  it('deduplicates equipment across contracts and counts only explicitly active contracts by their actual types', () => {
+  it('deduplicates equipment across contracts and counts only explicitly active contracts of the four department types', () => {
     const database = makeDatabase();
     const imports = new ImportRepository(database);
     for (const sourceName of ['portfolio-old.xlsx', 'portfolio-new.xlsx']) {
@@ -169,7 +169,8 @@ describe('OverviewRepository', () => {
       VALUES (?, 'customer-1', ?, ?, '2025-01-01', '2030-01-01', '2026-01-01', '2026-01-01')
     `);
     insertContract.run('active-1', 'Alquiler', 1);
-    insertContract.run('active-2', 'Servicio especial', 1);
+    insertContract.run('active-2', 'Abierto', 1);
+    insertContract.run('other-type', 'Servicio especial', 1);
     insertContract.run('inactive', 'Leasing', 0);
     insertContract.run('unknown-1', 'Alquiler', null);
     insertContract.run('unknown-2', 'Mantenimiento', null);
@@ -193,13 +194,13 @@ describe('OverviewRepository', () => {
       activeContracts: 2,
       unknownContracts: 2,
       contractsByType: [
+        { type: 'Abierto', count: 1 },
         { type: 'Alquiler', count: 1 },
         { type: 'Leasing', count: 0 },
         { type: 'Mantenimiento', count: 0 },
-        { type: 'Servicio especial', count: 1 },
       ],
     });
-    expect(result.counts.contracts).toBe(5);
+    expect(result.counts.contracts).toBe(6);
     expect(result.counts.equipment).toBe(7);
     expect(result.appliedImports).toBe(2);
   });

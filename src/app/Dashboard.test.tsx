@@ -30,6 +30,7 @@ describe('Dashboard', () => {
   it('con datos formatea contratos, fecha, cartera y Canon', () => {
     const markup = renderToStaticMarkup(<Dashboard {...base} overview={withData()} />);
     expect(markup).toContain('>20</div>');
+    expect(markup).toContain('contratos activos · MPS 7');
     expect(markup).not.toContain('1.234');
     expect(markup).toContain('>04/03/2026</div>');
     expect(markup).toContain('Contratos activos · MPS');
