@@ -30,4 +30,20 @@ describe('títulos de módulo', () => {
     const src = readFileSync(files[id], 'utf8');
     expect(src).toContain(`eyebrow="${section.toUpperCase()} / `);
   });
+  it('los informes impresos llevan el nombre del sidebar en su eyebrow', () => {
+    const prints: Array<[string, string]> = [
+      ['src/modules/mantenimiento/MaintenanceTablePrintReport.tsx', 'mantenimiento'],
+      ['src/modules/mantenimiento/MaintenanceExecutivePrintReport.tsx', 'mantenimiento'],
+      ['src/modules/operaciones/MantenimientoModule.tsx', 'mantenimiento'],
+      ['src/modules/mps/MpsPrintReport.tsx', 'mps'],
+      ['src/modules/uniflow/UniflowPrintReport.tsx', 'uniflow'],
+      ['src/modules/cobertura/coverage-print-report.ts', 'cobertura'],
+    ];
+    for (const [file, id] of prints) {
+      const label = suiteModules.find((m) => m.id === id)!.label;
+      expect(readFileSync(file, 'utf8'), file).toContain(`DATA SYSTEMS / ${label.toUpperCase()}`);
+    }
+    const sla = suiteModules.find((m) => m.id === 'sla')!.label;
+    expect(readFileSync('src/modules/sla/html-report.ts', 'utf8')).toContain(`Data Systems · ${sla}`);
+  });
 });

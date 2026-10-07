@@ -60,7 +60,7 @@ export function buildSlaHtmlReport(analysis: SlaAnalysis): string {
   <body>
     <main>
       <header>
-        <div class="eyebrow">Data Systems · Soporte / Compliance</div>
+        <div class="eyebrow">Data Systems · SLA Compliance Analyzer</div>
         <h1>Reporte de cumplimiento SLA</h1>
         <div class="meta">Documento: ${escapeHtml(analysis.fileName)} · Generado: ${escapeHtml(analysis.analyzedAt)}</div>
       </header>

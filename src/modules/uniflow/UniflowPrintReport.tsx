@@ -24,7 +24,7 @@ export default function UniflowPrintReport({ results, clientName }: UniflowPrint
   return (
     <section className="uniflow-print-report" aria-label="Propuesta uniFLOW para impresión">
       <div className="uniflow-print-accent" aria-hidden="true" />
-      <div className="uniflow-print-eyebrow">DATA SYSTEMS / PROPUESTA COMERCIAL</div>
+      <div className="uniflow-print-eyebrow">DATA SYSTEMS / CONFIGURADOR UNIFLOW ONLINE</div>
       <h1>uniFLOW Online</h1>
       <h2>Propuesta de configuración y licenciamiento</h2>
       <div className="uniflow-print-divider" aria-hidden="true" />

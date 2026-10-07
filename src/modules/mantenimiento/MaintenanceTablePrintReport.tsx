@@ -11,7 +11,7 @@ const integerFormat = new Intl.NumberFormat('es-PY', { maximumFractionDigits: 0 
 export default function MaintenanceTablePrintReport({ analyses, sourceName, analysisMonths }: MaintenanceTablePrintReportProps) {
   return (
     <section className="maintenance-print-table-report" aria-label="Expedientes técnicos de mantenimiento">
-      <div className="eyebrow">DATA SYSTEMS / MANTENIMIENTO</div>
+      <div className="eyebrow">DATA SYSTEMS / GESTOR DE MANTENIMIENTO</div>
       <h1>Expedientes técnicos</h1>
       <p className="maintenance-print-report-meta">
         Fuente: {sourceName ?? 'Base compartida'} · Últimos {analysisMonths} meses · {integerFormat.format(analyses.length)} equipos seleccionados

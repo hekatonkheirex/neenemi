@@ -22,7 +22,7 @@ export default function MaintenanceExecutivePrintReport({
 
   return (
     <section className="maintenance-executive-print-report" aria-label="Resumen ejecutivo de mantenimiento">
-      <div className="eyebrow">DATA SYSTEMS / INFORME EJECUTIVO</div>
+      <div className="eyebrow">DATA SYSTEMS / GESTOR DE MANTENIMIENTO</div>
       <div className="maintenance-executive-print-title-row">
         <div>
           <h1>Dictamen y análisis del parque</h1>

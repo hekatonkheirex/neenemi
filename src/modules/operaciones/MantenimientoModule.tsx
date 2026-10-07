@@ -626,7 +626,7 @@ function MaintenanceHistoryChart({ analysis }: { analysis: MaintenanceAnalysis }
 function MaintenancePrintReport({ analysis, sourceName }: { analysis: MaintenanceAnalysis; sourceName: string | null }) {
   return (
     <section className="maintenance-print-report" aria-label="Informe técnico de mantenimiento">
-      <div className="eyebrow">DATA SYSTEMS / INFORME TÉCNICO</div>
+      <div className="eyebrow">DATA SYSTEMS / GESTOR DE MANTENIMIENTO</div>
       <h1>Diagnóstico de mantenimiento</h1>
       <p className="maintenance-print-report-meta">Fuente: {sourceName ?? 'Base compartida'} · Generado localmente</p>
 

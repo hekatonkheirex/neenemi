@@ -82,7 +82,7 @@ export function renderCoveragePrintReportMarkup({
   return `
     <article class="coverage-print-report" aria-label="Informe ejecutivo de cobertura de tóner">
       <div class="coverage-print-accent" aria-hidden="true"></div>
-      <div class="coverage-print-eyebrow">DATA SYSTEMS / ANÁLISIS MPS</div>
+      <div class="coverage-print-eyebrow">DATA SYSTEMS / COBERTURA DE TÓNER</div>
       <header class="coverage-print-header">
         <div><h1>Informe de cobertura de tóner</h1><p>Medición por página y estimación de consumo de insumos Canon.</p></div>
         <div class="coverage-print-brand">MPS</div>

@@ -27,7 +27,7 @@ export default function MpsPrintReport({ model, analysis, projections }: MpsPrin
   return (
     <section className="mps-print-report" aria-label="Informe MPS para impresión">
       <div className="mps-print-accent" aria-hidden="true" />
-      <div className="mps-print-eyebrow">DATA SYSTEMS / INFORME MPS</div>
+      <div className="mps-print-eyebrow">DATA SYSTEMS / CALCULADORA DE INSUMOS MPS</div>
       <div className="mps-print-title-row">
         <div>
           <h1>Estimación de insumos y suministros Canon</h1>
