@@ -38,6 +38,7 @@ import { PageHeader } from '../../core/ui/page-header';
 import { Card, CardHeader, Muted } from '../../core/ui/card';
 import { Button } from '../../core/ui/button';
 import { Input } from '../../core/ui/input';
+import { MonthPicker } from '../../core/ui/month-picker';
 import { Textarea } from '../../core/ui/textarea';
 import { Badge } from '../../core/ui/badge';
 import { StatusLine } from '../../core/ui/status-line';
@@ -438,7 +439,7 @@ export default function ViaticosModule() {
           <label className={fieldClass}>Buscar<Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cliente, destino, técnico…" /></label>
           <label className={fieldClass}>Estado<select className={selectClass} value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}><option value="">Todos</option>{TRAVEL_STATUSES.map((item) => <option key={item} value={item}>{STATUS_LABELS[item]}</option>)}</select></label>
           <label className={fieldClass}>Medio<select className={selectClass} value={transportFilter} onChange={(event) => setTransportFilter(event.target.value)}><option value="">Todos</option>{TRAVEL_TRANSPORTS.map((item) => <option key={item} value={item}>{item.replace('MOVIL ', 'MÓVIL ')}</option>)}</select></label>
-          <label className={fieldClass}>Mes<Input type="month" value={monthFilter} onChange={(event) => setMonthFilter(event.target.value)} /></label>
+          <div className={fieldClass}>Mes<MonthPicker label="Mes" value={monthFilter} onChange={setMonthFilter} /></div>
         </div>
         <Table className="min-w-[48rem] [overflow-wrap:normal]">
           <TableHeader><TableRow><TableHead>Fecha</TableHead><TableHead>Cliente / destino</TableHead><TableHead>Responsable</TableHead><TableHead>Medio</TableHead><TableHead className="text-right">Total</TableHead><TableHead>Rendición</TableHead><TableHead className="text-right">Acción</TableHead></TableRow></TableHeader>
