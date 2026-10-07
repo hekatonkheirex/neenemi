@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.97 · 2026-10-07
+
+En Inicio, los gráficos que comparten fila tienen el mismo ancho y la misma altura: Estado del parque y Top 10 clientes, y Servicios y viajes con Comparativa anual. Ambos usan el mismo tamaño de texto en las descripciones, el gráfico queda centrado en el espacio disponible y los botones de cada módulo se alinean al pie.
+
 ## 0.1.96 · 2026-10-07
 
 En Inicio, el estado del parque de Mantenimiento y el Top 10 de clientes de consumibles quedan uno al lado del otro cuando el área de contenido mide 1400 px o más (antes hacía falta una ventana de 1920 px). El gráfico de Mantenimiento pierde el espacio vacío sobre y bajo las barras, y los gráficos de viáticos ocupan el ancho completo debajo. En áreas más angostas se apilan sin desborde horizontal.

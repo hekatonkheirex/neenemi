@@ -39,7 +39,7 @@ export default function DashboardTravelCharts({ onNavigate }: { onNavigate: (id:
 
   return <section className="grid min-w-0 gap-4 @[1400px]:col-span-2" aria-label="Control de viáticos · actividad y costos">
     {heading}
-    <div className="grid min-w-0 items-start gap-6 lg:grid-cols-2">
+    <div className="grid min-w-0 items-stretch gap-6 lg:grid-cols-2">
       <AnnualActivityChart summaries={state.summaries} />
       <AnnualCostChart summaries={state.summaries} />
     </div>

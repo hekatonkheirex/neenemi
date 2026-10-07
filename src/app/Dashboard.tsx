@@ -80,7 +80,7 @@ export default function Dashboard({ moduleCount, overview, overviewError, backup
         </div>
       </Card>
 
-      <div className="@container min-w-0" aria-label="Gráficos de los módulos"><div className="grid min-w-0 items-start gap-6 @[1400px]:grid-cols-2">
+      <div className="@container min-w-0" aria-label="Gráficos de los módulos"><div className="grid min-w-0 items-stretch gap-6 @[1400px]:grid-cols-2">
         <DashboardMaintenanceChart onNavigate={onNavigate} />
         <DashboardConsumablesChart onNavigate={onNavigate} />
         <DashboardTravelCharts onNavigate={onNavigate} />
