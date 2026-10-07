@@ -563,7 +563,7 @@ function MoneyField({ label, value, allowNegative = false, onChange }: { label: 
 }
 
 function SummaryStat({ value, label, accent = false }: { value: string; label: string; accent?: boolean }) {
-  return <Card className={cn('min-w-0 gap-1 p-4', accent && 'border-l-4 border-l-brand')}><div className="text-3xl font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{label}</Muted></Card>;
+  return <Card className={cn('min-w-0 gap-1 p-4', accent && 'border-l-4 border-l-brand!')}><div className="text-3xl font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{label}</Muted></Card>;
 }
 
 function MonthlyBars({ values }: { values: number[] }) {

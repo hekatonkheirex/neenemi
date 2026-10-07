@@ -1,3 +1,4 @@
+import { Database, FileText, LayoutDashboard, Medal, Package, Printer, Settings, Tag, Wrench, type LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
 import type {
   ConsumablesAggregate,
@@ -27,19 +28,7 @@ import { sourceOperationalValues } from '../../core/source-details';
 import type { SourceMetadataBackfillSummary } from '../../core/source-metadata-backfill';
 import type { LegacyFleetMetadataType } from '../operaciones/legacy';
 import type { ServiceRecord } from '../servicios/types';
-import type { IconSvgElement } from '@hugeicons/react';
 import AnimatedTabs from '../../core/AnimatedTabs';
-import {
-  DashboardSquare01Icon,
-  Tag01Icon,
-  File01Icon,
-  Settings02Icon,
-  Package01Icon,
-  Wrench01Icon,
-  Medal01Icon,
-  PrinterIcon,
-  Database01Icon,
-} from '@hugeicons/core-free-icons';
 import SourceDataPanel from './SourceDataPanel';
 import { outputOperationalDetail } from './output-display';
 import {
@@ -130,18 +119,18 @@ type ConsumablesQuantitySummary = {
 
 type ConsumablesTabId = 'overview' | 'T03' | 'T06' | 'GPR53' | 'contracts' | 'parts' | 'fichas' | 'servicios' | 'ranking' | 'equipment' | 'data';
 
-const consumablesTabs: readonly { id: ConsumablesTabId; label: string; icon: IconSvgElement }[] = [
-  { id: 'overview', label: 'Resumen General', icon: DashboardSquare01Icon },
-  { id: 'T03', label: 'T03', icon: Tag01Icon },
-  { id: 'T06', label: 'T06', icon: Tag01Icon },
-  { id: 'GPR53', label: 'GPR-53', icon: Tag01Icon },
-  { id: 'contracts', label: 'Impacto en Contratos', icon: File01Icon },
-  { id: 'parts', label: 'Repuestos', icon: Settings02Icon },
-  { id: 'fichas', label: 'Consumibles vs Repuestos', icon: Package01Icon },
-  { id: 'servicios', label: 'Servicios vs Consumibles', icon: Wrench01Icon },
-  { id: 'ranking', label: 'Ranking', icon: Medal01Icon },
-  { id: 'equipment', label: 'Equipos', icon: PrinterIcon },
-  { id: 'data', label: 'Datos', icon: Database01Icon },
+const consumablesTabs: readonly { id: ConsumablesTabId; label: string; icon: LucideIcon }[] = [
+  { id: 'overview', label: 'Resumen General', icon: LayoutDashboard },
+  { id: 'T03', label: 'T03', icon: Tag },
+  { id: 'T06', label: 'T06', icon: Tag },
+  { id: 'GPR53', label: 'GPR-53', icon: Tag },
+  { id: 'contracts', label: 'Impacto en Contratos', icon: FileText },
+  { id: 'parts', label: 'Repuestos', icon: Settings },
+  { id: 'fichas', label: 'Consumibles vs Repuestos', icon: Package },
+  { id: 'servicios', label: 'Servicios vs Consumibles', icon: Wrench },
+  { id: 'ranking', label: 'Ranking', icon: Medal },
+  { id: 'equipment', label: 'Equipos', icon: Printer },
+  { id: 'data', label: 'Datos', icon: Database },
 ];
 
 const legacyConsumablesSources: readonly { type: LegacyConsumablesSourceType; sourceId: string; title: string }[] = [
@@ -567,7 +556,7 @@ export default function ConsumiblesModule() {
               <label className={fieldClass}>Buscar<Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cliente, serie, código o dato de origen…" /></label>
               <label className={fieldClass}>Tipo de registro<select className={selectClass} value={kind} onChange={(event) => setKind(event.target.value as ConsumablesRecordKind | '')}><option value="">Todos</option><option value="consumable">Consumibles</option><option value="part">Repuestos</option></select></label>
             </div>
-            <Table className="min-w-[56rem] [overflow-wrap:normal]">
+            <Table className="min-w-[56rem] [overflow-wrap:normal]" wrapperClassName="max-h-[40rem]">
               <TableHeader><TableRow><TableHead>Fecha</TableHead><TableHead>Cliente / equipo</TableHead><TableHead>Serie</TableHead><TableHead>Parte</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Cantidad</TableHead><TableHead className="text-right">Costo PYG</TableHead></TableRow></TableHeader>
               <TableBody>
                 {(recordPageData?.items ?? []).map((record) => <TableRow key={record.id}>
@@ -672,7 +661,7 @@ export default function ConsumiblesModule() {
 
 function SummaryStat({ value, label, accent = false, note }: { value: string; label: string; accent?: boolean; note?: string }) {
   // El monto en guaraníes puede tener 13 dígitos: el tamaño sigue el ancho de la ficha y no parte la cifra.
-  return <Card className={cn('@container min-w-0 gap-1 p-4', accent && 'border-l-4 border-l-brand')}><div className="whitespace-nowrap text-[clamp(1.1rem,10cqw,1.875rem)] font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{label}</Muted>{note ? <Muted>{note}</Muted> : null}</Card>;
+  return <Card className={cn('@container min-w-0 gap-1 p-4', accent && 'border-l-4 border-l-brand!')}><div className="whitespace-nowrap text-[clamp(1.1rem,10cqw,1.875rem)] font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{label}</Muted>{note ? <Muted>{note}</Muted> : null}</Card>;
 }
 
 function MethodFact({ label, value }: { label: string; value: string }) {
@@ -966,7 +955,7 @@ function ConsumablesOutputsPanel({
         <MiniStat value={integerFormat.format(summary.equipment)} label="equipos asociados" />
         <MiniStat value={`${integerFormat.format(summary.consumables)} / ${integerFormat.format(summary.parts)}`} label="consumibles / repuestos" />
       </div>
-      <Table className="min-w-[56rem] [overflow-wrap:normal]">
+      <Table className="min-w-[56rem] [overflow-wrap:normal]" wrapperClassName="max-h-[40rem]">
         <TableHeader><TableRow><TableHead>Fecha</TableHead><TableHead>Documento</TableHead><TableHead>Cliente / equipo</TableHead><TableHead>Parte</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Cantidad</TableHead><TableHead className="text-right">Rendimiento</TableHead></TableRow></TableHeader>
         <TableBody>
           {records.map((record) => <TableRow key={record.id}>

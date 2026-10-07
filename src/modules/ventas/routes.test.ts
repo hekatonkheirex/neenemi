@@ -3,6 +3,7 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { createServer } from '../../../server';
 import { makeTemporaryDataDirectory, makeServicesWorkbook, makeSalesCatalogWorkbook } from '../../test-support/api-helpers';
+import type { Proforma } from './types';
 
 describe('sales API', () => {
   it('connects the shared catalog to pricing and proformas', async () => {
@@ -61,6 +62,33 @@ describe('sales API', () => {
       const familyPriceListResponse = await fetch(`${baseUrl}/api/sales/price-list?familyName=iR&query=FK123`);
       const familyPriceList = (await familyPriceListResponse.json()) as Array<{ salePriceLocal: number }>;
       expect(familyPriceList).toEqual([expect.objectContaining({ salePriceLocal: 136800 })]);
+
+      const overriddenPricing = { exchangeRate: 10000, factor: 2, laborPrice: 90000, familyExchangeRateOverrides: { IR: 10000 } };
+      const overrideResponse = await fetch(`${baseUrl}/api/sales/pricing`, {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(overriddenPricing),
+      });
+      expect(overrideResponse.status).toBe(200);
+      expect(await fetch(`${baseUrl}/api/sales/pricing`).then((response) => response.json())).toEqual(overriddenPricing);
+      expect(await fetch(`${baseUrl}/api/sales/price-list?familyName=iR&query=FK123`).then((response) => response.json())).toEqual([
+        expect.objectContaining({ salePriceLocal: 225000 }),
+      ]);
+      const invalidOverride = await fetch(`${baseUrl}/api/sales/pricing`, {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ ...overriddenPricing, familyExchangeRateOverrides: { IR: -1 } }),
+      });
+      expect(invalidOverride.status).toBe(400);
+      expect(await fetch(`${baseUrl}/api/sales/pricing`).then((response) => response.json())).toEqual(overriddenPricing);
+      await fetch(`${baseUrl}/api/sales/pricing`, {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ ...overriddenPricing, familyExchangeRateOverrides: {} }),
+      });
+      expect(await fetch(`${baseUrl}/api/sales/price-list?familyName=iR&query=FK123`).then((response) => response.json())).toEqual([
+        expect.objectContaining({ salePriceLocal: 136800 }),
+      ]);
 
       const proformaResponse = await fetch(`${baseUrl}/api/sales/proformas`, {
         method: 'POST',
@@ -357,6 +385,9 @@ describe('sales API', () => {
           lines: [{
             kind: 'part',
             source: 'proformas',
+            catalogKind: 'consumibles',
+            sourceStock: 4,
+            sourceDiscontinuedStatus: 'active',
             code: 'CEXV-55',
             description: 'TONER NEGRO',
             unitPriceUsd: 13,
@@ -366,7 +397,34 @@ describe('sales API', () => {
         }),
       });
       expect(proformaResponse.status).toBe(201);
-      expect(await proformaResponse.json()).toMatchObject({ mode: 'sin-contrato', totalLocal: 155480, lines: [{ partId: null, code: 'CEXV-55' }] });
+      const savedProforma = await proformaResponse.json() as Proforma;
+      const readProforma = () => fetch(`${baseUrl}/api/sales/proformas/${savedProforma.id}`).then((response) => response.json());
+      expect(await readProforma()).toMatchObject({
+        mode: 'sin-contrato',
+        totalLocal: 155480,
+        lines: [{ partId: null, code: 'CEXV-55', catalogKind: 'consumibles', sourceStock: 4, sourceDiscontinuedStatus: 'active' }],
+      });
+      const header = { ...savedProforma };
+      const line = { kind: 'part', source: 'proformas', catalogKind: 'consumibles', code: 'CEXV-55', description: 'TONER NEGRO', unitPriceUsd: 13, unitPriceLocal: 77740, quantity: 2, sourceStock: null, sourceDiscontinuedStatus: 'unknown' };
+      for (const invalidMetadata of [{ catalogKind: 'invalid' }, { sourceStock: -1 }, { sourceDiscontinuedStatus: 'invalid' }]) {
+        const invalidResponse = await fetch(`${baseUrl}/api/sales/proformas`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ id: savedProforma.id, header, lines: [{ ...line, ...invalidMetadata }] }),
+        });
+        expect(invalidResponse.status).toBe(400);
+      }
+      expect(await readProforma()).toMatchObject({ totalLocal: 155480, lines: [{ sourceStock: 4, sourceDiscontinuedStatus: 'active' }] });
+      const updateResponse = await fetch(`${baseUrl}/api/sales/proformas`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: savedProforma.id, header, lines: [line] }),
+      });
+      expect(updateResponse.status).toBe(201);
+      expect(await readProforma()).toMatchObject({
+        totalLocal: 155480,
+        lines: [{ catalogKind: 'consumibles', sourceStock: null, sourceDiscontinuedStatus: 'unknown' }],
+      });
     } finally {
       await new Promise<void>((resolve) => server.close(() => resolve()));
       database.close();

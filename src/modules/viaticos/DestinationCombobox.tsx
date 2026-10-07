@@ -1,6 +1,5 @@
+import { Check } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Tick02Icon } from '@hugeicons/core-free-icons';
 import { Input } from '../../core/ui/input';
 import { Muted } from '../../core/ui/card';
 import { canonicalMunicipality, searchParaguayMunicipalities } from './paraguay-municipalities';
@@ -105,7 +104,7 @@ export function DestinationCombobox({ id = 'travel-destination', value, onChange
                     className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-sm text-navy before:content-none dark:text-white ${isHighlighted ? 'bg-sky/15' : ''}`}
                   >
                     <span>{municipality}</span>
-                    {isSelected && <HugeiconsIcon icon={Tick02Icon} size={14} strokeWidth={2.5} aria-hidden="true" />}
+                    {isSelected && <Check size={14} strokeWidth={2.5} aria-hidden="true" />}
                   </li>
                 );
               })}

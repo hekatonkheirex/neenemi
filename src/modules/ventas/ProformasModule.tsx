@@ -86,6 +86,7 @@ export default function ProformasModule() {
   const [error, setError] = useState<string | null>(null);
   useUnsavedChanges(hasProformaDraft(savedProforma, header, lines, laborRows));
   const lineLookupControllers = useRef(new Map<string, AbortController>());
+  const summaryRef = useRef<HTMLElement>(null);
 
   const contractParts = useMemo(
     () => (openContract && pricing ? openContract.items.map((item) => toContractSalesPart(item, openContract.meta.priceCurrency, pricing)) : []),
@@ -600,7 +601,11 @@ export default function ProformasModule() {
       });
       setLines(partLines.map((line, index) => ({
         id: crypto.randomUUID(),
-        part: resolvedParts[index] ?? savedLineToPart(line, line.partId ? 'catalog' : proforma.mode === 'contrato-abierto' ? 'contract' : 'legacy', proforma.currency),
+        part: resolvedParts[index] ? {
+          ...resolvedParts[index],
+          ...(line.sourceStock !== undefined ? { catalogStock: line.sourceStock } : {}),
+          ...(line.sourceDiscontinuedStatus ? { discontinuedStatus: line.sourceDiscontinuedStatus } : {}),
+        } : savedLineToPart(line, line.partId ? 'catalog' : proforma.mode === 'contrato-abierto' ? 'contract' : 'legacy', proforma.currency),
         code: line.code,
         kind: line.catalogKind ?? resolvedParts[index]?.catalogKind ?? 'repuestos',
         quantity: line.quantity,
@@ -656,7 +661,16 @@ export default function ProformasModule() {
       <StatusLine state={error ? 'error' : !pricing ? 'pending' : 'ready'}>{error || message || (pricing ? 'Lista para preparar una proforma.' : 'Conectando con ventas…')}</StatusLine>
 
       <section className="grid min-w-0 items-start gap-4 min-[1500px]:grid-cols-[minmax(0,1fr)_22rem]">
-        <div className="grid min-w-0 gap-4">
+        <div className="grid min-w-0 gap-4" onFocusCapture={(event) => {
+          const summary = summaryRef.current;
+          if (!summary || getComputedStyle(summary).position !== 'sticky') return;
+          const field = event.target.getBoundingClientRect();
+          const bar = summary.getBoundingClientRect();
+          // La barra inferior no debe tapar el control al recorrer el formulario con Tab.
+          if (field.bottom > bar.top && field.top < bar.bottom) {
+            window.scrollBy({ top: field.bottom - bar.top + 16, behavior: 'instant' });
+          }
+        }}>
           <Card className={cardClass}>
             <CardHeader
               eyebrow="Cabecera"
@@ -801,7 +815,7 @@ export default function ProformasModule() {
 
         {/* Bajo 1500 px el lateral pasa a celdas del grid y el Resumen es una barra fija inferior. */}
         <aside className="contents min-[1500px]:grid min-[1500px]:min-w-0 min-[1500px]:gap-4">
-          <Card className={cn(cardClass, '@container sticky bottom-0 z-10 border-brand/50 py-3 min-[1500px]:static min-[1500px]:py-5')} aria-label="Resumen de la proforma">
+          <Card ref={summaryRef} className={cn(cardClass, '@container sticky bottom-0 z-10 border-brand/50 py-3 min-[1500px]:static min-[1500px]:py-5')} aria-label="Resumen de la proforma">
             <div className="grid min-w-0 gap-3 @[40rem]:grid-cols-[auto_1fr_auto] @[40rem]:items-center @[40rem]:gap-6">
               <div className="grid gap-0.5">
                 <Eyebrow>Resumen · Total estimado</Eyebrow>

@@ -463,7 +463,7 @@ export class SalesRepository {
       code: row.code,
       description: row.description,
       quantity: row.quantity,
-      ...(row.source_stock !== null ? { sourceStock: row.source_stock } : {}),
+      ...(row.line_kind === 'part' ? { sourceStock: row.source_stock } : {}),
       ...(row.source_discontinued_status ? { sourceDiscontinuedStatus: row.source_discontinued_status } : {}),
       costLocal: row.labor_cost_local,
       unitPriceUsd: row.unit_price_usd,

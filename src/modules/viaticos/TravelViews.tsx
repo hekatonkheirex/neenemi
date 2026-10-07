@@ -1,5 +1,3 @@
-import type { IconSvgElement } from '@hugeicons/react';
-import { Analytics01Icon, Airplane01Icon, Invoice01Icon, Clock01Icon } from '@hugeicons/core-free-icons';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import PaginationControls from '../../core/PaginationControls';
 import { paginateItems } from '../../core/pagination';
@@ -8,7 +6,7 @@ import { travelSourceOperationalEntries } from './source-operational';
 import type { HistoricalSummary, TravelStatus, TravelTrip } from './types';
 import { readJson, toErrorMessage as describeError } from '../../core/http';
 import { DownloadIcon } from '../../core/ActionButtons';
-import { X } from 'lucide-react';
+import { ChartColumn, Clock, type LucideIcon, Plane, Receipt, X } from 'lucide-react';
 import { cn } from '../../core/cn';
 import { dialogPanel } from '../../core/dialog';
 import { Badge, type BadgeTone } from '../../core/ui/badge';
@@ -18,11 +16,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 
 export type TravelView = 'resumen' | 'viajes' | 'rendiciones' | 'historico';
 
-export const TRAVEL_VIEW_OPTIONS: Array<{ id: TravelView; label: string; hint: string; icon: IconSvgElement }> = [
-  { id: 'resumen', label: 'Resumen', hint: 'Indicadores del período', icon: Analytics01Icon },
-  { id: 'viajes', label: 'Viajes', hint: 'Detalle y alta de registros', icon: Airplane01Icon },
-  { id: 'rendiciones', label: 'Rendiciones', hint: 'Seguimiento documental', icon: Invoice01Icon },
-  { id: 'historico', label: 'Histórico', hint: 'Comparativas y fuente', icon: Clock01Icon },
+export const TRAVEL_VIEW_OPTIONS: Array<{ id: TravelView; label: string; hint: string; icon: LucideIcon }> = [
+  { id: 'resumen', label: 'Resumen', hint: 'Indicadores del período', icon: ChartColumn },
+  { id: 'viajes', label: 'Viajes', hint: 'Detalle y alta de registros', icon: Plane },
+  { id: 'rendiciones', label: 'Rendiciones', hint: 'Seguimiento documental', icon: Receipt },
+  { id: 'historico', label: 'Histórico', hint: 'Comparativas y fuente', icon: Clock },
 ];
 
 const STATUS_LABELS: Record<TravelStatus, string> = {
@@ -395,7 +393,7 @@ export function TravelHistoricalView({
   );
 }
 
-const metricTone = { neutral: 'border-l-navy/30 dark:border-l-sky/40', positive: 'border-l-[#2f8f5b]', warning: 'border-l-[#e08a00]' } as const;
+const metricTone = { neutral: 'border-l-navy/30! dark:border-l-sky/40!', positive: 'border-l-[#2f8f5b]!', warning: 'border-l-[#e08a00]!' } as const;
 
 function HistoryMetric({ label, value, detail, tone = 'neutral' }: { label: string; value: string; detail: string; tone?: 'neutral' | 'positive' | 'warning' }) {
   return <Card className={cn('min-w-0 gap-1 border-l-4 p-4', metricTone[tone])}><Muted>{label}</Muted><div className="text-2xl font-bold tabular-nums text-navy dark:text-white">{value}</div><Muted>{detail}</Muted></Card>;

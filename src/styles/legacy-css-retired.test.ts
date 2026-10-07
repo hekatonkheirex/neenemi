@@ -32,3 +32,21 @@ describe('CSS heredado retirado', () => {
     expect(css).not.toMatch(new RegExp(`\\.${name}(?![\\w-])`));
   });
 });
+
+describe('variantes de Tailwind', () => {
+  // Tailwind v4 emite min-[Npx] antes que sm:/md:/lg:/xl:, así que en pantallas anchas el nombrado pisa al arbitrario.
+  it('ningún className mezcla sm:/md:/lg:/xl: con min-[…] o max-[…]', () => {
+    const offenders = walk('src').flatMap((file) => [...fs.readFileSync(file, 'utf8').matchAll(/className=(?:"([^"]*)"|\{([^}]*)\})/g)]
+      .map((match) => ({ file, text: match[1] ?? match[2] }))
+      .filter(({ text }) => /(?:^|[\s'"`])(?:sm|md|lg|xl|2xl):/.test(text) && /(?:^|[\s'"`])(?:min|max)-\[/.test(text))
+      .map(({ file: where, text }) => `${where}: ${text.slice(0, 80)}`));
+    expect(offenders).toEqual([]);
+  });
+});
+
+describe('iconografía', () => {
+  it('ningún archivo importa @hugeicons: el stack de iconos es lucide-react', () => {
+    const offenders = walk('src').filter((file) => !file.endsWith('legacy-css-retired.test.ts') && /@hugeicons/.test(fs.readFileSync(file, 'utf8')));
+    expect(offenders).toEqual([]);
+  });
+});

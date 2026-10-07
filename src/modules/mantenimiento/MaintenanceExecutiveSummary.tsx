@@ -46,7 +46,7 @@ export default function MaintenanceExecutiveSummary({ analyses, onExport, onPrin
       />
       <Muted className="text-sm">Lectura priorizada de las mismas reglas y períodos usados en el análisis por equipo.</Muted>
 
-      <div className="grid min-w-0 grid-cols-2 gap-3 sm:grid-cols-3 min-[1180px]:grid-cols-6">
+      <div className="grid min-w-0 grid-cols-2 gap-3 min-[640px]:grid-cols-3 min-[1180px]:grid-cols-6">
         <SummaryKpi label="Normal" value={summary.normal} tone="normal" detail="Dentro del óptimo dinámico" />
         <SummaryKpi label="Críticos" value={summary.critical} tone="critical" detail="Requieren intervención" trend={summary.criticalTrend} />
         <SummaryKpi label="Atención" value={summary.attention} tone="attention" detail="Revisión preventiva" />

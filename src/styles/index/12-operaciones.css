@@ -77,6 +77,10 @@
   text-align: right;
 }
 
+.maintenance-print-table-report {
+  display: none;
+}
+
 @media print {
 
   .maintenance-page,
@@ -96,6 +100,61 @@
   @page maintenance-executive-report {
     size: A4 portrait;
     margin: 12mm;
+  }
+
+  @page maintenance-table-report {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+
+  body[data-print-mode='maintenance-table'] {
+    background: #ffffff;
+  }
+
+  body[data-print-mode='maintenance-table'] .app-shell {
+    display: block;
+    min-height: auto;
+  }
+
+  body[data-print-mode='maintenance-table'] .app-shell > .sidebar,
+  body[data-print-mode='maintenance-table'] .content > .topbar,
+  body[data-print-mode='maintenance-table'] .maintenance-page > :not(.maintenance-print-table-report) {
+    display: none !important;
+  }
+
+  body[data-print-mode='maintenance-table'] .content,
+  body[data-print-mode='maintenance-table'] .maintenance-page {
+    display: block;
+    width: 100%;
+    max-width: none;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  body[data-print-mode='maintenance-table'] .maintenance-print-table-report {
+    display: block !important;
+    page: maintenance-table-report;
+    padding: 0;
+    color: var(--ds-ink);
+  }
+
+  body[data-print-mode='maintenance-table'] .maintenance-print-table {
+    table-layout: fixed;
+  }
+
+  body[data-print-mode='maintenance-table'] .maintenance-print-table thead {
+    display: table-header-group;
+  }
+
+  body[data-print-mode='maintenance-table'] .maintenance-print-table tr {
+    break-inside: avoid;
+  }
+
+  body[data-print-mode='maintenance-table'] .maintenance-print-table th,
+  body[data-print-mode='maintenance-table'] .maintenance-print-table td {
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 
   body[data-print-mode='maintenance-analysis'] {

@@ -1,6 +1,6 @@
+import { Plane } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { Airplane01Icon } from '@hugeicons/core-free-icons';
 import fs from 'node:fs';
 import AnimatedTabs, { centeredScrollLeft, followingSiblings } from './AnimatedTabs';
 
@@ -24,7 +24,7 @@ describe('AnimatedTabs', () => {
   });
 
   it('dibuja el icono solo en las pestañas que lo traen', () => {
-    const html = renderToStaticMarkup(<AnimatedTabs tabs={[{ id: 'a', label: 'Uno', icon: Airplane01Icon }, { id: 'b', label: 'Dos' }]} active="a" onChange={() => {}} ariaLabel="V" />);
+    const html = renderToStaticMarkup(<AnimatedTabs tabs={[{ id: 'a', label: 'Uno', icon: Plane }, { id: 'b', label: 'Dos' }]} active="a" onChange={() => {}} ariaLabel="V" />);
     expect(html.match(/anim-tabs-icon/g)).toHaveLength(1);
     expect(html).toContain('<svg');
   });

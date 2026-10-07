@@ -13,7 +13,7 @@ describe('guardas de maquetación (hallazgos del barrido en navegador)', () => {
   });
   it('Mantenimiento: las fichas KPI y el gráfico de tendencia pueden encogerse en celdas estrechas', () => {
     const summary = fs.readFileSync('src/modules/mantenimiento/MaintenanceExecutiveSummary.tsx', 'utf8');
-    expect(summary).toContain('grid-cols-2 gap-3 sm:grid-cols-3 min-[1180px]:grid-cols-6');
+    expect(summary).toContain('grid-cols-2 gap-3 min-[640px]:grid-cols-3 min-[1180px]:grid-cols-6');
     expect(summary).toMatch(/grid min-w-0 gap-1 rounded-xl/);
     expect(summary).toContain('h-6 min-w-10 flex-[0_1_auto]');
   });

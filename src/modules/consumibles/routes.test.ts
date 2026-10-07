@@ -81,13 +81,13 @@ describe('consumables API', () => {
       const bundleId = 'bundle-atomic-test';
       const portfolioBytes = await makeLegacyPortfolioWorkbook();
       const detailBytes = await makeConsumablesWorkbook([
-        ['line-detail', 'OV-CART-001', new Date('2026-08-01T12:00:00Z'), 'iR ADV C3325i', 'SER-CART-001', 'CRG-T03-BUNDLE', 'Tóner T03', 1, 15],
+        ['line-detail', 'OV-CART-001', '01/08/2026', 'iR ADV C3325i', 'SER-CART-001', 'CRG-T03-BUNDLE', 'Tóner T03', 1, 15],
       ]);
       const partsDetailBytes = await makeConsumablesWorkbook([
         ['line-parts', 'OV-CART-001', new Date('2026-08-02T12:00:00Z'), 'iR ADV C3325i', 'SER-CART-001', 'RPL-BUNDLE', 'Kit de rodillo', 1, 30],
       ]);
       const useRepuestosRow = new Array(24).fill(undefined) as unknown[];
-      useRepuestosRow[4] = new Date('2026-08-03T12:00:00Z');
+      useRepuestosRow[4] = '03/08/2026';
       useRepuestosRow[5] = 'Cliente Cartera';
       useRepuestosRow[8] = 'OV-CART-001';
       useRepuestosRow[9] = 'Alquiler';
@@ -102,7 +102,7 @@ describe('consumables API', () => {
       const useRepuestosBytes = await makeUseRepuestosWorkbook([useRepuestosRow]);
       const outputConsumablesRow = new Array(12).fill(undefined) as unknown[];
       outputConsumablesRow[0] = 7101;
-      outputConsumablesRow[1] = new Date('2026-08-04T12:00:00Z');
+      outputConsumablesRow[1] = '04/08/2026';
       outputConsumablesRow[2] = 'CRG-OUT-BUNDLE';
       outputConsumablesRow[3] = 'Tóner de salida';
       outputConsumablesRow[4] = 1;
@@ -198,6 +198,18 @@ describe('consumables API', () => {
       expect(database.prepare('SELECT COUNT(*) AS count FROM consumables_output_records').get()).toEqual({ count: 2 });
       expect(database.prepare('SELECT COUNT(*) AS count FROM service_records').get()).toEqual({ count: 1 });
       expect(fs.existsSync(path.join(dataDirectory, 'imports', '.staging', bundleId))).toBe(false);
+      const range = 'dateFrom=2026-08&dateTo=2026-08';
+      const records = await (await fetch(`${baseUrl}/api/consumables/records?${range}`)).json() as Array<{ recordedAt: string; month: string; partCode: string }>;
+      expect(records.map((row) => [row.recordedAt, row.month, row.partCode]).sort()).toEqual([
+        ['2026-08-01', '2026-08', 'CRG-T03-BUNDLE'],
+        ['2026-08-02', '2026-08', 'RPL-BUNDLE'],
+        ['2026-08-03', '2026-08', 'RPL-USE-BUNDLE'],
+      ]);
+      const outputs = await (await fetch(`${baseUrl}/api/consumables/outputs?${range}`)).json() as Array<{ recordedAt: string; month: string; partCode: string }>;
+      expect(outputs.map((row) => [row.recordedAt, row.month, row.partCode]).sort()).toEqual([
+        ['2026-08-04', '2026-08', 'CRG-OUT-BUNDLE'],
+        ['2026-08-05', '2026-08', 'RPL-OUT-BUNDLE'],
+      ]);
 
       const staleServiceRow = [...serviceRow];
       staleServiceRow[1] = 9903;

@@ -67,6 +67,41 @@ function makeOutputRow(overrides: Partial<ParsedConsumablesOutputRow> = {}): Par
 }
 
 describe('ConsumablesRepository', () => {
+  it('repairs historical text dates without losing source rows, amounts or canonical deduplication', () => {
+    const database = makeTemporaryDatabase();
+    const operations = new OperationsRepository(database);
+    const customer = operations.saveCustomer({ name: 'Cliente fechas', customerType: 'Publico', commercialArea: 'Strategic' });
+    operations.saveContract({
+      customerId: customer.id,
+      reference: 'OV-FECHAS',
+      contractType: 'Mantenimiento',
+      equipment: [{ modelLabel: 'iR ADV C3325i', serialNumber: 'SER-CONS-001' }],
+    });
+    const imports = new ImportRepository(database);
+    const batchId = imports.createBatch({ domain: 'consumibles', sourceName: 'fechas.xlsx', sourceType: 'consumibles' });
+    const repository = new ConsumablesRepository(database);
+    repository.importRows(batchId, 'fechas.xlsx', 'consumibles', [
+      makeRow({ recordedAt: '01/08/2026', month: '01/08/2', sourceDetails: [{ label: 'Fecha', value: '01/08/2026' }] }),
+      makeRow(),
+    ]);
+    repository.importOutputRows(batchId, 'fechas.xlsx', 'salida-consumibles', [
+      makeOutputRow({ serialNumber: 'SER-CONS-001', recordedAt: '05/08/2026', month: '05/08/2' }),
+    ]);
+    repository.normalizeStoredDates();
+    const records = repository.listRecords({ dateFrom: '2026-08', dateTo: '2026-08' });
+    expect(records.map((row) => [row.recordedAt, row.month, row.quantity, row.costUsd])).toEqual([
+      ['2026-08-01', '2026-08', 2, 120],
+      ['2026-08-01', '2026-08', 2, 120],
+    ]);
+    expect(records.some((row) => row.sourceDetails?.some((field) => field.value === '01/08/2026'))).toBe(true);
+    expect(repository.listOutputs({ dateFrom: '2026-08', dateTo: '2026-08' })).toEqual([
+      expect.objectContaining({ recordedAt: '2026-08-05', month: '2026-08', documentNumber: 1001, quantity: 1 }),
+    ]);
+    repository.normalizeStoredDates();
+    expect(repository.importRows(batchId, 'fechas.xlsx', 'consumibles', [makeRow()])).toMatchObject({ accepted: 0, duplicates: 1 });
+    expect(repository.getSummary()).toMatchObject({ records: 2, totalCostUsd: 240, firstMonth: '2026-08', lastMonth: '2026-08' });
+  });
+
   it('links records to the shared installed base and deduplicates source rows', () => {
     const database = makeTemporaryDatabase();
     const operations = new OperationsRepository(database);

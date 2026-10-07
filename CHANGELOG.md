@@ -2,6 +2,23 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.1.78 · 2026-10-07
+
+Alinea la suite con el stack de la marca. Los iconos pasan de Hugeicons a Lucide (`lucide-react`) y se retiran `@hugeicons/react` y `@hugeicons/core-free-icons`; una prueba falla si vuelve a importarse Hugeicons. Los dos manejadores de PDF del proceso principal solo atienden al marco principal de la ventana cargado desde el servidor local, y rechazan iframes y orígenes externos. No cambia el comportamiento visible salvo la forma de los iconos.
+
+## 0.1.77 · 2026-10-06
+
+Corrige los cuatro defectos funcionales detectados al validar el rediseño:
+
+- Listado de precios guarda y recupera las excepciones de tipo de cambio por familia, valida sus valores y conserva el factor comercial de la familia al usar el T.C. global.
+- Consumibles y Salidas normalizan fechas textuales `DD/MM/AAAA` y períodos `MM/AAAA`. Al iniciar la API, repara las fechas válidas de los registros históricos para que entren en los filtros mensuales, sin cambiar cantidades, costos ni originales, y sin eliminar filas cuando coinciden claves históricas.
+- Proformas valida y persiste categoría, stock y estado de discontinuación de las líneas. Reabrir conserva esos metadatos, incluido stock desconocido (`null`), también cuando el catálogo común actual cambió.
+- El PDF tabular de Expedientes técnicos usa un informe exclusivo en A4 horizontal con los equipos filtrados, todas las acciones sugeridas y encabezados repetidos; no imprime controles ni la columna Inspector. Los informes individual y ejecutivo mantienen sus formatos.
+
+## 0.1.76 · 2026-10-06
+
+Corrige tres puntos de usabilidad del rediseño. Proformas desplaza el formulario al enfocar un control que quedaría bajo el resumen inferior, conservando la barra y su disposición lateral desde 1500 px. Cambiar de módulo abre la pantalla desde arriba; cancelar la salida por cambios sin guardar conserva la pantalla actual. En el Resumen General de Consumibles, las tablas de salidas y registros normalizados tienen altura máxima con desplazamiento interno, sin quitar datos ni cambiar la paginación. Conserva los cálculos, los filtros y las fuentes.
+
 ## 0.1.75 · 2026-10-06
 
 Segunda entrega del rediseño de Analítica de consumibles, que completa el rediseño de todos los módulos de la suite. Los indicadores, la analítica agregada, los despachos, las tablas por código y por registro, y las pestañas T03, T06, GPR-53, Impacto en contratos, Repuestos, Consumibles vs Repuestos, Servicios vs Consumibles, Ranking y Equipos adoptan los componentes compartidos. Las listas agregadas desplazan dentro de su tarjeta: el Resumen General bajó de unos 54.000 px de alto a unos 23.000. Los registros normalizados de cada familia se muestran de a 50, ya ordenados por la columna elegida. Las filas expandibles (fichas, servicios) ocupan el ancho visible de la tarjeta y su historial desplaza por dentro. Los gráficos usan utilidades Tailwind: la serie «Originales» tiene un azul visible en el tema oscuro y las marcas del eje de meses se espacian para no pisarse. Se retiran las últimas clases globales heredadas (tarjetas, tablas, botones, campos y fichas de resumen) y una prueba falla si vuelven a usarse.

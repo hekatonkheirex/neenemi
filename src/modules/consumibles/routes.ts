@@ -29,6 +29,7 @@ export function registerConsumablesRoutes(app: Express, database: SuiteDatabase,
   const operations = new OperationsRepository(database);
   const services = new ServiceRepository(database);
   const consumables = new ConsumablesRepository(database);
+  consumables.normalizeStoredDates();
 
   app.delete('/api/consumables/imports', (_request, response) => {
     const batches = imports.listBatches(1000).filter((batch) => batch.domain === 'consumibles');

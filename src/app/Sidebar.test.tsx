@@ -38,7 +38,7 @@ describe('Sidebar', () => {
     expect(alert).toContain('SQLite requiere atención');
   });
 
-  it('usa solo tokens de marca (sin azules fuera de paleta ni hugeicons)', () => {
+  it('usa solo tokens de marca (sin azules fuera de paleta ni iconos fuera de lucide)', () => {
     const markup = render({ activeModuleId: 'sla' });
     expect(markup).not.toMatch(/#79aaff|#4277e9|#77a7ff/i);
     expect(markup).toContain('bg-panel');

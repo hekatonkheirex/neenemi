@@ -6,10 +6,31 @@ import {
   detectFamily,
   detectFamilyFromConsumable,
   descMentionsForeignModel,
+  formatDate,
+  formatMonth,
   usdToPyg,
 } from './analysis';
 
 describe('consumibles analysis helpers', () => {
+  it.each([
+    ['01/08/2026', '2026-08-01', '2026-08'],
+    ['1/8/2026 09:30', '2026-08-01', '2026-08'],
+    ['29/02/2024', '2024-02-29', '2024-02'],
+    ['31/02/2026', '', ''],
+    ['29/02/2025', '', ''],
+    ['2026-08-01T12:00:00Z', '2026-08-01', '2026-08'],
+  ])('normalizes source date %s without changing its calendar day', (source, date, month) => {
+    expect(formatDate(source)).toBe(date);
+    expect(formatMonth(source)).toBe(month);
+  });
+
+  it('keeps Excel dates and month-only fallback periods usable for monthly filters', () => {
+    expect(formatDate(new Date('2026-08-01T12:00:00Z'))).toBe('2026-08-01');
+    expect(formatMonth('08/2026')).toBe('2026-08');
+    expect(formatMonth('2026-08')).toBe('2026-08');
+    expect(formatDate(new Date(Number.NaN))).toBe('');
+  });
+
   it('detects the supported printer families from equipment and descriptions', () => {
     expect(detectFamily('IMPRESORA CANON IRADV DX 717')).toBe('T03');
     expect(detectFamily('Canon imageRUNNER 1643i')).toBe('T06');

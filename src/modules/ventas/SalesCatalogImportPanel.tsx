@@ -1,9 +1,7 @@
 import { useRef, useState } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Tick02Icon } from '@hugeicons/core-free-icons';
 import { parseSalesCatalogFile, type SalesCatalogProgress } from './sales-catalog';
 import type { SalesCatalogKind, SalesCatalogMeta, SalesCatalogSnapshot, SalesCatalogs } from './types';
-import { X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { cn } from '../../core/cn';
 import ModalDialog, { modalBodyClass, modalFooterClass, modalHeaderClass } from '../../core/ModalDialog';
 import { Badge } from '../../core/ui/badge';
@@ -185,7 +183,7 @@ export default function SalesCatalogImportPanel({ isOpen, catalogs, onClose, onI
                   <div className="break-all text-sm font-bold text-navy dark:text-white">{file ? file.name : fileName}</div>
                   <Muted>{file ? `${(file.size / 1024 / 1024).toFixed(1)} MB seleccionado` : 'Haz clic para seleccionar la planilla'}</Muted>
                 </label>
-                {meta ? <div className="grid gap-1 text-xs text-[#14532d] dark:text-[#9be3b9]"><div className="flex items-start gap-1.5"><HugeiconsIcon className="mt-0.5 shrink-0" icon={Tick02Icon} size={14} strokeWidth={2.5} aria-hidden="true" /><span>{meta.rowCount.toLocaleString('es-PY')} registros guardados · {meta.fileName}</span></div>{meta.sourceBatchId && meta.sourceFileId ? <a className={cn(buttonVariants({ variant: 'export', size: 'sm' }), 'export-button w-fit')} href={`/api/imports/${encodeURIComponent(meta.sourceBatchId)}/files/${encodeURIComponent(meta.sourceFileId)}`} download={meta.fileName}>Descargar original</a> : null}</div> : <Muted>Todavía no hay una carga guardada.</Muted>}
+                {meta ? <div className="grid gap-1 text-xs text-[#14532d] dark:text-[#9be3b9]"><div className="flex items-start gap-1.5"><Check className="mt-0.5 shrink-0" size={14} strokeWidth={2.5} aria-hidden="true" /><span>{meta.rowCount.toLocaleString('es-PY')} registros guardados · {meta.fileName}</span></div>{meta.sourceBatchId && meta.sourceFileId ? <a className={cn(buttonVariants({ variant: 'export', size: 'sm' }), 'export-button w-fit')} href={`/api/imports/${encodeURIComponent(meta.sourceBatchId)}/files/${encodeURIComponent(meta.sourceFileId)}`} download={meta.fileName}>Descargar original</a> : null}</div> : <Muted>Todavía no hay una carga guardada.</Muted>}
               </div>
             );
           })}

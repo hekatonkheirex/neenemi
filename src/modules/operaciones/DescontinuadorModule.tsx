@@ -1,13 +1,7 @@
+import { Check, Package, TriangleAlert, Upload } from 'lucide-react';
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import type { ChangeEvent } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
 import AnimatedTabs from '../../core/AnimatedTabs';
-import {
-  Alert02Icon,
-  Package01Icon,
-  Tick02Icon,
-  Upload01Icon,
-} from '@hugeicons/core-free-icons';
 import { exportCustomerPortfolio, exportOperationsWorkbook } from './export';
 import { submitImportJob, type ImportJobSnapshot } from '../../core/import-job-client';
 import { SOURCE_CATALOG, sourceMatchesDefinition } from '../../core/source-catalog';
@@ -146,7 +140,7 @@ function DiscontinuationSourceCard({
           {!loadingBatches && !sourceBatchesError && loadedBatches.length === 0 ? <span>Sin archivo cargado</span> : null}
           {!loadingBatches && !sourceBatchesError && loadedBatches.length > 0 ? (
             <ul className="m-0 grid list-none gap-1 p-0">
-              {loadedBatches.map((batch) => <li className="flex min-w-0 items-center gap-1.5 text-[#14532d] before:content-none dark:text-[#9be3b9]" key={batch.id} title={batch.sourceName}><HugeiconsIcon className="shrink-0" icon={Tick02Icon} size={14} strokeWidth={2.5} aria-hidden="true" /><span className="min-w-0 truncate font-semibold">{batch.sourceName}</span></li>)}
+              {loadedBatches.map((batch) => <li className="flex min-w-0 items-center gap-1.5 text-[#14532d] before:content-none dark:text-[#9be3b9]" key={batch.id} title={batch.sourceName}><Check className="shrink-0" size={14} strokeWidth={2.5} aria-hidden="true" /><span className="min-w-0 truncate font-semibold">{batch.sourceName}</span></li>)}
             </ul>
           ) : null}
         </SourceFact>
@@ -694,9 +688,9 @@ export default function DescontinuadorModule() {
         active={activeView}
         onChange={setActiveView}
         tabs={[
-          { id: 'discontinued', label: 'Discontinuados', icon: Alert02Icon, count: numberFormat.format(portfolioStats.discontinued) },
-          { id: 'stock', label: 'Stock Waldbott', icon: Package01Icon, count: numberFormat.format(stockItems.length) },
-          { id: 'uploads', label: 'Carga', icon: Upload01Icon, count: loadedSourceCount },
+          { id: 'discontinued', label: 'Discontinuados', icon: TriangleAlert, count: numberFormat.format(portfolioStats.discontinued) },
+          { id: 'stock', label: 'Stock Waldbott', icon: Package, count: numberFormat.format(stockItems.length) },
+          { id: 'uploads', label: 'Carga', icon: Upload, count: loadedSourceCount },
         ]}
       />
 

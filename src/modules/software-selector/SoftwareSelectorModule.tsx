@@ -14,12 +14,10 @@ import type {
   SoftwareRecommendation,
 } from './types';
 import { SOFTWARE_CATEGORIES } from './types';
-import type { IconSvgElement } from '@hugeicons/react';
-import { ChartBarLineIcon, GridViewIcon, PrinterIcon, ServerStack01Icon, ShieldEnergyIcon, Wrench01Icon, WorkflowSquare01Icon } from '@hugeicons/core-free-icons';
 import AnimatedTabs from '../../core/AnimatedTabs';
 import { readJson, toErrorMessage } from '../../core/http';
 import { UploadButton, ExportButton } from '../../core/ActionButtons';
-import { ChevronDown, ChevronUp, FileText, Printer, Search, Sparkles } from 'lucide-react';
+import { ChartBar, ChevronDown, ChevronUp, FileText, Grid2x2, type LucideIcon, Printer, Search, Server, ShieldCheck, Sparkles, Workflow, Wrench } from 'lucide-react';
 import { cn } from '../../core/cn';
 import { Badge } from '../../core/ui/badge';
 import { Button } from '../../core/ui/button';
@@ -33,17 +31,17 @@ const MAX_TEXT_LENGTH = 250_000;
 const DEMO_TEXT = 'El pliego requiere liberación Follow-Me, autenticación con tarjeta, integración con Active Directory, escaneo a SharePoint y continuidad operativa mediante un servidor de impresión local.';
 const ALL_CATEGORIES = 'Todas' as const;
 
-const CATEGORY_ICONS: Record<SoftwareCategory, IconSvgElement> = {
-  'Gestión de Impresión': PrinterIcon,
-  'Escaneo y Flujos de Trabajo': WorkflowSquare01Icon,
-  'Costos e Informes': ChartBarLineIcon,
-  'Gestión de Dispositivos y Flotas': ServerStack01Icon,
-  'Supervisión y Servicio': Wrench01Icon,
-  'Seguridad e Identidad': ShieldEnergyIcon,
+const CATEGORY_ICONS: Record<SoftwareCategory, LucideIcon> = {
+  'Gestión de Impresión': Printer,
+  'Escaneo y Flujos de Trabajo': Workflow,
+  'Costos e Informes': ChartBar,
+  'Gestión de Dispositivos y Flotas': Server,
+  'Supervisión y Servicio': Wrench,
+  'Seguridad e Identidad': ShieldCheck,
 };
 
-const categoryTabs: readonly { id: typeof ALL_CATEGORIES | SoftwareCategory; label: string; icon: IconSvgElement }[] = [
-  { id: ALL_CATEGORIES, label: 'Todas', icon: GridViewIcon },
+const categoryTabs: readonly { id: typeof ALL_CATEGORIES | SoftwareCategory; label: string; icon: LucideIcon }[] = [
+  { id: ALL_CATEGORIES, label: 'Todas', icon: Grid2x2 },
   ...SOFTWARE_CATEGORIES.map((category) => ({ id: category, label: category, icon: CATEGORY_ICONS[category] })),
 ];
 const compactNumber = new Intl.NumberFormat('es-PY');

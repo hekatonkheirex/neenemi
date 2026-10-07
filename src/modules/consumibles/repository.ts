@@ -4,7 +4,7 @@ import { buildOperationalFilter, type OperationalFilters } from '../../core/oper
 import type { PageRequest, PaginatedResult } from '../../core/pagination';
 import { parseSourceDetails, serializeSourceDetails } from '../../core/source-details';
 import { backfillNormalizedSourceMetadata } from '../../core/source-metadata';
-import { normalizeOutputRecordKey, normalizeRecordKey, normalizeSerial } from './analysis';
+import { formatDate, formatMonth, normalizeOutputRecordKey, normalizeRecordKey, normalizeSerial } from './analysis';
 import { parseConsumablesWorkbook } from './xlsx';
 import { parseOutputsWorkbook } from './outputs';
 import { CONSUMABLES_SOURCE_TYPES } from './types';
@@ -251,6 +251,43 @@ export class ConsumablesRepository {
         sourceRowNumber: row.sourceRowNumber,
       })),
     );
+  }
+
+  normalizeStoredDates(): void {
+    this.database.transaction(() => {
+      for (const table of ['consumables_usage_records', 'consumables_output_records'] as const) {
+        const isOutput = table === 'consumables_output_records';
+        const rows = this.database.prepare(`
+          SELECT id, recorded_at, month, part_code, serial_number, quantity,
+            ${isOutput ? 'document_number' : '0 AS document_number'}
+          FROM ${table}
+          WHERE recorded_at LIKE '%/%' OR month LIKE '%/%'
+        `).all() as Array<{
+          id: string; recorded_at: string; month: string; part_code: string;
+          serial_number: string; quantity: number; document_number: number;
+        }>;
+        const update = this.database.prepare(`
+          UPDATE ${table}
+          SET recorded_at = ?, month = ?,
+            record_key = CASE WHEN EXISTS (
+              SELECT 1 FROM ${table} other WHERE other.record_key = ? AND other.id <> ?
+            ) THEN record_key ELSE ? END
+          WHERE id = ?
+        `);
+        for (const row of rows) {
+          const recordedAt = formatDate(row.recorded_at);
+          const month = formatMonth(recordedAt || row.month);
+          if (row.recorded_at && !/^\d{4}-\d{2}-\d{2}$/.test(recordedAt)) continue;
+          if (!/^\d{4}-\d{2}$/.test(month)) continue;
+          const key = isOutput
+            ? normalizeOutputRecordKey(row.document_number, row.part_code, row.serial_number, recordedAt, row.quantity)
+            : normalizeRecordKey(row.part_code, row.serial_number, recordedAt);
+          // Keep both historical source rows if date spellings previously produced separate keys.
+          // Future imports deduplicate against the canonical key without deleting archived data.
+          update.run(recordedAt, month, key, row.id, key, row.id);
+        }
+      }
+    })();
   }
 
   importRows(

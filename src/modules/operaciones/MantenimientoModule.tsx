@@ -1,6 +1,5 @@
+import { FileText, LayoutDashboard, Settings, TriangleAlert } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Alert02Icon } from '@hugeicons/core-free-icons';
 import type {
   CustomerRecord,
   EquipmentRecord,
@@ -14,14 +13,10 @@ import type { MaintenanceModelRule } from '../mantenimiento/analysis';
 import MaintenanceRulesPanel from '../mantenimiento/MaintenanceRulesPanel';
 import MaintenanceExecutiveSummary, { type MaintenanceExportKind } from '../mantenimiento/MaintenanceExecutiveSummary';
 import MaintenanceExecutivePrintReport from '../mantenimiento/MaintenanceExecutivePrintReport';
+import MaintenanceTablePrintReport, { type MaintenanceTablePrintReportProps } from '../mantenimiento/MaintenanceTablePrintReport';
 import { maintenanceAnalysisMatchesSearch } from '../mantenimiento/search';
 import { confirmAction } from '../../core/confirm';
 import AnimatedTabs from '../../core/AnimatedTabs';
-import {
-  DashboardSquare01Icon,
-  File01Icon,
-  Settings02Icon,
-} from '@hugeicons/core-free-icons';
 import { readJson, toErrorMessage } from '../../core/http';
 import { UploadButton, ExportButton, DownloadIcon } from '../../core/ActionButtons';
 import { cn } from '../../core/cn';
@@ -73,6 +68,7 @@ export default function MantenimientoModule() {
   const [analysisMonths, setAnalysisMonths] = useState(3);
   const [printableAnalysis, setPrintableAnalysis] = useState<MaintenanceAnalysis | null>(null);
   const [printableExecutiveSummary, setPrintableExecutiveSummary] = useState(false);
+  const [printableTable, setPrintableTable] = useState<MaintenanceTablePrintReportProps | null>(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -161,6 +157,33 @@ export default function MantenimientoModule() {
       }
     };
   }, [printableExecutiveSummary]);
+
+  useEffect(() => {
+    if (!printableTable) return;
+    document.body.dataset.printMode = 'maintenance-table';
+    let cancelled = false;
+    const printReport = async () => {
+      await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
+      try {
+        const saved = await printOrSaveCurrentPageAsPdf(
+          `mantenimiento-${toFileSafeName(printableTable.sourceName ?? 'reporte')}`,
+          { landscape: true },
+        );
+        if (!cancelled && saved) {
+          setMessage(saved.saved ? `PDF guardado: ${saved.filePath ?? 'archivo seleccionado'}.` : 'Guardado de PDF cancelado.');
+        }
+      } catch (printError: unknown) {
+        if (!cancelled) setError(toErrorMessage(printError));
+      } finally {
+        if (!cancelled) setPrintableTable(null);
+      }
+    };
+    void printReport();
+    return () => {
+      cancelled = true;
+      if (document.body.dataset.printMode === 'maintenance-table') delete document.body.dataset.printMode;
+    };
+  }, [printableTable]);
 
   const contractsCount = useMemo(
     () => customers.reduce((total, customer) => total + customer.contracts.length, 0),
@@ -259,15 +282,14 @@ export default function MantenimientoModule() {
     }
   }
 
-  async function printAnalysis() {
+  function printAnalysis() {
     if (visibleAnalyses.length === 0) return;
     setError(null);
-    try {
-      const saved = await printOrSaveCurrentPageAsPdf(`mantenimiento-${maintenanceSummary?.sourceName ?? 'reporte'}`);
-      if (saved) setMessage(saved.saved ? `PDF guardado: ${saved.filePath ?? 'archivo seleccionado'}.` : 'Guardado de PDF cancelado.');
-    } catch (printError: unknown) {
-      setError(toErrorMessage(printError));
-    }
+    setPrintableTable({
+      analyses: visibleAnalyses,
+      sourceName: maintenanceSummary?.sourceName ?? null,
+      analysisMonths,
+    });
   }
 
   function printSingleAnalysis(analysis: MaintenanceAnalysis) {
@@ -419,9 +441,9 @@ export default function MantenimientoModule() {
         active={activeMaintenanceView}
         onChange={setActiveMaintenanceView}
         tabs={[
-          { id: 'dashboard', label: 'Tablero resumen', icon: DashboardSquare01Icon },
-          { id: 'equipos', label: 'Expedientes técnicos', icon: File01Icon, count: visibleAnalyses.length.toLocaleString('es-PY') },
-          { id: 'modelos', label: 'Límites por modelo', icon: Settings02Icon, count: maintenanceRules.length.toLocaleString('es-PY') },
+          { id: 'dashboard', label: 'Tablero resumen', icon: LayoutDashboard },
+          { id: 'equipos', label: 'Expedientes técnicos', icon: FileText, count: visibleAnalyses.length.toLocaleString('es-PY') },
+          { id: 'modelos', label: 'Límites por modelo', icon: Settings, count: maintenanceRules.length.toLocaleString('es-PY') },
         ]}
       />
 
@@ -493,6 +515,7 @@ export default function MantenimientoModule() {
 
       {printableAnalysis ? <MaintenancePrintReport analysis={printableAnalysis} sourceName={maintenanceSummary?.sourceName ?? null} /> : null}
       {printableExecutiveSummary ? <MaintenanceExecutivePrintReport analyses={analyses} sourceName={maintenanceSummary?.sourceName ?? null} analysisMonths={analysisMonths} /> : null}
+      {printableTable ? <MaintenanceTablePrintReport {...printableTable} /> : null}
     </div>
   );
 }
@@ -530,7 +553,7 @@ function MaintenanceInspectionRow({ analysis, onPrint }: { analysis: Maintenance
                 <TableCell className="text-right tabular-nums">{period.copies.toLocaleString('es-PY')}</TableCell>
                 <TableCell className="text-right tabular-nums">{period.counter.toLocaleString('es-PY')}</TableCell>
                 <TableCell className="text-right tabular-nums">{period.optimalMonthly.toLocaleString('es-PY')}</TableCell>
-                <TableCell className={cn('text-right tabular-nums', isOver && 'font-bold text-[#912018]! dark:text-[#ffb4ab]!')}>{period.ratio.toFixed(2)}{isOver ? <> <HugeiconsIcon className="inline" icon={Alert02Icon} size={14} aria-label="Excede el límite" /></> : null}</TableCell>
+                <TableCell className={cn('text-right tabular-nums', isOver && 'font-bold text-[#912018]! dark:text-[#ffb4ab]!')}>{period.ratio.toFixed(2)}{isOver ? <> <TriangleAlert className="inline" size={14} aria-label="Excede el límite" /></> : null}</TableCell>
               </TableRow>;
             })}</TableBody>
           </Table>

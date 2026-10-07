@@ -3,6 +3,7 @@ import type { SuiteDatabase } from '../../db/database';
 import { ImportRepository } from '../../db/repositories';
 import { isNonEmptyString, isNonNegativeInteger, isNonNegativeNumber, isOptionalNonNegativeNumber, isPositiveInteger, isPositiveNumber, isRecord, queryString } from '../../core/validation';
 import { MAX_PRICE_LIST_SELECTION } from './selection-sync';
+import { normalizeModelName } from '../catalogo/repository';
 import { SalesRepository, type SaveProformaInput } from './repository';
 import type {
   ContractPriceCurrency,
@@ -25,10 +26,21 @@ function parsePricing(value: unknown): PricingSettings | null {
   ) {
     return null;
   }
+  let familyExchangeRateOverrides: Record<string, number> | undefined;
+  if (value.familyExchangeRateOverrides !== undefined) {
+    if (!isRecord(value.familyExchangeRateOverrides)) return null;
+    familyExchangeRateOverrides = {};
+    for (const [familyName, exchangeRate] of Object.entries(value.familyExchangeRateOverrides)) {
+      const key = normalizeModelName(familyName);
+      if (!key || !isPositiveNumber(exchangeRate)) return null;
+      familyExchangeRateOverrides[key] = exchangeRate;
+    }
+  }
   return {
     exchangeRate: value.exchangeRate,
     factor: value.factor,
     laborPrice: value.laborPrice,
+    ...(familyExchangeRateOverrides !== undefined ? { familyExchangeRateOverrides } : {}),
   };
 }
 
@@ -213,9 +225,20 @@ function parseSaveProformaInput(value: unknown): SaveProformaInput | null {
       continue;
     }
     if (line.kind !== 'part') return null;
+    if (line.catalogKind !== undefined && line.catalogKind !== 'consumibles' && line.catalogKind !== 'repuestos') return null;
+    if (!isOptionalNonNegativeNumber(line.sourceStock)) return null;
+    if (line.sourceDiscontinuedStatus !== undefined
+      && line.sourceDiscontinuedStatus !== 'active'
+      && line.sourceDiscontinuedStatus !== 'discontinued'
+      && line.sourceDiscontinuedStatus !== 'unknown') return null;
+    const metadata: Pick<ProformaLineInput, 'catalogKind' | 'sourceStock' | 'sourceDiscontinuedStatus'> = {
+      catalogKind: line.catalogKind,
+      sourceStock: line.sourceStock,
+      sourceDiscontinuedStatus: line.sourceDiscontinuedStatus,
+    };
     if (isNonEmptyString(line.partId)) {
       if (line.source !== undefined && line.source !== 'shared') return null;
-      lines.push({ kind: 'part', partId: line.partId, quantity: line.quantity });
+      lines.push({ kind: 'part', partId: line.partId, quantity: line.quantity, ...metadata });
       continue;
     }
     const isContractLine = mode === 'contrato-abierto' && (line.source === undefined || line.source === 'contract');
@@ -231,6 +254,7 @@ function parseSaveProformaInput(value: unknown): SaveProformaInput | null {
       unitPriceUsd: line.unitPriceUsd === undefined ? null : line.unitPriceUsd,
       unitPriceLocal: line.unitPriceLocal === undefined ? null : line.unitPriceLocal,
       quantity: line.quantity,
+      ...metadata,
     });
   }
 

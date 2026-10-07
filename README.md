@@ -2,6 +2,8 @@
 
 DCSS significa **Document & Collaborative Solutions Support**. Es la suite unificada de Data Systems para Electron.
 
+Al cambiar de módulo, la pantalla se abre desde arriba; cancelar la salida por cambios sin guardar conserva el módulo y su borrador.
+
 Este proyecto se construirá de forma aislada de las aplicaciones actuales del
 workspace. Los directorios hermanos son la referencia funcional durante la migración y
 no deben modificarse para implementar esta suite.
@@ -80,6 +82,11 @@ encabezados de cartera y de archivos renombrados cuando el export trae títulos 
 la inspección conserve nombres de columnas útiles. Al iniciar, la suite reindexa de forma
 idempotente los XLSX históricos ya archivados para completar esa trazabilidad en los registros
 antiguos, sin recalcular sus valores normalizados.
+Una reparación separada normaliza las fechas válidas `DD/MM/AAAA` y los períodos `MM/AAAA`
+de Consumibles y Salidas a `AAAA-MM-DD` y `AAAA-MM`, tanto al importar como en los registros
+históricos al iniciar la API. Mantiene cantidades, costos, identificadores y campos originales;
+si dos filas antiguas convergen a la misma clave, conserva ambas y evita nuevos duplicados.
+Los límites `dateFrom` y `dateTo` de sus filtros globales son períodos mensuales `AAAA-MM`.
 La misma reindexación actualiza una sola vez los catálogos derivados de Viáticos cuando cambia el
 lector de `CALCULO AUX`, por lo que una corrección del formato no obliga a volver a importar
 manualmente la fuente vigente.
@@ -290,11 +297,13 @@ En el detalle de un cliente, cada contrato permite contraer o mostrar sus equipo
 por separado desde el encabezado; el resumen y la exportación del cliente no cambian.
 Analítica de consumibles usa los componentes compartidos del rediseño en ambos temas: encabezado, filtros,
 resumen, registros normalizados, importaciones, Datos y todas las pestañas de análisis. Las listas agregadas
-desplazan dentro de su tarjeta y los registros se muestran de a 50. Con este módulo termina el rediseño: ningún
+desplazan dentro de su tarjeta; las tablas de salidas y registros normalizados tienen altura máxima de 40 rem,
+desplazamiento interno y paginación (50 filas por defecto). Con este módulo termina el rediseño: ningún
 componente usa ya las clases globales heredadas (`src/styles/legacy-css-retired.test.ts` lo verifica).
 Proformas usa los componentes compartidos del rediseño en ambos temas: cabecera, líneas, mano de obra,
 resumen e historial. Los tres paneles de importación (contrato, catálogos e informe PDF) son diálogos nativos;
 el resumen es una barra fija inferior bajo 1500 px y pasa a la columna lateral desde ese ancho.
+Al enfocar un control del formulario que quedaría bajo esa barra, la página desplaza lo necesario para mostrarlo.
 Discontinuador usa los componentes compartidos del rediseño en ambos temas: cartera, modelos
 discontinuados, stock Waldbott y carga de fuentes. La paginación y el detalle de origen son
 componentes comunes con Tailwind; las tablas se ajustan al ancho de su tarjeta.
@@ -304,6 +313,9 @@ las tablas y los gráficos se ajustan al ancho de su tarjeta.
 Mantenimiento usa los componentes compartidos del rediseño en ambos temas: fuente de contadores,
 tablero ejecutivo, expedientes técnicos con inspector y límites por modelo. Las tablas desplazan
 dentro de su tarjeta y el editor de reglas es un diálogo nativo. Los informes PDF conservan sus estilos.
+El PDF tabular de Expedientes técnicos imprime únicamente los equipos visibles tras los filtros,
+en A4 horizontal, sin controles ni la columna Inspector, con la acción sugerida completa y
+encabezados de tabla repetidos entre páginas.
 Mantenimiento también permite cargar por separado uno o varios XLSX de los exports de `Contratos.xlsx`, `Detalles de
 contratos.xlsx` y la clasificación de clientes, conservando OV, división, vigencia, fechas,
 área comercial y requisito de cierre en la base compartida. Discontinuador ofrece además la
@@ -351,6 +363,8 @@ el valor global sigue siendo el predeterminado para consultas sin familia, y las
 de la exportación respetan la regla de su familia. La pantalla conserva y permite descargar el
 archivo original de la última carga del catálogo compartido, y permite volver al T.C. global o
 guardar una excepción por familia.
+Guardar y reabrir las reglas conserva esas excepciones: usar el T.C. global para una familia
+reemplaza solo su tipo de cambio, no su factor comercial.
 La pantalla usa los componentes compartidos del rediseño en ambos temas, con resumen, reglas
 comerciales, filtros y selección separados. La selección se guarda automáticamente en SQLite;
 los repuestos mantienen la paginación y las tablas desplazan dentro de sus tarjetas. Los nombres
@@ -376,6 +390,10 @@ originales se conservan y sus precios, stock y estado tienen prioridad sobre el 
 Las columnas adicionales permanecen consultables desde la fuente original importada y las tarjetas
 de cada catálogo permiten descargar nuevamente el XLSX archivado. El contrato abierto conserva el
 mismo enlace al XLSX/PDF original desde la lista contractual activa.
+Al guardar y reabrir una proforma se conservan la categoría, el stock y el estado de
+discontinuación de cada línea, sin sustituirlos por los del catálogo actual. Un stock desconocido
+permanece `null`, no cero. Las proformas antiguas cuyos metadatos no se guardaron no permiten
+reconstruir automáticamente el stock histórico perdido.
 
 Viáticos puede importar `CONTROL DE VIATICO 2026.xlsx`, conservar la planilla original,
 normalizar los viajes y guardar en SQLite el catálogo de costos y los resúmenes históricos

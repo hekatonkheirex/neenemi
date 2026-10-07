@@ -30,6 +30,18 @@ function makeUseRepuestosRow(): XlsxCell[] {
 }
 
 describe('parseConsumablesWorkbook', () => {
+  it('normalizes textual day/month dates and month-only periods from historical sheets', async () => {
+    const dated = makeUseRepuestosRow();
+    dated[4] = '01/08/2026';
+    const monthOnly = makeUseRepuestosRow();
+    monthOnly[14] = '08/2026';
+    const parsed = await parseConsumablesWorkbook(await makeWorkbook([dated, monthOnly]), 'uso-repuestos');
+    expect(parsed.rows.map((row) => [row.recordedAt, row.month])).toEqual([
+      ['2026-08-01', '2026-08'],
+      ['', '2026-08'],
+    ]);
+  });
+
   it('normalizes rows from every worksheet and keeps each source location', async () => {
     const workbook = new ExcelJS.Workbook();
     const april = workbook.addWorksheet('Abril');

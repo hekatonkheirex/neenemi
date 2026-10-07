@@ -105,11 +105,25 @@ export function roundMoney(value: number): number {
 }
 
 export function formatDate(value: unknown): string {
-  if (value instanceof Date) return value.toISOString().slice(0, 10);
-  return value ? String(value).slice(0, 10) : '';
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? '' : value.toISOString().slice(0, 10);
+  const text = value ? String(value).trim() : '';
+  const localDate = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:$|[ T])/.exec(text);
+  if (!localDate) return text.slice(0, 10);
+  const day = Number(localDate[1]);
+  const month = Number(localDate[2]);
+  const year = Number(localDate[3]);
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const lastDay = month === 2 ? leapYear ? 29 : 28 : month === 4 || month === 6 || month === 9 || month === 11 ? 30 : 31;
+  if (year < 1 || month < 1 || month > 12 || day < 1 || day > lastDay) return '';
+  return `${localDate[3]}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
 export function formatMonth(value: unknown): string {
+  const monthOnly = typeof value === 'string' ? /^(\d{1,2})\/(\d{4})$/.exec(value.trim()) : null;
+  if (monthOnly) {
+    const month = Number(monthOnly[1]);
+    return month >= 1 && month <= 12 ? `${monthOnly[2]}-${String(month).padStart(2, '0')}` : '';
+  }
   return formatDate(value).slice(0, 7);
 }
 

@@ -5,6 +5,7 @@ const path = require('node:path');
 const { migrateLegacyDataDirectory, listLegacyDataSources } = require('./migrate-data.cjs');
 const { attachUnloadGuard } = require('./unload-guard.cjs');
 const { openExternalSafely } = require('./external-url.cjs');
+const { isLocalUrl, assertTrustedSender } = require('./trusted-sender.cjs');
 
 const WINDOW_BACKGROUND_COLOR = '#0b1220';
 let localApiProcess;
@@ -62,15 +63,6 @@ if (process.platform === 'win32') {
   app.setAppUserModelId('com.datasystems.dcss');
 }
 
-const isLocalUrl = (value) => {
-  try {
-    const url = new URL(value);
-    return url.protocol === 'http:' && (url.hostname === '127.0.0.1' || url.hostname === 'localhost');
-  } catch {
-    return false;
-  }
-};
-
 function createWindow(rendererUrl) {
   const window = new BrowserWindow({
     width: 1440,
@@ -105,6 +97,7 @@ function createWindow(rendererUrl) {
 }
 
 ipcMain.handle('datasystems:save-current-page-as-pdf', async (event, options) => {
+  assertTrustedSender(event);
   const window = BrowserWindow.fromWebContents(event.sender);
   if (!window) throw new Error('No se encontró la ventana de DCSS Suite.');
 
@@ -144,6 +137,7 @@ ipcMain.handle('datasystems:save-current-page-as-pdf', async (event, options) =>
 });
 
 ipcMain.handle('datasystems:save-structured-report-as-pdf', async (event, options) => {
+  assertTrustedSender(event);
   const parentWindow = BrowserWindow.fromWebContents(event.sender);
   if (!parentWindow) throw new Error('No se encontró la ventana de DCSS Suite.');
 

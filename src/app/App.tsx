@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useState } from 'react';
 import { motion, MotionConfig } from 'framer-motion';
 import type { SuiteOverview } from '../db/overview';
 import { suiteModules, type SuiteModule } from './modules';
@@ -98,6 +98,10 @@ export default function App() {
 
   useEffect(() => {
     persistLastModule(activeModuleId, getThemeStorage());
+  }, [activeModuleId]);
+
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [activeModuleId]);
 
   async function navigateTo(id: string | null) {

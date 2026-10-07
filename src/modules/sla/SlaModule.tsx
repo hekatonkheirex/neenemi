@@ -287,7 +287,7 @@ function Stat({ label, value, note, tone }: { label: string; value: string | num
 export function SlaResults({ analysis, statusCounts }: { analysis: SlaAnalysis; statusCounts: { complies: number; partial: number; gap: number } }) {
   return (
     <div className="grid gap-5">
-      <section aria-label="Resumen de cumplimiento SLA" className="grid gap-3 sm:grid-cols-2 min-[1101px]:grid-cols-4">
+      <section aria-label="Resumen de cumplimiento SLA" className="grid gap-3 min-[640px]:grid-cols-2 min-[1101px]:grid-cols-4">
         <Stat label="Cumplimiento estimado" value={percentage.format(analysis.complianceScore / 100)} note={analysis.fileName} />
         <Stat label="Riesgo general" value={riskLabel(analysis.overallRisk)} note={`${analysis.items.length} cláusulas revisadas`} tone={riskTone[analysis.overallRisk]} />
         <Stat label="Brechas" value={statusCounts.gap} note="requieren aclaración" />
