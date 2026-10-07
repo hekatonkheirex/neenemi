@@ -145,6 +145,3 @@ export function normalizeOutputRecordKey(
     .join('|');
 }
 
-export function normalizeSerial(value: string): string {
-  return value.normalize('NFKC').trim().replace(/\s+/g, ' ').toUpperCase();
-}

@@ -1,4 +1,4 @@
-import { normalizeSerial } from '../consumibles/analysis';
+import { normalizeSerial } from '../../core/serial';
 import { findHeaderIndex, readWorkbookSheets, type WorkbookSheetRows } from '../consumibles/xlsx-helpers';
 import type { Coordinate, TrackingReport, TrackingVisit } from './types';
 

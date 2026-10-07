@@ -4,7 +4,7 @@ import { coverageNote } from './DashboardMaintenanceChart';
 describe('coverageNote', () => {
   it('reports readings against equipment on active contracts', () => {
     expect(coverageNote({ activeEquipment: 3000, activeEquipmentWithReadings: 1800 })).toBe(
-      '1.800 de 3.000 equipos en contratos activos tienen lecturas de contadores (60 %). El resto no entra en este análisis.',
+      '1.800 de 3.000 equipos en contratos activos tienen lecturas de contadores (60%). El resto no entra en este análisis.',
     );
   });
 

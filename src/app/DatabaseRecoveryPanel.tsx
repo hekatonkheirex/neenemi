@@ -6,6 +6,7 @@ import { submitImportJob, type ImportJobSnapshot } from '../core/import-job-clie
 import { confirmAction } from '../core/confirm';
 import { BusySpinner } from '../core/ActionButtons';
 import { downloadBackup } from '../core/backup-download';
+import { STALE_BACKUP_PHRASE } from './backupCopy';
 
 type ImportFileContentStatus = {
   totalFiles: number;
@@ -79,7 +80,7 @@ export function describeReminder(health: BackupHealth): { title: string; text: s
         : { title: 'Base modificada desde el último respaldo', text: `${when} Hay altas, ediciones o eliminaciones posteriores, incluidas las cargas retiradas. Un nuevo respaldo guarda el estado actual de la base.` };
     }
     case 'stale':
-      return { title: `Último respaldo ${describeAge(health.daysSinceBackup)}`, text: 'Pasó una semana o más. Genera uno nuevo: viajes, proformas y ajustes manuales también cuentan.' };
+      return { title: `Último respaldo ${describeAge(health.daysSinceBackup)}`, text: `Pasó ${STALE_BACKUP_PHRASE}. Genera uno nuevo: viajes, proformas y ajustes manuales también cuentan.` };
     default:
       return { title: 'Información respaldada', text: `Último respaldo ${describeAge(health.daysSinceBackup)}. Te recordaremos al pasar una semana o tras nuevas cargas.` };
   }

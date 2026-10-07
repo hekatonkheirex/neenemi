@@ -5,6 +5,8 @@ import { ACTIVE_CONTRACT_TYPES_TEXT } from '../db/contract-types';
 import { cn } from '../core/cn';
 import type { BackupHealth } from './DatabaseRecoveryPanel';
 import { Button } from '../core/ui/button';
+import { PageHeader } from '../core/ui/page-header';
+import { backupBannerText } from './backupCopy';
 import { Card, CardHeader, Muted } from '../core/ui/card';
 import DashboardMaintenanceChart from '../modules/mantenimiento/DashboardMaintenanceChart';
 import DashboardConsumablesChart from '../modules/consumibles/DashboardConsumablesChart';
@@ -50,11 +52,7 @@ export default function Dashboard({ moduleCount, overview, overviewError, backup
   const backupWarning = backupLevel === 'pending' || backupLevel === 'stale' || (backupLevel === 'never' && hasData);
 
   return <div className="page-content min-w-0">
-    <section>
-      <div className="eyebrow">DCSS SUITE / DATA SYSTEMS</div>
-      <h1>DCSS Suite</h1>
-      <div className="max-w-3xl text-base leading-relaxed text-ink-2 dark:text-[#b4c3dc]">Un solo Electron, una base local y todos los módulos de trabajo en el mismo lugar.</div>
-    </section>
+    <PageHeader eyebrow="INICIO / DATA SYSTEMS" title="DCSS Suite" lead="Todos los módulos de trabajo y su base local en un solo lugar." />
 
     <section aria-label="Resumen de la suite" className="my-6 grid gap-3 md:grid-cols-3">
       <SummaryCard accent value={moduleCount} label="módulos funcionales" />
@@ -64,7 +62,7 @@ export default function Dashboard({ moduleCount, overview, overviewError, backup
 
     {backupWarning && <div role="status" className="mb-6 flex min-w-0 flex-wrap items-center gap-3 rounded-xl border border-brand/30 bg-brand/5 p-4 text-sm text-navy dark:text-white">
       <TriangleAlert className="size-5 shrink-0 text-brand" aria-hidden="true" />
-      <div className="min-w-0 flex-1">{backupLevel === 'pending' ? 'La base cambió desde el último respaldo.' : backupLevel === 'stale' ? 'El último respaldo tiene una semana o más.' : 'Hay información cargada y todavía no se generó un respaldo.'} Revisa su estado en Configuración.</div>
+      <div className="min-w-0 flex-1">{backupLevel ? backupBannerText(backupLevel) : ''} Revisa su estado en Configuración.</div>
       <Button variant="outline" size="sm" onClick={() => onNavigate('configuracion')}>Datos y respaldos</Button>
     </div>}
 

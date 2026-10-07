@@ -29,7 +29,7 @@ type Coverage = { activeEquipment: number; activeEquipmentWithReadings: number }
 export function coverageNote(coverage?: Coverage | null): string | null {
   if (!coverage || coverage.activeEquipment <= 0) return null;
   const percent = Math.round((coverage.activeEquipmentWithReadings / coverage.activeEquipment) * 100);
-  return `${integerFormat.format(coverage.activeEquipmentWithReadings)} de ${integerFormat.format(coverage.activeEquipment)} equipos en contratos activos tienen lecturas de contadores (${percent} %). El resto no entra en este análisis.`;
+  return `${integerFormat.format(coverage.activeEquipmentWithReadings)} de ${integerFormat.format(coverage.activeEquipment)} equipos en contratos activos tienen lecturas de contadores (${percent}%). El resto no entra en este análisis.`;
 }
 
 export default function DashboardMaintenanceChart({ onNavigate, coverage }: { onNavigate: (id: string) => void; coverage?: Coverage | null }) {

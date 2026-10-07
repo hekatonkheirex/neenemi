@@ -47,6 +47,13 @@ describe('Dashboard', () => {
     expect(renderToStaticMarkup(<Dashboard {...base} overview={withData({ lastAppliedAt: null })} />)).not.toContain('2026</div>');
   });
 
+  it('la cabecera usa el mismo PageHeader que Configuración', () => {
+    const markup = renderToStaticMarkup(<Dashboard {...base} overview={null} />);
+    expect(markup).toContain('INICIO / DATA SYSTEMS');
+    expect(markup).toContain('<h1>DCSS Suite</h1>');
+    expect(markup).not.toContain('Electron');
+  });
+
   it('muestra los tres bloques de gráficos', () => {
     const markup = renderToStaticMarkup(<Dashboard {...base} overview={withData()} />);
     expect(markup).toContain('aria-label="Gráficos de los módulos"');

@@ -1,6 +1,6 @@
 import type { SuiteDatabase } from './database';
 import type { ImportBatchStatus } from './repositories';
-import { normalizeSerial } from '../modules/consumibles/analysis';
+import { normalizeSerial } from '../core/serial';
 import { ACTIVE_CONTRACT_TYPES_SQL } from './contract-types';
 
 export type SuiteOverviewCounts = {
@@ -89,6 +89,7 @@ export class OverviewRepository {
           (SELECT COUNT(*) FROM service_records) AS service_records,
           (SELECT COUNT(*) FROM travel_trips) AS travel_trips,
           (SELECT COUNT(*) FROM canon_discontinuation_items) AS model_support_items,
+          -- Latest applied batch by applied_at: same rule as OperacionesRepository.listWaldbottStock.
           (SELECT COUNT(*)
            FROM waldbott_stock_items item
            WHERE item.source_batch_id = (
@@ -175,7 +176,7 @@ export class OverviewRepository {
       const serial = normalizeSerial(row.serial_number ?? '');
       if (serial) activeSerials.add(serial);
     }
-    // Same batch the maintenance analysis reads: the latest applied one.
+    // Same batch the maintenance analysis reads: the latest applied one by created_at (MaintenanceRepository.getCurrentBatch).
     const readingRows = this.database.prepare(`
       SELECT DISTINCT serial_number FROM maintenance_counter_records
       WHERE source_batch_id = (

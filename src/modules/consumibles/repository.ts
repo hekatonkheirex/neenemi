@@ -5,7 +5,8 @@ import { buildOperationalFilter, type OperationalFilters } from '../../core/oper
 import type { PageRequest, PaginatedResult } from '../../core/pagination';
 import { parseSourceDetails, serializeSourceDetails } from '../../core/source-details';
 import { backfillNormalizedSourceMetadata } from '../../core/source-metadata';
-import { formatDate, formatMonth, normalizeOutputRecordKey, normalizeRecordKey, normalizeSerial } from './analysis';
+import { formatDate, formatMonth, normalizeOutputRecordKey, normalizeRecordKey } from './analysis';
+import { normalizeSerial } from '../../core/serial';
 import { parseConsumablesWorkbook } from './xlsx';
 import { parseOutputsWorkbook } from './outputs';
 import { CONSUMABLES_SOURCE_TYPES } from './types';

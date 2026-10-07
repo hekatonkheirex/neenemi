@@ -5,7 +5,7 @@ import { buildOperationalFilter, type OperationalFilters } from '../../core/oper
 import type { PageRequest, PaginatedResult } from '../../core/pagination';
 import { parseSourceDetails, serializeSourceDetails, type SourceDetail } from '../../core/source-details';
 import { backfillNormalizedSourceMetadata } from '../../core/source-metadata';
-import { normalizeSerial } from '../consumibles/analysis';
+import { normalizeSerial } from '../../core/serial';
 import { parseServicesWorkbook } from './parser';
 import type {
   ParsedServiceRow,
