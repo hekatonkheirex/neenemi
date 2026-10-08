@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { SuiteDatabase } from '../../db/database';
 import { parseSourceDetails, serializeSourceDetails } from '../../core/source-details';
+import { ACTIVE_CONTRACT_TYPES_SQL } from '../../db/contract-types';
 import type { SourceDetail } from '../../core/source-details';
 import type {
   CanonDiscontinuationRow,
@@ -18,8 +19,8 @@ export type CustomerType = (typeof CUSTOMER_TYPES)[number];
 export type CommercialArea = (typeof COMMERCIAL_AREAS)[number];
 export type ContractType = (typeof CONTRACT_TYPES)[number];
 
-/** The studies only cover customers with an active Alquiler, Leasing or Mantenimiento contract. */
-const ACTIVE_CONTRACT_SQL = "contract.is_active = 1 AND contract.contract_type IN ('Alquiler', 'Leasing', 'Mantenimiento')";
+/** The studies only cover customers with an active Abierto, Alquiler, Leasing or Mantenimiento contract. */
+const ACTIVE_CONTRACT_SQL = `contract.is_active = 1 AND contract.contract_type IN (${ACTIVE_CONTRACT_TYPES_SQL})`;
 
 export type SaveCustomerInput = {
   id?: string;

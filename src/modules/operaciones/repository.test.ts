@@ -430,7 +430,7 @@ describe('OperationsRepository', () => {
     database.close();
   });
 
-  it('lists only customers, contracts and equipment with an active Alquiler, Leasing or Mantenimiento contract', () => {
+  it('lists only customers, contracts and equipment with an active Abierto, Alquiler, Leasing or Mantenimiento contract', () => {
     const database = makeDatabase();
     const operations = new OperationsRepository(database);
     const equipment = (serial: string) => [{ modelLabel: 'iR ADV C3325i', serialNumber: serial }];
@@ -449,9 +449,9 @@ describe('OperationsRepository', () => {
     const withoutContracts = operations.saveCustomer({ name: 'Cliente Sin Contratos' }).id;
 
     expect(operations.listCustomers().map((customer) => customer.name)).toEqual([
-      'Cliente Manual', 'Cliente Vigente Alquiler', 'Cliente Vigente Leasing', 'Cliente Vigente Mantenimiento',
+      'Cliente Abierto', 'Cliente Manual', 'Cliente Vigente Alquiler', 'Cliente Vigente Leasing', 'Cliente Vigente Mantenimiento',
     ]);
-    expect(operations.listEquipment().map((item) => item.serialNumber).sort()).toEqual(['S-1', 'S-2', 'S-3', 'S-4']);
+    expect(operations.listEquipment().map((item) => item.serialNumber).sort()).toEqual(['S-1', 'S-2', 'S-3', 'S-4', 'S-6']);
     expect(operations.listEquipment('S-5')).toEqual([]);
     expect(operations.getCustomer(manual)).toBeDefined();
     expect(operations.getCustomer(inactive)?.contracts).toHaveLength(1);
