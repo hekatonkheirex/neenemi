@@ -513,6 +513,12 @@ export function isEquipmentDetailExport(sourceName: string): boolean {
   return /^detalles? de equipos (en|con) contratos?\b/.test(normalizeSourceName(sourceName));
 }
 
+/** Newest batch only: a new load replaces the previous one in the card listing. */
+export function latestBatch<T extends { createdAt: string }>(batches: readonly T[]): T[] {
+  const newest = batches.reduce<T | undefined>((best, batch) => (!best || batch.createdAt > best.createdAt ? batch : best), undefined);
+  return newest ? [newest] : [];
+}
+
 export function sourceMatchesDefinition(
   definition: SourceDefinition,
   sourceName: string,

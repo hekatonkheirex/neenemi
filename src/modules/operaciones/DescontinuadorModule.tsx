@@ -4,7 +4,7 @@ import type { ChangeEvent } from 'react';
 import AnimatedTabs from '../../core/AnimatedTabs';
 import { exportCustomerPortfolio, exportOperationsWorkbook } from './export';
 import { submitImportJob, type ImportJobSnapshot } from '../../core/import-job-client';
-import { SOURCE_CATALOG, isEquipmentDetailExport, sourceMatchesDefinition } from '../../core/source-catalog';
+import { SOURCE_CATALOG, isEquipmentDetailExport, latestBatch, sourceMatchesDefinition } from '../../core/source-catalog';
 import SourceDetails from '../../core/SourceDetails';
 import LegacySourceDataPanel from './LegacySourceDataPanel';
 import { createModelSupportLookup } from './matching';
@@ -378,7 +378,7 @@ export default function DescontinuadorModule() {
           ? sourceId === 'fleet.customer-classification'
           : sourceMatchesDefinition(source, batch.sourceName, batch.sourceType, batch.domain)))
         : [];
-      return [sourceId, batches] as const;
+      return [sourceId, sourceId === 'fleet.equipment' || sourceId === 'fleet.customer-classification' ? latestBatch(batches) : batches] as const;
     }),
   ), [importBatches]);
   const loadedSourceCount = useMemo(

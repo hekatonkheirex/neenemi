@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import { describe, expect, it } from 'vitest';
-import { getSourceCoverage, isEquipmentDetailExport, normalizeSourceName, SOURCE_CATALOG, sourceMatchesDefinition } from './source-catalog';
+import { getSourceCoverage, isEquipmentDetailExport, latestBatch, normalizeSourceName, SOURCE_CATALOG, sourceMatchesDefinition } from './source-catalog';
 
 describe('source catalog', () => {
   it('normalizes accents, paths and extensions for source matching', () => {
@@ -93,6 +93,16 @@ describe('source catalog', () => {
     for (const name of ['Equipos en contrato.xlsx', '20260729_163807.xlsx', 'Clasificación de clientes.xlsx']) {
       expect(isEquipmentDetailExport(name)).toBe(false);
     }
+  });
+
+  it('keeps only the newest batch of a card listing', () => {
+    const batches = [
+      { id: 'a', createdAt: '2026-09-23T10:01:00.000Z' },
+      { id: 'b', createdAt: '2026-10-07T09:50:00.000Z' },
+      { id: 'c', createdAt: '2026-09-18T11:26:00.000Z' },
+    ];
+    expect(latestBatch(batches).map((batch) => batch.id)).toEqual(['b']);
+    expect(latestBatch([])).toEqual([]);
   });
 
   it('uses the import domain for historical batches without a source type', () => {
