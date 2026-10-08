@@ -37,7 +37,13 @@ function makeBackupFileName(): string {
 
 function removeTemporaryDirectory(directory: string | null): void {
   if (!directory) return;
-  fs.rmSync(directory, { recursive: true, force: true });
+  // En Windows el archivo sigue bloqueado unos ms tras enviarse (EBUSY/EPERM); una carpeta temporal
+  // que no se borra no debe invalidar un respaldo ya entregado.
+  try {
+    fs.rmSync(directory, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+  } catch {
+    // ponytail: se queda un .dcss-backup-* huérfano; barrerlos al arrancar si molesta.
+  }
 }
 
 export type SystemRouteOptions = {
@@ -114,9 +120,10 @@ export function registerSystemRoutes(
       response.setHeader('Cache-Control', 'no-store');
       response.setHeader('Content-Type', 'application/vnd.sqlite3');
       response.download(snapshotPath, makeBackupFileName(), (error) => {
-        removeTemporaryDirectory(temporaryDirectory);
+        const directory = temporaryDirectory;
         temporaryDirectory = null;
         if (!error) recordBackup(database, startedAt);
+        removeTemporaryDirectory(directory);
         if (error && !response.headersSent) {
           response.status(500).json({ error: 'No se pudo descargar el respaldo SQLite.' });
         }
