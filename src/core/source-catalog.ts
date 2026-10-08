@@ -51,7 +51,7 @@ export const SOURCE_CATALOG: readonly SourceDefinition[] = [
     expectedFiles: ['Detalles de equipos en contrato.xlsx'],
     importTypes: ['fleet.equipment'],
     importDomains: ['operations'],
-    origin: 'Superset > SGS Equipos vs Contratos > Equipos CON Contratos > Detalle de Equipos con Contrato',
+    origin: 'Superset > SGS – Contratos/Equipos en contratos',
     purpose: 'Construye la relación cliente, contrato, modelo, serie, sucursal, ciudad y dirección.',
     normalizedFields: [
       { source: 'Cliente / sector / tipo de contrato', target: 'Cliente, sector y contrato' },

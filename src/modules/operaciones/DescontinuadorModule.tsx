@@ -79,7 +79,7 @@ type DiscontinuedModelSummary = {
 const discontinuationSourceCards = [
   {
     sourceId: 'fleet.equipment',
-    title: 'Cargar datos Superset (SGS – Contratos/Equipos en contratos)',
+    title: 'Cargar datos Superset',
     actionLabel: 'Importar cartera XLSX',
     multiple: true,
   },
