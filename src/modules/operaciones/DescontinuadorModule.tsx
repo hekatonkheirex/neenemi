@@ -79,13 +79,13 @@ type DiscontinuedModelSummary = {
 const discontinuationSourceCards = [
   {
     sourceId: 'fleet.equipment',
-    title: 'Cargar datos Superset',
+    title: 'Cargar datos Superset (Equipos en contrato)',
     actionLabel: 'Importar cartera XLSX',
     multiple: true,
   },
   {
     sourceId: 'fleet.customer-classification',
-    title: 'Cargar clasificación de clientes',
+    title: 'Cargar datos Superset (Clasificación de clientes)',
     expectedFile: 'Detalle de Equipos con Contrato.xlsx',
     notice: 'Este archivo proviene de otro módulo: se carga en Analítica de consumibles (Equipos en contrato).',
     actionLabel: 'Importar clasificación',
