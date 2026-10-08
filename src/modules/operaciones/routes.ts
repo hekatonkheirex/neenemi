@@ -163,7 +163,7 @@ export function registerOperationsRoutes(app: Express, database: SuiteDatabase, 
 
   /**
    * A new load replaces the previous ones of the same card: originals go to the recoverable archive and
-   * the old batches are removed. Shared customers, contracts and equipment stay (their batch id is set to NULL).
+   * the old batches are removed. Contracts and equipment the new load no longer includes are deactivated; shared customers stay.
    */
   function replacePreviousBatches(domain: string, sourceType: string, keepBatchId: string, sameCard: (sourceName: string) => boolean): number {
     const previous = imports
@@ -174,6 +174,7 @@ export function registerOperationsRoutes(app: Express, database: SuiteDatabase, 
     try {
       for (const batch of previous) archivedFiles.push(...archiveBatchImportFiles(dataDirectory, batch.id, imports));
       database.transaction(() => {
+        operations.deactivateRowsNotInReplacement(previous.map((batch) => batch.id));
         for (const batch of previous) {
           if (!imports.removeBatch(batch.id)) throw new Error(`No se pudo quitar la importación ${batch.id}.`);
         }

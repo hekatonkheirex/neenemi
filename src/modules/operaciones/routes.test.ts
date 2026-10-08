@@ -148,7 +148,52 @@ describe('operations API', () => {
       expect(applied()).toEqual(['Detalle de Equipos con Contrato.xlsx', 'Equipos en contrato 2.xlsx']);
 
       const customers = (await (await fetch(`${baseUrl}/api/operations/customers?query=cartera`)).json()) as Array<{ contracts: Array<{ equipment: unknown[] }> }>;
-      expect(customers[0].contracts[0].equipment).toHaveLength(5);
+      // SER-NEW-1 came only from the replaced first load, so it is inactive and hidden.
+      expect(customers[0].contracts[0].equipment).toHaveLength(4);
+    } finally {
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+      database.close();
+    }
+  });
+
+  it('deactivates contracts and equipment missing from the replacement and reactivates them when they return', async () => {
+    const { app, database } = createServer({ dataDirectory: makeTemporaryDataDirectory() });
+    const server = app.listen(0, '127.0.0.1');
+    const workbookWith = async (rows: string[][]) => {
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(Buffer.from(await makeLegacyPortfolioWorkbook()) as unknown as ArrayBuffer);
+      for (const [contract, serial] of rows) workbook.worksheets[0].addRow(['Cliente Cartera', '', '', contract, 'Alquiler', '', '', 'iR ADV C3325i', serial, '', '']);
+      return Buffer.from(await workbook.xlsx.writeBuffer()).toString('base64');
+    };
+
+    try {
+      await new Promise<void>((resolve) => server.once('listening', () => resolve()));
+      const address = server.address();
+      const baseUrl = `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}`;
+      const load = async (name: string, rows: string[][]) => resolveImportJob<Record<string, unknown>>(baseUrl, await fetch(`${baseUrl}/api/operations/import-legacy-portfolio`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ sourceName: name, contentBase64: await workbookWith(rows) }),
+      }));
+      const equipmentActive = (serial: string) => (database.prepare('SELECT is_active FROM contract_equipment WHERE serial_number = ?').get(serial) as { is_active: number | null }).is_active;
+      const contractActive = (reference: string) => (database.prepare('SELECT is_active FROM contracts WHERE reference = ?').get(reference) as { is_active: number | null }).is_active;
+
+      await load('Equipos en contrato 1.xlsx', [['OV-OLD-001', 'SER-OLD-1'], ['OV-KEEP-001', 'SER-KEEP-1'], ['OV-KEEP-001', 'SER-KEEP-2']]);
+      // Manual work carries no batch and must survive any replacement.
+      const customerId = (database.prepare("SELECT id FROM customers WHERE name = 'Cliente Cartera'").get() as { id: string }).id;
+      database.prepare("INSERT INTO contracts (id, customer_id, reference, contract_type, is_active, created_at, updated_at) VALUES ('manual-c', ?, 'OV-MANUAL', 'Alquiler', 1, 'x', 'x')").run(customerId);
+
+      await load('Equipos en contrato 2.xlsx', [['OV-KEEP-001', 'SER-KEEP-1']]);
+      expect(contractActive('OV-OLD-001')).toBe(0);
+      expect(equipmentActive('SER-OLD-1')).toBe(0);
+      expect(equipmentActive('SER-KEEP-2')).toBe(0);
+      expect(equipmentActive('SER-KEEP-1')).not.toBe(0);
+      expect(contractActive('OV-MANUAL')).toBe(1);
+
+      await load('Equipos en contrato 3.xlsx', [['OV-OLD-001', 'SER-OLD-1'], ['OV-KEEP-001', 'SER-KEEP-1']]);
+      expect(contractActive('OV-OLD-001')).toBe(1);
+      expect(equipmentActive('SER-OLD-1')).toBe(1);
+      expect(equipmentActive('SER-KEEP-2')).toBe(0);
     } finally {
       await new Promise<void>((resolve) => server.close(() => resolve()));
       database.close();

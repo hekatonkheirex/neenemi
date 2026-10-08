@@ -979,6 +979,23 @@ export const CORE_MIGRATIONS: readonly Migration[] = [
         ON contract_equipment (UPPER(TRIM(COALESCE(serial_number, ''))));
     `,
   },
+  {
+    version: 45,
+    name: 'contract-equipment-source-batch',
+    sql: `
+      -- Una carga nueva desactiva lo que la anterior trajo y la nueva ya no incluye; hace falta saber qué carga tocó cada equipo.
+      ALTER TABLE contract_equipment ADD COLUMN source_batch_id TEXT REFERENCES import_batches(id) ON DELETE SET NULL;
+      CREATE INDEX IF NOT EXISTS idx_contract_equipment_source_batch ON contract_equipment (source_batch_id);
+      -- Equipos ya cargados no tienen origen: se atribuyen a la última carga aplicada de Equipos en contrato.
+      UPDATE contract_equipment
+      SET source_batch_id = (
+        SELECT id FROM import_batches
+        WHERE domain = 'operations' AND source_type = 'fleet.equipment' AND status = 'applied'
+        ORDER BY created_at DESC LIMIT 1
+      )
+      WHERE source_sheet_name <> '' AND source_batch_id IS NULL;
+    `,
+  },
 ];
 
 function ensureMigrationsTable(database: SuiteDatabase) {

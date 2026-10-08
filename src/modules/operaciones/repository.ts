@@ -407,7 +407,7 @@ export class OperationsRepository {
           equipment.source_row_number AS equipment_source_row_number
         FROM customers customer
         LEFT JOIN contracts contract ON contract.customer_id = customer.id${includeInactive ? '' : ` AND ${ACTIVE_CONTRACT_SQL}`}
-        LEFT JOIN contract_equipment equipment ON equipment.contract_id = contract.id
+        LEFT JOIN contract_equipment equipment ON equipment.contract_id = contract.id${includeInactive ? '' : ' AND COALESCE(equipment.is_active, 1) = 1'}
         ${[includeInactive ? '' : 'contract.id IS NOT NULL', condition].filter(Boolean).length > 0 ? `WHERE ${[includeInactive ? '' : 'contract.id IS NOT NULL', condition].filter(Boolean).join(' AND ')}` : ''}
         ORDER BY customer.name COLLATE NOCASE, contract.created_at, contract.id, equipment.created_at, equipment.id
       `)
@@ -693,7 +693,8 @@ export class OperationsRepository {
             ends_at = COALESCE(?, ends_at),
             commercial_area = COALESCE(?, commercial_area),
             division = COALESCE(?, division),
-            is_active = COALESCE(?, is_active),
+            is_active = COALESCE(?, 1),
+            source_batch_id = ?,
             source_details_json = ?,
             source_sheet_name = ?,
             source_row_number = ?,
@@ -718,8 +719,8 @@ export class OperationsRepository {
         INSERT INTO contract_equipment (
           id, contract_id, model_id, model_label, serial_number, location,
           brand, description, interior, city, branch, address, is_active,
-          source_details_json, source_sheet_name, source_row_number, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          source_details_json, source_sheet_name, source_row_number, source_batch_id, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
       const updateEquipmentMetadata = this.database.prepare(`
         UPDATE contract_equipment
@@ -730,10 +731,11 @@ export class OperationsRepository {
             city = COALESCE(?, city),
             branch = COALESCE(?, branch),
             address = COALESCE(?, address),
-            is_active = COALESCE(?, is_active),
+            is_active = COALESCE(?, 1),
             source_details_json = ?,
             source_sheet_name = ?,
             source_row_number = ?,
+            source_batch_id = ?,
             updated_at = ?
         WHERE id = ?
       `);
@@ -787,6 +789,7 @@ export class OperationsRepository {
               row.commercialArea,
               row.division,
               toDbBoolean(row.active),
+              batchId,
               serializeSourceDetails(row.sourceDetails),
               row.sourceSheetName ?? '',
               row.sourceRowNumber ?? 0,
@@ -842,6 +845,7 @@ export class OperationsRepository {
             serializeSourceDetails(row.sourceDetails),
             row.sourceSheetName ?? '',
             row.sourceRowNumber ?? 0,
+            batchId,
             now,
             existingEquipment.id,
           );
@@ -874,6 +878,7 @@ export class OperationsRepository {
           serializeSourceDetails(row.sourceDetails),
           row.sourceSheetName ?? '',
           row.sourceRowNumber ?? 0,
+          batchId,
           now,
           now,
         );
@@ -969,7 +974,7 @@ export class OperationsRepository {
             ends_at = COALESCE(?, ends_at),
             commercial_area = COALESCE(?, commercial_area),
             division = COALESCE(?, division),
-            is_active = COALESCE(?, is_active),
+            is_active = COALESCE(?, 1),
             requires_closure = COALESCE(?, requires_closure),
             source_batch_id = ?,
             source_details_json = ?,
@@ -1098,6 +1103,25 @@ export class OperationsRepository {
         updatedContracts,
       };
     })();
+  }
+
+  /**
+   * Call before removing the replaced batches. Contracts and equipment still tagged with a replaced batch were not
+   * in the new load (the importers retag every row they touch), so they leave the active lists. Manual rows
+   * carry no batch and stay. A later load that includes them again reactivates them.
+   */
+  deactivateRowsNotInReplacement(replacedBatchIds: readonly string[]): { contracts: number; equipment: number } {
+    if (replacedBatchIds.length === 0) return { contracts: 0, equipment: 0 };
+    const placeholders = replacedBatchIds.map(() => '?').join(', ');
+    const now = new Date().toISOString();
+    return this.database.transaction(() => ({
+      contracts: this.database
+        .prepare(`UPDATE contracts SET is_active = 0, updated_at = ? WHERE source_batch_id IN (${placeholders}) AND is_active IS NOT 0`)
+        .run(now, ...replacedBatchIds).changes,
+      equipment: this.database
+        .prepare(`UPDATE contract_equipment SET is_active = 0, updated_at = ? WHERE source_batch_id IN (${placeholders}) AND is_active IS NOT 0`)
+        .run(now, ...replacedBatchIds).changes,
+    }))();
   }
 
   listContracts(query?: string): ContractRecord[] {
@@ -1277,7 +1301,7 @@ export class OperationsRepository {
         FROM contract_equipment equipment
         JOIN contracts contract ON contract.id = equipment.contract_id
         JOIN customers customer ON customer.id = contract.customer_id
-        WHERE ${ACTIVE_CONTRACT_SQL}${condition ? ` AND (${condition})` : ''}
+        WHERE ${ACTIVE_CONTRACT_SQL} AND COALESCE(equipment.is_active, 1) = 1${condition ? ` AND (${condition})` : ''}
         ORDER BY customer.name COLLATE NOCASE, equipment.model_label COLLATE NOCASE, equipment.id
       `)
       .all(...parameters) as EquipmentRow[];

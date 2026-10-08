@@ -170,7 +170,7 @@ export class OverviewRepository {
     const activeSerials = new Set<string>();
     const activeRows = this.database.prepare(`
       SELECT ce.serial_number FROM contract_equipment ce JOIN contracts c ON c.id = ce.contract_id
-      WHERE c.is_active = 1 AND c.contract_type IN (${ACTIVE_CONTRACT_TYPES_SQL})
+      WHERE c.is_active = 1 AND COALESCE(ce.is_active, 1) = 1 AND c.contract_type IN (${ACTIVE_CONTRACT_TYPES_SQL})
     `).all() as { serial_number: string | null }[];
     for (const row of activeRows) {
       const serial = normalizeSerial(row.serial_number ?? '');
