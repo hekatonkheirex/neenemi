@@ -122,7 +122,12 @@ export function registerSystemRoutes(
       response.download(snapshotPath, makeBackupFileName(), (error) => {
         const directory = temporaryDirectory;
         temporaryDirectory = null;
-        if (!error) recordBackup(database, startedAt);
+        // Este callback corre fuera del try: una excepción aquí mata el proceso de la API y Electron recarga en Inicio.
+        try {
+          if (!error) recordBackup(database, startedAt);
+        } catch (recordError) {
+          console.error('No se pudo registrar el respaldo:', recordError);
+        }
         removeTemporaryDirectory(directory);
         if (error && !response.headersSent) {
           response.status(500).json({ error: 'No se pudo descargar el respaldo SQLite.' });
