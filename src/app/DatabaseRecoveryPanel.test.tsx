@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { MAX_RESTORE_LABEL } from '../core/restore-limit';
-import DatabaseRecoveryPanel, { canBackup, describeReminder, type BackupHealth } from './DatabaseRecoveryPanel';
+import DatabaseRecoveryPanel, { calendarDaysSince, canBackup, describeReminder, type BackupHealth } from './DatabaseRecoveryPanel';
 
 const health = (over: Partial<BackupHealth>): BackupHealth => ({
   lastBackupAt: '2026-10-06T12:00:00Z', lastLoadAt: null, lastChangeAt: null,
@@ -20,8 +20,17 @@ describe('describeReminder', () => {
 
   it('cambios sin cargas, respaldo antiguo y al día tienen textos distintos', () => {
     expect(describeReminder(health({ level: 'pending' })).title).toBe('Base modificada desde el último respaldo');
-    expect(describeReminder(health({ level: 'stale', daysSinceBackup: 9 })).title).toBe('Último respaldo hace 9 días');
+    expect(describeReminder(health({ level: 'stale', daysSinceBackup: 9, lastBackupAt: new Date(Date.now() - 9 * 86_400_000).toISOString() })).title).toBe('Último respaldo hace 9 días');
     expect(describeReminder(health({ level: 'ok' })).title).toBe('Información respaldada');
+  });
+});
+
+describe('calendarDaysSince', () => {
+  it('cuenta días de calendario, no bloques de 24 h', () => {
+    expect(calendarDaysSince('2026-10-07T15:38:00', new Date('2026-10-07T23:59:00'))).toBe(0);
+    expect(calendarDaysSince('2026-10-07T15:38:00', new Date('2026-10-08T09:00:00'))).toBe(1);
+    expect(calendarDaysSince('2026-10-07T23:59:00', new Date('2026-10-08T00:01:00'))).toBe(1);
+    expect(calendarDaysSince('2026-10-03T12:00:00', new Date('2026-10-10T08:00:00'))).toBe(7);
   });
 });
 

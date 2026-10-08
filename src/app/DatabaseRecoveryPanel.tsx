@@ -65,9 +65,18 @@ const levelTone = {
 
 const mutedText = 'text-ink-2 dark:text-[#9fb2d1]';
 
-function describeAge(days: number | null): string {
-  if (days === null) return 'sin respaldo';
+/** Días de calendario (hora local) entre el respaldo y ahora: 07/10 15:38 visto el 08/10 a las 09:00 es "ayer", no "hoy". */
+export function calendarDaysSince(iso: string, now = new Date()): number {
+  const then = new Date(iso);
+  const midnight = (d: Date) => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+  return Math.max(0, Math.round((midnight(now) - midnight(then)) / 86_400_000));
+}
+
+function describeAge(health: BackupHealth, now = new Date()): string {
+  if (health.daysSinceBackup === null || !health.lastBackupAt) return 'sin respaldo';
+  const days = calendarDaysSince(health.lastBackupAt, now);
   if (days === 0) return 'hoy';
+  if (days === 1) return 'ayer';
   return `hace ${plural(days, 'día', 'días')}`;
 }
 
@@ -82,9 +91,9 @@ export function describeReminder(health: BackupHealth): { title: string; text: s
         : { title: 'Base modificada desde el último respaldo', text: `${when} Hay altas, ediciones o eliminaciones posteriores, incluidas las cargas retiradas. Un nuevo respaldo guarda el estado actual de la base.` };
     }
     case 'stale':
-      return { title: `Último respaldo ${describeAge(health.daysSinceBackup)}`, text: `Pasó ${STALE_BACKUP_PHRASE}. Genera uno nuevo: viajes, proformas y ajustes manuales también cuentan.` };
+      return { title: `Último respaldo ${describeAge(health)}`, text: `Pasó ${STALE_BACKUP_PHRASE}. Genera uno nuevo: viajes, proformas y ajustes manuales también cuentan.` };
     default:
-      return { title: 'Información respaldada', text: `Último respaldo ${describeAge(health.daysSinceBackup)}. Te recordaremos al pasar una semana o tras nuevas cargas.` };
+      return { title: 'Información respaldada', text: `Último respaldo ${describeAge(health)}. Te recordaremos al pasar una semana o tras nuevas cargas.` };
   }
 }
 
@@ -297,7 +306,7 @@ export default function DatabaseRecoveryPanel({ refreshKey, onHealthChange, onCl
 
       {health ? (
         <dl className="m-0 grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-3">
-          <Stat label="Último respaldo" value={formatStamp(health.lastBackupAt)} note={describeAge(health.daysSinceBackup)} />
+          <Stat label="Último respaldo" value={formatStamp(health.lastBackupAt)} note={describeAge(health)} />
           <Stat label="Última carga aplicada" value={health.lastLoadAt ? formatStamp(health.lastLoadAt) : 'Sin cargas'} note="importación más reciente" />
           <Stat
             attention={Boolean(attention)}
