@@ -1,3 +1,4 @@
+import ExcelJS from 'exceljs';
 import { describe, expect, it } from 'vitest';
 import { createServer } from '../../../server';
 import { makeTemporaryDataDirectory, resolveImportJob, makeLegacyPortfolioWorkbook, makeCanonDiscontinuationWorkbook, makeCanonStockSupportWorkbook, makeWaldbottStockWorkbook } from '../../test-support/api-helpers';
@@ -111,6 +112,74 @@ describe('operations API', () => {
         body: JSON.stringify(payload),
       });
       await expect(resolveImportJob(baseUrl, duplicateResponse)).resolves.toMatchObject({ duplicate: true, sourceName: 'cartera-legacy.xlsx' });
+    } finally {
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+      database.close();
+    }
+  });
+
+  it('replaces the previous load of the same card and keeps the shared portfolio', async () => {
+    const { app, database } = createServer({ dataDirectory: makeTemporaryDataDirectory() });
+    const server = app.listen(0, '127.0.0.1');
+    const withExtraRow = async (serial: string) => {
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(Buffer.from(await makeLegacyPortfolioWorkbook()) as unknown as ArrayBuffer);
+      workbook.worksheets[0].addRow(['Cliente Cartera', '', '', 'OV-CART-001', 'Alquiler', '', '', 'iR ADV C3325i', serial, '']);
+      return Buffer.from(await workbook.xlsx.writeBuffer()).toString('base64');
+    };
+
+    try {
+      await new Promise<void>((resolve) => server.once('listening', () => resolve()));
+      const address = server.address();
+      const baseUrl = `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}`;
+      const load = async (sourceName: string, serial: string) => resolveImportJob<Record<string, unknown>>(baseUrl, await fetch(`${baseUrl}/api/operations/import-legacy-portfolio`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ sourceName, contentBase64: await withExtraRow(serial) }),
+      }));
+      const applied = () => (database.prepare("SELECT source_name FROM import_batches WHERE domain = 'operations' AND status = 'applied' ORDER BY source_name").all() as Array<{ source_name: string }>).map((row) => row.source_name);
+
+      expect(await load('Equipos en contrato 1.xlsx', 'SER-NEW-1')).toMatchObject({ replaced: 0 });
+      expect(await load('Equipos en contrato 2.xlsx', 'SER-NEW-2')).toMatchObject({ replaced: 1 });
+      expect(applied()).toEqual(['Equipos en contrato 2.xlsx']);
+
+      // Detalle de Equipos con Contrato belongs to the other card: it does not replace, nor get replaced by, the first card.
+      expect(await load('Detalle de Equipos con Contrato.xlsx', 'SER-NEW-3')).toMatchObject({ replaced: 0 });
+      expect(applied()).toEqual(['Detalle de Equipos con Contrato.xlsx', 'Equipos en contrato 2.xlsx']);
+
+      const customers = (await (await fetch(`${baseUrl}/api/operations/customers?query=cartera`)).json()) as Array<{ contracts: Array<{ equipment: unknown[] }> }>;
+      expect(customers[0].contracts[0].equipment).toHaveLength(5);
+    } finally {
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+      database.close();
+    }
+  });
+
+  it('replaces the previous classification load', async () => {
+    const { app, database } = createServer({ dataDirectory: makeTemporaryDataDirectory() });
+    const server = app.listen(0, '127.0.0.1');
+    const classificationWorkbook = async (customerType: string) => {
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('Clasificación');
+      sheet.addRow(['Cliente', 'Tipo de cliente', 'Área comercial interna']);
+      sheet.addRow(['Cliente Clasificado', customerType, 'Strategic']);
+      return Buffer.from(await workbook.xlsx.writeBuffer()).toString('base64');
+    };
+
+    try {
+      await new Promise<void>((resolve) => server.once('listening', () => resolve()));
+      const address = server.address();
+      const baseUrl = `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}`;
+      const load = async (sourceName: string, customerType: string) => resolveImportJob<Record<string, unknown>>(baseUrl, await fetch(`${baseUrl}/api/operations/import-fleet-metadata`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ sourceName, sourceType: 'classification', contentBase64: await classificationWorkbook(customerType) }),
+      }));
+
+      expect(await load('clasificacion-1.xlsx', 'Público')).toMatchObject({ replaced: 0 });
+      expect(await load('clasificacion-2.xlsx', 'Privado')).toMatchObject({ replaced: 1 });
+      const applied = database.prepare("SELECT source_name FROM import_batches WHERE domain = 'operations-fleet-classification' AND status = 'applied'").all();
+      expect(applied).toEqual([{ source_name: 'clasificacion-2.xlsx' }]);
     } finally {
       await new Promise<void>((resolve) => server.close(() => resolve()));
       database.close();

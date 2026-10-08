@@ -5,6 +5,7 @@ import type { ImportJobRegistry } from '../../core/import-jobs';
 import { type ArchivedImportFile, restoreArchivedImportFiles } from '../../core/import-storage';
 import { COMMERCIAL_AREAS, CONTRACT_TYPES, CUSTOMER_TYPES, OperationsRepository, type SaveContractInput, type SaveCustomerInput, type SaveEquipmentInput } from './repository';
 import { LEGACY_FLEET_METADATA_TYPES, type LegacyFleetMetadataType, parseCanonDiscontinuationWorkbook, parseLegacyFleetMetadataWorkbook, parseLegacyPortfolioWorkbook, parseWaldbottStockWorkbook } from './legacy';
+import { isEquipmentDetailExport } from '../../core/source-catalog';
 import { archiveBatchImportFiles, enqueueImportJob, storeSpreadsheetImport } from '../../core/import-routes';
 import { createHash } from 'node:crypto';
 import { decodeBase64, isNonEmptyString, isRecord, queryString } from '../../core/validation';
@@ -160,6 +161,31 @@ export function registerOperationsRoutes(app: Express, database: SuiteDatabase, 
     }
   });
 
+  /**
+   * A new load replaces the previous ones of the same card: originals go to the recoverable archive and
+   * the old batches are removed. Shared customers, contracts and equipment stay (their batch id is set to NULL).
+   */
+  function replacePreviousBatches(domain: string, sourceType: string, keepBatchId: string, sameCard: (sourceName: string) => boolean): number {
+    const previous = imports
+      .listApplied(domain)
+      .filter((batch) => batch.id !== keepBatchId && batch.sourceType === sourceType && sameCard(batch.sourceName));
+    if (previous.length === 0) return 0;
+    const archivedFiles: ArchivedImportFile[] = [];
+    try {
+      for (const batch of previous) archivedFiles.push(...archiveBatchImportFiles(dataDirectory, batch.id, imports));
+      database.transaction(() => {
+        for (const batch of previous) {
+          if (!imports.removeBatch(batch.id)) throw new Error(`No se pudo quitar la importación ${batch.id}.`);
+        }
+      })();
+      return previous.length;
+    } catch (error) {
+      if (archivedFiles.length > 0) restoreArchivedImportFiles(dataDirectory, archivedFiles);
+      console.warn('No se pudo reemplazar la carga anterior:', error instanceof Error ? error.message : error);
+      return 0;
+    }
+  }
+
   app.post('/api/operations/import-legacy-portfolio', (request, response) => {
     const body = isRecord(request.body) ? request.body : {};
     if (!isNonEmptyString(body.sourceName) || !isNonEmptyString(body.contentBase64)) {
@@ -186,8 +212,11 @@ export function registerOperationsRoutes(app: Express, database: SuiteDatabase, 
 
       const sourceHash = createHash('sha256').update(contents).digest('hex');
       const existingBatch = imports.findAppliedByHash('operations', sourceHash);
+      const sameCard = (name: string) => isEquipmentDetailExport(name) === isEquipmentDetailExport(sourceName);
       if (existingBatch) {
+        const replaced = replacePreviousBatches('operations', 'fleet.equipment', existingBatch.id, sameCard);
         return {
+          replaced,
           duplicate: true,
           batchId: existingBatch.id,
           sourceName: existingBatch.sourceName,
@@ -207,7 +236,9 @@ export function registerOperationsRoutes(app: Express, database: SuiteDatabase, 
         const stored = await storeSpreadsheetImport(dataDirectory, imports, batchId, sourceName, contents);
         update(78, 'Aplicando cartera a la base local…');
         const result = operations.importLegacyPortfolio(batchId, parsed.rows);
+        const replaced = replacePreviousBatches('operations', 'fleet.equipment', batchId, sameCard);
         return {
+          replaced,
           duplicate: false,
           batchId,
           sourceName,
@@ -256,7 +287,9 @@ export function registerOperationsRoutes(app: Express, database: SuiteDatabase, 
       const domain = `operations-fleet-${sourceType}`;
       const existingBatch = imports.findAppliedByHash(domain, sourceHash);
       if (existingBatch) {
+        const replaced = replacePreviousBatches(domain, sourceType, existingBatch.id, () => true);
         return {
+          replaced,
           duplicate: true,
           batchId: existingBatch.id,
           sourceName: existingBatch.sourceName,
@@ -277,7 +310,9 @@ export function registerOperationsRoutes(app: Express, database: SuiteDatabase, 
         const stored = await storeSpreadsheetImport(dataDirectory, imports, batchId, sourceName, contents);
         update(78, 'Aplicando clasificación a la base local…');
         const result = operations.importLegacyFleetMetadata(batchId, sourceType, parsed.rows);
+        const replaced = replacePreviousBatches(domain, sourceType, batchId, () => true);
         return {
+          replaced,
           duplicate: false,
           batchId,
           sourceName,
