@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.2.3 · 2026-10-08
+
+Primer instalador con la migración 45 (`source_batch_id` en equipos de contrato): una carga nueva de Equipos en contrato desactiva los equipos que la anterior traía y la nueva ya no incluye. Los respaldos hechos desde esta versión (y desde 0.2.2 con la migración en desarrollo) solo se pueden importar en una Suite que la incluya; las versiones anteriores los rechazan como «no compatibles».
+
 ## 0.2.2 · 2026-10-08
 
 Operaciones vuelve a incluir los contratos de tipo Abierto: clientes, contratos y equipos con contrato vigente Abierto reaparecen en las listas y en los gráficos de Descontinuador («Abierto» ya no marca 0). Comparte con Inicio la misma lista de tipos activos.
