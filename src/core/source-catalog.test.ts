@@ -147,6 +147,7 @@ describe('source catalog', () => {
 
     expect(sources).toHaveLength(4);
     expect(sources.every((source) => source.origin.length > 0 && (source.normalizedFields?.length ?? 0) > 0)).toBe(true);
+    expect(sources.find((source) => source.id === 'fleet.equipment')?.expectedFiles).toEqual(['Equipos en contrato.xlsx']);
     expect(sources.find((source) => source.id === 'fleet.equipment')?.origin).toBe('Superset > SGS – Contratos/Equipos en contratos');
     expect(sources.find((source) => source.id === 'fleet.customer-classification')?.origin).toContain('SGS Equipos vs Contratos');
     expect(sources.find((source) => source.id === 'discontinuation.canon')?.origin).toContain('no documenta una ruta');
