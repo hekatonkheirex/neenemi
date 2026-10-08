@@ -2,6 +2,10 @@
 
 Cada entrada es una versión de DCSS Suite, de la más reciente a la más antigua. La versión visible en la barra lateral abre este historial. El formato lo lee `src/core/changelog.ts`: `## X.Y.Z · AAAA-MM-DD` y debajo el texto de la versión.
 
+## 0.2.1 · 2026-10-08
+
+Corrige el respaldo en Windows: al terminar la descarga, la limpieza de la carpeta temporal fallaba mientras el archivo seguía bloqueado, la API local se caía y la Suite volvía a Inicio sin guardar el respaldo ni mostrar el error. Ahora la limpieza reintenta, un fallo ahí ya no afecta al respaldo, y el aviso de «cargas sin respaldar» se actualiza al terminar.
+
 ## 0.2.0 · 2026-10-07
 
 Inicio pasa a ser el tablero general con los gráficos de Mantenimiento, Consumibles y Control de viáticos, y los respaldos se mueven a Configuración. Esta versión cierra esa serie de ajustes (0.1.95 a 0.1.100) sin cambios funcionales nuevos.
