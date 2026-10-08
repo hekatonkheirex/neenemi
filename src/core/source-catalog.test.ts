@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import { describe, expect, it } from 'vitest';
-import { getSourceCoverage, normalizeSourceName, SOURCE_CATALOG, sourceMatchesDefinition } from './source-catalog';
+import { getSourceCoverage, isEquipmentDetailExport, normalizeSourceName, SOURCE_CATALOG, sourceMatchesDefinition } from './source-catalog';
 
 describe('source catalog', () => {
   it('normalizes accents, paths and extensions for source matching', () => {
@@ -84,6 +84,15 @@ describe('source catalog', () => {
     expect(coverage.find((item) => item.id === 'fleet.equipment')?.imported.total).toBe(0);
     expect(coverage.find((item) => item.id === 'fleet.customer-classification')?.imported.total).toBe(1);
     database.close();
+  });
+
+  it('routes Detalle de equipos en/con contrato exports to the classification card', () => {
+    for (const name of ['Detalle de Equipos con Contrato.xlsx', 'Detalles de equipos en contrato.xlsx']) {
+      expect(isEquipmentDetailExport(name)).toBe(true);
+    }
+    for (const name of ['Equipos en contrato.xlsx', '20260729_163807.xlsx', 'Clasificación de clientes.xlsx']) {
+      expect(isEquipmentDetailExport(name)).toBe(false);
+    }
   });
 
   it('uses the import domain for historical batches without a source type', () => {

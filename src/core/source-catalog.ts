@@ -505,6 +505,14 @@ export function normalizeSourceName(value: string): string {
     .trim() ?? '';
 }
 
+/**
+ * "Detalle(s) de equipos en/con contrato" exports are listed under Clasificación de clientes
+ * in Discontinuador, even when another module imported them as fleet.equipment.
+ */
+export function isEquipmentDetailExport(sourceName: string): boolean {
+  return /^detalles? de equipos (en|con) contratos?\b/.test(normalizeSourceName(sourceName));
+}
+
 export function sourceMatchesDefinition(
   definition: SourceDefinition,
   sourceName: string,
