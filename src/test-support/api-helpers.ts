@@ -74,19 +74,19 @@ export async function makeLegacyPortfolioWorkbook(): Promise<Uint8Array> {
   const portfolio = workbook.addWorksheet('Cartera');
   portfolio.addRow([
     'Cliente', 'Sector', 'Área comercial interna', 'Ref. DATA', 'Tipo contrato',
-    'Fecha inicio', 'Fecha fin', 'Modelo', 'Serie', 'Ubicación',
+    'Fecha inicio', 'Fecha fin', 'Modelo', 'Serie', 'Ubicación', 'Vigente',
   ]);
   portfolio.addRow([
     'Cliente Cartera', 'Público', 'Strategic', 'OV-CART-001', 'Alquiler',
-    new Date('2026-01-01T12:00:00Z'), '31/12/2026', 'iR ADV C3325i', 'SER-CART-001', 'Casa central',
+    new Date('2026-01-01T12:00:00Z'), '31/12/2026', 'iR ADV C3325i', 'SER-CART-001', 'Casa central', 'Sí',
   ]);
   portfolio.addRow([
     'Cliente Cartera', '', '', 'OV-CART-001', 'Alquiler',
-    '', '', 'iR ADV C3325i', 'SER-CART-001', '',
+    '', '', 'iR ADV C3325i', 'SER-CART-001', '', '',
   ]);
   portfolio.addRow([
     'Cliente Cartera', '', '', 'OV-CART-001', 'Alquiler',
-    '', '', 'iR ADV C5535i', 'SER-CART-002', 'Sucursal',
+    '', '', 'iR ADV C5535i', 'SER-CART-002', 'Sucursal', '',
   ]);
   portfolio.addRow(['Fila incompleta', '', '', 'OV-CART-002', 'Mantenimiento', '', '', '', '', '']);
   return new Uint8Array(await workbook.xlsx.writeBuffer());

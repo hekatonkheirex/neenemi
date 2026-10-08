@@ -18,6 +18,9 @@ export type CustomerType = (typeof CUSTOMER_TYPES)[number];
 export type CommercialArea = (typeof COMMERCIAL_AREAS)[number];
 export type ContractType = (typeof CONTRACT_TYPES)[number];
 
+/** The studies only cover customers with an active Alquiler, Leasing or Mantenimiento contract. */
+const ACTIVE_CONTRACT_SQL = "contract.is_active = 1 AND contract.contract_type IN ('Alquiler', 'Leasing', 'Mantenimiento')";
+
 export type SaveCustomerInput = {
   id?: string;
   name: string;
@@ -334,16 +337,16 @@ export class OperationsRepository {
   }
 
   getCustomer(id: string): CustomerRecord | undefined {
-    return this.listCustomers().find((customer) => customer.id === id);
+    return this.listCustomers(undefined, true).find((customer) => customer.id === id);
   }
 
-  listCustomers(query?: string): CustomerRecord[] {
+  listCustomers(query?: string, includeInactive = false): CustomerRecord[] {
     const parameters: string[] = [];
     const condition = query?.trim()
       ? (() => {
           const pattern = `%${query.trim().toLowerCase()}%`;
           parameters.push(...Array.from({ length: 20 }, () => pattern));
-          return `WHERE
+          return `(
             lower(customer.name) LIKE ?
             OR lower(COALESCE(customer.customer_type, '')) LIKE ?
             OR lower(COALESCE(customer.commercial_area, '')) LIKE ?
@@ -363,7 +366,7 @@ export class OperationsRepository {
             OR lower(COALESCE(equipment.branch, '')) LIKE ?
             OR lower(COALESCE(equipment.city, '')) LIKE ?
             OR lower(COALESCE(equipment.address, '')) LIKE ?
-            OR lower(COALESCE(equipment.source_details_json, '')) LIKE ?`;
+            OR lower(COALESCE(equipment.source_details_json, '')) LIKE ?)`;
         })()
       : '';
     const rows = this.database
@@ -403,9 +406,9 @@ export class OperationsRepository {
           equipment.source_sheet_name AS equipment_source_sheet_name,
           equipment.source_row_number AS equipment_source_row_number
         FROM customers customer
-        LEFT JOIN contracts contract ON contract.customer_id = customer.id
+        LEFT JOIN contracts contract ON contract.customer_id = customer.id${includeInactive ? '' : ` AND ${ACTIVE_CONTRACT_SQL}`}
         LEFT JOIN contract_equipment equipment ON equipment.contract_id = contract.id
-        ${condition}
+        ${[includeInactive ? '' : 'contract.id IS NOT NULL', condition].filter(Boolean).length > 0 ? `WHERE ${[includeInactive ? '' : 'contract.id IS NOT NULL', condition].filter(Boolean).join(' AND ')}` : ''}
         ORDER BY customer.name COLLATE NOCASE, contract.created_at, contract.id, equipment.created_at, equipment.id
       `)
       .all(...parameters) as CustomerJoinRow[];
@@ -582,7 +585,7 @@ export class OperationsRepository {
             cleanOptional(input.endsAt),
             input.commercialArea ?? null,
             cleanOptional(input.division),
-            toDbBoolean(input.isActive),
+            toDbBoolean(input.isActive ?? true),
             toDbBoolean(input.requiresClosure),
             now,
             now,
@@ -638,7 +641,7 @@ export class OperationsRepository {
       return id;
     })();
 
-    const saved = this.listContracts().find((contract) => contract.id === contractId);
+    const saved = this.listCustomers(undefined, true).flatMap((customer) => customer.contracts).find((contract) => contract.id === contractId);
     if (!saved) throw new Error('No se pudo recuperar el contrato guardado.');
     return saved;
   }
@@ -1218,7 +1221,7 @@ export class OperationsRepository {
           const value = `%${query.trim().toLowerCase()}%`;
           parameters.push(...Array.from({ length: 20 }, () => value));
           return `
-            WHERE lower(customer.name) LIKE ?
+            lower(customer.name) LIKE ?
                OR lower(COALESCE(contract.reference, '')) LIKE ?
                OR lower(COALESCE(contract.order_reference, '')) LIKE ?
                OR lower(COALESCE(contract.contract_type, '')) LIKE ?
@@ -1274,7 +1277,7 @@ export class OperationsRepository {
         FROM contract_equipment equipment
         JOIN contracts contract ON contract.id = equipment.contract_id
         JOIN customers customer ON customer.id = contract.customer_id
-        ${condition}
+        WHERE ${ACTIVE_CONTRACT_SQL}${condition ? ` AND (${condition})` : ''}
         ORDER BY customer.name COLLATE NOCASE, equipment.model_label COLLATE NOCASE, equipment.id
       `)
       .all(...parameters) as EquipmentRow[];

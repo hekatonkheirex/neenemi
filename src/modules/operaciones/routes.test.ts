@@ -124,7 +124,7 @@ describe('operations API', () => {
     const withExtraRow = async (serial: string) => {
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.load(Buffer.from(await makeLegacyPortfolioWorkbook()) as unknown as ArrayBuffer);
-      workbook.worksheets[0].addRow(['Cliente Cartera', '', '', 'OV-CART-001', 'Alquiler', '', '', 'iR ADV C3325i', serial, '']);
+      workbook.worksheets[0].addRow(['Cliente Cartera', '', '', 'OV-CART-001', 'Alquiler', '', '', 'iR ADV C3325i', serial, '', '']);
       return Buffer.from(await workbook.xlsx.writeBuffer()).toString('base64');
     };
 

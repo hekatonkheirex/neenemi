@@ -135,7 +135,7 @@ describe('OperationsRepository', () => {
         startsAt: '2026-01-01',
         endsAt: '2026-12-31',
         division: null,
-        active: null,
+        active: true,
         modelLabel: 'iR ADV C3325i',
         brand: null,
         description: null,
@@ -159,7 +159,7 @@ describe('OperationsRepository', () => {
         startsAt: null,
         endsAt: null,
         division: null,
-        active: null,
+        active: true,
         modelLabel: 'IR ADV C3325I',
         brand: null,
         description: null,
@@ -270,7 +270,7 @@ describe('OperationsRepository', () => {
         customerType: 'Privado',
         commercialArea: 'Commercial',
         division: null,
-        active: null,
+        active: true,
         requiresClosure: null,
         sourceDetails: [{ label: 'Segmento original', value: 'Cliente estratégico' }],
         sourceSheetName: 'Clasificación',
@@ -409,7 +409,7 @@ describe('OperationsRepository', () => {
     const operations = new OperationsRepository(database);
     const row = (serial: string, extra: Record<string, unknown> = {}) => ({
       customerName: 'Cliente Detalle', customerType: 'Publico', commercialArea: 'Strategic', contractReference: 'OV-D-1',
-      orderReference: null, contractType: 'Alquiler', startsAt: '2026-01-01', endsAt: '2026-12-31', division: null, active: null,
+      orderReference: null, contractType: 'Alquiler', startsAt: '2026-01-01', endsAt: '2026-12-31', division: null, active: true,
       modelLabel: 'iR ADV C3325i', brand: null, description: null, serialNumber: serial, interior: null, city: null, branch: null,
       address: null, location: null, sourceDetails: [{ label: 'Serie', value: serial }], sourceSheetName: 'Cartera',
       sourceRowNumber: 2, ...extra,
@@ -426,6 +426,36 @@ describe('OperationsRepository', () => {
     expect(Array.isArray(customer?.sourceDetails)).toBe(true);
     expect(Array.isArray(customer?.contracts[0]?.sourceDetails)).toBe(true);
     expect(operations.listCustomers('A-2')[0]?.contracts[0]?.equipment).toHaveLength(1);
+
+    database.close();
+  });
+
+  it('lists only customers, contracts and equipment with an active Alquiler, Leasing or Mantenimiento contract', () => {
+    const database = makeDatabase();
+    const operations = new OperationsRepository(database);
+    const equipment = (serial: string) => [{ modelLabel: 'iR ADV C3325i', serialNumber: serial }];
+    const save = (name: string, contractType: 'Alquiler' | 'Leasing' | 'Mantenimiento' | 'Abierto', isActive: boolean | undefined, serial: string) => {
+      const customer = operations.saveCustomer({ name });
+      operations.saveContract({ customerId: customer.id, reference: `REF-${serial}`, contractType, isActive, equipment: equipment(serial) });
+      return customer.id;
+    };
+
+    save('Cliente Vigente Alquiler', 'Alquiler', true, 'S-1');
+    save('Cliente Vigente Leasing', 'Leasing', true, 'S-2');
+    save('Cliente Vigente Mantenimiento', 'Mantenimiento', true, 'S-3');
+    const manual = save('Cliente Manual', 'Alquiler', undefined, 'S-4');
+    const inactive = save('Cliente Inactivo', 'Alquiler', false, 'S-5');
+    save('Cliente Abierto', 'Abierto', true, 'S-6');
+    const withoutContracts = operations.saveCustomer({ name: 'Cliente Sin Contratos' }).id;
+
+    expect(operations.listCustomers().map((customer) => customer.name)).toEqual([
+      'Cliente Manual', 'Cliente Vigente Alquiler', 'Cliente Vigente Leasing', 'Cliente Vigente Mantenimiento',
+    ]);
+    expect(operations.listEquipment().map((item) => item.serialNumber).sort()).toEqual(['S-1', 'S-2', 'S-3', 'S-4']);
+    expect(operations.listEquipment('S-5')).toEqual([]);
+    expect(operations.getCustomer(manual)).toBeDefined();
+    expect(operations.getCustomer(inactive)?.contracts).toHaveLength(1);
+    expect(operations.getCustomer(withoutContracts)).toBeDefined();
 
     database.close();
   });

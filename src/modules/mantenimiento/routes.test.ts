@@ -152,8 +152,7 @@ describe('maintenance API', () => {
       });
       expect(fs.readdirSync(path.join(dataDirectory, 'imports', '.removed', imported.batchId))).toHaveLength(1);
       expect(fs.readdirSync(path.join(dataDirectory, 'imports', '.removed', counterImport.batchId))).toHaveLength(1);
-      const sharedPortfolioResponse = await fetch(`${baseUrl}/api/operations/customers`);
-      expect(await sharedPortfolioResponse.json()).toHaveLength(2);
+      expect(database.prepare('SELECT COUNT(*) AS total FROM customers').get()).toEqual({ total: 2 });
     } finally {
       await new Promise<void>((resolve) => server.close(() => resolve()));
       database.close();
