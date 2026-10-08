@@ -86,6 +86,8 @@ const discontinuationSourceCards = [
   {
     sourceId: 'fleet.customer-classification',
     title: 'Cargar clasificación de clientes',
+    expectedFile: 'Detalle de Equipos con Contrato.xlsx',
+    notice: 'Este archivo proviene de otro módulo: se carga en Analítica de consumibles (Equipos en contrato).',
     actionLabel: 'Importar clasificación',
     multiple: true,
   },
@@ -106,6 +108,8 @@ const discontinuationSourceCards = [
 function DiscontinuationSourceCard({
   sourceId,
   title,
+  expectedFile,
+  notice,
   actionLabel,
   multiple,
   busy,
@@ -117,6 +121,8 @@ function DiscontinuationSourceCard({
 }: {
   sourceId: string;
   title: string;
+  expectedFile?: string;
+  notice?: string;
   actionLabel: string;
   multiple: boolean;
   busy: boolean;
@@ -133,8 +139,9 @@ function DiscontinuationSourceCard({
     <article className={cn(subCardClass, 'grid content-start gap-3')}>
       <div className="text-sm font-bold text-navy dark:text-white">{title}</div>
       <dl className="m-0 grid gap-2.5 text-sm">
-        <SourceFact label="Archivo esperado"><span className="font-bold text-navy dark:text-white">{source.expectedFiles.join(' · ')}</span></SourceFact>
+        <SourceFact label="Archivo esperado"><span className="font-bold text-navy dark:text-white">{expectedFile ?? source.expectedFiles.join(' · ')}</span></SourceFact>
         <SourceFact label="Origen">{source.origin}</SourceFact>
+        {notice ? <div role="note" className="flex items-start gap-1.5 rounded-md border border-status-warn/40 bg-status-warn/10 px-2.5 py-2 text-xs font-semibold text-status-warn-ink dark:text-status-warn-ink-dark"><TriangleAlert className="mt-px shrink-0" size={14} aria-hidden="true" /><span>{notice}</span></div> : null}
         <SourceFact label="Qué alimenta">{source.purpose}</SourceFact>
         <SourceFact label="Archivos cargados">
           {loadingBatches ? <span>Consultando estado…</span> : null}
