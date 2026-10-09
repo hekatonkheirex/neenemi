@@ -1,0 +1,26 @@
+node_modules/
+dist/
+release/
+data/
+coverage/
+*.log
+.DS_Store
+
+.env.local
+
+.impeccable/
+
+# Capturas y logs del navegador de pruebas (Playwright MCP)
+.playwright-mcp/
+
+# Espacio de trabajo local de superpowers (subagentes)
+.superpowers/
+
+# Whisper y modelos descargados, nunca versionados
+build/whisper/
+build/.whisper-cache/
+
+# Compilaciones nativas y dependencias del instalador
+**/bin/
+**/obj/
+build/installer-dependencies/
