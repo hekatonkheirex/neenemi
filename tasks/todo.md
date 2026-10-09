@@ -6,7 +6,7 @@
 - [x] SQLite: migración con respaldo previo y conservación de audio/segmentos/asociaciones; importación Ñe'eñemi/DCSS en solo lectura sin sobrescribir. Pruebas de repositorio aprobadas.
 - [x] Audio/Whisper: captura Windows implementada, persistencia del último bloque, recuperación y cancelación del proceso. Transcripción CPU real con medium Q5_0 verificada usando audio de archivo.
 - [x] Ollama/Qwen3: bloques acotados sin pérdida silenciosa, referencias validadas y liberación del modelo. Pruebas de fronteras y resumen CPU real con `qwen3:4b` aprobados; `/api/ps` terminó sin modelos cargados.
-- [x] Interfaz WinUI e instalador implementados: historial, reproducción por segmento, resumen, exportación, errores/confirmaciones y preparación local. Comprobación de tipos WinUI en Linux aprobada, no build Windows completo.
+- [x] Interfaz WinUI e instalador implementados: historial, reproducción por segmento, resumen, exportación, errores/confirmaciones y preparación local. Restaurado arranque estándar con `App.xaml` y metadatos generados; MSBuild reconoce la definición de aplicación. El compilador XAML no puede ejecutarse en Linux y el arranque reparado aún no está confirmado en Windows.
 - [x] Recorrido integrado real: audio PCM de archivo → SQLite → Whisper → resumen automático Qwen3 → Markdown → preparación de reproducción → eliminación de datos y copia temporal. La captura de micrófono se sustituyó exclusivamente en este recorrido temporal; los motores fueron reales.
 - [x] Recursos Windows: descarga y preparación de whisper.cpp, medium Q5_0 y ffmpeg con hashes verificados.
 - [x] Corte y documentación: retiradas fuentes y entradas Electron/React/Express/Node; bases personales sin modificar; README, release, licencias y changelog actualizados.

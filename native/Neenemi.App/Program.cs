@@ -1,8 +1,6 @@
 using System.Runtime.InteropServices;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Neenemi.Core;
 
 namespace Neenemi.App;
 
@@ -26,16 +24,5 @@ internal static class Program
         }
         catch (Exception e) { MessageBox(0, e.Message, "No se pudo iniciar Ñe'eñemi", 0x10); }
         finally { mutex.ReleaseMutex(); }
-    }
-}
-
-internal sealed class DesktopApplication : Application
-{
-    private MainWindow? window;
-    public DesktopApplication() => Resources.MergedDictionaries.Add(new XamlControlsResources());
-    protected override void OnLaunched(LaunchActivatedEventArgs args)
-    {
-        window = new MainWindow(SettingsStore.Load());
-        window.Activate();
     }
 }

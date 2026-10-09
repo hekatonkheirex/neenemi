@@ -12,6 +12,7 @@
 - Automatización de instalador Inno Setup por usuario, runtimes autocontenidos y recursos Whisper/ffmpeg con SHA-256.
 - Verificados 21 tests del núcleo y recorridos reales de Whisper, Qwen3 y procesamiento completo desde audio de archivo hasta generación de Markdown, preparación de reproducción y eliminación. Comprobación de tipos WinUI realizada en Linux.
 - Corregidos los bloques de resumen en Windows: separadores LF explícitos, coherentes con el lector y el presupuesto UTF-8, sin añadir CR al texto ni exceder el contexto. Verificada la frontera exacta del presupuesto con texto Unicode.
+- Restaurada la inicialización estándar de WinUI mediante `App.xaml`, clase parcial e `InitializeComponent`, para generar los metadatos que faltaban al cargar `XamlControlsResources`. El arranque tras esta reparación aún requiere comprobación en Windows; `c000027b` por sí solo no identifica la excepción interna.
 
 Pendiente de aceptación en Windows: build completo/instalador, ventana, micrófono real y consumo en laptop de 8 GB. No se publicó un instalador ni se garantiza aún ese rendimiento.
 
