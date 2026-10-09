@@ -22,6 +22,11 @@ public sealed class SummaryTests
         Assert.Equal(units, string.Concat(batches).Split('\n', StringSplitOptions.RemoveEmptyEntries));
         Assert.All(batches, b => Assert.InRange(Encoding.UTF8.GetByteCount(b), 1, 150));
         Assert.Throws<InvalidOperationException>(() => OllamaSummarizer.BatchUnits([new string('x', 151)], 150));
+        string[] boundaryUnits = [new string('ñ', 63) + "a", "z"];
+        var boundaryBatches = OllamaSummarizer.BatchUnits(boundaryUnits, 128);
+        Assert.Equal(boundaryUnits, string.Concat(boundaryBatches).Split('\n', StringSplitOptions.RemoveEmptyEntries));
+        Assert.Equal(128, Encoding.UTF8.GetByteCount(boundaryBatches[0]));
+        Assert.All(boundaryBatches, b => Assert.InRange(Encoding.UTF8.GetByteCount(b), 1, 128));
     }
     [Theory]
     [InlineData("{\"overview\":\"Acuerdo\",\"topics\":[],\"decisions\":[{\"text\":\"Compra\",\"sources\":[99]}],\"actions\":[]}")]

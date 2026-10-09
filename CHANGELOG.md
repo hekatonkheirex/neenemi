@@ -11,6 +11,7 @@
 - Migración SQLite con respaldo previo e importación de Ñe'eñemi/DCSS en solo lectura sin sobrescribir grabaciones.
 - Automatización de instalador Inno Setup por usuario, runtimes autocontenidos y recursos Whisper/ffmpeg con SHA-256.
 - Verificados 21 tests del núcleo y recorridos reales de Whisper, Qwen3 y procesamiento completo desde audio de archivo hasta generación de Markdown, preparación de reproducción y eliminación. Comprobación de tipos WinUI realizada en Linux.
+- Corregidos los bloques de resumen en Windows: separadores LF explícitos, coherentes con el lector y el presupuesto UTF-8, sin añadir CR al texto ni exceder el contexto. Verificada la frontera exacta del presupuesto con texto Unicode.
 
 Pendiente de aceptación en Windows: build completo/instalador, ventana, micrófono real y consumo en laptop de 8 GB. No se publicó un instalador ni se garantiza aún ese rendimiento.
 

@@ -109,7 +109,7 @@ public sealed class OllamaSummarizer : ISummarizer, IDisposable
             int bytes = Encoding.UTF8.GetByteCount(unit) + 1;
             if (bytes > budget) throw new InvalidOperationException("Un bloque excede el contexto configurado; no se truncó el texto.");
             if (size + bytes > budget) { result.Add(batch.ToString()); batch.Clear(); size = 0; }
-            batch.AppendLine(unit); size += bytes;
+            batch.Append(unit).Append('\n'); size += bytes;
         }
         if (batch.Length > 0) result.Add(batch.ToString());
         return result;
