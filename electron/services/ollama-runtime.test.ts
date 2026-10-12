@@ -60,8 +60,8 @@ test('reuses a running external API and leaves it alive when the application clo
   } finally { await runtime.close(); await api.close(); rmSync(root, { recursive: true, force: true }); }
 });
 
-test('starts an installed engine on demand, completes preparation and stops only its owned process', async context => {
-  const root = mkdtempSync(join(tmpdir(), 'neenemi-ollama-owned-')), runtime = new OllamaRuntime(root);
+test('starts an installed engine on demand, completes preparation and stops only its owned process', { timeout: 15000 }, async context => {
+  const root = mkdtempSync(join(tmpdir(), 'neenemi-ollama-owned José ')), runtime = new OllamaRuntime(root);
   const api = await transport(context, (_request, response) => { response.statusCode = 503; response.end('API not started'); });
   const name = process.platform === 'win32' ? 'ollama.exe' : 'ollama';
   writeFileSync(join(root, name), 'Executable discovery fixture');
@@ -72,24 +72,39 @@ test('starts an installed engine on demand, completes preparation and stops only
   let engine: ChildProcess | undefined;
   const engines: ChildProcess[] = [];
   const exited = Promise.withResolvers<void>();
+  const controller = new AbortController();
+  let diagnostics = '', ready = false;
+  const fixture = join(root, 'engine fixture.cjs');
+  writeFileSync(fixture, `
+    const http = require('node:http'); let installed = false, unavailable = false;
+    const server = http.createServer((request, response) => {
+      if (request.url === '/api/pull') { installed = true; response.end('{"status":"success"}\\n'); }
+      else if (request.url === '/api/pause-health') { unavailable = true; response.end('Temporary health interruption'); }
+      else if (unavailable) { unavailable = false; response.statusCode = 503; response.end('Temporarily unavailable'); }
+      else response.end(JSON.stringify({models: installed ? [{name:'qwen3:4b'}] : []}));
+    });
+    server.listen(0, '127.0.0.1', () => process.send({event:'ready', port:server.address().port}));
+  `);
   context.mock.method(childProcess, 'spawn', () => {
-    engine = spawn(process.execPath, ['--eval', `
-      const http = require('node:http'); let installed = false, unavailable = false;
-      const server = http.createServer((request, response) => {
-        if (request.url === '/api/pull') { installed = true; response.end('{"status":"success"}\\n'); }
-        else if (request.url === '/api/pause-health') { unavailable = true; response.end('Temporary health interruption'); }
-        else if (unavailable) { unavailable = false; response.statusCode = 503; response.end('Temporarily unavailable'); }
-        else response.end(JSON.stringify({models: installed ? [{name:'qwen3:4b'}] : []}));
-      });
-      server.listen(0, '127.0.0.1', () => console.log(server.address().port));
-    `], { stdio: ['ignore', 'pipe', 'pipe'] });
+    engine = spawn(process.execPath, [fixture], { stdio: ['ignore', 'ignore', 'pipe', 'ipc'], windowsHide: true });
     engines.push(engine);
-    engine.stdout!.once('data', data => { api.route.port = Number(data.toString().trim()); });
-    engine.once('exit', () => exited.resolve()); return engine;
+    engine.stderr!.on('data', data => { diagnostics = (diagnostics + data.toString()).slice(-4096); });
+    engine.once('message', message => {
+      if (typeof message !== 'object' || message === null || !('port' in message) || typeof message.port !== 'number' || !Number.isInteger(message.port) || message.port < 1 || message.port > 65535) {
+        controller.abort(new Error('El proceso de prueba devolvió un puerto IPC inválido.')); return;
+      }
+      api.route.port = message.port; ready = true;
+    });
+    engine.once('error', error => controller.abort(error));
+    engine.once('exit', (code, signal) => {
+      exited.resolve();
+      if (!ready) controller.abort(new Error(`El proceso de prueba terminó antes de iniciar: code=${code}, signal=${signal}, stderr=${diagnostics}`));
+    });
+    return engine;
   });
   syncBuiltinESMExports();
   try {
-    const signal = new AbortController().signal;
+    const signal = AbortSignal.any([controller.signal, context.signal]);
     await Promise.all([runtime.ensureRunning(signal), runtime.ensureRunning(signal)]);
     await runtime.prepare('qwen3:4b', () => {}, signal);
     await fetch(`http://127.0.0.1:${api.route.port}/api/pause-health`);

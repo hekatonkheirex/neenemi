@@ -1,5 +1,5 @@
 {
-  "name": "neenemi", "version": "0.1.0", "private": true,
+  "name": "neenemi", "version": "0.1.1", "private": true,
   "description": "Grabación, transcripción y resúmenes locales", "author": "Data Systems S.A.E.C.A.",
   "main": "out/main/index.js", "packageManager": "npm@12.2.0",
   "engines": { "node": "^22.22.2 || ^24.15.0 || >=26.0.0" },

@@ -15,4 +15,4 @@ Ollama se prepara automáticamente en Windows x64 desde el ZIP oficial verificad
 
 ## Versionado de entregas
 
-Desde la próxima entrega, incrementar la versión de la aplicación en cada nueva versión y sincronizar `package.json`, `package-lock.json`, changelog y referencias del instalador. Esta entrega mantiene `0.1.0` por autorización del usuario; la excepción no se repite. Publicar los cambios en `main`.
+En cada nueva entrega, incrementar la versión de la aplicación y sincronizar `package.json`, `package-lock.json`, changelog y referencias del instalador. La entrega `0.1.0` fue la excepción autorizada por el usuario; la excepción no se repite. Publicar los cambios en `main`.

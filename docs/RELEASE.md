@@ -18,7 +18,7 @@ El comando ejecuta pruebas TypeScript, comprueba tipos/compila Electron y Tailwi
 |---|---|
 | Recursos preparados | `build/resources/` |
 | App Windows de carpeta | `release/electron/win-unpacked/` |
-| Instalador NSIS | `release/electron/Neenemi-0.1.0-Setup.exe` |
+| Instalador NSIS | `release/electron/Neenemi-0.1.1-Setup.exe` |
 | App Linux de comprobación | `release/electron/linux-unpacked/` |
 
 El paquete Windows contiene Electron/Node/SQLite, JavaScript del worker, `resources/tools/`, el redistribuible y avisos de terceros. No incluye `resources/host/`, DLL .NET, `.downloads`, perfiles ni bases personales. El paquete Linux no incluye motores Windows; configura `NEENEMI_TOOLS_DIRECTORY` con motores Linux existentes para el recorrido de procesamiento.
@@ -69,5 +69,7 @@ Los avisos moderados de herramientas de empaquetado deben reevaluarse antes de d
 ## Diagnóstico
 
 Los errores del worker y de motores se muestran en la interfaz. Una salida inesperada rechaza solicitudes pendientes; no se deja la UI ocupada indefinidamente. Un cierre normal espera el handshake de captura y el worker. No hay logs de arranque WinUI, protocolo stdio, telemetría ni servidor HTTP de aplicación.
+
+Si falla `starts an installed engine...` durante las pruebas, su API es un proceso de prueba en un puerto temporal, no el Ollama real del usuario. En `0.1.1` el fixture se ejecuta desde un archivo CJS y confirma el puerto mediante IPC; stdout no se interpreta como un mensaje completo. Se capturan errores/stderr/salida temprana del hijo y se cancela con la señal del runner. El fallo reportado en Windows no prueba que `11434` esté ocupado: no cierres tu Ollama ni omitas las pruebas para eludirlo. La corrección pasó la suite y el runtime Electron en Linux; requiere comprobación Windows.
 
 Para comprobar una compilación Windows sin reinstalar, abre `release\electron\win-unpacked\neenemi.exe`; su arranque instalado se acepta por separado. No distribuyas una carpeta de pruebas cruzadas con edición de metadatos desactivada como paquete oficial.

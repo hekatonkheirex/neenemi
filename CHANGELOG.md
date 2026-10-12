@@ -1,5 +1,12 @@
 # Historial de Ñe'eñemi
 
+## 0.1.1 · sin publicar
+
+- Corregida la comunicación del proceso de prueba de Ollama: archivo CJS independiente y confirmación estructurada del puerto mediante IPC, sin interpretar el primer bloque de stdout como un puerto completo.
+- La prueba captura stderr/errores/salida temprana del proceso hijo y propaga la cancelación del runner de pruebas; conserva las comprobaciones de preparación, reutilización y cierre del proceso propio. Incluye rutas con espacios y Unicode.
+- Versión y lockfile sincronizados; no se modifica el motor Ollama instalado, el puerto de producción ni las grabaciones.
+- Verificación en Linux: 33 pruebas y build aprobados, seis pruebas de Ollama aprobadas en el Node de Electron y demostración con proceso real de una lectura parcial del puerto por stdout. Falta comprobar esta corrección en Windows; el fallo original fue reportado allí por el usuario.
+
 ## 0.1.0 · sin publicar
 
 La versión de Ñe'eñemi es independiente de DCSS y se establece en `0.1.0`; no continúa la numeración del módulo extraído.
