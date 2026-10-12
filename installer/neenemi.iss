@@ -11,7 +11,7 @@
 [Setup]
 AppId={{9E060F8C-201D-4C45-9788-9084D94304CE}
 AppName=Ñe'eñemi
-AppVersion=0.4.0
+AppVersion=0.1.0
 AppPublisher=Data Systems S.A.E.C.A.
 DefaultDirName={localappdata}\Programs\NeenemiNative
 DefaultGroupName=Ñe'eñemi
@@ -21,7 +21,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0.17763
 OutputDir={#ReleaseDirectory}
-OutputBaseFilename=Neenemi-0.4.0-Setup
+OutputBaseFilename=Neenemi-0.1.0-Setup
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern

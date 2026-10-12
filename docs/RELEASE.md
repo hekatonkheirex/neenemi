@@ -8,7 +8,7 @@ Ejecuta en Windows x64 con **.NET SDK 10**, **Inno Setup 6** y conexión para la
 powershell -ExecutionPolicy Bypass -File scripts/package-windows.ps1
 ```
 
-El script ejecuta las pruebas del núcleo, publica WinUI en Release con .NET y Windows App SDK autocontenidos, prepara ffmpeg/whisper.cpp/medium Q5_0 y compila `installer/neenemi.iss`. Salida prevista: `release/Neenemi-0.4.0-Setup.exe`. Un error de pruebas, descarga, firma de la dependencia Microsoft o compilación aborta el empaquetado.
+El script ejecuta las pruebas del núcleo, publica WinUI en Release con .NET y Windows App SDK autocontenidos, prepara ffmpeg/whisper.cpp/medium Q5_0 y compila `installer/neenemi.iss`. Salida prevista: `release/Neenemi-0.1.0-Setup.exe`. Un error de pruebas, descarga, firma de la dependencia Microsoft o compilación aborta el empaquetado.
 
 El instalador instala por usuario en `%LOCALAPPDATA%\Programs\NeenemiNative`, crea acceso de inicio y ofrece acceso de escritorio. No modifica DCSS ni incluye bases personales. Si falta Visual C++ Redistributable x64, instala la copia oficial cuya firma Microsoft verifica el script; esto puede solicitar elevación y reinicio. No se requiere instalar .NET o Windows App SDK por separado.
 

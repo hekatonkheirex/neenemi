@@ -1,6 +1,8 @@
 # Historial de Ñe'eñemi
 
-## 0.4.0 · sin publicar
+## 0.1.0 · sin publicar
+
+La versión de Ñe'eñemi es independiente de DCSS y se establece en `0.1.0`; no continúa la numeración del módulo extraído.
 
 - Migración de Electron/React/Express a WinUI 3 + C# y .NET 10 para Windows x64; retiradas las fuentes, dependencias y entradas de ejecución anteriores.
 - Grabación solo por nombre, sin selector ni presentación de clientes. Se conservan las asociaciones históricas en SQLite.

@@ -49,7 +49,7 @@ Requiere **.NET SDK 10**. La interfaz y el empaquetado se compilan y ejecutan en
 | `dotnet run --project native/Neenemi.App/Neenemi.App.csproj -p:Platform=x64` | Ejecutar WinUI en Windows |
 | `powershell -ExecutionPolicy Bypass -File scripts/package-windows.ps1` | Publicar x64, preparar recursos y generar instalador con Inno Setup 6 |
 
-El script genera `release/Neenemi-0.4.0-Setup.exe`; no publica commits ni releases. Requisitos, dependencias y recorrido de aceptación: [docs/RELEASE.md](docs/RELEASE.md). Licencias de recursos: [docs/THIRD-PARTY.md](docs/THIRD-PARTY.md).
+El script genera `release/Neenemi-0.1.0-Setup.exe`; no publica commits ni releases. Requisitos, dependencias y recorrido de aceptación: [docs/RELEASE.md](docs/RELEASE.md). Licencias de recursos: [docs/THIRD-PARTY.md](docs/THIRD-PARTY.md).
 
 ### Estructura
 

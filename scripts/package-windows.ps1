@@ -26,4 +26,4 @@ if ($Signature.Status -ne 'Valid' -or $Signature.SignerCertificate.Subject -notm
 Copy-Item (Join-Path $Root 'docs\THIRD-PARTY.md') (Join-Path $Output 'THIRD-PARTY.md') -Force
 & $InnoCompiler "/DAppDirectory=$Output" "/DDependencyDirectory=$Dependencies" "/DReleaseDirectory=$(Join-Path $Root 'release')" (Join-Path $Root 'installer\neenemi.iss')
 if ($LASTEXITCODE -ne 0) { throw 'Falló la generación del instalador.' }
-Write-Host 'Instalador generado en release\Neenemi-0.4.0-Setup.exe. No se publicó automáticamente.'
+Write-Host 'Instalador generado en release\Neenemi-0.1.0-Setup.exe. No se publicó automáticamente.'
