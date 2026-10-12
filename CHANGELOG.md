@@ -18,8 +18,11 @@ La versión de Ñe'eñemi es independiente de DCSS y se establece en `0.1.0`; no
 - Scripts de instalación de dependencias bloqueados; descarga de Electron explícita y revisada. Auditoría de producción sin avisos; herramientas de empaquetado con avisos moderados documentados en la guía de release.
 - Corregida la independencia de Whisper ante un fallo de conexión inicial de Ollama: no se considera cargado un modelo que nunca respondió; solo un fallo real de liberación bloquea el próximo trabajo hasta liberarlo.
 - Corregidos los estilos Tailwind en desarrollo mediante nonce CSP de Vite, sin habilitar `unsafe-inline` ni modificar la política estricta de producción. Verificado en la ventana Electron real.
+- Preparar Ollama instala automáticamente el runtime standalone oficial en Windows x64 con SHA-256 fijado, extracción incremental, avisos de licencia y guardado atómico en el perfil. Retirado el enlace/botón de instalación manual y su IPC.
+- API Ollama iniciada a demanda antes de preparar modelos y generar resúmenes; una API externa se reutiliza sin detenerla, mientras que el proceso iniciado por Ñe'eñemi se cierra con la aplicación. Progreso, cancelación y modelos anteriores conservados; sin servicios de Windows ni elevación.
+- Verificados el ZIP Windows real y su reutilización, Electron con Ollama 0.40.3 real en Linux, progreso/cancelación/cierre de API, 33 pruebas y build. La nueva instalación automática aún requiere aceptación Windows.
 
-Pendiente de aceptación: instalación/micrófono físicos Windows, generación nueva con Ollama real y RAM/latencia en 8 GB. La generación NSIS desde Linux alcanzó etapas que requieren Wine, ausente en este entorno; el hook NSIS sí compiló por separado. No se publicó un instalador validado.
+El usuario confirmó funcionamiento correcto de la app en Windows. Pendiente de aceptación específica: instalación automática y ejecución del nuevo runtime Ollama administrado en Windows, generación nueva por esa ruta y RAM/latencia en 8 GB. La generación NSIS desde este Linux sigue necesitando Wine; no se publicó un instalador de esta actualización.
 
 ## 0.3.2 · 2026-10-09
 

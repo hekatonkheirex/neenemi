@@ -25,7 +25,7 @@ El paquete Windows contiene Electron/Node/SQLite, JavaScript del worker, `resour
 
 El instalador NSIS es asistido, por usuario, permite escoger directorio y conserva app data. Si no hay Visual C++ Runtime x64, comprueba en Windows la firma Microsoft del redistribuible antes de pedir elevación e instalarlo. El hook `build/installer.nsh` usa las extensiones estándar de electron-builder, no un instalador Inno personalizado.
 
-Ollama se instala separadamente desde el enlace oficial. Configuración ofrece inicio del motor y descarga del modelo con progreso/cancelación. Los pesos Qwen3 no van en el paquete. No se configuran certificados de firma de la app/instalador: Windows puede mostrar SmartScreen. No se publica un release automáticamente.
+**Preparar Ollama** instala automáticamente el runtime standalone oficial v0.40.3 en `%APPDATA%\neenemi\runtime\ollama\0.40.3` cuando no existe otro motor utilizable, con SHA-256 fijado y extracción incremental/atómica. No requiere administrador ni ejecuta un instalador Inno; tampoco registra un servicio ni inicio automático del sistema. Necesita aproximadamente 1,5 GB de descarga más espacio para bibliotecas y modelos. La API local arranca a demanda en `127.0.0.1:11434`, con cloud desactivado y un modelo a la vez. Se reutiliza un servidor existente sin alterar su configuración ni detenerlo; se detiene al cerrar solo el proceso iniciado por la app. Los pesos Qwen3 no van en el paquete. No se configuran certificados de firma de la app/instalador: Windows puede mostrar SmartScreen. No se publica un release automáticamente.
 
 ## Actualización y datos
 
@@ -42,7 +42,8 @@ Los ajustes C# con claves PascalCase se leen y se guardan con el contrato TS al 
 - [ ] Generar el NSIS completo en Windows o con Wine y comprobar motores/licencias, sin un host .NET.
 - [ ] Desinstalar la versión Inno, comprobar conservación del perfil e instalar NSIS.
 - [ ] Abrir la app instalada sin Node separado, SDK .NET ni Windows App SDK.
-- [ ] Preparar Ollama/Qwen3: descarga, cancelación y reintento.
+- [ ] Sin Ollama preinstalado: preparar Ollama/Qwen3, verificar descarga, cancelación, reintento, arranque local y cierre del proceso propio; repetir tras reiniciar la app.
+- [ ] Con Ollama ya instalado o su API activa: reutilizarlo, generar resumen con arranque a demanda si estaba detenido y comprobar que una API externa no se detiene al cerrar.
 - [ ] Grabar más de 30 segundos con micrófono físico, detener y comprobar último bloque, transcripción y resumen automático.
 - [ ] Probar permiso denegado/dispositivo desconectado y cierre durante captura; preservar bloques confirmados y recuperación.
 - [ ] Reproducir, saltar por segmento/cita individual y copiar/exportar ambos Markdown mediante diálogos reales.
@@ -61,7 +62,7 @@ Se ejecutó Electron sin .NET con perfil aislado. La captura Chromium usó la mu
 
 El comando Windows alcanzó electron-builder, pero en este Linux faltó Wine: fallaron edición del EXE/extracción del desinstalador. También se probó una configuración temporal sin edición del EXE para aislar el requisito, no como configuración de entrega. El hook NSIS completo se compiló por separado con el compilador descargado; esto no prueba instalación/UAC/firma en Windows.
 
-**Faltan instalación y micrófono físicos Windows, generación nueva con un motor Ollama real y RAM/latencia en 8 GB.** No se publicó ni se presenta un instalador como aceptado.
+El usuario confirmó funcionamiento correcto de la aplicación en Windows antes de esta automatización. Para la nueva ruta se verificaron descarga real del ZIP Windows, SHA-256, extracción del ejecutable/bibliotecas/avisos, marcador de instalación y reutilización sin descargar; no se ejecutó ese PE en Linux. Electron inició Ollama 0.40.3 real en Linux, mostró descarga del modelo y permitió cancelarla; la API continuó viva tras cancelar y dejó de responder al cerrar la app. Pasaron 33 pruebas y build, incluidas seis pruebas nuevas de seguridad/ciclo de vida también dentro de Electron. **Pendientes: instalación automática y ejecución del runtime administrado en Windows, generación nueva real por esta ruta y RAM/latencia en 8 GB.**
 
 Los avisos moderados de herramientas de empaquetado deben reevaluarse antes de distribuir. No aplicar degradaciones o `npm audit fix --force` sin comprobar compatibilidad; auditar el lockfile y conservar scripts de dependencias bloqueados.
 

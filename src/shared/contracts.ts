@@ -37,7 +37,6 @@ export interface DesktopAPI {
   importDatabase(): Promise<number | null>;
   exportMarkdown(id: string, summary: boolean): Promise<boolean>;
   copyMarkdown(id: string, summary: boolean): Promise<void>;
-  installOllama(): Promise<void>;
   onCaptureStop(listener: () => Promise<void>): () => void;
 }
 declare global { interface Window { neenemi: DesktopAPI } }

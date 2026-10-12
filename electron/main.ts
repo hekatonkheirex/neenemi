@@ -1,4 +1,4 @@
-import { app, BrowserWindow, clipboard, dialog, ipcMain, protocol, shell, type IpcMainInvokeEvent, type IpcMainEvent } from 'electron';
+import { app, BrowserWindow, clipboard, dialog, ipcMain, protocol, type IpcMainInvokeEvent, type IpcMainEvent } from 'electron';
 import { resolve, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { writeFile, stat } from 'node:fs/promises';
@@ -100,7 +100,6 @@ else {
       assertSender(event); validateId(id); if (typeof summary !== 'boolean') throw new Error('Formato inválido.');
       clipboard.writeText(await core.call('markdown', { id, summary }));
     });
-    ipcMain.handle('desktop:ollama', async event => { assertSender(event); await shell.openExternal('https://ollama.com/download/windows'); });
     window.on('close', event => {
       if (allowClose) return;
       event.preventDefault();

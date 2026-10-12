@@ -11,7 +11,6 @@ const api: DesktopAPI = {
   importDatabase: () => ipcRenderer.invoke('desktop:import'),
   exportMarkdown: (id, summary) => ipcRenderer.invoke('desktop:export', id, summary),
   copyMarkdown: (id, summary) => ipcRenderer.invoke('desktop:copy', id, summary),
-  installOllama: () => ipcRenderer.invoke('desktop:ollama'),
   onCaptureStop: listener => {
     const receive = async (_event: Electron.IpcRendererEvent, id: number) => {
       try { await listener(); ipcRenderer.send('capture:stopped', { id }); }

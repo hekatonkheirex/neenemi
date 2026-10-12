@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Settings, State } from '../shared/contracts';
 export function SettingsPanel({ state, onClose, onSaved }: { state: State; onClose(): void; onSaved(): Promise<void> }) {
   const [settings, setSettings] = useState<Settings>(state.settings);
-  const [message, setMessage] = useState('La primera preparación descarga motores y modelos. Después se procesan localmente.');
+  const [message, setMessage] = useState('Preparar Ollama instala el motor automáticamente en Windows y descarga el modelo. La primera preparación necesita conexión; después se procesa localmente.');
   const [preparing, setPreparing] = useState(state.preparing);
   const [saving, setSaving] = useState(false);
   useEffect(() => window.neenemi.subscribe(event => { if (event.event === 'preparation') setMessage(event.message); }), []);
@@ -32,7 +32,6 @@ export function SettingsPanel({ state, onClose, onSaved }: { state: State; onClo
     <p className="muted">Datos: {state.dataDirectory}</p><p role="status">{message}</p>
     <div className="actions"><button disabled={preparing || saving} onClick={() => void prepare(false)}>Preparar Whisper</button><button disabled={preparing || saving} onClick={() => void prepare(true)}>Preparar Ollama</button>
       {preparing && <button onClick={() => void window.neenemi.call('cancelPreparation', undefined).catch(error => setMessage(String(error)))}>Cancelar descarga</button>}
-      <button onClick={() => void window.neenemi.installOllama().catch(error => setMessage(String(error)))}>Instalar Ollama para Windows</button>
       <button className="primary" disabled={preparing || saving} onClick={() => void save()}>{saving ? 'Guardando…' : 'Guardar configuración'}</button>
     </div>
   </section>;

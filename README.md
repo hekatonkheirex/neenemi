@@ -7,7 +7,7 @@ Aplicación de escritorio **Electron + electron-vite + React, TypeScript y Tailw
 ## Uso
 
 1. Abre **Configuración** y prepara Whisper si faltan recursos.
-2. Instala Ollama desde el enlace oficial si hace falta. **Preparar Ollama** inicia el motor instalado y descarga el modelo seleccionado, con progreso/cancelación.
+2. Pulsa **Preparar Ollama**. En Windows x64 instala automáticamente el motor oficial si falta, inicia la API local y descarga el modelo seleccionado, con progreso/cancelación. No hace falta abrir una terminal ni instalar Ollama por separado.
 3. Escribe solo el **nombre de la grabación**, pulsa **Grabar** y **Terminar y procesar**.
 4. Consulta transcripción y resumen. Puedes saltar al audio desde segmentos y citas individuales, copiar/exportar Markdown, importar, cancelar, reintentar y eliminar con confirmación.
 
@@ -16,6 +16,8 @@ No hay selector ni presentación de clientes. Sus asociaciones históricas perma
 La captura usa `getUserMedia` y AudioWorklet: PCM mono de 16 bits a 16 kHz, guardado cada 30 segundos y del último bloque al detener. El cierre normal espera a que el renderer entregue y persista el audio antes de apagar servicios. Tras un cierre inesperado se conserva el audio ya confirmado y puedes procesarlo desde el historial.
 
 Una sola cola durable ejecuta transcripción y resumen secuencialmente. Guardar transcripción terminada y encolar resumen automático es atómico. Los textos largos se resumen por bloques y consolidación; un fallo conserva transcripción y resumen anterior, sin resultados inventados ni truncación silenciosa. El modelo se libera al terminar el resumen. Los resultados están marcados como **IA**: verifica nombres, acuerdos, responsables y fechas contra el audio original.
+
+La API de Ollama se inicia a demanda antes de preparar modelos o generar resúmenes, también después de reiniciar la app. Si ya responde en `127.0.0.1:11434`, se reutiliza sin modificar ni detener ese servicio. Si Ñe'eñemi inicia el proceso, lo detiene al cerrar. En Windows, el motor administrado se guarda en `%APPDATA%\neenemi\runtime\ollama\0.40.3`; no requiere administrador, servicio de Windows ni entradas de inicio automático del sistema. La primera descarga del motor ocupa aproximadamente 1,5 GB, más espacio para extraer bibliotecas y para el modelo. Los modelos conservan la ubicación de Ollama (`%USERPROFILE%\.ollama\models`, o `OLLAMA_MODELS` si está configurado).
 
 ## Equipo objetivo
 
@@ -61,7 +63,7 @@ npm run dev
 
 En Linux, configura `NEENEMI_TOOLS_DIRECTORY` con `ffmpeg`, `whisper/whisper-cli` y `whisper/ggml-medium-q5_0.bin`. La descarga automática de motores de la interfaz prepara binarios Windows. `NEENEMI_DATA_DIRECTORY` y `NEENEMI_SETTINGS_PATH` permiten perfiles aislados. La captura Chromium no depende de NAudio ni de Windows, pero cada plataforma y dispositivo requieren aceptación real.
 
-El instalador lleva Electron y los motores, no Node separado ni .NET. electron-builder descarga NSIS automáticamente: no debes instalar Inno/ISCC. Los motores Windows pueden necesitar Visual C++ Runtime; se incluye el redistribuible oficial, cuya firma Microsoft se comprueba en Windows antes de instalarlo si falta. Ollama sigue siendo independiente.
+El instalador lleva Electron y los motores Whisper/ffmpeg, no Node separado ni .NET. electron-builder descarga NSIS automáticamente: no debes instalar Inno/ISCC. Los motores Windows pueden necesitar Visual C++ Runtime; se incluye el redistribuible oficial, cuya firma Microsoft se comprueba en Windows antes de instalarlo si falta. Ollama se prepara desde la app mediante su ZIP oficial v0.40.3 con SHA-256 fijado, extracción incremental y publicación atómica de la instalación completa.
 
 ## Arquitectura
 
@@ -79,4 +81,4 @@ Fuentes: [SQLite de Node](https://nodejs.org/docs/latest-v24.x/api/sqlite.html),
 
 Se ejecutó Electron real sin .NET con perfil aislado: captura Chromium usando la muestra pública JFK como micrófono simulado, persistencia de siete bloques completos más el último bloque, transcripción real con Whisper medium Q5_0 y presentación de segmentos. La grabación conservó 229 segundos. Se comprobó la superficie Tailwind y la preparación de recursos Windows desde TypeScript con hashes verificados. Las pruebas de persistencia, importación, recuperación y procesamiento son TypeScript, no la antigua suite C#.
 
-**No confundir entrada simulada con micrófono físico ni con aceptación Windows.** Falta comprobar micrófono/instalación Windows, una generación real nueva de Ollama y RAM en 8 GB. El comando de instalador se probó desde Linux y alcanzó electron-builder/NSIS, pero la edición del EXE y extracción del desinstalador requieren Windows o Wine. El hook NSIS sí se compiló por separado; no se publicó un instalador validado.
+**No confundir entrada simulada con micrófono físico ni con aceptación Windows detallada.** El usuario confirmó que la aplicación funciona correctamente en Windows. La automatización nueva de Ollama se comprobó aquí con descarga/extracción reales del ZIP Windows y con Electron iniciando Ollama 0.40.3 real en Linux, progreso/cancelación y cierre de la API propia; aún requiere comprobar ejecución del motor administrado en Windows. Pasaron 33 pruebas TS y la compilación; las seis pruebas nuevas también pasaron en el Node integrado de Electron. No se midió RAM en 8 GB ni se generó un resumen real nuevo durante este recorrido. El empaquetado cruzado del instalador sigue requiriendo Wine en Linux.

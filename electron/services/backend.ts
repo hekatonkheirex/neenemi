@@ -1,18 +1,20 @@
 import { mkdtemp, rm, rename } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import type { CoreEvent, Method, Params, Results, Settings } from '../../src/shared/contracts';
 import { MeetingsRepository } from './repository';
 import { loadSettings, saveSettings, settingsSchema, toolPaths, type ServiceOptions } from './settings';
-import { ensureWhisper, hasWhisper, prepareOllama } from './resources';
+import { ensureWhisper, hasWhisper } from './resources';
 import { transcribe, runProcess } from './transcriber';
 import { summarize, unloadModel, ModelReleaseError } from './summarizer';
 import { markdown } from './markdown';
+import { OllamaRuntime } from './ollama-runtime';
 export type ServiceRequest = { [K in Method]: { method: K; params: Params[K] } }[Method];
 interface Job { id:string; summary:boolean }
 export class Backend {
   readonly repository: MeetingsRepository;
+  private readonly ollama: OllamaRuntime;
   private settings: Settings;
   private recordingId: string|null=null;
   private queue: Job[]=[];
@@ -29,6 +31,7 @@ export class Backend {
   private readonly playback=new Map<string,{abort:AbortController;promise:Promise<string>}>();
   constructor(private readonly options:ServiceOptions,private readonly event:(event:CoreEvent)=>void) {
     this.settings=loadSettings(options.settingsPath);
+    this.ollama=new OllamaRuntime(join(dirname(options.settingsPath),'runtime','ollama'));
     this.repository=new MeetingsRepository(join(options.dataDirectory,'neenemi.sqlite'));
     this.repository.recover();
   }
@@ -54,9 +57,10 @@ export class Backend {
       try{
         const meeting=this.repository.get(job.id);
         if(job.summary ? meeting.summaryStatus!=='queued' : meeting.status!=='en_cola')continue;
-        if(this.pendingUnloadModel){await unloadModel(this.pendingUnloadModel);this.pendingUnloadModel=undefined;}
+        if(this.pendingUnloadModel){await this.ollama.ensureRunning(abort.signal);await unloadModel(this.pendingUnloadModel);this.pendingUnloadModel=undefined;}
         if(job.summary){
           this.repository.setSummaryStatus(job.id,'running');this.changed();
+          await this.ollama.ensureRunning(abort.signal);
           const document=await summarize(this.repository.detail(job.id).segments,settings,abort.signal);
           this.pendingUnloadModel=undefined;abort.signal.throwIfAborted();this.repository.saveSummary(job.id,document,settings.ollamaModel);
         }else{
@@ -156,7 +160,7 @@ export class Backend {
         if(!p.summary&&process.platform!=='win32')throw new Error('La descarga de motores precompilados es Windows; en Linux configura los motores locales.');
         const model=settingsSchema.shape.ollamaModel.parse(p.ollamaModel);
         this.preparationAbort=new AbortController();this.changed();const signal=this.preparationAbort.signal;
-        this.preparation=(p.summary?prepareOllama(model,message=>this.event({event:'preparation',message}),signal):ensureWhisper(this.options.toolsDirectory,message=>this.event({event:'preparation',message}),signal)).finally(()=>{this.preparationAbort=undefined;this.changed();});
+        this.preparation=(p.summary?this.ollama.prepare(model,message=>this.event({event:'preparation',message}),signal):ensureWhisper(this.options.toolsDirectory,message=>this.event({event:'preparation',message}),signal)).finally(()=>{this.preparationAbort=undefined;this.changed();});
         await this.preparation;return null;
       }
       case 'cancelPreparation':this.preparationAbort?.abort();return null;
@@ -167,6 +171,7 @@ export class Backend {
     this.closing=true;this.preparationAbort?.abort();this.active?.abort.abort();
     if(this.recordingId){this.repository.setStatus(this.recordingId,'interrumpida');this.recordingId=null;}
     await this.draining;await this.preparation.catch(()=>{});await this.clearPlayback();
+    await this.ollama.close();
     await rm(this.playbackDirectory,{recursive:true,force:true});this.repository.close();
   }
 }
