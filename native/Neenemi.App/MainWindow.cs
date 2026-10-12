@@ -90,9 +90,11 @@ public sealed class MainWindow : Window
         };
         root.Loaded += async (_, _) => await RunAsync(async () =>
         {
+            StartupDiagnostics.Stage("Window.Loaded");
             await controller.InitializeAsync(); Refresh();
             using var setup = new ResourceSetup(options);
             if (!setup.HasWhisper) ShowMessage("Prepara los recursos locales desde Configuración antes de transcribir. Puedes consultar e importar tu historial.", InfoBarSeverity.Informational);
+            StartupDiagnostics.Stage("Window.Ready");
         });
     }
     private AppController CreateController(AppOptions value)

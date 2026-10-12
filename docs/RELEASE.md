@@ -43,3 +43,19 @@ El perfil es `%APPDATA%\neenemi`, compartido con las versiones standalone antigu
 El núcleo se ejecuta en Linux; hay pruebas de migración/importación, cancelación/recuperación, separación de estados y límites de resumen. Se ejecutaron whisper.cpp medium Q5_0 y Qwen3 4B reales en CPU, con descarga posterior del LLM de memoria, y la preparación de recursos Windows con hashes verificados.
 
 **No se generó ni ejecutó un instalador Windows en este entorno Linux.** La comprobación anterior de tipos C# correspondía al arranque sin XAML y no valida la inicialización actual. MSBuild reconoce `App.xaml` como `ApplicationDefinition`; el compilador XAML y las tareas de manifiesto/PRI requieren Windows. El usuario generó e instaló el paquete anterior, pero informó un fallo de arranque en `Microsoft.UI.Xaml.dll` con `c000027b`. La reparación incorpora la inicialización XAML estándar; su arranque, captura de micrófono y consumo mínimo siguen pendientes de comprobar. Las pruebas del núcleo no sustituyen la aceptación de la aplicación instalada.
+
+## Diagnóstico de cierre al iniciar
+
+`c000027b` en `Microsoft.UI.Xaml.dll` no revela la excepción interna. El arranque registra fases y errores completos en `%LOCALAPPDATA%\neenemi\logs\startup.log`: JSON por línea, versión informativa, identidad del módulo, PID y sesión. El archivo se reemplaza al iniciar la instancia principal; no se registran audio ni transcripciones y no se envía información por red.
+
+Después de actualizar y publicar en Windows, puedes ejecutar `release\windows-x64\neenemi.exe` directamente sin reinstalar. Esto evita confundir una compilación nueva con archivos antiguos de la instalación. Si necesitas comprobar la copia instalada, compara `Get-FileHash` de `neenemi.dll` en ambas carpetas.
+
+Para consultar el registro después del fallo:
+
+```powershell
+$log = Join-Path $env:LOCALAPPDATA 'neenemi\logs\startup.log'
+Get-Content $log | ForEach-Object { $_ | ConvertFrom-Json } | Format-List timestamp,event,data
+```
+
+Los eventos `startup_failure` incluyen fase, HRESULT, mensaje WinUI cuando está disponible y `Exception.ToString()` con excepción interna y stack. Los manejadores no marcan la excepción WinUI como resuelta ni continúan con una interfaz rota. Si no se crea el archivo al ejecutar la compilación nueva, puede haber un fallo nativo anterior a `Main`; se necesita entonces evidencia nativa adicional, no una modificación especulativa de dependencias. Revisa el contenido antes de compartirlo: una excepción puede incluir rutas locales.
+

@@ -9,12 +9,29 @@ public partial class DesktopApplication : Application
 
     public DesktopApplication()
     {
-        InitializeComponent();
+        UnhandledException += (_, args) =>
+        {
+            StartupDiagnostics.Failure("WinUI.UnhandledException", args.Exception, args.Message);
+            // Leave Handled false: preserve the failure rather than running with broken UI state.
+        };
+        StartupDiagnostics.Stage("Application.InitializeComponent");
+        try { InitializeComponent(); }
+        catch (Exception error) { StartupDiagnostics.Failure("Application.InitializeComponent", error); throw; }
+        StartupDiagnostics.Stage("Application.Initialized");
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        window = new MainWindow(SettingsStore.Load());
-        window.Activate();
+        try
+        {
+            StartupDiagnostics.Stage("Settings.Load");
+            var options = SettingsStore.Load();
+            StartupDiagnostics.Stage("MainWindow.Create");
+            window = new MainWindow(options);
+            StartupDiagnostics.Stage("MainWindow.Activate");
+            window.Activate();
+            StartupDiagnostics.Stage("MainWindow.Activated");
+        }
+        catch (Exception error) { StartupDiagnostics.Failure("OnLaunched", error); throw; }
     }
 }
