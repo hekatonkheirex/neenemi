@@ -1,61 +1,72 @@
-# Distribución Windows de Ñe'eñemi
+# Distribución de Ñe'eñemi
 
-## Generar el instalador
+## Generar el instalador Windows
 
-Ejecuta en Windows x64 con **.NET SDK 10**, **Inno Setup 6** y conexión para la preparación inicial. Si `ISCC.exe` no está en PATH ni en la ubicación habitual, pasa `-InnoCompiler` al script.
+Requiere **Node.js 24.15+ LTS**, **npm 12.2.0** y conexión para la preparación inicial. **No requiere .NET SDK, WinUI, Visual Studio, Inno Setup ni ISCC.** electron-builder descarga su herramienta NSIS automáticamente.
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/package-windows.ps1
+```sh
+npm ci --ignore-scripts
+node node_modules/electron/install.js
+npm run package:win
 ```
 
-El script ejecuta las pruebas del núcleo, publica WinUI en Release con .NET y Windows App SDK autocontenidos, prepara ffmpeg/whisper.cpp/medium Q5_0 y compila `installer/neenemi.iss`. Salida prevista: `release/Neenemi-0.1.0-Setup.exe`. Un error de pruebas, descarga, firma de la dependencia Microsoft o compilación aborta el empaquetado.
+Ejecuta el comando de entrega en Windows x64. Desde Linux, electron-builder necesita Wine para editar los recursos del EXE y ejecutar la etapa de extracción del desinstalador NSIS. No se desactivan esas etapas en la configuración de distribución para fingir una entrega validada.
 
-El instalador instala por usuario en `%LOCALAPPDATA%\Programs\NeenemiNative`, crea acceso de inicio y ofrece acceso de escritorio. No modifica DCSS ni incluye bases personales. Si falta Visual C++ Redistributable x64, instala la copia oficial cuya firma Microsoft verifica el script; esto puede solicitar elevación y reinicio. No se requiere instalar .NET o Windows App SDK por separado.
+El comando ejecuta pruebas TypeScript, comprueba tipos/compila Electron y Tailwind, prepara motores Windows con hashes verificados, descarga el redistribuible Visual C++ oficial y genera NSIS. Se aborta ante errores y la publicación automática está desactivada.
 
-Ollama se instala separadamente desde el enlace oficial de Ajustes; no se incluye un modelo LLM dentro del instalador. La preparación desde la app descarga `qwen3:4b` mediante el motor local y muestra progreso/cancelación. Después de preparar recursos, el uso no requiere terminal ni red. Los modelos 1.7B y 8B son elecciones explícitas en Ajustes, no sustituciones automáticas.
+| Artefacto | Ubicación |
+|---|---|
+| Recursos preparados | `build/resources/` |
+| App Windows de carpeta | `release/electron/win-unpacked/` |
+| Instalador NSIS | `release/electron/Neenemi-0.1.0-Setup.exe` |
+| App Linux de comprobación | `release/electron/linux-unpacked/` |
 
-Esta automatización no configura firma de código de la app ni del instalador y no publica releases. Windows puede mostrar SmartScreen para un instalador sin firma. No presentes una compilación no probada como una entrega validada.
+El paquete Windows contiene Electron/Node/SQLite, JavaScript del worker, `resources/tools/`, el redistribuible y avisos de terceros. No incluye `resources/host/`, DLL .NET, `.downloads`, perfiles ni bases personales. El paquete Linux no incluye motores Windows; configura `NEENEMI_TOOLS_DIRECTORY` con motores Linux existentes para el recorrido de procesamiento.
 
-## Datos
+El instalador NSIS es asistido, por usuario, permite escoger directorio y conserva app data. Si no hay Visual C++ Runtime x64, comprueba en Windows la firma Microsoft del redistribuible antes de pedir elevación e instalarlo. El hook `build/installer.nsh` usa las extensiones estándar de electron-builder, no un instalador Inno personalizado.
 
-El perfil es `%APPDATA%\neenemi`, compartido con las versiones standalone antiguas de Ñe'eñemi, no con DCSS. Cierra la app antigua antes del primer inicio nativo. La actualización a esquema 2 conserva datos y crea `neenemi.sqlite.before-native-v2.bak` antes de migrar. Una copia de respaldo anterior es necesaria para regresar a la app antigua.
+Ollama se instala separadamente desde el enlace oficial. Configuración ofrece inicio del motor y descarga del modelo con progreso/cancelación. Los pesos Qwen3 no van en el paquete. No se configuran certificados de firma de la app/instalador: Windows puede mostrar SmartScreen. No se publica un release automáticamente.
 
-**Importar** permite trasladar otra base de Ñe'eñemi o grabaciones compatibles de DCSS mediante lectura y snapshot consistente del origen. No sobrescribe grabaciones existentes ni modifica la base fuente. No distribuyas `data/`, ajustes personales, respaldos, logs ni muestras de pruebas. El desinstalador no borra el perfil de datos.
+## Actualización y datos
 
-## Recorrido obligatorio en Windows
+Cierra la app anterior y respalda `%APPDATA%\neenemi`. La implementación TS usa el mismo esquema 2 y conserva audio, segmentos, resúmenes y asociaciones. Esquema histórico 1 se migra con `neenemi.sqlite.before-native-v2.bak`; este nombre histórico no implica una dependencia .NET.
 
-- [ ] Compilar/publicar sin desactivar `WindowsAppSDKSelfContained` ni la generación de PRI.
-- [ ] Instalar en un Windows x64 limpio, comprobar dependencia Visual C++ y acceso de inicio.
-- [ ] Abrir la ventana; solo se pide el nombre de la grabación, sin selector de cliente.
-- [ ] Preparar Ollama/Qwen3 desde Ajustes; comprobar descargar, cancelar y volver a preparar.
-- [ ] Grabar más de 30 segundos con micrófono real, detener y comprobar la transcripción y el resumen automático.
-- [ ] Probar permiso denegado, micrófono ausente y cierre durante grabación; comprobar audio conservado y recuperación.
-- [ ] Reproducir, saltar desde un segmento y desde una referencia del resumen; copiar/exportar ambos Markdown.
-- [ ] Cancelar y reintentar transcripción/resumen; un fallo del resumen mantiene texto y resumen anterior.
-- [ ] Cerrar mientras se procesa y volver a abrir; comprobar recuperación de la cola.
-- [ ] Eliminar después de reproducir, comprobar retirada de datos y archivo temporal; comprobar que no se recrean tras cancelar.
-- [ ] Migrar un perfil antiguo e importar otra base sin modificar sus originales; comprobar asociaciones históricas preservadas pero no mostradas.
-- [ ] Medir RAM máxima, latencia y respuesta de la interfaz en una laptop de 8 GB sin GPU dedicada. Usar el perfil aprobado 4B/medium, sin presentar resultados de otro equipo como equivalentes.
-- [ ] Desinstalar y comprobar que la carpeta de datos continúa intacta.
+**Desinstala la instalación Inno anterior antes de instalar la nueva NSIS.** Sus identificadores/desinstaladores no son intercambiables y no se presenta un cambio de instalador como actualización transparente. La versión anterior conserva el perfil al desinstalar y la nueva también. No mezcles instalaciones simultáneas contra la misma base.
 
-## Evidencia disponible y límite actual
+Los ajustes C# con claves PascalCase se leen y se guardan con el contrato TS al guardar Configuración; no se conserva ninguna ruta de un host .NET. Las rutas normales de datos/ajustes siguen siendo las del perfil standalone. Para respaldar, cierra la app y copia el perfil completo.
 
-El núcleo se ejecuta en Linux; hay pruebas de migración/importación, cancelación/recuperación, separación de estados y límites de resumen. Se ejecutaron whisper.cpp medium Q5_0 y Qwen3 4B reales en CPU, con descarga posterior del LLM de memoria, y la preparación de recursos Windows con hashes verificados.
+**Importar grabaciones** lee Ñe'eñemi/DCSS en solo lectura y obtiene un snapshot consistente, incluyendo WAL. No sobrescribe IDs existentes ni altera el origen. No distribuyas `data/`, ajustes, respaldos, logs ni muestras privadas. No abras esquema 2 con un antiguo renderer/servidor que solo soporte esquema 1.
 
-**No se generó ni ejecutó un instalador Windows en este entorno Linux.** La comprobación anterior de tipos C# correspondía al arranque sin XAML y no valida la inicialización actual. MSBuild reconoce `App.xaml` como `ApplicationDefinition`; el compilador XAML y las tareas de manifiesto/PRI requieren Windows. El usuario generó e instaló el paquete anterior, pero informó un fallo de arranque en `Microsoft.UI.Xaml.dll` con `c000027b`. La reparación incorpora la inicialización XAML estándar; su arranque, captura de micrófono y consumo mínimo siguen pendientes de comprobar. Las pruebas del núcleo no sustituyen la aceptación de la aplicación instalada.
+## Recorrido obligatorio Windows
 
-## Diagnóstico de cierre al iniciar
+- [ ] Generar el NSIS completo en Windows o con Wine y comprobar motores/licencias, sin un host .NET.
+- [ ] Desinstalar la versión Inno, comprobar conservación del perfil e instalar NSIS.
+- [ ] Abrir la app instalada sin Node separado, SDK .NET ni Windows App SDK.
+- [ ] Preparar Ollama/Qwen3: descarga, cancelación y reintento.
+- [ ] Grabar más de 30 segundos con micrófono físico, detener y comprobar último bloque, transcripción y resumen automático.
+- [ ] Probar permiso denegado/dispositivo desconectado y cierre durante captura; preservar bloques confirmados y recuperación.
+- [ ] Reproducir, saltar por segmento/cita individual y copiar/exportar ambos Markdown mediante diálogos reales.
+- [ ] Cancelar/reintentar trabajos; fallo del resumen conserva transcripción y resumen previo.
+- [ ] Cerrar mientras se procesa y comprobar recuperación durable al abrir.
+- [ ] Eliminar después de reproducir y verificar retirada de datos/temporales, sin recreación tras cancelar.
+- [ ] Abrir un perfil anterior e importar otra base sin modificar origen ni asociaciones históricas.
+- [ ] Medir RAM máxima de Electron/Whisper/Ollama, latencia y respuesta en laptop de 8 GB sin GPU dedicada.
+- [ ] Desinstalar NSIS y comprobar conservación del perfil.
 
-`c000027b` en `Microsoft.UI.Xaml.dll` no revela la excepción interna. El arranque registra fases y errores completos en `%LOCALAPPDATA%\neenemi\logs\startup.log`: JSON por línea, versión informativa, identidad del módulo, PID y sesión. El archivo se reemplaza al iniciar la instancia principal; no se registran audio ni transcripciones y no se envía información por red.
+## Evidencia y límites
 
-Después de actualizar y publicar en Windows, puedes ejecutar `release\windows-x64\neenemi.exe` directamente sin reinstalar. Esto evita confundir una compilación nueva con archivos antiguos de la instalación. Si necesitas comprobar la copia instalada, compara `Get-FileHash` de `neenemi.dll` en ambas carpetas.
+La suite TypeScript comprueba migración con respaldo, conservación del esquema 2, importación WAL/idempotencia/asociaciones, PCM/WAV, transacciones, recuperación, cancelación real de procesos, preservación de resúmenes, límites Unicode/contexto, validación y cancelación/integridad de descargas e IPC. No se cuenta la suite C# retirada como verificación de la nueva implementación.
 
-Para consultar el registro después del fallo:
+Se ejecutó Electron sin .NET con perfil aislado. La captura Chromium usó la muestra pública `jfk.wav` de whisper.cpp como micrófono simulado, guardó siete bloques completos y el último bloque (229 segundos), y produjo transcripción real con Whisper medium Q5_0. Se comprobó la superficie Tailwind. Los recursos Windows fueron preparados desde TypeScript con sus SHA-256 verificados.
 
-```powershell
-$log = Join-Path $env:LOCALAPPDATA 'neenemi\logs\startup.log'
-Get-Content $log | ForEach-Object { $_ | ConvertFrom-Json } | Format-List timestamp,event,data
-```
+El comando Windows alcanzó electron-builder, pero en este Linux faltó Wine: fallaron edición del EXE/extracción del desinstalador. También se probó una configuración temporal sin edición del EXE para aislar el requisito, no como configuración de entrega. El hook NSIS completo se compiló por separado con el compilador descargado; esto no prueba instalación/UAC/firma en Windows.
 
-Los eventos `startup_failure` incluyen fase, HRESULT, mensaje WinUI cuando está disponible y `Exception.ToString()` con excepción interna y stack. Los manejadores no marcan la excepción WinUI como resuelta ni continúan con una interfaz rota. Si no se crea el archivo al ejecutar la compilación nueva, puede haber un fallo nativo anterior a `Main`; se necesita entonces evidencia nativa adicional, no una modificación especulativa de dependencias. Revisa el contenido antes de compartirlo: una excepción puede incluir rutas locales.
+**Faltan instalación y micrófono físicos Windows, generación nueva con un motor Ollama real y RAM/latencia en 8 GB.** No se publicó ni se presenta un instalador como aceptado.
 
+Los avisos moderados de herramientas de empaquetado deben reevaluarse antes de distribuir. No aplicar degradaciones o `npm audit fix --force` sin comprobar compatibilidad; auditar el lockfile y conservar scripts de dependencias bloqueados.
+
+## Diagnóstico
+
+Los errores del worker y de motores se muestran en la interfaz. Una salida inesperada rechaza solicitudes pendientes; no se deja la UI ocupada indefinidamente. Un cierre normal espera el handshake de captura y el worker. No hay logs de arranque WinUI, protocolo stdio, telemetría ni servidor HTTP de aplicación.
+
+Para comprobar una compilación Windows sin reinstalar, abre `release\electron\win-unpacked\neenemi.exe`; su arranque instalado se acepta por separado. No distribuyas una carpeta de pruebas cruzadas con edición de metadatos desactivada como paquete oficial.

@@ -1,70 +1,82 @@
 # Ñe'eñemi
 
-Aplicación Windows **WinUI 3 + C#** para grabar audio, transcribirlo con **whisper.cpp medium Q5_0** y generar resúmenes locales con **Ollama / Qwen3 4B**. Sin Electron, React, Node.js ni servidor HTTP propio.
+Aplicación de escritorio **Electron + electron-vite + React, TypeScript y Tailwind CSS** para grabar audio, transcribir con **whisper.cpp medium Q5_0** y generar resúmenes locales con **Ollama / Qwen3 4B**.
+
+**Sin .NET, C#, WinUI, Inno Setup ni ISCC.** Los servicios son TypeScript y usan SQLite integrado en el Node de Electron, dentro de un worker. No hay Express, servidor HTTP de aplicación, ejecutable de backend ni reconstrucción de módulos SQLite nativos.
 
 ## Uso
 
-1. Abre Ñe'eñemi. En **Ajustes**, prepara los recursos locales si estás ejecutando una compilación de desarrollo.
-2. Instala Ollama desde el enlace oficial de Ajustes si aún no está instalado. **Preparar Ollama** inicia el motor instalado cuando hace falta y descarga el modelo seleccionado. La primera descarga necesita conexión; la app muestra progreso y permite cancelar.
-3. Escribe únicamente el **nombre de la grabación**, inicia la captura y termina para procesar.
-4. Consulta transcripción y resumen en el historial. Las referencias permiten saltar al audio correspondiente; puedes copiar o exportar Markdown, cancelar, reintentar y eliminar con confirmación.
+1. Abre **Configuración** y prepara Whisper si faltan recursos.
+2. Instala Ollama desde el enlace oficial si hace falta. **Preparar Ollama** inicia el motor instalado y descarga el modelo seleccionado, con progreso/cancelación.
+3. Escribe solo el **nombre de la grabación**, pulsa **Grabar** y **Terminar y procesar**.
+4. Consulta transcripción y resumen. Puedes saltar al audio desde segmentos y citas individuales, copiar/exportar Markdown, importar, cancelar, reintentar y eliminar con confirmación.
 
-No hay selector, catálogo ni presentación de clientes. Las asociaciones de grabaciones antiguas se conservan en la base, pero no se muestran ni se requieren para grabaciones nuevas.
+No hay selector ni presentación de clientes. Sus asociaciones históricas permanecen en SQLite.
 
-El reconocimiento usa español. La captura guarda PCM mono de 16 bits a 16 kHz cada 30 segundos y conserva el último bloque al detener. Tras un cierre inesperado puedes procesar el audio conservado. Los trabajos interrumpidos se recuperan al iniciar.
+La captura usa `getUserMedia` y AudioWorklet: PCM mono de 16 bits a 16 kHz, guardado cada 30 segundos y del último bloque al detener. El cierre normal espera a que el renderer entregue y persista el audio antes de apagar servicios. Tras un cierre inesperado se conserva el audio ya confirmado y puedes procesarlo desde el historial.
 
-Una sola cola ejecuta transcripción y resumen **secuencialmente**. El resumen automático se guarda como pendiente en la misma transacción que la transcripción terminada. El modelo de Ollama se libera al terminar cada resumen. Los textos largos se procesan en bloques y se consolidan; los errores no se sustituyen por resúmenes inventados. Un fallo de resumen conserva la transcripción y cualquier resumen anterior.
-
-Los resúmenes incluyen temas, decisiones y pendientes, con responsable y fecha solo cuando aparecen en el texto. Están marcados como **IA**: revisa nombres, acuerdos y fechas contra el audio original.
+Una sola cola durable ejecuta transcripción y resumen secuencialmente. Guardar transcripción terminada y encolar resumen automático es atómico. Los textos largos se resumen por bloques y consolidación; un fallo conserva transcripción y resumen anterior, sin resultados inventados ni truncación silenciosa. El modelo se libera al terminar el resumen. Los resultados están marcados como **IA**: verifica nombres, acuerdos, responsables y fechas contra el audio original.
 
 ## Equipo objetivo
 
-Windows 10 1809 o posterior, x64, laptops sin GPU dedicada y desde 8 GB de RAM. El perfil aprobado es **Whisper medium Q5_0 + Qwen3 4B**, contexto de 8192 tokens y hasta cuatro hilos por defecto. Ollama recibe `num_gpu=0`; no se usan modelos cloud.
+Windows x64, CPU y objetivo desde 8 GB de RAM. Perfil: **Whisper medium Q5_0 + Qwen3 4B**, contexto de 8192 tokens y hasta cuatro hilos por defecto; Ollama recibe `num_gpu=0`. No se usan modelos cloud.
 
-**La RAM y latencia en una laptop Windows de 8 GB aún no están medidas.** Ajustes permite cambiar hilos, contexto y modelo local (`qwen3:1.7b`, `qwen3:4b`, `qwen3:8b`). No selecciones 8B en un equipo de 8 GB sin medir el consumo. Las pruebas CPU realizadas en Linux no garantizan rendimiento en esas laptops.
+**La RAM y latencia en laptops Windows de 8 GB no están medidas.** Puedes elegir `qwen3:1.7b`, `qwen3:4b` o `qwen3:8b`, hilos y contexto. No selecciones 8B en 8 GB sin medir consumo. El cambio de framework no garantiza rendimiento.
 
-## Datos y migración
+## Datos y actualización
 
-- Base de uso normal: `%APPDATA%\neenemi\data\neenemi.sqlite`.
+- Base normal: `%APPDATA%\neenemi\data\neenemi.sqlite`.
 - Ajustes: `%APPDATA%\neenemi\settings.json`.
-- Recursos de la instalación: `resources\` junto al ejecutable.
-- La migración del esquema histórico crea `neenemi.sqlite.before-native-v2.bak` antes de modificarlo y conserva audio, segmentos, fechas y asociaciones existentes.
-- Los WebM históricos se leen sin reemplazar el audio original. Las grabaciones nuevas usan PCM.
-- El instalador y desinstalador no eliminan el perfil de datos.
+- Recursos instalados: `resources\tools\`; no hay `resources\host\`.
+- Se conserva el **esquema 2** existente, sin reinicializar ni revertir la base. Los ajustes anteriores con claves C# se leen y se guardan en el formato TypeScript al guardar Configuración.
+- Al abrir esquema histórico 1 se crea `neenemi.sqlite.before-native-v2.bak` antes de migrar; el nombre de ese respaldo se mantiene por compatibilidad de datos, no porque la app use .NET.
+- Audio WebM histórico sin reemplazar originales; capturas nuevas en PCM.
 
-Para importar otra base, cierra la app antigua y usa **Importar** en Ñe'eñemi. Se admiten bases compatibles de Ñe'eñemi y grabaciones del esquema DCSS: el origen se abre en solo lectura y se obtiene una copia SQLite consistente. No se sobrescriben identificadores existentes ni se importan otros módulos de DCSS. **No configures una base DCSS como base activa de esta app.**
+Cierra la app anterior y respalda el perfil antes de actualizar. Desinstala la versión Inno antigua antes de instalar la nueva NSIS para evitar dos entradas de instalación; su desinstalador conserva datos. El nuevo instalador también conserva el perfil al desinstalar.
 
-Para respaldar manualmente, cierra la aplicación y copia la carpeta de datos completa. La copia anterior a la migración sirve para una reversión al esquema antiguo; no abras la base ya migrada con una versión antigua de Ñe'eñemi. Eliminar una grabación retira su audio/transcripción/resumen de la base y la copia temporal de reproducción, pero no altera respaldos que hayas conservado.
+**Importar grabaciones** admite Ñe'eñemi y grabaciones compatibles DCSS: origen en solo lectura, snapshot consistente incluyendo WAL, asociaciones preservadas y sin sobrescribir identificadores existentes ni importar otros módulos. **No configures una base DCSS como perfil activo.** No abras esquema 2 con una versión antigua que solo admita esquema 1.
 
-Las grabaciones y transcripciones se procesan localmente. Solo la preparación descarga motores/modelos desde sus proveedores. Ollama usa `127.0.0.1:11434`; no se envían grabaciones a una API cloud. SQLite y los respaldos no están cifrados: protege el perfil Windows y usa cifrado de disco cuando corresponda.
+Las grabaciones se procesan localmente. La preparación descarga motores/modelos; Ollama escucha en `127.0.0.1:11434`. SQLite y respaldos no están cifrados: protege el perfil y usa cifrado de disco cuando corresponda. Eliminar retira audio, transcripción, resumen y reproducción temporal, no respaldos externos.
 
 ## Desarrollo
 
-Requiere **.NET SDK 10**. La interfaz y el empaquetado se compilan y ejecutan en **Windows**; el núcleo y sus pruebas también funcionan en Linux.
+Requiere **Node.js 24.15+ LTS** (también 22.22.2+ o 26+) y **npm 12.2.0**. No requiere SDK .NET, Visual Studio ni ISCC.
+
+```sh
+npm ci --ignore-scripts
+node node_modules/electron/install.js
+npm run dev
+```
+
+`.npmrc` bloquea scripts de dependencias. La instalación explícita revisada de Electron descarga su binario oficial con hashes; no se habilitan scripts globalmente.
 
 | Comando | Resultado |
 |---|---|
-| `dotnet build native/Neenemi.Core/Neenemi.Core.csproj` | Compilar servicios y persistencia |
-| `dotnet test native/Neenemi.Core.Tests/Neenemi.Core.Tests.csproj` | Pruebas de comportamiento y recuperación |
-| `dotnet run --project native/Neenemi.App/Neenemi.App.csproj -p:Platform=x64` | Ejecutar WinUI en Windows |
-| `powershell -ExecutionPolicy Bypass -File scripts/package-windows.ps1` | Publicar x64, preparar recursos y generar instalador con Inno Setup 6 |
+| `npm run dev` | Abrir Electron con electron-vite/HMR |
+| `npm run build` | Comprobar TypeScript y compilar main, worker, preload, renderer, AudioWorklet y Tailwind |
+| `npm start` | Abrir la compilación de Electron |
+| `npm test` | Pruebas TypeScript de datos, recuperación, cancelación, resúmenes, descargas y límites IPC |
+| `npm run package:win` | Pruebas/build, recursos verificados e instalador NSIS con electron-builder; ejecutar en Windows |
+| `npm run package:linux` | Paquete Linux de carpeta para comprobar la app |
 
-El script genera `release/Neenemi-0.1.0-Setup.exe`; no publica commits ni releases. Requisitos, dependencias y recorrido de aceptación: [docs/RELEASE.md](docs/RELEASE.md). Licencias de recursos: [docs/THIRD-PARTY.md](docs/THIRD-PARTY.md).
+En Linux, configura `NEENEMI_TOOLS_DIRECTORY` con `ffmpeg`, `whisper/whisper-cli` y `whisper/ggml-medium-q5_0.bin`. La descarga automática de motores de la interfaz prepara binarios Windows. `NEENEMI_DATA_DIRECTORY` y `NEENEMI_SETTINGS_PATH` permiten perfiles aislados. La captura Chromium no depende de NAudio ni de Windows, pero cada plataforma y dispositivo requieren aceptación real.
 
-### Estructura
+El instalador lleva Electron y los motores, no Node separado ni .NET. electron-builder descarga NSIS automáticamente: no debes instalar Inno/ISCC. Los motores Windows pueden necesitar Visual C++ Runtime; se incluye el redistribuible oficial, cuya firma Microsoft se comprueba en Windows antes de instalarlo si falta. Ollama sigue siendo independiente.
 
-- `native/Neenemi.App`: ventana WinUI, captura Windows, reproducción, diálogos y configuración.
-- `native/Neenemi.Core`: SQLite, cola durable, procesos ffmpeg/Whisper, resúmenes Ollama, exportación y preparación de recursos.
-- `native/Neenemi.Core.Tests`: migración sin pérdida, recuperación, cancelación, preservación de resultados y límites/validación del resumen.
-- `native/Neenemi.Tools`: preparación de recursos Windows para el empaquetado.
-- `installer/neenemi.iss`: instalación por usuario y conservación de datos.
+## Arquitectura
 
-La aplicación procede de la separación de Reuniones de DCSS Suite `0.3.2` (`c3927a5`). Esta migración no modifica DCSS ni depende de que esté ejecutándose. Repositorio: [hekatonkheirex/neenemi](https://github.com/hekatonkheirex/neenemi).
+- `electron/main.ts`: ventana/instancia única, validación IPC, diálogos, clipboard y protocolo de audio autorizado con rangos.
+- `electron/preload.ts`: API limitada, aislamiento, sandbox y renderer sin Node; handshake de cierre de captura.
+- `electron/service-worker.ts`, `service-client.ts`: worker TypeScript y mensajes correlacionados, sin procesos .NET ni stdio.
+- `electron/services`: SQLite compatible, cola durable, Whisper/ffmpeg, Ollama, Markdown, configuración y preparación.
+- `src/shared/contracts.ts`: contrato tipado único.
+- `src/renderer`: React/TypeScript, captura PCM mediante AudioWorklet y estilos Tailwind.
+- `electron-builder.yml`, `scripts/package-windows.ts`, `build/installer.nsh`: distribución estándar Electron/NSIS.
 
-### Fuentes y estado de verificación
+Fuentes: [SQLite de Node](https://nodejs.org/docs/latest-v24.x/api/sqlite.html), [AudioWorklet](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode), [electron-vite](https://electron-vite.org/guide/), [NSIS de electron-builder](https://www.electron.build/nsis/). Distribución: [docs/RELEASE.md](docs/RELEASE.md). Licencias: [docs/THIRD-PARTY.md](docs/THIRD-PARTY.md).
 
-El despliegue sigue la [guía de Microsoft para apps autocontenidas](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/self-contained-deploy/deploy-self-contained-apps): .NET y Windows App SDK se incluyen, sin intentar convertir WinUI en un EXE de archivo único. Los resúmenes usan el [contrato oficial de Ollama `/api/chat`](https://docs.ollama.com/api/chat), salida estructurada y control de permanencia del modelo.
+## Evidencia y límites
 
-El arranque usa `App.xaml` y `InitializeComponent`, siguiendo el [ejemplo oficial WinUI autocontenido](https://github.com/microsoft/WindowsAppSDK-Samples/blob/f1a30c2524c785739fee842d02a1ea15c1362f8f/Samples/SelfContainedDeployment/cs-winui-unpackaged/App.xaml.cs). El compilador XAML genera los metadatos necesarios para los recursos y estilos de controles; no se construye una aplicación sin ese proveedor.
+Se ejecutó Electron real sin .NET con perfil aislado: captura Chromium usando la muestra pública JFK como micrófono simulado, persistencia de siete bloques completos más el último bloque, transcripción real con Whisper medium Q5_0 y presentación de segmentos. La grabación conservó 229 segundos. Se comprobó la superficie Tailwind y la preparación de recursos Windows desde TypeScript con hashes verificados. Las pruebas de persistencia, importación, recuperación y procesamiento son TypeScript, no la antigua suite C#.
 
-Se aprobaron **21 pruebas del núcleo** y un recorrido real desde audio PCM de archivo por SQLite → Whisper → resumen automático Qwen3 4B → generación de Markdown/preparación de audio para reproducción → eliminación. Ollama terminó sin modelos cargados. También se prepararon recursos Windows con SHA-256 y NuGet no reportó vulnerabilidades conocidas en las dependencias transitivas de la app. La comprobación anterior de tipos WinUI en Linux no cubre la inicialización XAML actual: MSBuild reconoce `App.xaml` como `ApplicationDefinition`, pero el compilador XAML requiere Windows. **Faltan la comprobación del arranque reparado, micrófono real y medición en 8 GB.** Consulta el checklist de entrega antes de distribuir.
+**No confundir entrada simulada con micrófono físico ni con aceptación Windows.** Falta comprobar micrófono/instalación Windows, una generación real nueva de Ollama y RAM en 8 GB. El comando de instalador se probó desde Linux y alcanzó electron-builder/NSIS, pero la edición del EXE y extracción del desinstalador requieren Windows o Wine. El hook NSIS sí se compiló por separado; no se publicó un instalador validado.

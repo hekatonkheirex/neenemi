@@ -1,21 +1,29 @@
-# Tareas de migración
+# Migración TypeScript + Tailwind
 
-## Implementación y evidencia disponible
+## Implementación y evidencia
 
-- [x] Contratos y proyectos C#: núcleo compilable, captura por nombre sin cliente.
-- [x] SQLite: migración con respaldo previo y conservación de audio/segmentos/asociaciones; importación Ñe'eñemi/DCSS en solo lectura sin sobrescribir. Pruebas de repositorio aprobadas.
-- [x] Audio/Whisper: captura Windows implementada, persistencia del último bloque, recuperación y cancelación del proceso. Transcripción CPU real con medium Q5_0 verificada usando audio de archivo.
-- [x] Ollama/Qwen3: bloques acotados sin pérdida silenciosa, referencias validadas y liberación del modelo. Pruebas de fronteras y resumen CPU real con `qwen3:4b` aprobados; `/api/ps` terminó sin modelos cargados.
-- [x] Interfaz WinUI e instalador implementados: historial, reproducción por segmento, resumen, exportación, errores/confirmaciones y preparación local. Restaurado arranque estándar con `App.xaml` y metadatos generados; MSBuild reconoce la definición de aplicación. El compilador XAML no puede ejecutarse en Linux y el arranque reparado aún no está confirmado en Windows.
-- [x] Recorrido integrado real: audio PCM de archivo → SQLite → Whisper → resumen automático Qwen3 → Markdown → preparación de reproducción → eliminación de datos y copia temporal. La captura de micrófono se sustituyó exclusivamente en este recorrido temporal; los motores fueron reales.
-- [x] Recursos Windows: descarga y preparación de whisper.cpp, medium Q5_0 y ffmpeg con hashes verificados.
-- [x] Corte y documentación: retiradas fuentes y entradas Electron/React/Express/Node; bases personales sin modificar; README, release, licencias y changelog actualizados.
-- [x] Repositorio indicado conectado como `origin` por SSH. Destino de publicación del código: rama `windows-native`, sin el historial heredado de DCSS. No hay un release binario Windows validado.
+- [x] App Electron/electron-vite + React/TypeScript/Tailwind; sin .NET, C#, WinUI, NAudio, Inno/ISCC ni host externo.
+- [x] Contrato IPC/worker tipado, renderer aislado/sandbox sin Node y audio por tokens/rangos; sin Express ni HTTP de aplicación.
+- [x] Servicios TS: SQLite integrado, esquema 2 conservado, migración con respaldo, importación WAL/idempotencia/asociaciones y ajustes anteriores convertidos.
+- [x] Cola durable secuencial, guardado/encolado atómico, cancelación y recuperación; Whisper/ffmpeg, Ollama estructurado/bloques/referencias y Markdown.
+- [x] Captura AudioWorklet PCM 16 kHz por nombre, bloques de 30 segundos, último bloque, errores y handshake de cierre.
+- [x] 27 pruebas TS aprobadas y build de main/worker/preload/renderer/AudioWorklet/Tailwind. La suite anterior C# fue retirada, no contada como evidencia del nuevo núcleo.
+- [x] SQLite/migración/importación comprobados también dentro del Node integrado de Electron.
+- [x] Recorrido Electron real: micrófono simulado con JFK público, siete bloques completos más el último (229 segundos), transcripción real Whisper medium Q5_0 y presentación Tailwind.
+- [x] Paquete Linux generado con worker dentro de ASAR y sin .NET; audio, presentación y preservación de fixture de resumen ante fallo real de conexión Ollama.
+- [x] Regresión reproducida/corregida: un fallo inicial de Ollama no marca un modelo como cargado ni bloquea el siguiente Whisper. La grabación que fallaba antes se transcribió después de repetir el fallo Ollama en el paquete corregido.
+- [x] Desarrollo Electron con Tailwind verificado visualmente; estilos inyectados por Vite autorizados mediante nonce CSP. Producción conserva `script-src 'self'` y `style-src 'self'`, sin nonce ni `unsafe-inline`.
+- [x] Recursos Windows preparados desde TypeScript con SHA-256; hook NSIS completo compilado por separado. El NSIS completo desde Linux se detuvo por ausencia de Wine, no de .NET/ISCC.
+- [x] Retirados proyectos/fuentes/tests/bin/obj .NET, cliente stdio, script PowerShell de empaquetado e instalador Inno. Documentación/contratos/licencias actualizados; perfiles personales sin modificar.
 
-## Aceptación bloqueada por entorno
+## Aceptación de distribución
 
-- [ ] Build completo WinUI autocontenido y generación/instalación del EXE con Inno Setup en Windows.
-- [ ] Recorrido real de ventana WinUI, micrófono, permisos, reproducción y diálogos en Windows.
-- [ ] Medición de RAM/latencia en laptop Windows de 8 GB sin GPU dedicada.
+- [ ] Generar NSIS completo en Windows o con Wine y probar instalación/desinstalación sobre una máquina limpia.
+- [ ] Migrar desde instalación Inno: conservar perfil y no mantener dos apps activas contra la misma base.
+- [ ] Micrófono físico Windows, permisos/dispositivo desconectado, más de 30 segundos y cierre/recuperación.
+- [ ] Generación nueva con Ollama real y recorrido transcripción → resumen automático; no presentar fixture como inferencia real.
+- [ ] Diálogos nativos Windows de importación/exportación y conservación del perfil tras desinstalar.
+- [ ] RAM máxima/latencia en laptop de 8 GB sin GPU dedicada.
+- [ ] Reevaluar los avisos moderados de herramientas de empaquetado antes de publicar.
 
-Bloqueo: estación Linux, sin Windows disponible ni hosts SSH Windows configurados. El build completo alcanza tareas nativas Windows de manifiesto/PRI que no funcionan aquí. No se desactivan esas tareas en el proyecto de distribución ni se presenta la compilación parcial como instalador validado. Recorrido obligatorio y comandos: `docs/RELEASE.md`.
+No se publicó un instalador validado. No volver a introducir .NET/ISCC ni desactivar etapas de entrega para ocultar el requisito Windows/Wine. Checklist: `docs/RELEASE.md`.

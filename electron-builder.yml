@@ -1,0 +1,38 @@
+appId: com.datasystems.neenemi
+productName: Neenemi
+executableName: neenemi
+asar: true
+npmRebuild: false
+directories:
+  output: release/electron
+files:
+  - out/**
+  - package.json
+extraResources:
+  - from: docs/THIRD-PARTY.md
+    to: THIRD-PARTY.md
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch: x64
+  extraResources:
+    - from: build/resources
+      to: tools
+      filter:
+        - '**/*'
+        - '!.downloads/**'
+    - from: build/installer-dependencies/vc_redist.x64.exe
+      to: vc_redist.x64.exe
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+  artifactName: 'Neenemi-${version}-Setup.${ext}'
+  include: build/installer.nsh
+  installerLanguages:
+    - es_ES
+linux:
+  icon: build/icon.png
+  target: dir

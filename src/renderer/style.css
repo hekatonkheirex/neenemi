@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: "Segoe UI", system-ui, sans-serif;
+  --color-page: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--fg);
+  --color-muted: var(--muted);
+  --color-edge: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--error);
+}
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+    --bg: #f5f6f4; --surface: #fff; --fg: #202723; --muted: #56635b;
+    --border: #cbd2cc; --accent: #256344; --accent-soft: #e5efe8; --error: #a12626;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171c19; --surface: #202823; --fg: #e7ece8; --muted: #b1bdb4;
+      --border: #48554b; --accent: #73bc8e; --accent-soft: #2c4133; --error: #f59c9c;
+    }
+  }
+  body { @apply m-0 bg-page font-sans text-sm leading-relaxed text-ink; }
+  main { @apply mx-auto max-w-[1440px] p-6 max-lg:p-4; }
+  h1 { @apply mb-3 text-[28px] font-semibold tracking-tight; }
+  h2 { @apply mb-3 text-xl font-semibold; }
+  h3 { @apply mt-5 mb-3 text-base font-semibold; }
+  p { @apply mb-3; }
+  header { @apply mb-6 flex flex-wrap items-center justify-between gap-4; }
+  button, input, select { @apply rounded-md border border-edge bg-surface font-sans text-sm text-ink; }
+  button { @apply cursor-pointer px-3 py-2 leading-snug; }
+  button:hover:not(:disabled) { @apply border-accent bg-accent-soft; }
+  button:disabled { @apply cursor-not-allowed opacity-50; }
+  input, select { @apply w-full px-3 py-2; }
+  label { @apply grid gap-1; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-accent; }
+  audio { @apply my-3 w-full; }
+  progress { @apply w-full accent-accent; }
+  fieldset { @apply mb-4 grid max-w-xl gap-4 border border-edge p-4; }
+  dialog { @apply m-auto max-w-[min(500px,calc(100%_-_32px))] rounded-md border border-edge bg-surface p-6 text-ink; }
+  dialog::backdrop { @apply bg-black/50; }
+}
+
+@layer components {
+  .section-heading { @apply flex flex-wrap items-start justify-between gap-4; }
+  .muted, .count { @apply text-muted; }
+  .count { @apply text-sm; }
+  .error { @apply whitespace-pre-wrap text-danger; }
+  button.primary { @apply border-accent bg-accent text-page; }
+  button.primary:hover:not(:disabled) { @apply border-accent bg-accent text-page brightness-110; }
+  button.danger { @apply text-danger; }
+  .actions { @apply my-3 flex flex-wrap gap-2; }
+  .capture { @apply flex flex-wrap items-end gap-3 rounded-md border border-edge bg-surface p-5; }
+  .capture label { @apply min-w-55 flex-1; }
+  .capture strong { @apply self-center; }
+  .resource-note { @apply my-3 text-muted; }
+  .workspace { @apply mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[280px_minmax(0,1fr)]; }
+  aside { @apply border-b border-edge pb-4 lg:border-r lg:border-b-0 lg:pr-5 lg:pb-0; }
+  .history, .segments { @apply m-0 list-none p-0; }
+  .history { @apply max-h-60 overflow-auto lg:max-h-none; }
+  .history li { @apply mb-2; }
+  .history button { @apply grid w-full gap-1 p-3 text-left; }
+  .history button strong { @apply wrap-anywhere; }
+  .history button span { @apply text-xs text-muted; }
+  .history button[aria-pressed="true"] { @apply border-accent bg-accent-soft; }
+  .detail { @apply min-w-0 rounded-md border border-edge bg-surface p-6 max-lg:p-4; }
+  .detail p, .detail li { @apply wrap-anywhere whitespace-pre-wrap; }
+  .detail ul:not(.history), .detail ol:not(.segments) { @apply list-disc pl-5; }
+  .empty { @apply py-9; }
+  .status { @apply whitespace-nowrap text-muted; }
+  .tabs { @apply mt-3 mb-5 flex gap-2 border-b border-edge pb-2; }
+  .tabs button[aria-selected="true"] { @apply border-accent bg-accent-soft text-accent; }
+  .segments li { @apply border-b border-edge; }
+  .segments button { @apply flex w-full gap-4 rounded-none border-0 px-0 py-3 text-left; }
+  time { @apply shrink-0 text-accent tabular-nums; }
+  .ai-notice { @apply border-l-[3px] border-accent bg-accent-soft p-3; }
+  .notice { @apply mb-4 flex items-center justify-between gap-4 border border-edge bg-surface px-4 py-3 wrap-anywhere; }
+  .settings { @apply rounded-md border border-edge bg-surface p-6; }
+  .checkbox { @apply flex items-center gap-2; }
+  .checkbox input { @apply w-auto; }
+}

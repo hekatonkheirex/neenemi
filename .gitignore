@@ -1,5 +1,6 @@
 node_modules/
 dist/
+out/
 release/
 data/
 coverage/
@@ -20,7 +21,6 @@ coverage/
 build/whisper/
 build/.whisper-cache/
 
-# Compilaciones nativas y dependencias del instalador
-**/bin/
-**/obj/
+# Recursos generados para el instalador Electron
 build/installer-dependencies/
+build/resources/

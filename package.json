@@ -1,0 +1,19 @@
+{
+  "name": "neenemi", "version": "0.1.0", "private": true,
+  "description": "Grabación, transcripción y resúmenes locales", "author": "Data Systems S.A.E.C.A.",
+  "main": "out/main/index.js", "packageManager": "npm@12.2.0",
+  "engines": { "node": "^22.22.2 || ^24.15.0 || >=26.0.0" },
+  "scripts": {
+    "dev": "electron-vite dev", "build": "tsc --noEmit && electron-vite build",
+    "start": "electron-vite preview", "test": "node --import tsx --test electron/services/*.test.ts electron/*.test.ts",
+    "package:win": "npm test && npm run build && node --import tsx scripts/package-windows.ts",
+    "package:linux": "npm run build && electron-builder --linux --dir --publish never"
+  },
+  "dependencies": { "react": "19.2.4", "react-dom": "19.2.4", "zod": "4.6.6", "fflate": "0.8.3" },
+  "devDependencies": {
+    "@types/node": "^24.0.0", "@types/react": "^19.2.0", "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "5.2.0", "electron": "44.7.0", "electron-builder": "26.15.3",
+    "electron-vite": "5.0.0", "vite": "7.3.7", "typescript": "^5.9.3", "tsx": "^4.20.0",
+    "tailwindcss": "4.3.3", "@tailwindcss/vite": "4.3.3"
+  }
+}

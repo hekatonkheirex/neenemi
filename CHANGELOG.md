@@ -4,20 +4,22 @@
 
 La versión de Ñe'eñemi es independiente de DCSS y se establece en `0.1.0`; no continúa la numeración del módulo extraído.
 
-- Migración de Electron/React/Express a WinUI 3 + C# y .NET 10 para Windows x64; retiradas las fuentes, dependencias y entradas de ejecución anteriores.
+- Migración completa a Electron + electron-vite + React, TypeScript y Tailwind CSS. Retirados C#/.NET, WinUI, NAudio, el host externo y el instalador Inno/ISCC; sin Express ni servidor HTTP de aplicación.
 - Grabación solo por nombre, sin selector ni presentación de clientes. Se conservan las asociaciones históricas en SQLite.
-- Captura Windows PCM 16 kHz con persistencia periódica y último bloque; lectura del audio WebM histórico sin reemplazar originales.
+- Captura Chromium mediante AudioWorklet: PCM 16 kHz con guardado cada 30 segundos y último bloque, handshake de cierre y lectura del WebM histórico sin reemplazar originales.
 - Resúmenes locales estructurados con Ollama y Qwen3 4B en CPU, bloques acotados/consolidación, referencias al audio y responsables/fechas solo si se mencionan.
 - Cola secuencial durable con encolado atómico del resumen automático; cancelar, recuperar, reintentar y preservar transcripciones/resúmenes ante errores.
-- Interfaz nativa para historial, reproducción por segmento, exportación, confirmaciones y preparación de modelos sin terminal.
+- Interfaz Electron para historial, reproducción por segmento/referencia, exportación Markdown, importación, confirmaciones y preparación de modelos sin terminal. Renderer aislado y sandbox, sin Node; diálogos y acceso a archivos controlados por el main.
 - Migración SQLite con respaldo previo e importación de Ñe'eñemi/DCSS en solo lectura sin sobrescribir grabaciones.
-- Automatización de instalador Inno Setup por usuario, runtimes autocontenidos y recursos Whisper/ffmpeg con SHA-256.
-- Verificados 21 tests del núcleo y recorridos reales de Whisper, Qwen3 y procesamiento completo desde audio de archivo hasta generación de Markdown, preparación de reproducción y eliminación. Comprobación de tipos WinUI realizada en Linux.
+- Instalador NSIS estándar de electron-builder, con motores Whisper/ffmpeg verificados por SHA-256 y redistribuible Visual C++ oficial. Perfil y esquema 2 preservados; desinstalar Inno antes de instalar NSIS.
+- Verificadas pruebas TypeScript y compilación de main/worker/preload/renderer/AudioWorklet/Tailwind. Recorrido real sin .NET: micrófono simulado con muestra pública, siete bloques completos más el último (229 segundos) y transcripción real con Whisper medium Q5_0.
 - Corregidos los bloques de resumen en Windows: separadores LF explícitos, coherentes con el lector y el presupuesto UTF-8, sin añadir CR al texto ni exceder el contexto. Verificada la frontera exacta del presupuesto con texto Unicode.
-- Restaurada la inicialización estándar de WinUI mediante `App.xaml`, clase parcial e `InitializeComponent`, para generar los metadatos que faltaban al cargar `XamlControlsResources`. El arranque tras esta reparación aún requiere comprobación en Windows; `c000027b` por sí solo no identifica la excepción interna.
-- Añadido diagnóstico local del arranque: fases, versión/módulo y excepción completa con HRESULT y stack, sin marcar errores WinUI como manejados. El cierre reportado sigue pendiente de diagnóstico; no se presenta esta instrumentación como solución del fallo.
+- SQLite integrado en Electron, sin addon nativo ni backend ejecutable. Migración/importación, transacciones, cancelación, recuperación y resúmenes portados a TypeScript; retirada la suite C# en lugar de presentarla como evidencia del nuevo núcleo.
+- Scripts de instalación de dependencias bloqueados; descarga de Electron explícita y revisada. Auditoría de producción sin avisos; herramientas de empaquetado con avisos moderados documentados en la guía de release.
+- Corregida la independencia de Whisper ante un fallo de conexión inicial de Ollama: no se considera cargado un modelo que nunca respondió; solo un fallo real de liberación bloquea el próximo trabajo hasta liberarlo.
+- Corregidos los estilos Tailwind en desarrollo mediante nonce CSP de Vite, sin habilitar `unsafe-inline` ni modificar la política estricta de producción. Verificado en la ventana Electron real.
 
-Pendiente de aceptación en Windows: build completo/instalador, ventana, micrófono real y consumo en laptop de 8 GB. No se publicó un instalador ni se garantiza aún ese rendimiento.
+Pendiente de aceptación: instalación/micrófono físicos Windows, generación nueva con Ollama real y RAM/latencia en 8 GB. La generación NSIS desde Linux alcanzó etapas que requieren Wine, ausente en este entorno; el hook NSIS sí compiló por separado. No se publicó un instalador validado.
 
 ## 0.3.2 · 2026-10-09
 
