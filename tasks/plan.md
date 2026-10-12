@@ -12,3 +12,7 @@ Alcance: `SPEC-windows.md`. Electron/electron-vite + React/TypeScript/Tailwind r
 Contratos: `src/shared/contracts.ts`. Servicios en `electron/services`; main controla diálogos/exportación/audio y valida el emisor. El worker no depende de stdio, executables .NET ni servidor web.
 
 Ollama se prepara automáticamente en Windows x64 desde el ZIP oficial verificado y se inicia a demanda antes de preparación/resumen; se conserva cualquier API externa y se cierra el proceso propio. Riesgos: nueva instalación automática requiere aceptación Windows y espacio para motor/modelos; 8 GB sin medición. Generar NSIS desde Linux requiere Wine para etapas que ejecutan PE; el hook se puede comprobar por separado, pero eso no valida instalación. Mantener configuración de entrega estándar y registrar límites en `docs/RELEASE.md`.
+
+## Versionado de entregas
+
+Desde la próxima entrega, incrementar la versión de la aplicación en cada nueva versión y sincronizar `package.json`, `package-lock.json`, changelog y referencias del instalador. Esta entrega mantiene `0.1.0` por autorización del usuario; la excepción no se repite. Publicar los cambios en `main`.
